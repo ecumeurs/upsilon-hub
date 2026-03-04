@@ -1,0 +1,19 @@
+{
+    "name": "PHP Development",
+    "dockerComposeFile": "../docker-compose.yaml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "forwardPorts": [8000, 9003],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "xdebug.php-debug",
+                "bmewburn.vscode-intelephense-client",
+                "junstyle.php-cs-fixer",
+                "vscode-icons-team.vscode-icons",
+                "yzhang.markdown-all-in-one"
+            ]
+        }
+    },
+    "remoteUser": "vscode"
+}
