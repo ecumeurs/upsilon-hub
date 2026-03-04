@@ -18,7 +18,7 @@ dependents:
 Determines turn order mathematically based on action weight and randomly rolled starting values.
 
 ## THE RULE / LOGIC
-- Game Startup Roll: At the very beginning of the match, every character rolls an initial initiative value ranging from `1` to `1000`.
+- Game Startup Roll: At the very beginning of the match, every character rolls an initial initiative value ranging from `1` to `500`.
 - Active State: A character receives their active turn only when their evaluated initiative ticker reaches `0`.
 - Delay Costs: Actions performed during an active turn (Pass, Move, Attack) incur a cumulative numeric Delay Cost. 
 - Requeue Calculation: At the end of the turn, the character's required delay until their next turn is calculated using the summed Delay Cost of their performed actions (plus any penalties, see `mech_action_economy`).

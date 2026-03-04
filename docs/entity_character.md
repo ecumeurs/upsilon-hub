@@ -26,7 +26,7 @@ Defines the baseline stat block and attributes of a playable character unit.
 - New Character Roll:
   - A new character is allocated exactly 10 initial attribute points.
   - A minimum of 3 points MUST be allocated to HP.
-  - The remaining 7 points are distributed randomly among HP, Movement, Attack, and Defense.
+  - The remaining 7 points are distributed randomly among HP, Movement, Attack, and Defense, ensuring a minimum of 1 point is allocated to each of these attributes.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[entity_character]]`

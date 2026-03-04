@@ -18,10 +18,12 @@ dependents:
 Defines the allowable actions and temporal constraints for a character's active turn.
 
 ## THE RULE / LOGIC
-- Turn Actions: During an active turn, a character is permitted to Move (max once) and Attack (max once).
-- Ending the Turn: The turn can be finished manually by executing a "Pass" action.
+- Action Economy Costs:
+  - Move: `+20` delay cost per tile moved.
+  - Attack: `+100` delay cost.
+  - Pass: `+300` delay cost.
 - Time Constraint: Turn duration is strictly capped at 30 seconds.
-- Timeout Penalty: If a turn lasts exactly 30 seconds without completion, an automatic "Pass" is triggered, and a strict penalty of `+100` delay cost is unconditionally added to the character's next sequence.
+- Timeout Penalty: If a turn lasts exactly 30 seconds without completion, an automatic "Pass" is triggered, and a strict penalty of `+100` delay cost is added on top of the base Pass cost (Total `+400`).
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[mech_action_economy]]`

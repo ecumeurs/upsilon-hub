@@ -27,7 +27,7 @@ End-to-end narrative of a single character's active turn cycle from activation t
    - **Attack:** Player selects an enemy target (not a teammate — `rule_friendly_fire`) within attack range.
    - **Pass:** Player voluntarily ends turn.
 4. All chosen actions have their Delay Costs accumulated.
-5. Shot Clock expires: If no action is confirmed within 30 seconds, the system forces a Pass and applies a `+100` Delay penalty.
+5. Shot Clock expires: If no action is confirmed within 30 seconds, the system forces a Pass (+300) and applies a `+100` penalty (Total `+400`).
 6. Turn ends. The character's next-turn timer is recalculated from the accumulated Delay Cost.
 7. System re-evaluates the initiative sequence and activates the next character at `0`.
 
@@ -37,5 +37,5 @@ End-to-end narrative of a single character's active turn cycle from activation t
 
 ## EXPECTATION (For Testing)
 - Move + Attack selected -> Delay costs summed -> Character requeued at correct delay value.
-- 30s pass with no action -> Auto-pass + +100 delay applied.
+- 30s pass with no action -> Auto-pass (+300) + +100 delay penalty applied (Total +400).
 - Attack targeting allied unit -> Action blocked.

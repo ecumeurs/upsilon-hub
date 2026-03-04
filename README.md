@@ -14,9 +14,9 @@
 - **Stat Progression:** Securing a match victory rewards a player with 1 Attribute Point. This point can be allocated to HP, Attack, or Defense freely. Upgrading the Movement attribute is heavily throttled and locked to once every 5 accumulated wins.
 
 ## Combat Mechanics
-- **Initiative & Delay:** Turn order is non-linear. Characters roll a pre-initiative value ranging from `1-1000`. Active turns fire when the ticker hits `0`. 
-- **Action Economy:** During a turn, a character may perform a maximum of **1 Move** and **1 Attack**, or safely **Pass**. Performing actions accumulates a numerical "Delay Cost," mathematically extending the wait time until that character's next sequence.
-- **The Shot Clock:** Active combat turns mandate a strict **30-second limit** per character. Failing to confirm an action manually results in an auto-pass forced by the server, accompanied by a harsh `+100 Delay Cost` penalty.
+- **Initiative & Delay:** Turn order is non-linear. Characters roll a pre-initiative value ranging from `1-500`. Active turns fire when the ticker hits `0`. 
+- **Action Economy:** During a turn, a character may perform a maximum of **1 Move** (`+20/tile`), **1 Attack** (`+100`), or safely **Pass** (`+300`). Performing actions accumulates a numerical "Delay Cost," mathematically extending the wait time until that character's next sequence.
+- **The Shot Clock:** Active combat turns mandate a strict **30-second limit** per character. Failing to confirm an action manually results in an auto-pass forced by the server, accompanied by a penalty of `+100` (Total `+400` delay).
 
 ## Technical Architecture Overview
 The system relies on a strictly separated logic implementation:

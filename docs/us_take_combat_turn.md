@@ -25,7 +25,7 @@ Capture the experience of an active player controlling a character in combat wit
 
 - Acceptance Criterion 1: The board highlights my active character and shows a visible 30-second countdown.
 - Acceptance Criterion 2: I can select Move (up to my Movement stat in squares) and/or Attack (against an enemy) before my turn ends.
-- Acceptance Criterion 3: If I do not act within 30 seconds, my turn auto-ends and my character incurs a +100 delay penalty.
+- Acceptance Criterion 3: If I do not act within 30 seconds, my turn auto-ends and my character incurs a +400 delay penalty (300 for pass + 100 penalty).
 - Acceptance Criterion 4: I cannot target allied characters for attacks.
 
 ## TECHNICAL INTERFACE (The Bridge)
