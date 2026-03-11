@@ -2,6 +2,8 @@
 
 | Ref     | File                                                                                                                 | Severity | Status   | Summary                                                                         |
 | ------- | -------------------------------------------------------------------------------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------- |
+| ISS-010 | [ISS-010_20260311_ruler_readiness_logic.md](ISS-010_20260311_ruler_readiness_logic.md)                               | Low      | Open     | Enhance Ruler readiness trigger to verify grid and entities initialization.     |
+| ISS-009 | [ISS-009_20260311_ruler_ownership_bypass.md](ISS-009_20260311_ruler_ownership_bypass.md)                             | Low      | Open     | Ruler ownership bypass in bridge.go and public GameState exposure.               |
 | ISS-008 | [ISS-008_20260306_websocket_private_channel_transition.md](ISS-008_20260306_websocket_private_channel_transition.md) | High     | Open     | Transition WebSocket events from public to private channels for authentication. |
 | ISS-007 | [ISS-007_20260305_laravel_api_endpoints.md](ISS-007_20260305_laravel_api_endpoints.md)                               | High     | Open     | Implement battle management API endpoints.                                      |
 | ISS-006 | [ISS-006_20260305_upsilonbattle_http_controller.md](ISS-006_20260305_upsilonbattle_http_controller.md)               | Medium   | Open     | Refactor HTTP controller for better separation of concerns.                     |

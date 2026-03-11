@@ -10,6 +10,7 @@ import (
 	"github.com/ecumeurs/upsilonbattle/battlearena/controller"
 	"github.com/ecumeurs/upsilonbattle/battlearena/ruler/rulermethods"
 	"github.com/ecumeurs/upsilontools/tools/actor"
+	"github.com/ecumeurs/upsilontools/tools/messagequeue/message"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
@@ -27,13 +28,25 @@ func NewHTTPController(id uuid.UUID, callbackURL string) *HTTPController {
 
 	// Override or add methods to handle Ruler's broadcasts
 	hc.AddNotificationHandler(rulermethods.ControllerNextTurn{}, hc.forwardToWebhook, nil)
-	hc.AddNotificationHandler(rulermethods.BattleStart{}, hc.forwardToWebhook, nil)
+	hc.AddNotificationHandler(rulermethods.BattleStart{}, hc.BattleStart, nil)
 	hc.AddNotificationHandler(rulermethods.BattleEnd{}, hc.forwardToWebhook, nil)
 	hc.AddNotificationHandler(rulermethods.EntitiesStateChanged{}, hc.forwardToWebhook, nil)
 	hc.AddNotificationHandler(rulermethods.ControllerSkillUsed{}, hc.forwardToWebhook, nil)
 	hc.AddNotificationHandler(rulermethods.ControllerAttacked{}, hc.forwardToWebhook, nil)
 
 	return hc
+}
+
+func (hc *HTTPController) BattleStart(ctx actor.NotificationContext) {
+	logrus.Infof("HTTPController %s: BattleStart received, notifying BattleReady", hc.ID)
+	hc.forwardToWebhook(ctx)
+	if hc.Ruler != nil {
+		hc.Ruler.NotifyActor(message.Create(nil, rulermethods.ControllerBattleReady{
+			ControllerID: hc.ID,
+		}, nil))
+	} else {
+		logrus.Warnf("HTTPController %s: Ruler is nil in BattleStart", hc.ID)
+	}
 }
 
 func (hc *HTTPController) forwardToWebhook(ctx actor.NotificationContext) {

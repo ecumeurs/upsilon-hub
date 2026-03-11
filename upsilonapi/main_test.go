@@ -3,10 +3,12 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/ecumeurs/upsilonapi/api"
 	"github.com/ecumeurs/upsilonapi/handler"
@@ -29,6 +31,19 @@ func setupRouter() *gin.Engine {
 
 func TestArenaStartEndpoint(t *testing.T) {
 	router := setupRouter()
+
+	// Setup mock webhook receiver
+	webhookEvents := make(chan map[string]interface{}, 10)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		var event map[string]interface{}
+		json.Unmarshal(body, &event)
+		webhookEvents <- event
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer ts.Close()
+	defer close(webhookEvents)
+
 	id := uuid.New().String()
 	mid := uuid.New().String()
 	w := httptest.NewRecorder()
@@ -50,7 +65,7 @@ func TestArenaStartEndpoint(t *testing.T) {
 					Position: api.Position{
 						X: 0,
 						Y: 5}}},
-			IA: true,
+			IA: false, // Must be false to trigger HTTPController webhooks
 		},
 		api.Player{
 			ID:   uuid.NewString(),
@@ -77,7 +92,7 @@ func TestArenaStartEndpoint(t *testing.T) {
 		Success:   true,
 		Data: api.ArenaStartRequest{
 			MatchID:     mid,
-			CallbackURL: "http://localhost:9999/webhook",
+			CallbackURL: ts.URL, // Use mock server URL
 			Players:     players,
 		},
 		Meta: stdmessage.MetaNil{},
@@ -97,4 +112,27 @@ func TestArenaStartEndpoint(t *testing.T) {
 	assert.Equal(t, resp.Success, true)
 	assert.NotEmpty(t, resp.Data.ArenaID)
 	assert.NotEmpty(t, resp.Data.InitialState)
+
+	// Verify webhooks
+	expectedEvents := map[string]bool{
+		"game.started": false,
+		"turn.started": false,
+	}
+
+	for range 2 {
+		select {
+		case event := <-webhookEvents:
+			eventType, ok := event["event_type"].(string)
+			if ok {
+				if _, exists := expectedEvents[eventType]; exists {
+					expectedEvents[eventType] = true
+				}
+			}
+		case <-time.After(2 * time.Second):
+			t.Errorf("Timed out waiting for webhook event")
+		}
+	}
+
+	assert.True(t, expectedEvents["game.started"], "Should have received game.started event")
+	assert.True(t, expectedEvents["turn.started"], "Should have received turn.started event")
 }

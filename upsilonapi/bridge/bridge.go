@@ -43,6 +43,7 @@ func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.
 	b.arenas[battleArena.Uuid] = battleArena
 	b.mu.Unlock()
 
+	// this bypass actor's owning resource, we should probably use the SetGrid message instead (doesn't exist yet).
 	battleArena.Ruler.SetGrid(gridgenerator.GeneratePlainSquare(10, 10))
 	battleArena.Ruler.SetNbControllers(len(start.Players))
 
@@ -68,6 +69,7 @@ func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.
 			e.RepsertPropertyValue("Attack", ee.Attack)
 			e.RepsertPropertyValue("Defense", ee.Defense)
 
+			// this bypass actor's owning resource, we should probably use the AddEntity message instead (doesn't exist yet).
 			battleArena.Ruler.AddEntity(e)
 		}
 
@@ -108,6 +110,7 @@ func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.
 		res = append(res, v)
 	}
 
+	// this is bad, because we access data directly, bypassing the actor... we should probably poll for appropriate data so that we're sure to have readonly copies.
 	return battleArena.Ruler.ID,
 		battleArena.Ruler.GameState.Grid,
 		res,
