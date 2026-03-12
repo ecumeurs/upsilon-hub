@@ -32,7 +32,7 @@ Stores the resolution logs emitted by the Go API (`module_backend`) when a sessi
 * `id` (UUID, Primary Key)
 * `started_at` (Timestamp)
 * `concluded_at` (Timestamp)
-* `winning_team_id` (UUID)
+* `winning_team_id` (Int (same as match_participants.team))
 * `game_mode` (Enum: '1v1_PVE', '1v1_PVP', '2v2_PVE', '2v2_PVP')
 
 ### 4. `match_participants`
@@ -75,7 +75,7 @@ erDiagram
         uuid id PK
         timestamp started_at
         timestamp concluded_at
-        uuid winning_team_id
+        int winning_team_id
         enum game_mode "1v1_PVE, 1v1_PVP, 2v2_PVE, 2v2_PVP"
     }
 

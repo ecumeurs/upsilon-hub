@@ -42,7 +42,6 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [BattleUI API Communication Service Ownership](issues/Ref_20260312_battleui_api_service.md) | 2026-03-12 | Open | High | The `battleui` component currently lacks a centralized service to handle comm... |
 | [Arena not destroyed on battle end](issues/ISS-012_20260311_arena_destruction_leak.md) | 2026-03-11 | Open | Medium | Arenas are added to the `ArenaBridge.arenas` map during startup but are never... |
 | [Ruler readiness trigger enhancements](issues/ISS-010_20260311_ruler_readiness_logic.md) | 2026-03-11 | Open | Low | The current readiness trigger for the `Ruler` (the `BattleStart` notification... |
 | [Ruler ownership bypass in bridge.go and public GameState](issues/ISS-009_20260311_ruler_ownership_bypass.md) | 2026-03-11 | Open | Low | In `bridge.go`'s `StartArena` function, the `Ruler`'s ownership of game resou... |

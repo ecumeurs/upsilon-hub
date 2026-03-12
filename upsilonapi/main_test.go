@@ -218,6 +218,9 @@ func TestBattleFullRoundtrip(t *testing.T) {
 	arenaID := startResp.Data.ArenaID
 	p1ID := players[0].ID
 	p1e1ID := players[0].Entities[0].ID
+	
+	initialStateMarshaled, _ := json.MarshalIndent(startResp.Data.InitialState, "", "  ")
+	log.Printf("GO TEST INITIAL STATE:\n%s", string(initialStateMarshaled))
 
 	// Wait for game.started and turn.started
 	waitForWebhook(t, webhookEvents, "game.started")

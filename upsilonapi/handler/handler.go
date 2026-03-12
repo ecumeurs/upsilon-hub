@@ -103,7 +103,7 @@ func HandleArenaAction(c *gin.Context) {
 
 	ok, msg, data := bridge.Get().ArenaAction(arenaID, req)
 	if !ok {
-		c.JSON(http.StatusBadRequest, api.NewError(req.RequestID, msg))
+		c.JSON(http.StatusPreconditionFailed, api.NewError(req.RequestID, msg))
 		return
 	}
 

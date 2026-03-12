@@ -4,7 +4,7 @@
 **Ref:** `ISS-013`
 **Date:** 2026-03-12
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `battleui/app/Services/UpsilonApiService.php`
 **Affects:** `GameController`, `MatchMakingController`, `BattleController`
 
@@ -42,12 +42,12 @@ Currently, controllers like `GameController.php` are empty. When implementing th
 
 ## Risk Assessment
 
-| Factor | Value |
-|---|---|
-| Likelihood | High |
-| Impact if triggered | High |
-| Detectability | Medium — manifests as runtime errors or inconsistent game state. |
-| Current mitigant | None (Placeholders only). |
+| Factor              | Value                                                            |
+| ------------------- | ---------------------------------------------------------------- |
+| Likelihood          | High                                                             |
+| Impact if triggered | High                                                             |
+| Detectability       | Medium — manifests as runtime errors or inconsistent game state. |
+| Current mitigant    | None (Placeholders only).                                        |
 
 ---
 
@@ -68,3 +68,4 @@ Currently, controllers like `GameController.php` are empty. When implementing th
 - [api_go_battle_action.atom.md](file:///workspace/docs/api_go_battle_action.atom.md)
 - [api_go_webhook_callback.atom.md](file:///workspace/docs/api_go_webhook_callback.atom.md)
 - [GameController.php](file:///workspace/battleui/app/Http/Controllers/API/GameController.php)
+- [ISS-014](file:///workspace/issues/ISS-014_20260312_battleui_db_models.md) (Missing Database Models in BattleUI)
