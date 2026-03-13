@@ -7,7 +7,7 @@ status: STABLE
 priority: CORE
 tags: []
 parents: []
-dependents: []
+dependents: [rule_character_create_character]
 ---
 
 # Character Entity
@@ -19,11 +19,12 @@ To aggregate the constituent rules of Character Entity.
 Defines the baseline stat block and attributes of a playable character unit.
 
 Attributes:
-* HP (on the board, in game only)
-* Max HP
-* Attack
-* Defense
-* Move
+* HP (consumable, on the board, in game only)
+* Max HP (attribute)
+* Attack (attribute)
+* Defense (attribute)
+* Move (consumable, on the board, in game only)
+* Max Move (attribute)
 * Position (on the board, in game only): {x,y}
 * Name
 * ID

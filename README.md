@@ -9,9 +9,11 @@
 - **The Roster:** Every player commands a roster of exactly 3 characters.
 
 ## Character System & Progression
-- **Initial Core Roll:** New characters are allocated exactly 10 initial attribute points. A minimum of 3 points must govern **HP (Health Points)**, with the remaining 7 randomly distributed among **HP**, **Movement (Squares)**, **Attack**, and **Defense**.
+- **Initial Core Roll:** New characters start with base stats (3 HP, 1 Move, 1 Attack, 1 Def) and exactly 4 additional points are randomly dispatched (Total 10 points). 
 - **The Reroll Mechanic:** During account registration, players are granted an option to completely re-randomize their 3 initial character stat blocks. This reroll can be executed a strict maximum of **3 times**.
-- **Stat Progression:** Securing a match victory rewards a player with 1 Attribute Point. This point can be allocated to HP, Attack, or Defense freely. Upgrading the Movement attribute is heavily throttled and locked to once every 5 accumulated wins.
+- **Stat Progression:** Securing a match victory rewards a player with 1 Attribute Point. 
+  - **Constraints:** Total attributes cannot exceed `10 + total wins`. Matches result in a maximum of 1 point gain.
+  - **Movement Restriction:** Upgrading the Movement attribute is heavily throttled and locked to once every 5 accumulated wins.
 
 ## Combat Mechanics
 - **Initiative & Delay:** Turn order is non-linear. Characters roll a pre-initiative value ranging from `1-500`. Active turns fire when the ticker hits `0`. 
@@ -44,7 +46,6 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 |---|---|---|---|---|
 | [Security Risk: Lack of Match Participant Access Control](issues/ISS-018_20260312_match_participant_access_control.md) | 2026-03-12 | Open | Critical | Currently, any authenticated user can attempt to act or view the state of ANY... |
 | [Security Risk: Battle Action player_id Usurpation](issues/ISS-017_20260312_action_player_id_usurpation.md) | 2026-03-12 | Open | Critical | The battle action proxy endpoint accepts a `player_id` directly from the requ... |
-| [Unconstrained Character Upgrades (Progression Bypass)](issues/ISS-016_20260312_character_upgrade_constraints.md) | 2026-03-12 | Open | High | The `/api/v1/profile/{id}/character/{characterId}/upgrade` endpoint allows ar... |
 | [Arena not destroyed on battle end](issues/ISS-012_20260311_arena_destruction_leak.md) | 2026-03-11 | Open | Medium | Arenas are added to the `ArenaBridge.arenas` map during startup but are never... |
 | [Ruler readiness trigger enhancements](issues/ISS-010_20260311_ruler_readiness_logic.md) | 2026-03-11 | Open | Low | The current readiness trigger for the `Ruler` (the `BattleStart` notification... |
 | [Ruler ownership bypass in bridge.go and public GameState](issues/ISS-009_20260311_ruler_ownership_bypass.md) | 2026-03-11 | Open | Low | In `bridge.go`'s `StartArena` function, the `Ruler`'s ownership of game resou... |

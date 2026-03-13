@@ -4,7 +4,7 @@
 **Ref:** `ISS-016`
 **Date:** 2026-03-12
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `app/Http/Controllers/API/ProfileController.php`
 **Affects:** `Character` model, Frontend profile view
 
@@ -38,12 +38,12 @@ foreach ($validated['stats'] as $stat => $value) {
 
 ## Risk Assessment
 
-| Factor | Value |
-|---|---|
-| Likelihood | High |
-| Impact if triggered | High (Game balance destruction) |
-| Detectability | Medium — manifests as over-powered characters in arena |
-| Current mitigant | None |
+| Factor              | Value                                                  |
+| ------------------- | ------------------------------------------------------ |
+| Likelihood          | High                                                   |
+| Impact if triggered | High (Game balance destruction)                        |
+| Detectability       | Medium — manifests as over-powered characters in arena |
+| Current mitigant    | None                                                   |
 
 ---
 
