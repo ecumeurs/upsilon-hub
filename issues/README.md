@@ -2,6 +2,10 @@
 
 | Ref     | File                                                                                                                 | Severity | Status   | Summary                                                                         |
 | ------- | -------------------------------------------------------------------------------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------- |
+| ISS-018 | [20260312_match_participant_access_control.md](20260312_match_participant_access_control.md) | Critical | Open | Lack of authorization checks on battle match interactions. |
+| ISS-017 | [20260312_action_player_id_usurpation.md](20260312_action_player_id_usurpation.md) | Critical | Open | Security risk: player_id in actions can be usurped by any auth user. |
+| ISS-016 | [20260312_character_upgrade_constraints.md](20260312_character_upgrade_constraints.md) | High | Open | Character upgrades bypass progression win/point constraints. |
+| ISS-015 | [20260312_matchmaking_trigger_failure.md](20260312_matchmaking_trigger_failure.md) | High | Open | 2v2 and PVE matchmaking fails to trigger startArena correctly. |
 | ISS-010 | [ISS-010_20260311_ruler_readiness_logic.md](ISS-010_20260311_ruler_readiness_logic.md)                               | Low      | Open     | Enhance Ruler readiness trigger to verify grid and entities initialization.     |
 | ISS-009 | [ISS-009_20260311_ruler_ownership_bypass.md](ISS-009_20260311_ruler_ownership_bypass.md)                             | Low      | Open     | Ruler ownership bypass in bridge.go and public GameState exposure.              |
 | ISS-008 | [ISS-008_20260306_websocket_private_channel_transition.md](ISS-008_20260306_websocket_private_channel_transition.md) | High     | Open     | Transition WebSocket events from public to private channels for authentication. |

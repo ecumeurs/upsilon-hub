@@ -42,6 +42,9 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Security Risk: Lack of Match Participant Access Control](issues/ISS-018_20260312_match_participant_access_control.md) | 2026-03-12 | Open | Critical | Currently, any authenticated user can attempt to act or view the state of ANY... |
+| [Security Risk: Battle Action player_id Usurpation](issues/ISS-017_20260312_action_player_id_usurpation.md) | 2026-03-12 | Open | Critical | The battle action proxy endpoint accepts a `player_id` directly from the requ... |
+| [Unconstrained Character Upgrades (Progression Bypass)](issues/ISS-016_20260312_character_upgrade_constraints.md) | 2026-03-12 | Open | High | The `/api/v1/profile/{id}/character/{characterId}/upgrade` endpoint allows ar... |
 | [Arena not destroyed on battle end](issues/ISS-012_20260311_arena_destruction_leak.md) | 2026-03-11 | Open | Medium | Arenas are added to the `ArenaBridge.arenas` map during startup but are never... |
 | [Ruler readiness trigger enhancements](issues/ISS-010_20260311_ruler_readiness_logic.md) | 2026-03-11 | Open | Low | The current readiness trigger for the `Ruler` (the `BattleStart` notification... |
 | [Ruler ownership bypass in bridge.go and public GameState](issues/ISS-009_20260311_ruler_ownership_bypass.md) | 2026-03-11 | Open | Low | In `bridge.go`'s `StartArena` function, the `Ruler`'s ownership of game resou... |
