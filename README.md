@@ -52,7 +52,6 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 | [Ruler readiness trigger enhancements](issues/ISS-010_20260311_ruler_readiness_logic.md) | 2026-03-11 | Open | Low | The current readiness trigger for the `Ruler` (the `BattleStart` notification... |
 | [Ruler ownership bypass in bridge.go and public GameState](issues/ISS-009_20260311_ruler_ownership_bypass.md) | 2026-03-11 | Open | Low | In `bridge.go`'s `StartArena` function, the `Ruler`'s ownership of game resou... |
 | [Transition WebSocket Events to Private Channels](issues/ISS-008_20260306_websocket_private_channel_transition.md) | 2026-03-06 | Open | High | WebSocket events, specifically the `BattleUpdated` event, are currently broad... |
-| [Implement Laravel API Gateway Endpoints](issues/ISS-007_20260305_laravel_api_endpoints.md) | 2026-03-05 | Open | High | The Laravel API needs to implement the proxy and meta-game HTTP endpoints def... |
 | [Implement Laravel WebSocket Communication Layer](issues/ISS-005_20260305_laravel_websockets.md) | 2026-03-05 | Open | High | To avoid aggressive REST polling, the system requires a real-time WebSocket l... |
 | [UpsilonBattle missing team handling](issues/ISS-003_20260305_upsilonbattle_missing_teams.md) | 2026-03-05 | Open | High | The `upsilonbattle` engine currently lacks any concept of "teams" or alliance... |
 | [UpsilonBattle Mechanics Gap Analysis](issues/ISS-001_20260305_upsilonbattle_mechanics_gap.md) | 2026-03-05 | Open | Medium | There are multiple inconsistencies between the high-level specifications (REA... |

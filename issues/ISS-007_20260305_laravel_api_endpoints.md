@@ -4,7 +4,7 @@
 **Ref:** `ISS-007`
 **Date:** 2026-03-05
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `laravel/routes/api`
 **Affects:** `vue-frontend`, `upsilonbattle`
 
