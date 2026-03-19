@@ -41,6 +41,6 @@ To allow players to enter a queue and be matched with opponents.
 - **Test Names:** `TestJoinQueue`, `TestLeaveQueue`, `TestMatchFinding`
 
 ## EXPECTATION (For Testing)
-- Join -> Player ID and characters stored in Redis `matchmaking_pool`.
-- Leave -> Entry removed from Redis.
+- Join -> Player ID and characters stored in database `matchmaking_pool` (or equivalent persistent store).
+- Leave -> Entry removed from database.
 - Two compatible entries in pool -> Call Go `arena/start` -> Broadcast `game.started` to both.

@@ -16,7 +16,12 @@ dependents: []
 To aggregate the constituent rules of Player Account Entity.
 
 ## THE RULE / LOGIC
-Initial setup and registration for player accounts
+Initial setup and registration for player accounts.
+Core attributes for identity:
+- `account_name` (Public/Unique)
+- `full_address` (Private)
+- `birth_date` (Private)
+- `role` (Admin, Player)
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[entity_player]]`

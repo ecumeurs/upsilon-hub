@@ -21,7 +21,7 @@ Capture the goal and value proposition of a brand-new user creating their first 
 **I want** to create an account using only a username and password  
 **so that** I can quickly access the game without friction from excessive personal data collection.
 
-- Acceptance Criterion 1: The registration form must ask only for `Account Name` and `Password`.
+- Acceptance Criterion 1: The registration form must ask for `Account Name`, `Password`, `Full Address`, and `Birth Date`.
 - Acceptance Criterion 2: No email field is present or required.
 - Acceptance Criterion 3: After success, I am logged in and land on the Dashboard without additional steps.
 

@@ -16,10 +16,11 @@ dependents: [req_security_authorization, req_security_public_access, req_securit
 To aggregate the constituent rules of Sanctum Token Security.
 
 ## THE RULE / LOGIC
-Ensures that all non-public requests to the application are authenticated using Laravel Sanctum Personal Access Tokens.
-- A token is issued upon successful login or registration.
-- The token must be sent in the `Authorization` header as a Bearer token.
-- Format: `Authorization: Bearer <token>`
+Ensures that all non-public requests to the application are authenticated and secure.
+- **Encryption:** All traffic MUST use HTTPS (support for self-signed certificates for development/light environments).
+- **Authentication:** Laravel Sanctum Personal Access Tokens sent in the `Authorization` header as a Bearer token.
+- **Password Policy:** Enforces complexity as defined in [[rule_password_policy]].
+- **Privacy Core:** Enforces GDPR compliance as defined in [[rule_gdpr_compliance]].
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[req_security]]`

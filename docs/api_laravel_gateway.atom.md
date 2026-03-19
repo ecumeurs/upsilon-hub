@@ -27,9 +27,9 @@ To define how the Vue.js frontend communicates with the overall ecosystem via La
 - `POST /api/v1/matchmaking/join` -> Enqueues the player.
 
 **Battle State & Proxying (HTTP & Websocket):**
-- `GET /api/v1/battle/{arena_id}/state` -> Returns the *cached* board state from Redis (avoids querying Go).
+- `GET /api/v1/battle/{arena_id}/state` -> Returns the *cached* board state from the `game_matches` table (avoids querying Go).
 - `POST /api/v1/battle/{arena_id}/action` -> Payloads standard commands (move, attack). Laravel proxies this to Go.
-- *Webhooks Receiving:* Laravel must expose an internal, un-rate-limited callback url (e.g. `/api/internal/webhook`) for Go to push state updates via POST. Upon receiving, update cache and broadcast.
+- *Webhooks Receiving:* Laravel must expose an internal, un-rate-limited callback url (e.g. `/api/internal/webhook`) for Go to push state updates via POST. Upon receiving, update the database cache and broadcast.
 
 **Event Broadcasting (Websocket -> Vue via Laravel Reverb):**
 - Event `game.started`: Broadcasted when Go initially creates an arena. Payload: `arena_id`.
@@ -41,7 +41,7 @@ To define how the Vue.js frontend communicates with the overall ecosystem via La
 - **API Endpoint:** `/api/v1/*` and Laravel Reverb Channels.
 - **Code Tag:** `@spec-link [[api_laravel_gateway]]`
 - **Related Issue:** `ISS-005`, `ISS-007`
-- **Test Names:** `TestLoginRoute`, `TestProxyAction`, `TestWebhookUpdatesCacheAndBroadcasts`, `TestReverbBroadcasting`
+- **Test Names:** `TestLoginRoute`, `TestProxyAction`, `TestWebhookUpdatesDatabaseCacheAndBroadcasts`, `TestReverbBroadcasting`
 
 ## EXPECTATION (For Testing)
-- Vue hits `/action` -> Laravel proxies to Go -> Go validates and pushes to `/webhook` -> Laravel updates Redis -> Laravel Broadcasts `board.updated` -> Vue receives event via WebSocket.
+- Vue hits `/action` -> Laravel proxies to Go -> Go validates and pushes to `/webhook` -> Laravel updates `game_matches` JSON -> Laravel Broadcasts `board.updated` -> Vue receives event via WebSocket.

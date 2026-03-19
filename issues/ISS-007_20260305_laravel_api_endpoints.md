@@ -12,7 +12,7 @@
 
 ## Summary
 
-The Laravel API needs to implement the proxy and meta-game HTTP endpoints defined in the communication specs. This includes matchmaking queues, handling REST actions from Vue, and receiving webhook state updates from the Go engine to update the local Redis cache.
+The Laravel API needs to implement the proxy and meta-game HTTP endpoints defined in the communication specs. This includes matchmaking queues, handling REST actions from Vue, and receiving webhook state updates from the Go engine to update the local database `game_matches` cache.
 
 ---
 
@@ -43,7 +43,7 @@ This is a new subsystem implementation.
 ## Recommended Fix
 
 **Short term:** Scaffold the empty Controllers and Routes for the API gateway.
-**Medium term:** Implement the `MatchmakingController` logic to pair players. Implement the `BattleProxyController` to simply forward Vue's authenticated REST payloads to the internal Go IP. Implement the `WebhookController` to ingest the Go engine's updates, update the Redis board cache, and trigger the broadcasting events.
+**Medium term:** Implement the `MatchmakingController` logic to pair players. Implement the `BattleProxyController` to simply forward Vue's authenticated REST payloads to the internal Go IP. Implement the `WebhookController` to ingest the Go engine's updates, update the database board cache (`game_matches`), and trigger the broadcasting events.
 **Long term:** N/A
 
 ---

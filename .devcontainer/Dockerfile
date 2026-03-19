@@ -46,5 +46,7 @@ ENV LC_ALL fr_FR.UTF-8
 USER ${USERNAME}
 WORKDIR /workspace
 
+ENV PATH="/home/vscode/.local/bin:${PATH}"
+
 # Keep container running until we create the Symfony project
 CMD ["sleep", "infinity"]

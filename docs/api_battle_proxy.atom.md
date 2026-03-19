@@ -32,7 +32,7 @@ To proxy user actions to the Go engine and ingest engine state updates back into
 
 ### Webhook Ingestion Logic:
 1. Receive state update from Go.
-2. Update Redis key `arena:{id}:state`.
+2. Update `game_matches` field `game_state_cache` for record `{id}`.
 3. Broadcast via Reverb to channel `arena.{id}`.
 
 ## TECHNICAL INTERFACE (The Bridge)

@@ -3,7 +3,10 @@
     "dockerComposeFile": "../docker-compose.yaml",
     "service": "app",
     "workspaceFolder": "/workspace",
-    "forwardPorts": [8000, 9003],
+    "forwardPorts": [
+        8000,
+        9003
+    ],
     "customizations": {
         "vscode": {
             "extensions": [
@@ -15,5 +18,11 @@
             ]
         }
     },
+    "mounts": [
+        // Bind ~/.ssh to access your keys
+        "source=/home/bastien/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+        // Bind ~/.local/bin to access host binaries
+        "source=/home/bastien/.local/bin,target=/home/vscode/.local/bin,type=bind,consistency=cached"
+    ],
     "remoteUser": "vscode"
 }

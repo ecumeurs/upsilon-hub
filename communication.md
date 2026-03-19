@@ -13,7 +13,7 @@ We are adhering to a **Proxied Approach** (API Gateway) where Laravel is the cen
 ### Chosen Strategy & Mitigation
 *   **Centralized Authentication:** Laravel handles all user validation. The Go engine expects internally-authenticated requests from Laravel only.
 *   **WebSockets via Laravel Reverb:** To solve the polling issue and maintain real-time responsiveness, Vue will open a WebSocket connection to Laravel (using Reverb) to listen for battle events (`game.started`, `turn.started`, `board.updated`, `game.ended`). Chat features can later easily piggyback on this connection.
-*   **State Caching:** Laravel will maintain a cache of the current board state. When Vue needs a full refresh, it queries Laravel's cache instead of forcing Laravel to query Go. 
+*   **State Caching:** Laravel will maintain a cache of the current board state within the `game_matches` table. When Vue needs a full refresh, it queries Laravel's database-backed cache instead of forcing Laravel to query Go. 
 *   **HTTP Dual-Direction:** Laravel and Go will communicate via HTTP REST. Laravel will ping Go to create arenas or proxy actions. Go will push state changes and timed events (like a turn timeout) back to Laravel via a Webhook (Callback URL) provided at match initialization. 
 
 ---
@@ -57,7 +57,7 @@ We are adhering to a **Proxied Approach** (API Gateway) where Laravel is the cen
 sequenceDiagram
     participant V as Vue App
     participant L as Laravel API
-    participant DB as Postgre + Redis
+    participant DB as PostgreSQL DB
     participant G as Go API
 
     %% Administrative & Meta-game Phase
@@ -76,7 +76,7 @@ sequenceDiagram
     Note right of G: Go initiates map, rulesets, and turn timer.
     G-->>L: arena_id, full_state
     
-    L->>DB: Save Match & Cache full_state in Redis
+    L->>DB: Save Match & Cache full_state in game_matches
     L-)V: (WebSocket) event: game.found (arena_id)
     Note right of V: Vue switches to battle view & subscribes to arena.{id}
     
@@ -92,7 +92,7 @@ sequenceDiagram
     
     Note right of G: Go processes move, deducts movement cost.
     G->>L: POST /api/internal/webhook (event: board.updated, delta)
-    Note right of L: Laravel updates Redis cache.
+    Note right of L: Laravel updates DB JSON cache.
     L-->>G: 200 OK
     
     L-)V: (WebSocket) event: board.updated (delta)
