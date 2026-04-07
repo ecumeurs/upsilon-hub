@@ -2,9 +2,10 @@
 id: mech_controller_communication_sequence
 human_name: Controller-Ruler Communication Sequence
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [sequence, protocol, controller, ruler]
 parents:
   - [[mech_controller_handshake]]
@@ -12,7 +13,6 @@ parents:
   - [[api_controller_methods]]
 dependents: []
 ---
-
 # Controller-Ruler Communication Sequence
 
 ## INTENT

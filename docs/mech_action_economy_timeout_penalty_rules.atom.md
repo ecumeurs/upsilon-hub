@@ -2,15 +2,15 @@
 id: mech_action_economy_timeout_penalty_rules
 human_name: Timeout Penalty Rules Mechanic
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_action_economy]]
 dependents: []
 ---
-
 # Timeout Penalty Rules Mechanic
 
 ## INTENT

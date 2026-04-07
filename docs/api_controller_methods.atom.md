@@ -2,17 +2,17 @@
 id: api_controller_methods
 human_name: Controller Message Methods API
 type: API
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [api, controller, messaging]
 parents:
   - [[api_ruler_methods]]
 dependents:
-  - [[mech_controller_handshake]]
   - [[mech_controller_communication_sequence]]
+  - [[mech_controller_handshake]]
 ---
-
 # Controller Message Methods API
 
 ## INTENT

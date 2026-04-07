@@ -2,15 +2,15 @@
 id: req_matchmaking_transition_rules
 human_name: Transition Rules for Matchmaking
 type: REQUIREMENT
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[req_matchmaking]]
 dependents: []
 ---
-
 # Transition Rules for Matchmaking
 
 ## INTENT

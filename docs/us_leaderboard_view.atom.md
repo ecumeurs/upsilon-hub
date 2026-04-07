@@ -2,14 +2,16 @@
 id: us_leaderboard_view
 human_name: Leaderboard View Story
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[us_leaderboard_view_auth_leaderboard]]
+  - [[us_leaderboard_view_sort_leaderboard]]
 ---
-
 # Leaderboard View Story
 
 ## INTENT

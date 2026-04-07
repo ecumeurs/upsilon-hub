@@ -2,14 +2,16 @@
 id: mech_entity_properties
 human_name: Entity Property Declarations Mechanic
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[mech_entity_properties_item_properties]]
+  - [[mech_entity_properties_skill_properties]]
 ---
-
 # Entity Property Declarations Mechanic
 
 ## INTENT

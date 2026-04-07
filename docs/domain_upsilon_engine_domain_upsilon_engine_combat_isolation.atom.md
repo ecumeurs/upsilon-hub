@@ -2,15 +2,15 @@
 id: domain_upsilon_engine_domain_upsilon_engine_combat_isolation
 human_name: UpsilonBattle Core Engine Combat Isolation Domain
 type: DOMAIN
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[domain_upsilon_engine]]
 dependents: []
 ---
-
 # UpsilonBattle Core Engine Combat Isolation Domain
 
 ## INTENT

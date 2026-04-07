@@ -2,16 +2,15 @@
 id: ui_waiting_room
 human_name: Waiting Room UI
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: REVIEW
-priority: CORE
+priority: 5
 tags: [ui, secure, matchmaking]
 parents:
   - [[req_matchmaking]]
-dependents:
-  - [[ui_board]]
+dependents: []
 ---
-
 # Waiting Room UI
 
 ## INTENT

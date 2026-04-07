@@ -2,15 +2,15 @@
 id: req_security_public_access
 human_name: Public Access Requirement
 type: REQUIREMENT
+layer: CUSTOMER
 version: 1.1
 status: STABLE
-priority: CORE
+priority: 5
 tags: [auth, public-access]
 parents: 
   - [[req_security]]
 dependents: []
 ---
-
 # Public Access Requirement
 
 ## INTENT

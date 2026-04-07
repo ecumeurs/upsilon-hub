@@ -2,15 +2,15 @@
 id: mech_character_reroll_limit
 human_name: Reroll Limit
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_character_reroll]]
 dependents: []
 ---
-
 # Reroll Limit
 
 ## INTENT

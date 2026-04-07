@@ -2,15 +2,15 @@
 id: rule_friendly_fire_team_validation
 human_name: Team Validation Split
 type: RULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[rule_friendly_fire]]
 dependents: []
 ---
-
 # Team Validation Split
 
 ## INTENT

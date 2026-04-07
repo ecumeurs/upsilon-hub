@@ -2,15 +2,15 @@
 id: uc_player_registration_enter_registration_data
 human_name: Enter Registration Data
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_player_registration]]
 dependents: []
 ---
-
 # Enter Registration Data
 
 ## INTENT

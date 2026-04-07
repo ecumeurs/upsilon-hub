@@ -2,14 +2,14 @@
 id: infra_seed_admin
 human_name: Administrator Account Seeding Requirement
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [infra, seed, admin]
 parents: [entity_player]
 dependents: []
 ---
-
 # Administrator Account Seeding Requirement
 
 ## INTENT

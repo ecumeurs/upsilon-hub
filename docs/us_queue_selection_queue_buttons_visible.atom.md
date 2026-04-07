@@ -2,15 +2,15 @@
 id: us_queue_selection_queue_buttons_visible
 human_name: Queue Button Visibility Story
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_queue_selection]]
 dependents: []
 ---
-
 # Queue Button Visibility Story
 
 ## INTENT

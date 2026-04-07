@@ -2,14 +2,14 @@
 id: api_profile_export
 human_name: Profile Data Export API
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [api, gdpr, profile]
 parents: [api_laravel_gateway, api_standard_envelope, rule_gdpr_compliance]
 dependents: []
 ---
-
 # Profile Data Export API
 
 ## INTENT

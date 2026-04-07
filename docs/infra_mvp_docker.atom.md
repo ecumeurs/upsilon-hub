@@ -2,15 +2,15 @@
 id: infra_mvp_docker
 human_name: MVP Docker Infrastructure
 type: BUILD
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [docker, infrastructure, mvp]
 parents:
   - [[module_backend]]
 dependents: []
 ---
-
 # MVP Docker Infrastructure
 
 ## INTENT

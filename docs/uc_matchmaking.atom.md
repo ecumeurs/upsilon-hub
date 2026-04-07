@@ -2,14 +2,19 @@
 id: uc_matchmaking
 human_name: Matchmaking & Queue Use Case
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[uc_matchmaking_match_start]]
+  - [[uc_matchmaking_matchmaking]]
+  - [[uc_matchmaking_pve]]
+  - [[uc_matchmaking_pvp]]
+  - [[uc_matchmaking_redirect_to_board]]
 ---
-
 # Matchmaking & Queue Use Case
 
 ## INTENT

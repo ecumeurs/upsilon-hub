@@ -2,15 +2,15 @@
 id: us_character_reroll_reroll_counter
 human_name: Rerolls Remaining Counter
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_character_reroll]]
 dependents: []
 ---
-
 # Rerolls Remaining Counter
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: uc_combat_turn_delay_costs_accumulation
 human_name: Delay Costs Accumulation Logic
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_combat_turn]]
 dependents: []
 ---
-
 # Delay Costs Accumulation Logic
 
 ## INTENT

@@ -2,16 +2,15 @@
 id: mech_matchmaking
 human_name: Matchmaking Mechanics
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [matchmaking, logic, logic-flow]
 parents: 
   - [[req_matchmaking]]
-dependents:
-  - [[api_matchmaking]]
+dependents: []
 ---
-
 # Matchmaking Mechanics
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: mech_sanctum_token_renewal
 human_name: Sanctum Token Renewal Mechanic
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [auth, sanctum, middleware]
 parents: 
   - [[req_security_token_ttl]]
 dependents: []
 ---
-
 # Sanctum Token Renewal Mechanic
 
 ## INTENT

@@ -2,15 +2,16 @@
 id: entity_game_match
 human_name: Game Match Entity
 type: ENTITY
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[data_persistence]]
-dependents: []
+dependents:
+  - [[uc_admin_history_management]]
 ---
-
 # Game Match Entity
 
 ## INTENT

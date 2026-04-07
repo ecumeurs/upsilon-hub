@@ -2,15 +2,15 @@
 id: us_character_reroll_reroll_button_action
 human_name: Reroll Button Action
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_character_reroll]]
 dependents: []
 ---
-
 # Reroll Button Action
 
 ## INTENT

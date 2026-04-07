@@ -2,15 +2,15 @@
 id: rule_turn_clock
 human_name: 30-Second Max Turn Clock
 type: RULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [rule, combat, clock]
 parents:
   - [[domain_ruler_state]]
 dependents: []
 ---
-
 # 30-Second Max Turn Clock
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: us_queue_selection_pve_instant_game_start
 human_name: PVE Instant Game Start Story
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_queue_selection]]
 dependents: []
 ---
-
 # PVE Instant Game Start Story
 
 ## INTENT

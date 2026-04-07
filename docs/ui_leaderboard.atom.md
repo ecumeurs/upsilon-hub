@@ -2,14 +2,19 @@
 id: ui_leaderboard
 human_name: Leaderboard Page UI
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[ui_leaderboard_data_display]]
+  - [[ui_leaderboard_metrics_displayed]]
+  - [[ui_leaderboard_primary_sorting]]
+  - [[ui_leaderboard_secondary_sorting]]
+  - [[ui_leaderboard_security]]
 ---
-
 # Leaderboard Page UI
 
 ## INTENT

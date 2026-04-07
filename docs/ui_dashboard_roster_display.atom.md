@@ -2,15 +2,15 @@
 id: ui_dashboard_roster_display
 human_name: Roster Display
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[ui_dashboard]]
 dependents: []
 ---
-
 # Roster Display
 
 ## INTENT

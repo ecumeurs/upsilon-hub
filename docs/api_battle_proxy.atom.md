@@ -2,18 +2,16 @@
 id: api_battle_proxy
 human_name: Battle Proxy & Webhook API
 type: API
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [battle, proxy, webhook, api]
 parents:
   - [[api_laravel_gateway]]
   - [[api_standard_envelope]]
-dependents:
-  - [[api_go_battle_action]]
-  - [[api_go_webhook_callback]]
+dependents: []
 ---
-
 # Battle Proxy & Webhook API
 
 ## INTENT

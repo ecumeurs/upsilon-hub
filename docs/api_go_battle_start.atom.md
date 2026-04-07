@@ -2,16 +2,17 @@
 id: api_go_battle_start
 human_name: UpsilonBattle Arena Start API
 type: API
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [api, golang, battle, initialization]
 parents:
   - [[api_go_battle_engine]]
   - [[api_standard_envelope]]
-dependents: []
+dependents:
+  - [[battleui_api_dtos]]
 ---
-
 # UpsilonBattle Arena Start API
 
 ## INTENT

@@ -2,14 +2,19 @@
 id: ui_dashboard
 human_name: Dashboard Page UI
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[ui_dashboard_navigation]]
+  - [[ui_dashboard_player_statistics]]
+  - [[ui_dashboard_queue_selection]]
+  - [[ui_dashboard_roster_display]]
+  - [[ui_dashboard_security_check]]
 ---
-
 # Dashboard Page UI
 
 ## INTENT

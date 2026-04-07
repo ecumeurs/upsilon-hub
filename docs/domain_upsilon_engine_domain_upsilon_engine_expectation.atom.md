@@ -2,15 +2,15 @@
 id: domain_upsilon_engine_domain_upsilon_engine_expectation
 human_name: UpsilonBattle Core Engine Expectation Domain
 type: DOMAIN
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[domain_upsilon_engine]]
 dependents: []
 ---
-
 # UpsilonBattle Core Engine Expectation Domain
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: uc_combat_turn_action_selection
 human_name: Action Selection Logic
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_combat_turn]]
 dependents: []
 ---
-
 # Action Selection Logic
 
 ## INTENT

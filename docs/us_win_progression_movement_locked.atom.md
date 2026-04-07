@@ -2,15 +2,15 @@
 id: us_win_progression_movement_locked
 human_name: Movement Locked Below 5 Wins
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_win_progression]]
 dependents: []
 ---
-
 # Movement Locked Below 5 Wins
 
 ## INTENT

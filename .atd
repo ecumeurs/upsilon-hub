@@ -41,19 +41,32 @@
           "snapshot"
         ]
       },
+      "llama3.1:8b": {
+        "tasks": [
+          "audit_bloat",
+          "intent_extract",
+          "snapshot",
+          "dissect",
+          "recon"
+        ]
+      },
       "deepseek-r1:7b": {
         "tasks": [
           "audit_code",
           "compare",
           "congruence",
           "reconcile",
-          "fix_split"
+          "fix_split",
+          "audit_bloat",
+          "intent_extract",
+          "snapshot"
         ]
       },
       "qwen2.5-coder:14b": {
         "tasks": [
           "dissect",
-          "recon"
+          "recon",
+          "snapshot"
         ]
       },
       "nomic-embed-text": {

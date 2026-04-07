@@ -2,16 +2,15 @@
 id: data_persistence
 human_name: PostgreSQL Database Persistence
 type: DATA
+layer: IMPLEMENTATION
 version: 1.0
 status: REVIEW
-priority: CORE
+priority: 5
 tags: [database, postgresql, state]
 parents: []
 dependents:
-  - [[entity_player]]
-  - [[entity_character]]
+  - [[entity_game_match]]
 ---
-
 # PostgreSQL Database Persistence
 
 ## INTENT

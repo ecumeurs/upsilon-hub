@@ -2,15 +2,15 @@
 id: ui_leaderboard_data_display
 human_name: Data Display Rules
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[ui_leaderboard]]
 dependents: []
 ---
-
 # Data Display Rules
 
 ## INTENT

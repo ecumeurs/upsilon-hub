@@ -2,15 +2,15 @@
 id: mech_action_economy_action_cost_rules
 human_name: Action Cost Rules Mechanic
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_action_economy]]
 dependents: []
 ---
-
 # Action Cost Rules Mechanic
 
 ## INTENT

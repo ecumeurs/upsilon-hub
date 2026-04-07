@@ -2,15 +2,15 @@
 id: ui_registration_success_state
 human_name: Success State
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[ui_registration]]
 dependents: []
 ---
-
 # Success State
 
 ## INTENT

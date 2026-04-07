@@ -2,15 +2,15 @@
 id: mech_move_validation_move_validation_entity_collision
 human_name: Entity Collision Rule
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_move_validation]]
 dependents: []
 ---
-
 # Entity Collision Rule
 
 ## INTENT

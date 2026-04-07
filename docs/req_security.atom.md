@@ -2,14 +2,21 @@
 id: req_security
 human_name: Sanctum Token Security Requirement
 type: MODULE
+layer: ARCHITECTURE
 version: 1.1
 status: STABLE
-priority: CORE
+priority: 5
 tags: [auth, sanctum]
 parents: []
-dependents: [req_security_authorization, req_security_public_access, req_security_token_ttl]
+dependents:
+  - [[req_security_authorization]]
+  - [[req_security_public_access]]
+  - [[req_security_token_exchange]]
+  - [[req_security_token_ttl]]
+  - [[rule_admin_access_restriction]]
+  - [[rule_gdpr_compliance]]
+  - [[rule_password_policy]]
 ---
-
 # Sanctum Token Security Requirement
 
 ## INTENT

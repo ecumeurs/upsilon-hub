@@ -2,15 +2,20 @@
 id: api_laravel_gateway
 human_name: Laravel API Gateway & WebSockets Hub
 type: API
+layer: ARCHITECTURE
 version: 1.0
 status: REVIEW
-priority: CORE
+priority: 5
 tags: [api, gateway, websockets, proxy, laravel-reverb]
 parents: []
 dependents:
-  - [[api_go_battle_engine]]
+  - [[api_auth_login]]
+  - [[api_auth_register]]
+  - [[api_battle_proxy]]
+  - [[api_matchmaking]]
+  - [[api_profile_character]]
+  - [[api_profile_export]]
 ---
-
 # Laravel API Gateway & WebSockets Hub
 
 ## INTENT

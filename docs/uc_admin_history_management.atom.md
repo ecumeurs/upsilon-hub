@@ -2,14 +2,14 @@
 id: uc_admin_history_management
 human_name: Administrative Match History Management Use Case
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [admin, match-history]
 parents: [entity_game_match]
 dependents: []
 ---
-
 # Administrative Match History Management Use Case
 
 ## INTENT

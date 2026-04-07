@@ -2,15 +2,15 @@
 id: uc_player_registration_confirm_roster
 human_name: Confirm Roster
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_player_registration]]
 dependents: []
 ---
-
 # Confirm Roster
 
 ## INTENT

@@ -2,16 +2,16 @@
 id: api_go_webhook_callback
 human_name: UpsilonBattle Webhook Callback
 type: API
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [api, golang, callback, webhooks]
 parents:
   - [[api_go_battle_engine]]
   - [[api_standard_envelope]]
 dependents: []
 ---
-
 # UpsilonBattle Webhook Callback
 
 ## INTENT

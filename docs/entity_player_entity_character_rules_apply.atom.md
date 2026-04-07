@@ -2,15 +2,15 @@
 id: entity_player_entity_character_rules_apply
 human_name: Character Rules Apply to Players
 type: ENTITY
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[entity_player]]
 dependents: []
 ---
-
 # Character Rules Apply to Players
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: module_backend_action_economy
 human_name: Action Economy Logic
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[module_backend]]
 dependents: []
 ---
-
 # Action Economy Logic
 
 ## INTENT

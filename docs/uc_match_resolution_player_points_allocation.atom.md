@@ -2,15 +2,15 @@
 id: uc_match_resolution_player_points_allocation
 human_name: Player Points Allocation Logic
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_match_resolution]]
 dependents: []
 ---
-
 # Player Points Allocation Logic
 
 ## INTENT

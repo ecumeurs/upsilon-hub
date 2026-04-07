@@ -2,15 +2,15 @@
 id: module_upsilonapi
 human_name: UpsilonAPI Module
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [architecture, module, api, bridge]
 parents:
   - [[api_go_battle_engine]]
 dependents: []
 ---
-
 # UpsilonAPI Module
 
 ## INTENT

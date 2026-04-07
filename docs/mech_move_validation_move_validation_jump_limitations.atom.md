@@ -2,15 +2,15 @@
 id: mech_move_validation_move_validation_jump_limitations
 human_name: Jump Limitations Rule
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_move_validation]]
 dependents: []
 ---
-
 # Jump Limitations Rule
 
 ## INTENT

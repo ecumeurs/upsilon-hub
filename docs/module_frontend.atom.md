@@ -2,14 +2,19 @@
 id: module_frontend
 human_name: BattleUI Frontend Component
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[module_frontend_board_ui_rendering]]
+  - [[module_frontend_character_entity_creation]]
+  - [[module_frontend_integration_constraint]]
+  - [[module_frontend_matchmaking_orchestration]]
+  - [[module_frontend_session_management]]
 ---
-
 # BattleUI Frontend Component
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: ui_dashboard_queue_selection
 human_name: Queue Selection
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[ui_dashboard]]
 dependents: []
 ---
-
 # Queue Selection
 
 ## INTENT

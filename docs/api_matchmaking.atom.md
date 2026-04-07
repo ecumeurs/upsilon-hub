@@ -2,17 +2,16 @@
 id: api_matchmaking
 human_name: Matchmaking API
 type: API
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [matchmaking, queue, api]
 parents:
   - [[api_laravel_gateway]]
   - [[api_standard_envelope]]
-dependents:
-  - [[req_matchmaking]]
+dependents: []
 ---
-
 # Matchmaking API
 
 ## INTENT

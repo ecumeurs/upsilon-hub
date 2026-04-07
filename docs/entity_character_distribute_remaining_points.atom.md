@@ -2,15 +2,15 @@
 id: entity_character_distribute_remaining_points
 human_name: Distribute Remaining Points Rule
 type: ENTITY
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[entity_character]]
 dependents: []
 ---
-
 # Distribute Remaining Points Rule
 
 ## INTENT

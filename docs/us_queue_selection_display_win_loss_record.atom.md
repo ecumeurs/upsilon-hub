@@ -2,15 +2,15 @@
 id: us_queue_selection_display_win_loss_record
 human_name: Win/Loss Record Display Story
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_queue_selection]]
 dependents: []
 ---
-
 # Win/Loss Record Display Story
 
 ## INTENT

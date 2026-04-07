@@ -2,15 +2,15 @@
 id: spec_match_format_mode_rule
 human_name: Mode Rule
 type: SPECIFICATION
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[spec_match_format]]
 dependents: []
 ---
-
 # Mode Rule
 
 ## INTENT

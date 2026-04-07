@@ -2,15 +2,15 @@
 id: mech_action_economy_time_constraint_rules
 human_name: Time Constraint Rules Mechanic
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_action_economy]]
 dependents: []
 ---
-
 # Time Constraint Rules Mechanic
 
 ## INTENT

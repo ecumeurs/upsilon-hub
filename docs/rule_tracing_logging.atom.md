@@ -2,9 +2,10 @@
 id: rule_tracing_logging
 human_name: Global Request Traceability Logging
 type: RULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [logging, tracing, debug, standard]
 parents:
   - [[api_standard_envelope]]
@@ -12,7 +13,6 @@ parents:
   - [[req_logging_traceability]]
 dependents: []
 ---
-
 # Global Request Traceability Logging
 
 ## INTENT

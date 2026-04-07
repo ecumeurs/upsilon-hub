@@ -2,15 +2,15 @@
 id: mech_skill_validation_existence_verification
 human_name: Existence Verification
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_skill_validation]]
 dependents: []
 ---
-
 # Existence Verification
 
 ## INTENT

@@ -39,7 +39,6 @@ flowchart TD
     UI -- "REST / Auth" --> LGW
     UI -- "WebSockets (State)" --> LGW
     LGW -- "Proxy Actions" --> UAPI
-    LGW -- "OAuth / Sanctum" --> LGW
     LGW -- "Cache State" --> DB
     UAPI -- "Orchestrate Arenas" --> UBG
     UBG -- "Webhook Updates" --> LGW
@@ -48,8 +47,8 @@ flowchart TD
 ### 2.2 Communication Protocols
 | Link | Protocol | Description |
 |---|---|---|
-| **Vue.js <-> Laravel** | HTTP REST & WebSockets | Authentication (Sanctum) and real-time state streaming (Reverb). |
-| **Laravel <-> UpsilonAPI** | HTTP REST & Webhooks | Proxied game actions and async state updates into the Laravel callback. |
+| **Vue.js <-> Laravel** | HTTP & WebSockets | Authentication (Sanctum) and real-time state streaming (Reverb). |
+| **Laravel <-> UpsilonAPI** | HTTP & Webhooks | Proxied game actions and async state updates into the Laravel callback. |
 | **UpsilonAPI <-> Engine** | Internal Go Channels | High-performance message passing between Ruler and Controllers. |
 
 ---
@@ -68,7 +67,7 @@ flowchart TD
 - **Responsibility:** Provides an HTTP interface for the stateful Go engine. Orchestrates multiple concurrent arenas.
 - **Inner Working:** Maintains a registry of active `Ruler` instances and maps them to `arena_ids`.
 - **Constraints:** Must be stateless regarding player identity (delegates to Laravel).
-- **References:** [[module_upsilonapi]].
+- **References:** [[module_upsilonapi]], [[api_go_battle_engine]]
 
 ### 3.3 UpsilonBattle Engine
 - **Responsibility:** The core TRPG logic processor.

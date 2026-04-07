@@ -2,15 +2,15 @@
 id: uc_combat_turn_initiative_evaluation
 human_name: Initiative Evaluation Logic
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_combat_turn]]
 dependents: []
 ---
-
 # Initiative Evaluation Logic
 
 ## INTENT

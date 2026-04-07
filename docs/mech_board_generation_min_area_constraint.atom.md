@@ -2,15 +2,15 @@
 id: mech_board_generation_min_area_constraint
 human_name: Minimum Area Constraint Mechanic
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_board_generation]]
 dependents: []
 ---
-
 # Minimum Area Constraint Mechanic
 
 ## INTENT

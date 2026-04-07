@@ -2,15 +2,15 @@
 id: ui_registration_character_generation_flow
 human_name: Character Generation Flow
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[ui_registration]]
 dependents: []
 ---
-
 # Character Generation Flow
 
 ## INTENT

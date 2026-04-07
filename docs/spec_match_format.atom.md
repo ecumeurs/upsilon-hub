@@ -2,14 +2,17 @@
 id: spec_match_format
 human_name: Match Format Specification
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[spec_match_format_mode_rule]]
+  - [[spec_match_format_team_composition_rule]]
+  - [[spec_match_format_win_condition_rule]]
 ---
-
 # Match Format Specification
 
 ## INTENT

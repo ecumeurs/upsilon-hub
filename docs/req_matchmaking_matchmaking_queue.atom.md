@@ -2,15 +2,15 @@
 id: req_matchmaking_matchmaking_queue
 human_name: Matchmaking Queue Requirement
 type: REQUIREMENT
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[req_matchmaking]]
 dependents: []
 ---
-
 # Matchmaking Queue Requirement
 
 ## INTENT

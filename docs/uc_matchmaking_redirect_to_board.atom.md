@@ -2,15 +2,15 @@
 id: uc_matchmaking_redirect_to_board
 human_name: Redirect to Board After Match
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_matchmaking]]
 dependents: []
 ---
-
 # Redirect to Board After Match
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: module_frontend_board_ui_rendering
 human_name: Board UI Rendering
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[module_frontend]]
 dependents: []
 ---
-
 # Board UI Rendering
 
 ## INTENT

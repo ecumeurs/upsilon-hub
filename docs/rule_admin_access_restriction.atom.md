@@ -2,14 +2,14 @@
 id: rule_admin_access_restriction
 human_name: Administrator Access Restriction Rule
 type: RULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: [security, admin, privacy]
 parents: [req_security, entity_player]
 dependents: []
 ---
-
 # Administrator Access Restriction Rule
 
 ## INTENT

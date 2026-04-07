@@ -2,15 +2,15 @@
 id: mech_move_validation_move_validation_path_length_credits
 human_name: Path Length / Credits Rule
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_move_validation]]
 dependents: []
 ---
-
 # Path Length / Credits Rule
 
 ## INTENT

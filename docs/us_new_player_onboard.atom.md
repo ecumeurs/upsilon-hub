@@ -2,15 +2,15 @@
 id: us_new_player_onboard
 human_name: New Player Onboarding Story
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: REVIEW
-priority: CORE
+priority: 5
 tags: [registration, onboarding, player]
 parents:
   - [[uc_player_registration]]
 dependents: []
 ---
-
 # New Player Onboarding Story
 
 ## INTENT

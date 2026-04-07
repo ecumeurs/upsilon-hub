@@ -2,15 +2,15 @@
 id: uc_match_resolution_match_persistence
 human_name: Match Persistence Logic
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_match_resolution]]
 dependents: []
 ---
-
 # Match Persistence Logic
 
 ## INTENT

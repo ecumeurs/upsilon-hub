@@ -2,16 +2,16 @@
 id: req_logging_traceability
 human_name: Logging Request Traceability
 type: REQUIREMENT
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [logging, traceability, requirements, observability]
 parents:
   - [[api_request_id]]
 dependents:
   - [[rule_tracing_logging]]
 ---
-
 # Logging Request Traceability
 
 ## INTENT

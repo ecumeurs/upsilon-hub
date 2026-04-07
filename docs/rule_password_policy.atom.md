@@ -2,14 +2,14 @@
 id: rule_password_policy
 human_name: Password Strength Policy Rule
 type: RULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: [security, password]
 parents: [req_security]
 dependents: []
 ---
-
 # Password Strength Policy Rule
 
 ## INTENT

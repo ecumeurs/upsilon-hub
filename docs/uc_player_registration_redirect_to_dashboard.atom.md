@@ -2,15 +2,15 @@
 id: uc_player_registration_redirect_to_dashboard
 human_name: Redirect to Dashboard
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_player_registration]]
 dependents: []
 ---
-
 # Redirect to Dashboard
 
 ## INTENT

@@ -2,16 +2,16 @@
 id: api_auth_login
 human_name: Player Login API
 type: API
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [auth, login, api]
 parents:
   - [[api_laravel_gateway]]
   - [[api_standard_envelope]]
 dependents: []
 ---
-
 # Player Login API
 
 ## INTENT

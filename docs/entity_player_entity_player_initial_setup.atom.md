@@ -2,15 +2,15 @@
 id: entity_player_entity_player_initial_setup
 human_name: Initial Setup for Players
 type: ENTITY
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[entity_player]]
 dependents: []
 ---
-
 # Initial Setup for Players
 
 ## INTENT

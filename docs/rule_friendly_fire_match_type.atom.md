@@ -2,15 +2,15 @@
 id: rule_friendly_fire_match_type
 human_name: Match Type Split
 type: RULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[rule_friendly_fire]]
 dependents: []
 ---
-
 # Match Type Split
 
 ## INTENT

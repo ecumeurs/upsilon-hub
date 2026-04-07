@@ -2,15 +2,15 @@
 id: module_backend_combat_math
 human_name: Combat Math Logic
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[module_backend]]
 dependents: []
 ---
-
 # Combat Math Logic
 
 ## INTENT

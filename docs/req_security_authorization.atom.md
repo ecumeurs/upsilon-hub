@@ -2,15 +2,15 @@
 id: req_security_authorization
 human_name: Authorization Requirement
 type: REQUIREMENT
+layer: CUSTOMER
 version: 1.1
 status: STABLE
-priority: CORE
+priority: 5
 tags: [auth, authorization]
 parents: 
   - [[req_security]]
 dependents: []
 ---
-
 # Authorization Requirement
 
 ## INTENT

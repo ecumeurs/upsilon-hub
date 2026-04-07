@@ -2,15 +2,15 @@
 id: uc_matchmaking_pve
 human_name: PVE Matchmaking
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_matchmaking]]
 dependents: []
 ---
-
 # PVE Matchmaking
 
 ## INTENT

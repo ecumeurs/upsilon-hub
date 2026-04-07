@@ -2,17 +2,16 @@
 id: api_profile_character
 human_name: Character Management API
 type: API
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [profile, character, api]
 parents:
   - [[api_laravel_gateway]]
   - [[api_standard_envelope]]
-dependents:
-  - [[entity_character]]
+dependents: []
 ---
-
 # Character Management API
 
 ## INTENT

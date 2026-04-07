@@ -2,15 +2,15 @@
 id: domain_skill_system
 human_name: Entity Skill System Domain
 type: DOMAIN
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [combat, skills, abilities]
 parents:
   - [[domain_upsilon_engine]]
 dependents: []
 ---
-
 # Entity Skill System Domain
 
 ## INTENT

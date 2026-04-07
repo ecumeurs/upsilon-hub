@@ -2,15 +2,15 @@
 id: domain_ruler_state_game_states
 human_name: Game States Split
 type: DOMAIN
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[domain_ruler_state]]
 dependents: []
 ---
-
 # Game States Split
 
 ## INTENT

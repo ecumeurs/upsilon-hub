@@ -2,14 +2,19 @@
 id: req_matchmaking
 human_name: Matchmaking Flow Requirement
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[mech_matchmaking]]
+  - [[req_matchmaking_matchmaking_queue]]
+  - [[req_matchmaking_pve_pvp_transition]]
+  - [[req_matchmaking_transition_rules]]
+  - [[ui_waiting_room]]
 ---
-
 # Matchmaking Flow Requirement
 
 ## INTENT

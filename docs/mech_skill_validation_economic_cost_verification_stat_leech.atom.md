@@ -2,15 +2,15 @@
 id: mech_skill_validation_economic_cost_verification_stat_leech
 human_name: Economic Cost Verification - Stat Leech
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_skill_validation]]
 dependents: []
 ---
-
 # Economic Cost Verification - Stat Leech
 
 ## INTENT

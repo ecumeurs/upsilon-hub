@@ -2,15 +2,15 @@
 id: rule_progression
 human_name: Character Progression Rule
 type: RULE
+layer: ARCHITECTURE
 version: 1.1
 status: STABLE
-priority: CORE
+priority: 5
 tags: [progression, character]
 parents:
   - [[entity_character]]
 dependents: []
 ---
-
 # Character Progression Rule
 
 ## INTENT

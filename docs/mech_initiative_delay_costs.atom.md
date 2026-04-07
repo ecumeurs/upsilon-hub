@@ -2,15 +2,15 @@
 id: mech_initiative_delay_costs
 human_name: Delay Costs Calculation
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_initiative]]
 dependents: []
 ---
-
 # Delay Costs Calculation
 
 ## INTENT

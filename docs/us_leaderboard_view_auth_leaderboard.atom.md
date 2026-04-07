@@ -2,15 +2,15 @@
 id: us_leaderboard_view_auth_leaderboard
 human_name: Authenticate Leaderboard Access
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_leaderboard_view]]
 dependents: []
 ---
-
 # Authenticate Leaderboard Access
 
 ## INTENT

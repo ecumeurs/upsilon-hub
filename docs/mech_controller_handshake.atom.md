@@ -2,16 +2,16 @@
 id: mech_controller_handshake
 human_name: Controller Handshake Protocol
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [handshake, initialization, controller]
 parents:
   - [[api_controller_methods]]
 dependents:
   - [[mech_controller_communication_sequence]]
 ---
-
 # Controller Handshake Protocol
 
 ## INTENT

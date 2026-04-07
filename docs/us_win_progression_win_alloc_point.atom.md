@@ -2,15 +2,15 @@
 id: us_win_progression_win_alloc_point
 human_name: Allocate a stat point on Win
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_win_progression]]
 dependents: []
 ---
-
 # Allocate a stat point on Win
 
 ## INTENT

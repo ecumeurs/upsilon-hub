@@ -2,15 +2,15 @@
 id: ui_dashboard_security_check
 human_name: Security Check
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[ui_dashboard]]
 dependents: []
 ---
-
 # Security Check
 
 ## INTENT

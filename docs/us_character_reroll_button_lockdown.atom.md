@@ -2,15 +2,15 @@
 id: us_character_reroll_button_lockdown
 human_name: Button Lockdown After Three Rerolls
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_character_reroll]]
 dependents: []
 ---
-
 # Button Lockdown After Three Rerolls
 
 ## INTENT

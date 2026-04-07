@@ -2,15 +2,15 @@
 id: mech_move_validation_move_validation_already_moved
 human_name: Already Moved Rule
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_move_validation]]
 dependents: []
 ---
-
 # Already Moved Rule
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: module_backend_initiative_evaluation
 human_name: Initiative Evaluation Logic
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[module_backend]]
 dependents: []
 ---
-
 # Initiative Evaluation Logic
 
 ## INTENT

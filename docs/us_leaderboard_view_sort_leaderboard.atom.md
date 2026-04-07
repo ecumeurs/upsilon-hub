@@ -2,15 +2,15 @@
 id: us_leaderboard_view_sort_leaderboard
 human_name: Sort Leaderboard
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_leaderboard_view]]
 dependents: []
 ---
-
 # Sort Leaderboard
 
 ## INTENT

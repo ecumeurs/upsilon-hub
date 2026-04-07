@@ -2,14 +2,17 @@
 id: mech_character_reroll
 human_name: Character Reroll Mechanic
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[mech_character_reroll_availability]]
+  - [[mech_character_reroll_effect]]
+  - [[mech_character_reroll_limit]]
 ---
-
 # Character Reroll Mechanic
 
 ## INTENT

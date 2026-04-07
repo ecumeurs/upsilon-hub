@@ -2,16 +2,15 @@
 id: module_game
 human_name: TRPG Game Module
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: REVIEW
-priority: CORE
+priority: 5
 tags: [game, core]
 parents: []
 dependents:
-  - [[spec_match_format]]
-  - [[mech_initiative]]
+  - [[ui_board]]
 ---
-
 # TRPG Game Module
 
 ## INTENT

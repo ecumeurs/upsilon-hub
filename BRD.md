@@ -9,11 +9,10 @@
 ## 1. Executive Summary
 
 ### 1.1 Project Vision
-Upsilon Battle is a tactical RPG (TRPG) designed for competitive and cooperative turn-based combat. The project focuses on high-speed engagement, low-friction onboarding, and deep tactical depth through initiative-based mechanics and character progression.
+Upsilon Battle is a tactical RPG (TRPG) designed for competitive and cooperative turn-based combat. The project focuses on high-speed engagement, and deep tactical depth through initiative-based mechanics and character progression.
 
 ### 1.2 Business Objectives
 - Provide a responsive tactical RPG experience across PvE and PvP modes.
-- Minimize barrier to entry by reducing "onboarding friction".
 - Maintain game balance through strict progression scaling and action economy rules.
 
 **Source References:**  

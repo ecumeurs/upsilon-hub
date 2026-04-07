@@ -2,15 +2,15 @@
 id: us_queue_selection_pvp_navigation
 human_name: PVP Navigation Story
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_queue_selection]]
 dependents: []
 ---
-
 # PVP Navigation Story
 
 ## INTENT

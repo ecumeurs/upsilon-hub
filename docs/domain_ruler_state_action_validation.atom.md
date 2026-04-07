@@ -2,15 +2,15 @@
 id: domain_ruler_state_action_validation
 human_name: Action Validation Split
 type: DOMAIN
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[domain_ruler_state]]
 dependents: []
 ---
-
 # Action Validation Split
 
 ## INTENT

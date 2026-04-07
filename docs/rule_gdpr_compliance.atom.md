@@ -2,14 +2,15 @@
 id: rule_gdpr_compliance
 human_name: GDPR Compliance Rules
 type: RULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: [gdpr, privacy]
 parents: [req_security]
-dependents: []
+dependents:
+  - [[api_profile_export]]
 ---
-
 # GDPR Compliance Rules
 
 ## INTENT

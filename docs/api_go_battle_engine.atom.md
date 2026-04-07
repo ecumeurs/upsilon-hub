@@ -2,19 +2,20 @@
 id: api_go_battle_engine
 human_name: Go UpsilonBattle JSON API & Webhook Dispatcher
 type: MODULE
+layer: ARCHITECTURE
 version: 1.1
 status: STABLE
-priority: CORE
+priority: 5
 tags: [api, golang, rest, webhooks]
 parents:
   - [[api_standard_envelope]]
 dependents:
-  - [[api_go_battle_start]]
   - [[api_go_battle_action]]
+  - [[api_go_battle_start]]
   - [[api_go_webhook_callback]]
   - [[battleui_upsilon_api_service]]
+  - [[module_upsilonapi]]
 ---
-
 # Go UpsilonBattle JSON API & Webhook Dispatcher
 
 ## INTENT

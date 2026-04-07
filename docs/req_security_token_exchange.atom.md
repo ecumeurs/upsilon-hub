@@ -2,15 +2,15 @@
 id: req_security_token_exchange
 human_name: Token Exchange Requirement
 type: REQUIREMENT
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[req_security]]
 dependents: []
 ---
-
 # Token Exchange Requirement
 
 ## INTENT

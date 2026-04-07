@@ -2,15 +2,15 @@
 id: entity_player_entity_player_stats_tracking
 human_name: Player Entity Statistics Tracking
 type: ENTITY
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[entity_player]]
 dependents: []
 ---
-
 # Player Entity Statistics Tracking
 
 ## INTENT

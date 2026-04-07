@@ -2,15 +2,15 @@
 id: req_matchmaking_pve_pvp_transition
 human_name: Transition for PVE/PVP Matchmaking Queues
 type: REQUIREMENT
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[req_matchmaking]]
 dependents: []
 ---
-
 # Transition for PVE/PVP Matchmaking Queues
 
 ## INTENT

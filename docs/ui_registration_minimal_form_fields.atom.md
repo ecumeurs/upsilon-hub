@@ -2,15 +2,15 @@
 id: ui_registration_minimal_form_fields
 human_name: Minimal Form Fields
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[ui_registration]]
 dependents: []
 ---
-
 # Minimal Form Fields
 
 ## INTENT

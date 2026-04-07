@@ -2,16 +2,17 @@
 id: battleui_api_dtos
 human_name: BattleUI API Data Transfer Objects
 type: DATA
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [battleui, dto, api, types]
 parents:
   - [[battleui_upsilon_api_service]]
   - [[api_go_battle_start]]
   - [[api_go_battle_action]]
+dependents: []
 ---
-
 # BattleUI API Data Transfer Objects
 
 ## INTENT

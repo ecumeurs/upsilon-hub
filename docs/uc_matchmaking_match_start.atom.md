@@ -2,15 +2,15 @@
 id: uc_matchmaking_match_start
 human_name: Match Start Payload Dispatching
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_matchmaking]]
 dependents: []
 ---
-
 # Match Start Payload Dispatching
 
 ## INTENT

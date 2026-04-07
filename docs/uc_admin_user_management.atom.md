@@ -2,14 +2,14 @@
 id: uc_admin_user_management
 human_name: Administrative User Management Use Case
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [admin, user-management]
 parents: [entity_player]
 dependents: []
 ---
-
 # Administrative User Management Use Case
 
 ## INTENT

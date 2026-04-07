@@ -2,16 +2,16 @@
 id: battleui_upsilon_api_service
 human_name: BattleUI UpsilonAPI Service
 type: SERVICE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [battleui, service, api, integration]
 parents:
   - [[api_go_battle_engine]]
 dependents:
   - [[battleui_api_dtos]]
 ---
-
 # BattleUI UpsilonAPI Service
 
 ## INTENT

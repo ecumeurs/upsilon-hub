@@ -2,14 +2,18 @@
 id: ui_registration
 human_name: Registration Page UI
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[ui_registration_character_generation_flow]]
+  - [[ui_registration_minimal_form_fields]]
+  - [[ui_registration_reroll_limit]]
+  - [[ui_registration_success_state]]
 ---
-
 # Registration Page UI
 
 ## INTENT

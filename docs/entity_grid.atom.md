@@ -2,14 +2,14 @@
 id: entity_grid
 human_name: Grid Entity
 type: ENTITY
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [spatial, map, 3d]
 parents: []
 dependents: []
 ---
-
 # Grid Entity
 
 ## INTENT

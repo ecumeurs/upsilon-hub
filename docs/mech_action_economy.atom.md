@@ -2,14 +2,17 @@
 id: mech_action_economy
 human_name: Turn Action Economy Mechanic
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[mech_action_economy_action_cost_rules]]
+  - [[mech_action_economy_time_constraint_rules]]
+  - [[mech_action_economy_timeout_penalty_rules]]
 ---
-
 # Turn Action Economy Mechanic
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: mech_entity_properties_item_properties
 human_name: Item Properties Mechanic
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_entity_properties]]
 dependents: []
 ---
-
 # Item Properties Mechanic
 
 ## INTENT

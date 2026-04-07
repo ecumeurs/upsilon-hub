@@ -2,15 +2,15 @@
 id: ui_leaderboard_metrics_displayed
 human_name: Metrics Displayed Rules
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[ui_leaderboard]]
 dependents: []
 ---
-
 # Metrics Displayed Rules
 
 ## INTENT

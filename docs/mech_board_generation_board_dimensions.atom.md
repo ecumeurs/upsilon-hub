@@ -2,15 +2,15 @@
 id: mech_board_generation_board_dimensions
 human_name: Board Dimensions Mechanic
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_board_generation]]
 dependents: []
 ---
-
 # Board Dimensions Mechanic
 
 ## INTENT

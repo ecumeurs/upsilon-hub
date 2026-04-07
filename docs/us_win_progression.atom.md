@@ -2,14 +2,18 @@
 id: us_win_progression
 human_name: Post-Win Progression Story
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[us_win_progression_movement_locked]]
+  - [[us_win_progression_progression_screen]]
+  - [[us_win_progression_stat_reflection]]
+  - [[us_win_progression_win_alloc_point]]
 ---
-
 # Post-Win Progression Story
 
 ## INTENT

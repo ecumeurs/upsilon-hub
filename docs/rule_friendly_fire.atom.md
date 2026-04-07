@@ -2,14 +2,16 @@
 id: rule_friendly_fire
 human_name: Friendly Immunity Rule
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[rule_friendly_fire_match_type]]
+  - [[rule_friendly_fire_team_validation]]
 ---
-
 # Friendly Immunity Rule
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: mech_skill_validation_turn_controller_identity_verification
 human_name: Turn/Controller Identity Verification
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_skill_validation]]
 dependents: []
 ---
-
 # Turn/Controller Identity Verification
 
 ## INTENT

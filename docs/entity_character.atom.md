@@ -2,14 +2,17 @@
 id: entity_character
 human_name: Character Entity
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: [rule_character_create_character]
+dependents:
+  - [[entity_character_distribute_remaining_points]]
+  - [[rule_character_create_character]]
+  - [[rule_progression]]
 ---
-
 # Character Entity
 
 ## INTENT

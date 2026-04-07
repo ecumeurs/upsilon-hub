@@ -2,15 +2,15 @@
 id: uc_match_resolution_dashboard_redirect
 human_name: Dashboard Redirect Logic
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_match_resolution]]
 dependents: []
 ---
-
 # Dashboard Redirect Logic
 
 ## INTENT

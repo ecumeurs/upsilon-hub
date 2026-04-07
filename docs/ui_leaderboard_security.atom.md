@@ -2,15 +2,15 @@
 id: ui_leaderboard_security
 human_name: Security Rules
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[ui_leaderboard]]
 dependents: []
 ---
-
 # Security Rules
 
 ## INTENT

@@ -2,15 +2,15 @@
 id: module_backend_board_generation
 human_name: Board Generation Logic
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[module_backend]]
 dependents: []
 ---
-
 # Board Generation Logic
 
 ## INTENT

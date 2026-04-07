@@ -2,14 +2,21 @@
 id: entity_player
 human_name: Player Account Entity
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[entity_player_entity_character_rules_apply]]
+  - [[entity_player_entity_player_initial_setup]]
+  - [[entity_player_entity_player_registration]]
+  - [[entity_player_entity_player_stats_tracking]]
+  - [[infra_seed_admin]]
+  - [[rule_admin_access_restriction]]
+  - [[uc_admin_user_management]]
 ---
-
 # Player Account Entity
 
 ## INTENT

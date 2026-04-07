@@ -2,14 +2,18 @@
 id: us_character_reroll
 human_name: Character Reroll Story
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[us_character_reroll_button_lockdown]]
+  - [[us_character_reroll_create_character]]
+  - [[us_character_reroll_reroll_button_action]]
+  - [[us_character_reroll_reroll_counter]]
 ---
-
 # Character Reroll Story
 
 ## INTENT

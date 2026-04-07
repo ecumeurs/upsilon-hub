@@ -2,15 +2,15 @@
 id: module_frontend_matchmaking_orchestration
 human_name: Matchmaking Orchestration
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[module_frontend]]
 dependents: []
 ---
-
 # Matchmaking Orchestration
 
 ## INTENT

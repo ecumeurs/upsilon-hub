@@ -2,15 +2,15 @@
 id: us_win_progression_progression_screen
 human_name: Progression Screen on Win Victory
 type: USER_STORY
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[us_win_progression]]
 dependents: []
 ---
-
 # Progression Screen on Win Victory
 
 ## INTENT

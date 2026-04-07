@@ -2,15 +2,15 @@
 id: uc_combat_turn_turn_ending
 human_name: Turn Ending Logic
 type: USECASE
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[uc_combat_turn]]
 dependents: []
 ---
-
 # Turn Ending Logic
 
 ## INTENT

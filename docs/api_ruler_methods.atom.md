@@ -2,15 +2,17 @@
 id: api_ruler_methods
 human_name: Ruler Message Methods API
 type: API
+layer: ARCHITECTURE
 version: 1.0
 status: REVIEW
-priority: CORE
+priority: 5
 tags: [api, messaging, queue]
 parents:
   - [[domain_ruler_state]]
-dependents: []
+dependents:
+  - [[api_controller_methods]]
+  - [[mech_controller_communication_sequence]]
 ---
-
 # Ruler Message Methods API
 
 ## INTENT

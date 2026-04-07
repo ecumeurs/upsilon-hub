@@ -2,16 +2,14 @@
 id: ui_landing
 human_name: Landing Page UI
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: REVIEW
-priority: CORE
+priority: 5
 tags: [ui, public, landing]
 parents: []
-dependents:
-  - [[ui_registration]]
-  - [[req_security]]
+dependents: []
 ---
-
 # Landing Page UI
 
 ## INTENT

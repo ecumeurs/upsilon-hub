@@ -2,14 +2,18 @@
 id: mech_initiative
 human_name: Initiative & Delay Mechanic
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[mech_initiative_active_state]]
+  - [[mech_initiative_delay_costs]]
+  - [[mech_initiative_initiative_roll]]
+  - [[mech_initiative_requeue_calculation]]
 ---
-
 # Initiative & Delay Mechanic
 
 ## INTENT

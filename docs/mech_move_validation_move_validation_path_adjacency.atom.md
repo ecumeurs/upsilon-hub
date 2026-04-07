@@ -2,15 +2,15 @@
 id: mech_move_validation_move_validation_path_adjacency
 human_name: Path Adjacency Rule
 type: MECHANIC
+layer: IMPLEMENTATION
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[mech_move_validation]]
 dependents: []
 ---
-
 # Path Adjacency Rule
 
 ## INTENT

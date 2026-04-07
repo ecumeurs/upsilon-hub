@@ -2,15 +2,15 @@
 id: spec_match_format_win_condition_rule
 human_name: Win Condition Rule
 type: SPECIFICATION
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[spec_match_format]]
 dependents: []
 ---
-
 # Win Condition Rule
 
 ## INTENT

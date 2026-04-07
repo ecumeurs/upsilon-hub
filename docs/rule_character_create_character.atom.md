@@ -2,15 +2,15 @@
 id: rule_character_create_character
 human_name: Character creation base allocation
 type: RULE
+layer: ARCHITECTURE
 version: 1.1
 status: STABLE
-priority: CORE
+priority: 5
 tags: [character, creation]
 parents: 
   - [[entity_character]]
 dependents: []
 ---
-
 # Character creation base allocation
 
 ## INTENT

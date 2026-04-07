@@ -2,14 +2,21 @@
 id: domain_upsilon_engine
 human_name: UpsilonBattle Core Engine Domain
 type: MODULE
+layer: ARCHITECTURE
 version: 1.0
 status: STABLE
-priority: CORE
+priority: 5
 tags: []
 parents: []
-dependents: []
+dependents:
+  - [[domain_skill_system]]
+  - [[domain_upsilon_engine_domain_upsilon_engine_api_orchestration]]
+  - [[domain_upsilon_engine_domain_upsilon_engine_combat_isolation]]
+  - [[domain_upsilon_engine_domain_upsilon_engine_entity_stat_integration]]
+  - [[domain_upsilon_engine_domain_upsilon_engine_expectation]]
+  - [[domain_upsilon_engine_domain_upsilon_engine_resolution]]
+  - [[domain_upsilon_engine_domain_upsilon_engine_technical_interface]]
 ---
-
 # UpsilonBattle Core Engine Domain
 
 ## INTENT

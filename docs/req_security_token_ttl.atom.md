@@ -2,15 +2,16 @@
 id: req_security_token_ttl
 human_name: Token TTL Requirement
 type: REQUIREMENT
+layer: CUSTOMER
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [auth, sanctum, security]
 parents: 
   - [[req_security]]
-dependents: []
+dependents:
+  - [[mech_sanctum_token_renewal]]
 ---
-
 # Token TTL Requirement
 
 ## INTENT

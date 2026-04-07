@@ -2,17 +2,16 @@
 id: api_auth_register
 human_name: Player Registration API
 type: API
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: [auth, register, api]
 parents:
   - [[api_laravel_gateway]]
   - [[api_standard_envelope]]
-dependents:
-  - [[uc_player_registration]]
+dependents: []
 ---
-
 # Player Registration API
 
 ## INTENT

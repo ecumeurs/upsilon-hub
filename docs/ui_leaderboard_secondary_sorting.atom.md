@@ -2,15 +2,15 @@
 id: ui_leaderboard_secondary_sorting
 human_name: Secondary Sorting Rules
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: DRAFT
-priority: CORE
+priority: 5
 tags: []
 parents: 
   - [[ui_leaderboard]]
 dependents: []
 ---
-
 # Secondary Sorting Rules
 
 ## INTENT

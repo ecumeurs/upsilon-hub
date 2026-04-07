@@ -2,15 +2,15 @@
 id: ui_board
 human_name: Board Page UI
 type: UI
+layer: ARCHITECTURE
 version: 1.0
 status: REVIEW
-priority: CORE
+priority: 5
 tags: [ui, secure, combat]
 parents:
   - [[module_game]]
 dependents: []
 ---
-
 # Board Page UI
 
 ## INTENT
