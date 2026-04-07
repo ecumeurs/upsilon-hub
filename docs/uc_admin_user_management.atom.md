@@ -7,7 +7,9 @@ version: 1.0
 status: DRAFT
 priority: 5
 tags: [admin, user-management]
-parents: [entity_player]
+parents:
+  - [[req_admin_experience]]
+  - [[entity_player]]
 dependents: []
 ---
 # Administrative User Management Use Case

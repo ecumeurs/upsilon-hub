@@ -7,7 +7,9 @@ version: 1.0
 status: DRAFT
 priority: 5
 tags: [admin, match-history]
-parents: [entity_game_match]
+parents:
+  - [[req_admin_experience]]
+  - [[entity_game_match]]
 dependents: []
 ---
 # Administrative Match History Management Use Case

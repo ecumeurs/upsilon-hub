@@ -7,23 +7,30 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: []
-parents: []
+parents:
+  - [[req_player_experience]]
 dependents:
-  - [[uc_combat_turn_action_selection]]
-  - [[uc_combat_turn_delay_costs_accumulation]]
-  - [[uc_combat_turn_initiative_evaluation]]
-  - [[uc_combat_turn_shot_clock_expiration]]
-  - [[uc_combat_turn_shot_clock_management]]
-  - [[uc_combat_turn_turn_ending]]
   - [[us_take_combat_turn]]
 ---
 # Combat Turn Use Case
 
 ## INTENT
-To aggregate the constituent rules of Combat Turn Use Case.
+Governs the tactical interaction within a match, ensuring fair play and adherence to the action economy.
 
 ## THE RULE / LOGIC
-Character turns are managed based on initiative and shot clock. During their turn, players can choose to Move, Attack, Pass, or **Forfeit** the match.
+1. **Initiative**: Turn order is dynamically calculated. The character with a value of `0` in the initiative ticker becomes active (`mech_initiative`).
+2. **Action Selection**: The active player chooses between **Move** (up to Movement stat), **Attack** (against an enemy), **Pass**, or **Forfeit**.
+3. **Shot Clock**: System starts a 30-second countdown. If no action is taken, a forced Pass (+300) and a penalty (+100) are applied (Total +400).
+4. **Turn Conclusion**: Recalculates the next-turn timer from the accumulated Delay Cost and triggers a state check in **UC-5**.
+
+## TECHNICAL INTERFACE (The Bridge)
+- **Code Tag:** `@spec-link [[uc_combat_turn]]`
+- **Internal Specs:** `[[uc_combat_turn_initiative_evaluation]]`, `[[uc_combat_turn_shot_clock_management]]`, `[[uc_combat_turn_turn_ending]]`
+
+## EXPECTATION (For Testing)
+- Active character highlighted -> Timer counts down -> Action triggers delay cost calculation.
+- Timer hits 0 -> Auto-pass and penalty applied.
+- Forfeit terminates match via UC-5.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[uc_combat_turn]]`

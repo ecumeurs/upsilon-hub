@@ -8,6 +8,7 @@ status: STABLE
 priority: 5
 tags: [admin, login]
 parents:
+  - [[req_admin_experience]]
   - [[infra_seed_admin]]
   - [[rule_admin_access_restriction]]
 dependents: []

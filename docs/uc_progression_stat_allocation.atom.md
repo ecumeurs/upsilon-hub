@@ -8,11 +8,10 @@ status: STABLE
 priority: 5
 tags: [progression, stats]
 parents:
+  - [[req_player_experience]]
   - [[ui_dashboard]]
   - [[rule_progression]]
 dependents:
-  - [[uc_match_resolution_player_points_allocation]]
-  - [[uc_match_resolution_movement_upgrade]]
   - [[us_win_progression]]
 ---
 
