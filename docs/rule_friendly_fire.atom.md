@@ -9,8 +9,8 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[rule_friendly_fire_team_validation]]
   - [[rule_friendly_fire_match_type]]
+  - [[rule_friendly_fire_team_validation]]
 ---
 # Friendly Immunity Rule
 

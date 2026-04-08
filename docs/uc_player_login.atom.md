@@ -12,8 +12,8 @@ parents:
   - [[api_auth_login]]
   - [[ui_dashboard]]
 dependents:
-  - [[ui_login]]
   - [[ui_dashboard]]
+  - [[ui_login]]
 ---
 
 # Player Login Use Case

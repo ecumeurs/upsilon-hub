@@ -11,17 +11,17 @@ parents:
   - [[api_request_id]]
 dependents:
   - [[api_go_battle_start]]
-  - [[api_profile_character]]
   - [[api_auth_register]]
-  - [[api_go_battle_action]]
+  - [[api_profile_export]]
+  - [[api_matchmaking]]
   - [[api_auth_login]]
   - [[api_go_battle_engine]]
-  - [[api_go_webhook_callback]]
   - [[api_auth_logout]]
   - [[rule_tracing_logging]]
+  - [[api_profile_character]]
   - [[api_battle_proxy]]
-  - [[api_matchmaking]]
-  - [[api_profile_export]]
+  - [[api_go_webhook_callback]]
+  - [[api_go_battle_action]]
 ---
 # Standard JSON Message Envelope
 

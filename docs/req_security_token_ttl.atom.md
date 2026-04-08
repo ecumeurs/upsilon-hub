@@ -11,6 +11,7 @@ parents:
   - [[req_security]]
 dependents:
   - [[mech_sanctum_token_renewal]]
+  - [[mechanic_mech_frontend_auth_bridge]]
 ---
 # Token TTL Requirement
 

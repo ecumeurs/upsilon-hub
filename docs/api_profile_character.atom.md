@@ -10,6 +10,7 @@ tags: [profile, character, api]
 parents:
   - [[api_laravel_gateway]]
   - [[api_standard_envelope]]
+  - [[rule_character_renaming]]
 dependents: []
 ---
 # Character Management API
@@ -23,6 +24,7 @@ To manage player characters, including registration-time rerolls, stat updates, 
 - `GET /api/v1/profile/character/{characterId}`: Get specific character details.
 - `POST /api/v1/profile/character/{characterId}/reroll`: Reroll stats (restricted to new accounts). 
 - `POST /api/v1/profile/character/{characterId}/upgrade`: Allocate points. Validated against [[rule_progression]].
+- `POST /api/v1/profile/character/{characterId}/rename`: Change display name. Validated against [[rule_character_renaming]].
 
 ### CharacterResource (Common Response)
 - `id`: `string (UUID)`
@@ -35,6 +37,9 @@ To manage player characters, including registration-time rerolls, stat updates, 
 
 ### Request - Upgrade (Wrapped in [[api_standard_envelope]])
 - `stats`: `object` - Increments for stats (e.g., `{"attack": 1, "hp": 2}`).
+
+### Request - Rename (Wrapped in [[api_standard_envelope]])
+- `name`: `string` - The new name for the character.
 
 ### Response - Reroll (Wrapped in [[api_standard_envelope]])
 - `character`: `CharacterResource`

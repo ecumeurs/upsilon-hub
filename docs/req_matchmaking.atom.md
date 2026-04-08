@@ -10,10 +10,10 @@ tags: []
 parents: []
 dependents:
   - [[mech_matchmaking]]
+  - [[req_matchmaking_transition_rules]]
   - [[req_matchmaking_matchmaking_queue]]
   - [[req_matchmaking_pve_pvp_transition]]
   - [[ui_waiting_room]]
-  - [[req_matchmaking_transition_rules]]
 ---
 # Matchmaking Flow Requirement
 

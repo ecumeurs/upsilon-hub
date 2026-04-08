@@ -44,6 +44,7 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Dashboard Hub Implementation](issues/ISS-025_20260408_dashboard_hub_implementation.md) | 2026-04-08 | Open | Medium | This issue tracks the implementation of the Dashboard Hub for the Upsilon Bat... |
 | [Ensure all logs are tagged with Request ID](issues/ISS-023_20260316_logging_tag_traceability.md) | 2026-03-16 | Open | High | The system currently lacks a strictly enforced requirement to tag every log e... |
 | [Improper major error handling in BattleUI](issues/ISS-022_20260316_battleui_error_handling.md) | 2026-03-16 | Open | High | In BattleUI, major internal errors or unhandled exceptions currently return H... |
 | [Security Risk: Lack of Match Participant Access Control](issues/ISS-018_20260312_match_participant_access_control.md) | 2026-03-12 | Open | Critical | Currently, any authenticated user can attempt to act or view the state of ANY... |
