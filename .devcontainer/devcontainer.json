@@ -24,7 +24,9 @@
         // Bind ~/.local/bin to access host binaries
         "source=/home/bastien/.local/bin,target=/home/vscode/.local/bin,type=bind,consistency=cached",
         // Bind ~/.local/bin to access host binaries
-        "source=/home/bastien/.antigravity/extensions/local-dev.atd-linker,target=/home/vscode/extensions/local-dev.atd-linker,type=bind,consistency=cached"
+        "source=/home/bastien/.antigravity/extensions/local-dev.atd-linker,target=/home/vscode/extensions/local-dev.atd-linker,type=bind,consistency=cached",
+        // Bind ~/.gemini/antigravity/mcp_config.json to access host binaries
+        "source=/home/bastien/.gemini/antigravity/mcp_config.json,target=/home/vscode/.gemini/antigravity/mcp_config.json,type=bind,consistency=cached"
     ],
     "remoteUser": "vscode",
     "postStartCommand": "mkdir -p ~/.antigravity-server/extensions && ln -sf /home/vscode/extensions/local-dev.atd-linker ~/.antigravity-server/extensions/local-dev.atd-linker"

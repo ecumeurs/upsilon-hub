@@ -19,19 +19,19 @@ To allow players to enter a queue and be matched with opponents.
 
 ## THE RULE / LOGIC
 **Endpoints:**
-- `POST /api/v1/matchmaking/join`: Add player to queue.
-- `GET /api/v1/matchmaking/status`: Poll current matchmaking/match status.
-- `DELETE /api/v1/matchmaking/leave`: Remove player from queue.
+- `POST /api/v1/matchmaking/join`: Add player to queue for a specific game mode.
+- `GET /api/v1/matchmaking/status`: Poll current matchmaking/match status or reconnect to an active match.
+- `DELETE /api/v1/matchmaking/leave`: Remove player from any active queue.
 
 ### Request - Join (Wrapped in [[api_standard_envelope]])
-- `game_mode`: `string` - The game mode the player wants to join (e.g., "1v1_PVP", "2v2_PVP").
+- `game_mode`: `string` ("1v1_PVP", "2v2_PVP", "1v1_PVE", "2v2_PVE")
 
 ### Response - Join / Status (Wrapped in [[api_standard_envelope]])
 - `status`: `string` ("queued", "matched", "idle")
-- `match_id`: `uuid` (optional, for "matched")
-- `expected_participants`: `int` (Total expected for the mode: 1, 2, or 4)
-- `empty_slots`: `int` (Remaining slots)
-- `queued_at`: `datetime` (optional, for "queued" status)
+- `match_id`: `string (UUID)|null`
+- `expected_participants`: `int|null`
+- `empty_slots`: `int|null`
+- `queued_at`: `string (ISO8601)|null`
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `/api/v1/matchmaking/*`

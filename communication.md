@@ -1,105 +1,387 @@
-# Communication Architecture & Data Flow
+# Upsilon Battle: API Communication Reference
 
-## 1. System Entities
-*   **Vue.js App (Client):** The frontend user interface.
-*   **Laravel API (Main Backend):** Handles administrative routing, user accounts, authentication, matchmaking, persistence, and state caching. 
-*   **Go API (UpsilonBattle):** The core battle engine. Handles game rules, arena state, turn timers (30s max), and combat logic.
-*   **PostgreSQL (Database):** Source of truth for accounts, characters, and high-level match history.
+This document provides a comprehensive reference for the communication interfaces between the Vue.js frontend, the Laravel API Gateway, and the Upsilon (Go) Battle Engine.
 
-## 2. Proxied vs. Direct Communication (Vue → Laravel → Go)
+## 1. Shared Infrastructure
 
-We are adhering to a **Proxied Approach** (API Gateway) where Laravel is the central hub.
+### 1.1 Standard JSON Message Envelope
+**Source:** [[api_standard_envelope]]
 
-### Chosen Strategy & Mitigation
-*   **Centralized Authentication:** Laravel handles all user validation. The Go engine expects internally-authenticated requests from Laravel only.
-*   **WebSockets via Laravel Reverb:** To solve the polling issue and maintain real-time responsiveness, Vue will open a WebSocket connection to Laravel (using Reverb) to listen for battle events (`game.started`, `turn.started`, `board.updated`, `game.ended`). Chat features can later easily piggyback on this connection.
-*   **State Caching:** Laravel will maintain a cache of the current board state within the `game_matches` table. When Vue needs a full refresh, it queries Laravel's database-backed cache instead of forcing Laravel to query Go. 
-*   **HTTP Dual-Direction:** Laravel and Go will communicate via HTTP REST. Laravel will ping Go to create arenas or proxy actions. Go will push state changes and timed events (like a turn timeout) back to Laravel via a Webhook (Callback URL) provided at match initialization. 
+To guarantee traceability and consistent error handling, every JSON exchange between system units (Vue, Laravel, Go) MUST conform to the following root structure:
 
----
-
-## 3. Communication Hubs & Route Definitions
-
-### Hub A: Vue.js ↔ Laravel API (Meta-game, Actions & State Fetching)
-*Protocol: HTTP REST (JSON) + Bearer Token Auth AND WebSocket (Laravel Reverb)*
-
-| Route            | Method | Endpoint                          | Payload (Vue → Laravel)               | Response (Laravel → Vue)                  | Intent                      |
-| :--------------- | :----- | :-------------------------------- | :------------------------------------ | :---------------------------------------- | :-------------------------- |
-| **Login**        | POST   | `/api/v1/auth/login`              | `{ email, password }`                 | `{ token, user }`                         | Authenticate user           |
-| **Get Roster**   | GET    | `/api/v1/characters`              | -                                     | `[{ id, name, level, hp... }]`            | Fetch available characters  |
-| **Queue Match**  | POST   | `/api/v1/matchmaking/join`        | `{ format: "1v1", team: [char_ids] }` | `{ status: "searching" }`                 | Enter matchmaking queue     |
-| **Queue Status** | GET    | `/api/v1/matchmaking/status`      | -                                     | `{ status: "found", match_id, arena_id }` | Poll for matchmaking state  |
-| **Fetch State**  | GET    | `/api/v1/battle/{arena_id}/state` | -                                     | `{ cached_board_state }`                  | Get full state (from cache) |
-
-*WebSocket Subscriptions (Laravel → Vue via Reverb context channel `arena.{id}`):*
-*   `game.started`: Arena initialized, players joining.
-*   `turn.started`: A new 30s turn has begun for Player X.
-*   `board.updated`: Notification that an action occurred (prompting Vue to update specific sprites or call `Fetch State` if a delta isn't enough).
-*   `game.ended`: Match concluded, results are ready.
-*   `(future) chat.message`: New message in arena.
-
-### Hub B: Laravel API ↔ Go API (Battle Orchestration & Event Webhooks)
-*Protocol: Internal HTTP REST (JSON) on both sides*
-
-| Route (Target) | Method | Endpoint                      | Payload                                                         | Response                      | Intent                                                    |
-| :------------- | :----- | :---------------------------- | :-------------------------------------------------------------- | :---------------------------- | :-------------------------------------------------------- |
-| **Go**         | POST   | `/internal/arena/start`       | `{ match_id, players: [...], callback_url }`                    | `{ arena_id, initial_state }` | Laravel orders Go to spin up arena & gives webhook URL.   |
-| **Go**         | POST   | `/internal/arena/{id}/action` | `{ player_id, type: "move", coords: {x,y} }`                    | `{ status: "accepted" }`      | Proxy an action. Go validates, then async fires callback. |
-| **Laravel**    | POST   | `{callback_url}` *(Dynamic)*  | `{ match_id, event_type, player_id, entity_id, data, timeout }` | `200 OK`                      | Go pushes board updates/turn events to Laravel cache.     |
-
-*(Note on UpsilonBattle JSON API Requirement: The Go API currently lacks an HTTP REST API, webhook outward firing mechanics, and 30s turn clocks. Building these will be a primary focus).*
-
----
-
-## 4. Sequence Diagram: Basic Usecase (Proxied + WebSocket)
-
-```mermaid
-sequenceDiagram
-    participant V as Vue App
-    participant L as Laravel API
-    participant DB as PostgreSQL DB
-    participant G as Go API
-
-    %% Administrative & Meta-game Phase
-    V->>L: POST /api/v1/auth/login
-    L-->>V: Return Bearer Token
-    
-    V->>+L: WebSocket Connect (Laravel Reverb)
-    Note right of V: Subscribe to private-player.{id} channel
-    
-    V->>L: POST /api/v1/matchmaking/join (format, team)
-    L->>DB: Place in Queue
-    Note right of L: Background matchmaking job pairs players.
-    
-    %% Battle Initialization Phase
-    L->>G: POST /internal/arena/start (..., callback: /api/internal/webhook)
-    Note right of G: Go initiates map, rulesets, and turn timer.
-    G-->>L: arena_id, full_state
-    
-    L->>DB: Save Match & Cache full_state in game_matches
-    L-)V: (WebSocket) event: game.found (arena_id)
-    Note right of V: Vue switches to battle view & subscribes to arena.{id}
-    
-    %% Typical Turn Loop
-    V->>L: GET /api/v1/battle/{arena_id}/state
-    L-->>V: Returns cached full_state
-    
-    L-)V: (WebSocket) event: turn.started (Player 1)
-    
-    V->>L: POST /api/v1/battle/{arena_id}/action (move)
-    L->>G: POST /internal/arena/{arena_id}/action (move)
-    G-->>L: 200 OK (Action Received)
-    
-    Note right of G: Go processes move, deducts movement cost.
-    G->>L: POST /api/internal/webhook (event: board.updated, delta)
-    Note right of L: Laravel updates DB JSON cache.
-    L-->>G: 200 OK
-    
-    L-)V: (WebSocket) event: board.updated (delta)
-    Note right of V: Vue animates the move based on delta.
-    
-    %% Turn Timeout Phase
-    Note right of G: 30 seconds elapse without END TURN action.
-    G->>L: POST /api/internal/webhook (event: turn.started, Player 2)
-    L-)V: (WebSocket) event: turn.started (Player 2)
+```json
+{
+  "request_id": "018f5a...", // string (UUIDv7): For chronological sortability. Rules in [[api_request_id]].
+  "message": "...",         // string: Intent summary, status message, or error description.
+  "success": true,          // boolean: Indicates operational success.
+  "data": {},               // object|array|null: Primary payload (e.g., Resource, Collection, or Success DTO).
+  "meta": {}                // object: Side information for debugging or testing (optional).
+}
 ```
+
+### 1.2 Request Identification
+**Source:** [[api_request_id]]
+
+The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the originator (typically the Vue frontend for user actions) to generate this ID. It must be propagated across all distributed calls spanning Laravel and Go to maintain the trace defined in [[rule_tracing_logging]].
+
+---
+
+## 2. Laravel API (External Gateway)
+**Source Module:** [[api_laravel_gateway]]  
+**Base URL:** `/api/v1`  
+**Authentication:** Bearer Token (Laravel Sanctum)
+
+### 2.0 API Summary
+
+| Verb | URI | Intent | Specification |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/auth/register` | User Registration & Roster Creation | [[api_auth_register]] |
+| `POST` | `/auth/login` | User Authentication | [[api_auth_login]] |
+| `POST` | `/auth/logout` | Session Termination | [[api_auth_logout]] |
+| `GET` | `/profile/characters` | List Player Roster | [[api_profile_character]] |
+| `GET` | `/profile/character/{id}` | Get Character Details | [[api_profile_character]] |
+| `POST` | `/profile/character/{id}/reroll` | Reset Stats (New Accounts) | [[api_profile_character]] |
+| `POST` | `/profile/character/{id}/upgrade` | Attribute Point Allocation | [[api_profile_character]] |
+| `POST` | `/matchmaking/join` | Enter Battle Queue | [[api_matchmaking]] |
+| `GET` | `/matchmaking/status` | Poll Match Status | [[api_matchmaking]] |
+| `DELETE` | `/matchmaking/leave` | Exit Battle Queue | [[api_matchmaking]] |
+| `GET` | `/game/{id}` | Get Cached Board State | [[api_battle_proxy]] |
+| `POST` | `/game/{id}/action` | Proxy Tactical Action to Engine | [[api_battle_proxy]] |
+| `POST` | `/api/webhook/upsilon` | Ingest Engine State Update | [[api_go_webhook_callback]] |
+
+### 2.1 Authentication
+
+#### `POST /auth/register`
+- **Specification:** [[api_auth_register]]
+- **Intent:** [[uc_player_registration]]: Allow new users to create an account and receive an initial characters roster.
+- **Input:**
+  - `account_name`: `string`
+  - `email`: `string` (must be unique)
+  - `password`: `string` (minimum 15 characters)
+  - `password_confirmation`: `string` (must match password)
+  - `full_address`: `string` (Mandatory per [[uc_player_registration]])
+  - `birth_date`: `string (ISO8601)` (Mandatory per [[uc_player_registration]])
+- **Output:**
+  - `user`: `UserResource` (See [[#4.4-userresource]])
+  - `token`: `string` (JWT Bearer Token)
+
+#### `POST /auth/login`
+- **Specification:** [[api_auth_login]]
+- **Intent:** [[uc_player_login]]: Authenticate existing users and provide a session token.
+- **Input:**
+  - `email`: `string`
+  - `password`: `string`
+- **Output:**
+  - `user`: `UserResource` (See [[#4.4-userresource]])
+  - `token`: `string` (JWT Bearer Token)
+
+#### `POST /auth/logout`
+- **Specification:** [[api_auth_logout]]
+- **Intent:** [[uc_auth_logout]]: Terminate the active session for Player or Admin and revoke the current access token.
+- **Security:** Requires `auth:sanctum` middleware.
+- **Output:** `null` (successful status code 200 with standard success envelope).
+
+### 2.2 Profile & Character Management
+
+#### `GET /profile/characters`
+- **Specification:** [[api_profile_character]]
+- **Intent:** List all characters associated with the authenticated player's roster.
+- **Output:** `Array<CharacterResource>` (See [[#4.5-characterresource]])
+
+#### `GET /profile/character/{characterId}`
+- **Specification:** [[api_profile_character]]
+- **Intent:** Retrieve detailed statistics and status for a specific character.
+- **Input:**
+  - `characterId`: `string (UUID)` (URL Parameter)
+- **Output:** `CharacterResource` (See [[#4.5-characterresource]])
+
+#### `POST /profile/character/{characterId}/reroll`
+- **Specification:** [[api_profile_character]]
+- **Intent:** [[uc_player_registration]] (Step 4): Allow fresh accounts to reroll their starting character stats.
+- **Restriction:** Restricted to "New" accounts; forbidden after match participation.
+- **Input:**
+  - `characterId`: `string (UUID)` (URL Parameter)
+- **Output:**
+  - `character`: `CharacterResource` (The updated character)
+  - `reroll_count`: `int` (The user's total reroll count)
+
+#### `POST /profile/character/{characterId}/upgrade`
+- **Specification:** [[api_profile_character]]
+- **Intent:** [[uc_progression_stat_allocation]]: Manually allocate attribute points earned through wins.
+- **Input:**
+  - `characterId`: `string (UUID)` (URL Parameter)
+  - `stats`: `object`
+    - `hp`: `int` (increment amount, optional)
+    - `attack`: `int` (increment amount, optional)
+    - `defense`: `int` (increment amount, optional)
+    - `movement`: `int` (increment amount, optional)
+- **Validation:** Must adhere to [[rule_progression]] (Attribute Cap: `10 + wins`).
+- **Output:** `CharacterResource` (The updated character)
+
+### 2.3 Matchmaking & Queue
+
+#### `POST /matchmaking/join`
+- **Specification:** [[api_matchmaking]]
+- **Intent:** [[uc_matchmaking]]: Enter the queue for a specific game mode.
+- **Input:**
+  - `game_mode`: `string` ("1v1_PVP", "2v2_PVP", "1v1_PVE", "2v2_PVE")
+- **Output:** 
+  - `status`: `string` ("queued" | "matched")
+  - `match_id`: `string (UUID)|null`
+  - `expected_participants`: `int`
+  - `empty_slots`: `int`
+
+#### `GET /matchmaking/status`
+- **Specification:** [[api_matchmaking]]
+- **Intent:** [[uc_matchmaking]]: Poll for matchmaking updates or match assignment.
+- **Output:** 
+  - `status`: `string` ("queued" | "matched" | "idle")
+  - `match_id`: `string (UUID)|null`
+  - `expected_participants`: `int|null`
+  - `empty_slots`: `int|null`
+  - `queued_at`: `string (ISO8601)|null`
+
+#### `DELETE /matchmaking/leave`
+- **Specification:** [[api_matchmaking]]
+- **Intent:** Cancel queue entry and return to Dashboard.
+- **Output:** `null` (successful status code 200 with standard success envelope).
+
+### 2.4 Game Interaction (Proxy)
+
+#### `GET /game/{id}`
+- **Specification:** [[api_battle_proxy]]
+- **Intent:** Retrieve the **cached** board state from the Laravel database.
+- **Logic:** Avoids direct engine overhead by reading the last known state synced via webhook.
+- **Input:**
+  - `id`: `string (UUID)` (URL Parameter - Match ID)
+- **Output:** `GameMatchResource` (See [[#4.6-gamematchresource]])
+
+#### `POST /game/{id}/action`
+- **Specification:** [[api_battle_proxy]]
+- **Intent:** [[uc_combat_turn]]: Proxy tactical commands to the Upsilon Go Engine.
+- **Input:**
+  - `id`: `string (UUID)` (URL Parameter - Match ID)
+  - `payload`: `ArenaActionRequest` (See [[#4.2-arenaactionrequest]])
+- **Logic:** Proxies request to Upsilon `/internal/arena/:id/action` via [[api_go_battle_action]].
+- **Output:** `ArenaActionResponse` (See [[#4.1-arenaactionresponse]])
+
+---
+
+## 3. Upsilon API (Go Internal Engine)
+**Source Module:** [[api_go_battle_engine]]  
+**Base URL:** `http://upsilonapi:8080/internal`
+
+### 3.0 API Summary
+
+| Verb | URI | Intent | Specification |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/arena/start` | Initialize Arena Instance | [[api_go_battle_start]] |
+| `POST` | `/arena/{id}/action` | Execute Combat Action | [[api_go_battle_action]] |
+
+### 3.1 Arena Life Cycle
+
+#### `POST /arena/start`
+- **Specification:** [[api_go_battle_start]]
+- **Intent:** Initialize a tactical arena instance.
+- **Input:** `ArenaStartRequest` (See [[#4.3-arenastartrequest]])
+- **Output:** `ArenaStartResponse` (See [[#4.1-arenastartresponse]])
+
+### 3.2 Battle Actions
+
+#### `POST /arena/{id}/action`
+- **Specification:** [[api_go_battle_action]]
+- **Intent:** [[uc_combat_turn]]: Validate and execute tactical moves or attacks within a battle.
+- **Input:** 
+  - `id`: `string (UUID)` (URL Parameter - Arena ID)
+  - `payload`: `ArenaActionRequest` (See [[#4.2-arenaactionrequest]])
+- **Output:** `ArenaActionResponse` (See [[#4.1-arenaactionresponse]])
+
+### 3.3 Asynchronous Webhook (Callback)
+**Destination:** `POST /api/webhook/upsilon` (in [[api_battle_proxy]])
+
+#### Webhook Event Payload
+- **Specification:** [[api_go_webhook_callback]]
+- **Event Type (`event_type`):**
+  - `game.started`: Arena initialization complete.
+  - `turn.started`: New entity initiative active (starts 30s clock).
+  - `board.updated`: Position or stat change (Damage/Heal/Move).
+  - `game.ended`: Win condition met.
+- **Data Payload:** `ArenaEvent` (See [[#4.7-arenaevent]]) which contains a `BoardState`.
+
+---
+
+## 4. Common Data Structures
+
+### 4.1 Arena DTOs
+
+#### ArenaActionResponse
+- **`status`**: `string`
+
+#### ArenaStartResponse
+- **`arena_id`**: `string (UUID)`
+- **`initial_state`**: `BoardState`
+
+#### ArenaActionRequest
+- **`player_id`**: `string (UUID)`
+- **`entity_id`**: `string (UUID)`
+- **`type`**: `string` ("MOVE", "ATTACK", "PASS", "FORFEIT")
+- **`target_coords`**: `Array<Position>`
+
+#### ArenaStartRequest
+- **`match_id`**: `string (UUID)`
+- **`callback_url`**: `string` (Webhook URL)
+- **`players`**: `Array<Player>`
+
+### 4.2 Arena Components
+
+#### BoardState
+**Specification:** [[api_go_battle_engine]]
+
+Defines the complete state of a tactical arena at a specific moment in time.
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `entities` | `Array<Entity>` | List of all active characters/actors on the board. |
+| `grid` | `Grid` | The tactical map structure. |
+| `turn` | `Array<Turn>` | Sequence of actors based on initiative. |
+| `current_player_id` | `string (UUID)` | ID of the player currently controlling the active entity. |
+| `current_entity_id` | `string (UUID)` | ID of the entity currently acting. |
+| `timeout` | `string (ISO8601)` | Timestamp when the current turn expires. |
+| `start_time` | `string (ISO8601)` | Timestamp when the arena started. |
+| `winner_id` | `string (UUID)|null` | ID of the winning player. |
+
+#### Grid
+- **`width`**: `int`
+- **`height`**: `int`
+- **`cells`**: `Array<Array<Cell>>` (2D matrix)
+
+#### Cell
+- **`entity_id`**: `string (UUID)|null`
+- **`obstacle`**: `boolean`
+
+#### Turn
+- **`player_id`**: `string (UUID)`
+- **`entity_id`**: `string (UUID)`
+- **`delay`**: `int`
+
+#### Position
+**Specification:** [[api_go_battle_engine]]
+- **`x`**: `int`
+- **`y`**: `int`
+
+### 4.3 Entity & Player
+
+#### Entity
+**Specification:** [[entity_character]]
+
+Detailed state of a single actor.
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `string (UUID)` | Unique identifier for the entity. |
+| `player_id` | `string (UUID)` | ID of the owning player. |
+| `name` | `string` | Display name. |
+| `hp` | `int` | Current Hit Points. |
+| `max_hp` | `int` | Maximum Hit Points. |
+| `attack` | `int` | Base offensive power. |
+| `defense` | `int` | Base defensive mitigation. |
+| `move` | `int` | Remaining movement range for the current turn. |
+| `max_move` | `int` | Total movement range attribute. |
+| `position` | `Position` | Current `{x, y}` coordinates. |
+
+#### Player
+- **`id`**: `string (UUID)`
+- **`team`**: `int`
+- **`ia`**: `boolean` (True if controlled by engine)
+- **`entities`**: `Array<Entity>`
+
+### 4.4 UserResource
+**Specification:** [[api_laravel_gateway]]
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `string (UUID)` | User's unique identifier. |
+| `account_name` | `string` | Displayed name. |
+| `email` | `string` | User's email address. |
+| `full_address` | `string` | User's residential address. |
+| `birth_date` | `string (ISO8601)` | User's date of birth. |
+| `total_wins` | `int` | Total career wins. |
+| `total_losses` | `int` | Total career losses. |
+| `ratio` | `float` | Win/Loss ratio. |
+| `reroll_count` | `int` | Number of times starter stats were rerolled. |
+| `characters` | `Array<CharacterResource>` | Optional: Loaded character list. |
+
+### 4.5 CharacterResource
+**Specification:** [[api_profile_character]]
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `string (UUID)` | Character's unique identifier. |
+| `name` | `string` | Display name. |
+| `hp` | `int` | Character's Hit Points. |
+| `attack` | `int` | Character's Attack stat. |
+| `defense` | `int` | Character's Defense stat. |
+| `movement` | `int` | Current movement range. |
+| `initial_movement`| `int` | Base movement range (for cap calculation). |
+
+### 4.6 GameMatchResource
+**Specification:** [[api_battle_proxy]]
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `string (UUID)` | Match unique identifier. |
+| `game_mode` | `string` | e.g., "1v1_PVP". |
+| `started_at` | `string (ISO8601)` | Start timestamp. |
+| `concluded_at` | `string (ISO8601)\|null` | End timestamp. |
+| `winning_team_id` | `int|null` | Winning team identifier. |
+
+### 4.7 ArenaEvent
+**Specification:** [[api_go_webhook_callback]]
+
+Payload for the asynchronous engine callback.
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `match_id` | `string (UUID)` | The Laravel Match ID. |
+| `event_type` | `string` | e.g., `game.started`, `turn.started`. |
+| `player_id` | `string (UUID)` | Optional: Targeted player. |
+| `entity_id` | `string (UUID)` | Optional: Targeted entity. |
+| `data` | `BoardState` | The current state of the board. |
+| `timeout` | `string (ISO8601)` | End of the current turn clock. |
+
+---
+
+## 5. Traceability Matrix
+
+| Endpoint | Specification | Use Case (usecase.md) | Business Requirement (BRD.md) |
+| :--- | :--- | :--- | :--- |
+| `POST /auth/register` | [[api_auth_register]] | [[uc_player_registration]] | 2.1 User Onboarding & Identity |
+| `POST /auth/login` | [[api_auth_login]] | [[uc_player_login]] | 2.1 User Onboarding & Identity |
+| `POST /profile/character/{id}/reroll` | [[api_profile_character]] | [[uc_player_registration]] (Step 4) | 2.1 frictionless Entry |
+| `POST /profile/character/{id}/upgrade` | [[api_profile_character]] | [[uc_progression_stat_allocation]] | 2.5 Character Progression |
+| `POST /matchmaking/join` | [[api_matchmaking]] | [[uc_matchmaking]] | 2.3 Matchmaking Ecosystem |
+| `POST /game/{id}/action` | [[api_battle_proxy]] | [[uc_combat_turn]] | 2.4 Combat Engine & Action Economy |
+| `POST /api/webhook/upsilon` | [[api_go_webhook_callback]] | [[uc_combat_turn]] / [[uc_match_resolution]] | 2.4 Combat Engine (State Evaluation) |
+| `GET /api/profile/export` | [[api_profile_export]] | Data Portability | 3.2 GDPR & Data Privacy |
+| `POST /auth/logout` | [[api_auth_logout]] | [[uc_auth_logout]] | [[req_security]] |
+| `Universal Envelope` | [[api_standard_envelope]] | All Interactions | 3.3 Traceability & Request ID |
+| `POST /internal/arena/start` | [[api_go_battle_start]] | Queue to Battle transition | 2.3 PvP/PvE Matchmaking |
+
+---
+
+## 6. Gap Analysis: Uncovered Requirements
+
+Based on a cross-reference with `usecase.md` and `BRD.md`, the following requirements have **no currently defined endpoints** in the API surface:
+
+### 6.1 Administrative Management
+- **Missing Auth (UC-7):** No dedicated administrator login or high-privilege JWT exchange.
+- **Missing User Controls (UC-8):** No administrative endpoints to `LIST` all players or perform `SOFT DELETE` operations from the **Admin Dashboard**.
+- **Missing History Maintenance (UC-9):** No endpoint for auditing full match history or triggering the 90-day retention purge.
+
+### 6.2 Advanced Identity & Privacy
+- **Missing Anonymization (UC-8 / BRD 3.2):** While Data Portability exists, there is no endpoint for "Right to be Forgotten" (anonymization of Address/Birth Date).
+- **Missing Account Management:** No endpoint for updating `Full Address` or `Birth Date` post-registration (though registration is covered).
+
+### 6.3 Social & Competitive
+- **Missing Leaderboards (BRD 4 / [[ui_leaderboard]]):** No `GET /rankings` or `GET /leaderboard` to retrieve top-performing players or competitive metrics.
+- **Missing Match History (BRD 2.3):** No endpoint for a player to view their own personal history of past matches (separate from current cached board state).

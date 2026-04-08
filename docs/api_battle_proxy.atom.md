@@ -19,19 +19,21 @@ To proxy user actions to the Go engine and ingest engine state updates back into
 
 ## THE RULE / LOGIC
 **Endpoints:**
-- `POST /api/v1/game/{id}/action`: User action proxy.
-- `POST /api/webhook/upsilon`: Engine callback ingestion.
+- `GET /api/v1/game/{match_id}`: Retrieve the cached board state/match details.
+- `POST /api/v1/game/{match_id}/action`: Proxy tactical user commands to the Go engine.
 
-### Action Proxy Logic:
-1. Validate request token.
-2. Verify player belongs to the arena.
-3. Forward payload to Go `POST /internal/arena/{id}/action`.
-4. Return Go's response directly or mapped.
+### Response - Match Details (Wrapped in [[api_standard_envelope]])
+- `id`: `string (UUID)`
+- `game_mode`: `string`
+- `started_at`: `string (ISO8601)`
+- `concluded_at`: `string (ISO8601)|null`
+- `winning_team_id`: `int|null`
 
-### Webhook Ingestion Logic:
-1. Receive state update from Go.
-2. Update `game_matches` field `game_state_cache` for record `{id}`.
-3. Broadcast via Reverb to channel `arena.{id}`.
+### Request - Action (Wrapped in [[api_standard_envelope]])
+- `payload`: `ArenaActionRequest` (See [[api_go_battle_action]])
+
+### Response - Action (Wrapped in [[api_standard_envelope]])
+- `status`: `string` ("accepted" | "rejected")
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `/api/v1/game/*`, `/api/webhook/*`

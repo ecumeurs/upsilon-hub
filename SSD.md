@@ -1,11 +1,5 @@
 # Software Design Document (SSD) - Upsilon Battle
 
-**Project Version:** 1.0  
-**Status:** DRAFT  
-**Date:** 2026-03-18  
-
----
-
 ## 1. User Personas & Roles
 
 ### 1.1 Persona: The Player

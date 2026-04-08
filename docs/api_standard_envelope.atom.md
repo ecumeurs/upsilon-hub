@@ -32,11 +32,11 @@ Every JSON payload transmitted over HTTP or WebSocket between system units MUST 
 
 ```json
 {
-  "request_id": "018f5a...", // String: UUIDv7. Detailed in [[api_request_id]].
-  "message": "...",         // String: A one-liner intent, status summary, or error message.
-  "success": true,          // Boolean: Indicates if the operation was successful.
-  "data": {},               // Object/Array: The core JSON payload of the query or response.
-  "meta": {}                // Object: Arbitrary, undocumented side information (e.g., for testing or debug).
+  "request_id": "018f5a...", // string (UUIDv7). Detailed in [[api_request_id]].
+  "message": "...",         // string: A one-liner intent, status summary, or error message.
+  "success": true,          // boolean: Indicates if the operation was successful.
+  "data": {},               // object|array|null: The core JSON payload of the query or response.
+  "meta": {}                // object: Arbitrary, undocumented side information (optional).
 }
 ```
 

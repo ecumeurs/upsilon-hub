@@ -1,11 +1,5 @@
 # Business Requirement Document (BRD) - Upsilon Battle
 
-**Project Version:** 1.0  
-**Status:** DRAFT  
-**Date:** 2026-03-18  
-
----
-
 ## 1. Executive Summary
 
 ### 1.1 Project Vision
@@ -31,8 +25,9 @@ The system must support a "frictionless" entry for new players.
 - Success results in immediate login and redirection to the Dashboard.
 
 **Source References:**  
-- [[us_new_player_onboard]]: User story for registration.
-- [[uc_player_registration]]: Use case for player account creation.
+- [[req_player_experience]]: Root player journey requirement.
+- [[uc_player_registration]]: UC-1: Player account and roster creation.
+- [[uc_player_login]]: UC-2: Player authentication and dashboard access.
 - [[entity_player]]: Core player data structure with roles.
 
 ### 2.2 System Administration & Management
@@ -42,31 +37,35 @@ The system provides a dedicated role for administrators to maintain game integri
 - **Privacy Barrier:** Administrators are strictly prohibited from viewing private user data (Full Address, Birth Date).
 
 **Source References:**  
+- [[req_admin_experience]]: Root administrative requirement.
+- [[uc_admin_login]]: UC-7: Administrator authentication.
+- [[uc_admin_user_management]]: UC-8: Administrative account control (Soft Delete/GDPR).
+- [[uc_admin_history_management]]: UC-9: Match history auditing and maintenance.
 - [[rule_admin_access_restriction]]: Privacy gate for admin roles.
-- [[uc_admin_user_management]]: Use case for administrative account control.
-- [[uc_admin_history_management]]: Use case for match history purging.
-- [[infra_seed_admin]]: Requirements for initial system seeding.
 
 ### 2.3 Matchmaking Ecosystem
 Players must be able to quickly find games against other players or the system.
 - **PvE Mode:** Instant game start against AI opponents.
 - **PvP Mode:** Queue system to find human opponents.
 - **Queue Selection:** Win/Loss records must be visible in the queue selection screen.
+- **Lifecycle:** Players can voluntarily "Leave Queue" to return to the Dashboard at any time.
 
 **Source References:**  
-- [[req_matchmaking]]: High-level matchmaking requirements.
-- [[uc_matchmaking]]: Use cases for PvE/PvP transitions.
+- [[uc_matchmaking]]: UC-3: PvE/PvP matchmaking and queue management.
 - [[us_queue_selection]]: User story for choosing game modes.
 
 ### 2.4 Combat Engine & Turn Management
 A rigid tactical engine governs the flow of battle.
 - **Initiative:** Turn order is mathematically determined and displayed to players.
 - **Turn Timer:** Players have a 30-second "shot clock" for actions.
-- **Action Economy:** Valid actions include Move, Attack, and Pass.
+- **Action Economy:** Valid actions include Move, Attack, Pass, and **Forfeit**.
 - **Auto-Pass Penalty:** Timing out results in a forced Pass action and a +400 delay penalty (300 base + 100 penalty).
+- **Match Resolution Loop:** Every action triggers a state evaluation. If no winner is detected, the turn passes back to the Combat Engine for the next character.
 - **Integrity:** Friendly fire is strictly forbidden.
 
 **Source References:**  
+- [[uc_combat_turn]]: UC-4: Tactical turn lifecycle and action management.
+- [[uc_match_resolution]]: UC-5: Win detection, forfeit handling, and reward triggers.
 - [[us_take_combat_turn]]: User story for combat actions and timer.
 - [[mech_initiative]]: Initiative roll and requeue calculation.
 - [[mech_action_economy]]: Cost of actions and timeout rules.
@@ -79,6 +78,7 @@ Players can improve their roster through successful combat participation.
 - **Gated Movement:** Movement stats can only be increased every 5 accumulated wins.
 
 **Source References:**  
+- [[uc_progression_stat_allocation]]: UC-6: Manual stat adjustment from the Dashboard.
 - [[rule_progression]]: Governing logic for stat allocation and limits.
 - [[us_win_progression]]: Experience of allocating points after a win.
 

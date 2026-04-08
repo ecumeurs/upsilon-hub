@@ -41,7 +41,9 @@ flowchart TD
         UC5 -- "Match Over" --> UC6
         UC6 --> Dashboard
         UC5 -- "Match Over" --> Dashboard
-
+        
+        UC10([UC-10: User Logout])
+        Dashboard -- "Logout" --> UC10
 
         
     end
@@ -54,12 +56,14 @@ flowchart TD
         UC7 --> AdminDashboard
         AdminDashboard --> UC8
         AdminDashboard --> UC9
+        AdminDashboard -- "Logout" --> UC10
     end
 
     %% User Entry Points (Guest State)
     User --- UC1
     User --- UC2
     User --- UC7
+    UC10 -- "Redirect" --> User
 
     %% Styling by Role
     %% Guest Roles (Initial Authentication)
@@ -80,6 +84,7 @@ flowchart TD
     style UC9 fill:#831,stroke:#333,stroke-width:2px,color:#fff
     
     style User fill:#555,stroke:#333,stroke-width:2px,color:#fff
+    style UC10 fill:#818,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 ## 1. UC-1: Player Registration
@@ -207,3 +212,16 @@ Maintenance of the match database, restricted to authorized **Administrators** v
 - **History Review:** Admin audits past match outcomes.
 - **Database Maintenance:** Admin triggers a purge of records older than 90 days.
 - **Automated Retention:** (System) Periodic cleanup of historical logs to prevent database bloat.
+---
+
+## 10. UC-10: User Logout
+**Source:** [[uc_auth_logout]] | **Actors:** User (Player or Admin), System
+
+### Summary
+Terminates the active session for any authenticated user and redirects them back to the Landing Page.
+
+### Flow
+1. From the **Dashboard** or **Admin Dashboard**, the User initiates logout.
+2. System invalidates the authentication token on the server [[api_auth_logout]].
+3. System clears client-side session state.
+4. User is redirected to the Landing Page (Guest state).

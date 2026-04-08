@@ -19,25 +19,34 @@ dependents: []
 To provide strongly-typed representations of the JSON payloads exchanged with the Go Battle Engine, ensuring that Laravel's implementation matches the Go `api` package exactly.
 
 ## THE RULE / LOGIC
-The following DTOs must mirror the Go types defined in `api/input.go` and `api/output.go`:
+The following DTOs must mirror the Go types defined in `api/input.go` and `api/output.go` exactly.
 
-### Request DTOs (Outgoing)
-- **ArenaStartRequest:** Mirrors `api.ArenaStartRequest`.
-    - `match_id`: string
-    - `callback_url`: string
-    - `players`: Array<PlayerDTO>
-- **ArenaActionRequest:** Mirrors `api.ArenaActionRequest`.
-    - `player_id`: string
-    - `entity_id`: string
-    - `type`: string
-    - `target_coords`: Array<PositionDTO>
+### Outgoing Requests
+- **ArenaStartRequest**
+    - `match_id`: `string (UUID)`
+    - `callback_url`: `string`
+    - `players`: `Array<PlayerDTO>`
+- **ArenaActionRequest**
+    - `player_id`: `string (UUID)`
+    - `entity_id`: `string (UUID)`
+    - `type`: `string` ("MOVE", "ATTACK", "PASS", "FORFEIT")
+    - `target_coords`: `Array<PositionDTO>`
 
-### Response DTOs (Incoming)
-- **ArenaStartResponse:** Mirrors `api.ArenaStartResponse`.
-    - `arena_id`: string
-    - `initial_state`: BoardStateDTO
-- **ArenaActionResponse:** Mirrors `api.ArenaActionResponse`.
-    - `status`: string
+### Incoming Responses
+- **ArenaStartResponse**
+    - `arena_id`: `string (UUID)`
+    - `initial_state`: `BoardStateDTO`
+- **ArenaActionResponse**
+    - `status`: `string` ("accepted" | "rejected")
+
+### Core Structures
+- **PlayerDTO**: `{id: string (UUID), entities: Array<EntityDTO>, team: int, ia: boolean}`
+- **EntityDTO**: `{id: string (UUID), player_id: string (UUID), name: string, hp: int, max_hp: int, attack: int, defense: int, move: int, max_move: int, position: PositionDTO}`
+- **PositionDTO**: `{x: int, y: int}`
+- **BoardStateDTO**: `{entities: Array<EntityDTO>, grid: GridDTO, turn: Array<TurnDTO>, current_player_id: string (UUID), current_entity_id: string (UUID), timeout: string (ISO8601), start_time: string (ISO8601), winner_id: string (UUID)|null}`
+- **GridDTO**: `{width: int, height: int, cells: Array<Array<CellDTO>>}`
+- **CellDTO**: `{entity_id: string (UUID)|null, obstacle: boolean}`
+- **TurnDTO**: `{player_id: string (UUID), entity_id: string (UUID), delay: int}`
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Namespace:** `App\DTOs` or `App\Http\Resources`

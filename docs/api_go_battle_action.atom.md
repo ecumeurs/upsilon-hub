@@ -22,16 +22,15 @@ To allow players to perform actions (Move, Attack, Skill) within an active battl
 **Endpoint:** `POST /internal/arena/{id}/action`
 
 ### Request (Wrapped in [[api_standard_envelope]])
-- `id`: `string` (UUID) - The ID of the arena (passed in URL).
-- `player_id`: `string` - The ID of the player performing the action.
-- `entity_id`: `string` - The ID of the entity performing the action.
-- `type`: `string` - The action type (e.g., `Move`, `Attack`).
+- `id`: `string (UUID)` (URL Parameter)
+- `player_id`: `string (UUID)`
+- `entity_id`: `string (UUID)`
+- `type`: `string` ("MOVE", "ATTACK", "PASS", "FORFEIT")
 - `target_coords`: `Array<Position>`
   - `x`: `int`, `y`: `int`
 
 ### Response (Wrapped in [[api_standard_envelope]])
-- Returns `200 OK` with the updated entity state or a success message.
-- If the action is invalid, returns `400 Bad Request` with `Success: false`.
+- `status`: `string` ("accepted" | "rejected")
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `POST /internal/arena/:id/action`

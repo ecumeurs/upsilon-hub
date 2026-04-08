@@ -25,7 +25,7 @@ To authenticate existing users and provide a session token.
 - `password`: `string`
 
 ### Response (Wrapped in [[api_standard_envelope]])
-- `user`: `UserObject`
+- `user`: `UserResource` (See [[api_auth_register]] for details)
 - `token`: `string` - JWT Bearer Token.
 
 ## TECHNICAL INTERFACE (The Bridge)

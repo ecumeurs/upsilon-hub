@@ -19,16 +19,26 @@ To manage player characters, including registration-time rerolls, stat updates, 
 
 ## THE RULE / LOGIC
 **Endpoints:**
-- `GET /api/v1/profile/{id}/characters`: List all characters for a user.
-- `GET /api/v1/profile/{id}/character/{characterId}`: Get specific character details.
-- `POST /api/v1/profile/{id}/character/{characterId}/reroll`: Reroll stats (restricted to new accounts). **Updates `initial_movement`.**
-- `POST /api/v1/profile/{id}/character/{characterId}/upgrade`: Allocate points during level up. **Validated against [[rule_progression]].**
+- `GET /api/v1/profile/characters`: List all characters for the authenticated user.
+- `GET /api/v1/profile/character/{characterId}`: Get specific character details.
+- `POST /api/v1/profile/character/{characterId}/reroll`: Reroll stats (restricted to new accounts). 
+- `POST /api/v1/profile/character/{characterId}/upgrade`: Allocate points. Validated against [[rule_progression]].
+
+### CharacterResource (Common Response)
+- `id`: `string (UUID)`
+- `name`: `string`
+- `hp`: `int`
+- `attack`: `int`
+- `defense`: `int`
+- `movement`: `int`
+- `initial_movement`: `int`
 
 ### Request - Upgrade (Wrapped in [[api_standard_envelope]])
-- `stats`: `Object` - Key-value pair of stats to increase (e.g., `{"attack": 1}`).
+- `stats`: `object` - Increments for stats (e.g., `{"attack": 1, "hp": 2}`).
 
-### Response (Wrapped in [[api_standard_envelope]])
-- `character`: `CharacterObject` (Matches [[entity_character]])
+### Response - Reroll (Wrapped in [[api_standard_envelope]])
+- `character`: `CharacterResource`
+- `reroll_count`: `int`
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `/api/v1/profile/*`
