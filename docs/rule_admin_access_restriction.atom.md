@@ -8,7 +8,8 @@ status: STABLE
 priority: 5
 tags: [security, admin, privacy]
 parents: [req_security, entity_player]
-dependents: []
+dependents:
+  - [[uc_admin_login]]
 ---
 # Administrator Access Restriction Rule
 

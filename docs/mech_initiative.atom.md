@@ -9,10 +9,10 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[mech_initiative_active_state]]
   - [[mech_initiative_delay_costs]]
-  - [[mech_initiative_initiative_roll]]
   - [[mech_initiative_requeue_calculation]]
+  - [[mech_initiative_initiative_roll]]
+  - [[mech_initiative_active_state]]
 ---
 # Initiative & Delay Mechanic
 

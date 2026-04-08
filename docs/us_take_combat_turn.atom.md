@@ -9,7 +9,9 @@ priority: 5
 tags: [combat, turn, board]
 parents:
   - [[uc_combat_turn]]
-dependents: []
+dependents:
+  - [[rule_forfeit_battle]]
+  - [[rule_team_mechanics]]
 ---
 # Taking a Combat Turn Story
 

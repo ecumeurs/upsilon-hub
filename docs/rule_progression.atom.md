@@ -9,7 +9,8 @@ priority: 5
 tags: [progression, character]
 parents:
   - [[entity_character]]
-dependents: []
+dependents:
+  - [[uc_progression_stat_allocation]]
 ---
 # Character Progression Rule
 

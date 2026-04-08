@@ -25,7 +25,7 @@ Provide a lightweight, development-friendly Docker orchestration for the Upsilon
 - **Service Orchestration**:
   - `app`: Laravel/Vue via Apache. Port `8000:80`.
   - `ws`: Reverb WebSocket server. Port `8080:8080`.
-  - `engine`: Go battle engine. Internal communication.
+  - `engine`: Go battle engine. Port `8081`. Internal/External communication.
   - `db`: PostgreSQL. Port `5432:5432`.
 - **Data Persistence**:
   - Named volume `db_data` for PostgreSQL `/var/lib/postgresql/data`.

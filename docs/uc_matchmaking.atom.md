@@ -9,8 +9,7 @@ priority: 5
 tags: []
 parents:
   - [[req_player_experience]]
-dependents:
-  - [[us_queue_selection]]
+dependents: []
 ---
 # Matchmaking & Queue Use Case
 

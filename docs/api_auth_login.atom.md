@@ -10,7 +10,8 @@ tags: [auth, login, api]
 parents:
   - [[api_laravel_gateway]]
   - [[api_standard_envelope]]
-dependents: []
+dependents:
+  - [[uc_player_login]]
 ---
 # Player Login API
 

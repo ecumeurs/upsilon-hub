@@ -9,9 +9,7 @@ priority: 5
 tags: [admin, ui]
 parents:
   - [[uc_admin_login]]
-dependents:
-  - [[uc_admin_user_management]]
-  - [[uc_admin_history_management]]
+dependents: []
 ---
 
 # Admin Dashboard Page UI

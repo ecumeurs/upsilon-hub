@@ -1,5 +1,8 @@
 package bridge
 
+// @spec-link [[rule_team_mechanics]]
+// @spec-link [[rule_forfeit_battle]]
+
 // @spec-link [[module_upsilonapi]]
 
 import (
@@ -72,6 +75,7 @@ func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.
 			e.RepsertPropertyValue("Movement", ee.Move)
 			e.RepsertPropertyValue("Attack", ee.Attack)
 			e.RepsertPropertyValue("Defense", ee.Defense)
+			e.RepsertPropertyValue("TeamID", p.Team)
 
 			// this bypass actor's owning resource, we should probably use the AddEntity message instead (doesn't exist yet).
 			battleArena.Ruler.AddEntity(e)
@@ -153,6 +157,11 @@ func (b *ArenaBridge) ArenaAction(arenaID uuid.UUID, req api.ArenaActionMessage)
 			ControllerID: uuid.MustParse(req.Data.PlayerID),
 			EntityID:     uuid.MustParse(req.Data.EntityID),
 			Path:         path,
+		}, nil), respChan)
+	case "forfeit":
+		r.SendActor(message.Create(nil, rulermethods.ControllerForfeit{
+			ControllerID: uuid.MustParse(req.Data.PlayerID),
+			EntityID:     uuid.MustParse(req.Data.EntityID),
 		}, nil), respChan)
 	default:
 		// Just notify the ruler for now with a generic message if type matches?

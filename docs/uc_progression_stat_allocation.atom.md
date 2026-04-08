@@ -11,8 +11,7 @@ parents:
   - [[req_player_experience]]
   - [[ui_dashboard]]
   - [[rule_progression]]
-dependents:
-  - [[us_win_progression]]
+dependents: []
 ---
 
 # Progression & Stat Allocation Use Case

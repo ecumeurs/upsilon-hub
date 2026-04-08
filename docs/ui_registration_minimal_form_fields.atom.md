@@ -14,7 +14,7 @@ dependents: []
 # Minimal Form Fields
 
 ## INTENT
-Requires strictly minimal information (Account Name, Password) from the user.
+Requires strictly minimal information (Account Name, Password, Full Address, Birth Date) from the user.
 
 ## THE RULE / LOGIC
 Form Fields: Requires strictly minimal information

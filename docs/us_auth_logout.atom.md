@@ -10,7 +10,8 @@ tags: [auth, logout, experience]
 parents:
   - [[req_player_experience]]
   - [[req_admin_experience]]
-dependents: []
+dependents:
+  - [[uc_auth_logout]]
 ---
 
 # Secure Logout User Story

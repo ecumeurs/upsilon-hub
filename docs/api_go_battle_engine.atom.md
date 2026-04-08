@@ -11,9 +11,9 @@ parents:
   - [[api_standard_envelope]]
 dependents:
   - [[api_go_battle_action]]
+  - [[battleui_upsilon_api_service]]
   - [[api_go_battle_start]]
   - [[api_go_webhook_callback]]
-  - [[battleui_upsilon_api_service]]
   - [[module_upsilonapi]]
 ---
 # Go UpsilonBattle JSON API & Webhook Dispatcher
@@ -34,7 +34,7 @@ The Go Battle Engine API is composed of several specialized endpoints and a webh
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Base Path:** `/internal`
-- **Port:** `8080`
+- **Port:** `8081`
 - **Code Tag:** `@spec-link [[api_go_battle_engine]]`
 
 ## EXPECTATION (For Testing)

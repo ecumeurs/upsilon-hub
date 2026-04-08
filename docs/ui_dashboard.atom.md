@@ -9,11 +9,13 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[ui_dashboard_navigation]]
-  - [[ui_dashboard_player_statistics]]
-  - [[ui_dashboard_queue_selection]]
+  - [[uc_progression_stat_allocation]]
   - [[ui_dashboard_roster_display]]
+  - [[uc_player_login]]
+  - [[ui_dashboard_queue_selection]]
   - [[ui_dashboard_security_check]]
+  - [[ui_dashboard_player_statistics]]
+  - [[ui_dashboard_navigation]]
 ---
 # Dashboard Page UI
 

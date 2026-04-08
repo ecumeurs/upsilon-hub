@@ -9,11 +9,12 @@ priority: 5
 tags: [api, gateway, websockets, proxy, laravel-reverb]
 parents: []
 dependents:
-  - [[api_auth_login]]
-  - [[api_auth_register]]
-  - [[api_battle_proxy]]
   - [[api_matchmaking]]
   - [[api_profile_character]]
+  - [[api_auth_login]]
+  - [[api_battle_proxy]]
+  - [[api_auth_logout]]
+  - [[api_auth_register]]
   - [[api_profile_export]]
 ---
 # Laravel API Gateway & WebSockets Hub
@@ -28,6 +29,7 @@ To define how the Vue.js frontend communicates with the overall ecosystem via La
 
 **Meta-game Actions (HTTP):**
 - `POST /api/v1/auth/login` -> Trades credentials for a Token.
+- `POST /api/v1/auth/register` -> Trades credentials for a Token.
 - `GET /api/v1/characters` -> Delivers roster state to UI.
 - `POST /api/v1/matchmaking/join` -> Enqueues the player.
 
