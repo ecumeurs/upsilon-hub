@@ -9,8 +9,8 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[mech_entity_properties_item_properties]]
   - [[mech_entity_properties_skill_properties]]
+  - [[mech_entity_properties_item_properties]]
 ---
 # Entity Property Declarations Mechanic
 

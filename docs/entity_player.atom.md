@@ -9,13 +9,13 @@ priority: 5
 tags: []
 parents: []
 dependents:
+  - [[entity_player_entity_player_initial_setup]]
   - [[entity_player_entity_character_rules_apply]]
-  - [[uc_admin_user_management]]
+  - [[infra_seed_admin]]
   - [[entity_player_entity_player_stats_tracking]]
   - [[rule_admin_access_restriction]]
+  - [[uc_admin_user_management]]
   - [[entity_player_entity_player_registration]]
-  - [[entity_player_entity_player_initial_setup]]
-  - [[infra_seed_admin]]
 ---
 # Player Account Entity
 

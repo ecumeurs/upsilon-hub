@@ -7,7 +7,8 @@ version: 1.0
 status: REVIEW
 priority: 5
 tags: [ui, public, landing]
-parents: []
+parents:
+  - [[module_frontend]]
 dependents: []
 ---
 # Landing Page UI

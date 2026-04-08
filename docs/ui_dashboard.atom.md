@@ -7,15 +7,17 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: []
-parents: []
+parents:
+  - [[module_frontend]]
+  - [[uc_player_login]]
 dependents:
   - [[uc_progression_stat_allocation]]
   - [[ui_dashboard_roster_display]]
-  - [[uc_player_login]]
+  - [[ui_dashboard_navigation]]
+  - [[ui_dashboard_player_statistics]]
   - [[ui_dashboard_queue_selection]]
   - [[ui_dashboard_security_check]]
-  - [[ui_dashboard_player_statistics]]
-  - [[ui_dashboard_navigation]]
+  - [[uc_player_login]]
 ---
 # Dashboard Page UI
 
