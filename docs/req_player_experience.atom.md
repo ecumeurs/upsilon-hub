@@ -9,13 +9,13 @@ priority: 5
 tags: [player, experience]
 parents: []
 dependents:
-  - [[uc_match_resolution]]
-  - [[uc_player_login]]
   - [[us_auth_logout]]
-  - [[uc_player_registration]]
+  - [[uc_player_login]]
+  - [[uc_match_resolution]]
   - [[uc_matchmaking]]
-  - [[uc_progression_stat_allocation]]
   - [[uc_combat_turn]]
+  - [[uc_player_registration]]
+  - [[uc_progression_stat_allocation]]
 ---
 
 # Player Experience Requirement

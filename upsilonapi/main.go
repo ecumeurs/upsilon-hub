@@ -18,6 +18,12 @@ func main() {
 		internal.POST("/arena/:id/action", handler.HandleArenaAction)
 	}
 
+	// V1 API
+	v1 := r.Group("/v1")
+	{
+		v1.GET("/match/stats/active", handler.HandleGetActiveMatchStats)
+	}
+
 	if err := r.Run(":8081"); err != nil {
 		logrus.Fatalf("Failed to start server: %v", err)
 	}

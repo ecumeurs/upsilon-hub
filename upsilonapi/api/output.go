@@ -14,8 +14,12 @@ type ArenaActionResponse struct {
 }
 
 type ArenaStartResponse struct {
-	ArenaID      string `json:"arena_id"`
-	InitialState any    `json:"initial_state"`
+	ArenaID      string     `json:"arena_id"`
+	InitialState BoardState `json:"initial_state"`
+}
+
+type ActiveMatchStatsResponse struct {
+	ActiveCount int `json:"active_count"`
 }
 
 // @spec-link [[entity_grid]]

@@ -7,15 +7,16 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: []
-parents: []
+parents:
+  - [[requirement_customer_user_id_privacy]]
 dependents:
-  - [[entity_player_entity_character_rules_apply]]
-  - [[uc_admin_user_management]]
-  - [[entity_player_entity_player_stats_tracking]]
-  - [[infra_seed_admin]]
   - [[entity_player_entity_player_initial_setup]]
-  - [[entity_player_entity_player_registration]]
+  - [[entity_player_entity_player_stats_tracking]]
   - [[rule_admin_access_restriction]]
+  - [[entity_player_entity_player_registration]]
+  - [[uc_admin_user_management]]
+  - [[infra_seed_admin]]
+  - [[entity_player_entity_character_rules_apply]]
 ---
 # Player Account Entity
 
@@ -29,6 +30,7 @@ Core attributes for identity:
 - `full_address` (Private)
 - `birth_date` (Private)
 - `role` (Admin, Player)
+- `id` (Internal UUID, NOT exposed to frontend per [[requirement_customer_user_id_privacy]])
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[entity_player]]`

@@ -1,6 +1,6 @@
 ---
 id: ui_theme
-status: DRAFT
+status: STABLE
 human_name: UI Theme Specification
 dependents: []
 type: UI
@@ -20,6 +20,10 @@ To provide a centralized specification for colors, typography, and styling token
 ### Color Palette
 - **Neon Accents**: Cyan (`#00f2ff`), Magenta (`#ff00ff`), Lime (`#39ff13`).
 - **Gritty Base**: Deep Void (`#0a0a0b`), Gunmetal (`#1a1a1e`), Oxidized Iron (`#3d2b1f`), Worn Steel (`#4a4a4f`).
+
+### Readability Standards
+- **Rule**: Text elements must never use the following base colors on dark backgrounds: `void`, `gunmetal`, `rust`, or `steel`.
+- **Requirement**: Preferred text colors for legibility are `cyan`, `magenta`, `lime`, and `white`.
 
 ### Typography
 - **Headings**: `Orbitron` (Variable: `--font-scifi`)

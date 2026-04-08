@@ -1,6 +1,6 @@
 ---
 id: ui_dashboard_match_statistics
-status: DRAFT
+status: STABLE
 human_name: Dashboard Match Statistics
 priority: 5
 tags: [matchmaking, dashboard, stats]
@@ -26,6 +26,9 @@ To display real-time matchmaking activity statistics to the user on the dashboar
 
 ## TECHNICAL INTERFACE
 - **API Endpoints:** `GET /v1/match/stats/waiting`, `GET /v1/match/stats/active`
+- **Frontend Code:** `Dashboard.vue`
+- **Backend Code:** `MatchMakingController.php`, `UpsilonApiService.php`
+- **Engine Code:** `bridge.go`, `handler.go`
 - **Code Tag:** `@spec-link [[ui_dashboard_match_statistics]]`
 
 ## EXPECTATION

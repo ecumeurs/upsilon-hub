@@ -192,3 +192,10 @@ func (b *ArenaBridge) GetArena(id uuid.UUID) (*ruler.Ruler, bool) {
 	}
 	return r.Ruler, ok
 }
+
+// GetActiveMatchCount returns the number of active arenas.
+func (b *ArenaBridge) GetActiveMatchCount() int {
+	b.mu.RLock()
+	defer b.mu.RUnlock()
+	return len(b.arenas)
+}

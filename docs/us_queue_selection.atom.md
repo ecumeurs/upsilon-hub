@@ -11,8 +11,8 @@ parents: []
 dependents:
   - [[us_queue_selection_pve_instant_game_start]]
   - [[us_queue_selection_display_win_loss_record]]
-  - [[us_queue_selection_queue_buttons_visible]]
   - [[us_queue_selection_pvp_navigation]]
+  - [[us_queue_selection_queue_buttons_visible]]
 ---
 # Queue Selection Story
 

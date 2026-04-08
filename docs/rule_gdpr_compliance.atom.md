@@ -18,15 +18,15 @@ Ensures personal data protection through secure deletion (soft delete) and anony
 
 ## THE RULE / LOGIC
 - **Account Deletion (Right to be Forgotten):** 
-  - Deletion of an account MUST be a **soft delete**.
+  - Deletion of an account MUST be a **soft delete** using Laravel's `SoftDeletes`.
   - The record is marked as deleted but remains in the database for audit/integrity until a purge cycle.
 - **Anonymization:**
-  - Upon soft deletion or upon request for anonymization, sensitive data fields in `entity_player` MUST be overwritten with non-identifiable placeholders.
+  - Upon soft deletion or upon request for anonymization, sensitive data fields MUST be overwritten with non-identifiable placeholders.
   - Sensitive Fields: `full_address`, `birth_date`.
   - Placeholder: `ANONYMIZED`.
 - **Right to Portability:**
-  - Authenticated users MUST have the ability to download a machine-readable dump of all their personal data stored in the system (e.g., JSON format).
-  - Scope: All fields in `entity_player`, win/loss records, and character rosters.
+  - Authenticated users MUST have the ability to download a machine-readable dump of all their personal data (JSON format).
+  - Scope: User account info, win/loss records, and character rosters.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[rule_gdpr_compliance]]`
@@ -34,4 +34,4 @@ Ensures personal data protection through secure deletion (soft delete) and anony
 
 ## EXPECTATION (For Testing)
 - Request account delete -> `deleted_at` timestamp set -> User cannot login.
-- Audit `entity_player` table -> `full_address` and `birth_date` show "ANONYMIZED" for deleted user.
+- Audit `users` table -> `full_address` and `birth_date` show "ANONYMIZED" for deleted user.

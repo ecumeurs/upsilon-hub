@@ -10,8 +10,8 @@ tags: [api, controller, messaging]
 parents:
   - [[api_ruler_methods]]
 dependents:
-  - [[mech_controller_handshake]]
   - [[mech_controller_communication_sequence]]
+  - [[mech_controller_handshake]]
 ---
 # Controller Message Methods API
 

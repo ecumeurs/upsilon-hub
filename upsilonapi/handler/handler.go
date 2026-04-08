@@ -123,3 +123,11 @@ func HandleArenaAction(c *gin.Context) {
 
 	c.JSON(http.StatusOK, api.NewSuccess(req.RequestID, msg, res))
 }
+
+// HandleGetActiveMatchStats returns the number of active matches.
+func HandleGetActiveMatchStats(c *gin.Context) {
+	count := bridge.Get().GetActiveMatchCount()
+	c.JSON(http.StatusOK, api.NewSuccess("", "Active match stats retrieved", api.ActiveMatchStatsResponse{
+		ActiveCount: count,
+	}))
+}
