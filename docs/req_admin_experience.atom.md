@@ -9,10 +9,10 @@ priority: 5
 tags: [admin, experience]
 parents: []
 dependents:
-  - [[us_auth_logout]]
-  - [[uc_admin_login]]
   - [[uc_admin_history_management]]
   - [[uc_admin_user_management]]
+  - [[uc_admin_login]]
+  - [[us_auth_logout]]
 ---
 
 # Admin Experience Requirement

@@ -9,8 +9,8 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[mech_board_generation_board_dimensions]]
   - [[mech_board_generation_min_area_constraint]]
+  - [[mech_board_generation_board_dimensions]]
   - [[mech_board_generation_terrain_obstacles]]
 ---
 # Board Generation Mechanic
