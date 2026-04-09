@@ -138,15 +138,21 @@ func (s *Session) String() string {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
+	accountName, _ := s.context["account_name"]
 	userID, _ := s.context["user_id"]
 	matchID, _ := s.context["match_id"]
+
+	displayUser := accountName
+	if displayUser == "" {
+		displayUser = userID
+	}
 
 	auth := "✗"
 	if s.token != "" {
 		auth = "✓"
 	}
 
-	return fmt.Sprintf("auth:%s user:%s match:%s", auth, valueOrDash(userID), valueOrDash(matchID))
+	return fmt.Sprintf("auth:%s user:%s match:%s", auth, valueOrDash(displayUser), valueOrDash(matchID))
 }
 
 func valueOrDash(v string) string {

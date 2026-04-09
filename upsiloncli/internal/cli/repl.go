@@ -2,11 +2,10 @@
 package cli
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strings"
 
+	"github.com/chzyer/readline"
 	"github.com/ecumeurs/upsiloncli/internal/api"
 	"github.com/ecumeurs/upsiloncli/internal/display"
 	"github.com/ecumeurs/upsiloncli/internal/endpoint"
@@ -19,7 +18,7 @@ type CLI struct {
 	Client   *api.Client
 	Printer  *display.Printer
 	Registry *endpoint.Registry
-	Scanner  *bufio.Scanner
+	ReadLine *readline.Instance
 }
 
 // New creates a new CLI instance.
@@ -30,32 +29,66 @@ func New(baseURL string) *CLI {
 	reg := endpoint.NewRegistry()
 	endpoint.RegisterAll(reg)
 
+	// Build completer
+	var callItems []readline.PrefixCompleterInterface
+	for _, name := range reg.Names() {
+		callItems = append(callItems, readline.PcItem(name))
+	}
+
+	completer := readline.NewPrefixCompleter(
+		readline.PcItem("routes"),
+		readline.PcItem("call", callItems...),
+		readline.PcItem("jwt"),
+		readline.PcItem("session"),
+		readline.PcItem("redraw"),
+		readline.PcItem("help"),
+		readline.PcItem("exit"),
+	)
+
+	// Add shortcut routes to root completer
+	for _, name := range reg.Names() {
+		completer.Children = append(completer.Children, readline.PcItem(name))
+	}
+
+	rl, err := readline.NewEx(&readline.Config{
+		Prompt:          fmt.Sprintf("\001%s\002[\001%s\002]\001%s\002 > ", display.Cyan, sess.String(), display.Reset),
+		AutoComplete:    completer,
+		InterruptPrompt: "^C",
+		EOFPrompt:       "exit",
+	})
+	if err != nil {
+		panic(err)
+	}
+
 	return &CLI{
 		Session:  sess,
 		Client:   client,
 		Printer:  printer,
 		Registry: reg,
-		Scanner:  bufio.NewScanner(os.Stdin),
+		ReadLine: rl,
 	}
 }
 
 // Run starts the interactive REPL loop.
 func (c *CLI) Run() {
 	c.printBanner()
+	defer c.ReadLine.Close()
 
 	for {
-		fmt.Printf("\n%s[%s]%s > ", display.Cyan, c.Session.String(), display.Reset)
+		// Update prompt dynamically with current session state
+		c.ReadLine.SetPrompt(fmt.Sprintf("\001%s\002[\001%s\002]\001%s\002 > ", display.Cyan, c.Session.String(), display.Reset))
 
-		if !c.Scanner.Scan() {
+		line, err := c.ReadLine.Readline()
+		if err != nil { // io.EOF or ctrl-c
 			break
 		}
 
-		input := strings.TrimSpace(c.Scanner.Text())
-		if input == "" {
+		line = strings.TrimSpace(line)
+		if line == "" {
 			continue
 		}
 
-		parts := strings.Fields(input)
+		parts := strings.Fields(line)
 		cmd := strings.ToLower(parts[0])
 		args := parts[1:]
 
@@ -165,16 +198,26 @@ func (c *CLI) executeEndpoint(name string) {
 // prompt asks the user for a value, showing the default if available.
 func (c *CLI) prompt(name, hint, defaultVal string, required bool) string {
 	for {
+		var promptStr string
 		if defaultVal != "" {
-			fmt.Printf("  %s%s%s [default: %s%s%s]: ", display.Bold, name, display.Reset, display.Green, defaultVal, display.Reset)
+			promptStr = fmt.Sprintf("  \001%s\002%s\001%s\002 [default: \001%s\002%s\001%s\002]: ", display.Bold, name, display.Reset, display.Green, defaultVal, display.Reset)
 		} else if hint != "" {
-			fmt.Printf("  %s%s%s (%s): ", display.Bold, name, display.Reset, hint)
+			promptStr = fmt.Sprintf("  \001%s\002%s\001%s\002 (%s): ", display.Bold, name, display.Reset, hint)
 		} else {
-			fmt.Printf("  %s%s%s: ", display.Bold, name, display.Reset)
+			promptStr = fmt.Sprintf("  \001%s\002%s\001%s\002: ", display.Bold, name, display.Reset)
 		}
 
-		c.Scanner.Scan()
-		value := strings.TrimSpace(c.Scanner.Text())
+		c.ReadLine.SetPrompt(promptStr)
+		// Disable autocomplete temporarily for parameter input
+		oldCompleter := c.ReadLine.Config.AutoComplete
+		c.ReadLine.Config.AutoComplete = nil
+
+		line, err := c.ReadLine.Readline()
+		c.ReadLine.Config.AutoComplete = oldCompleter
+		if err != nil {
+			return ""
+		}
+		value := strings.TrimSpace(line)
 
 		if value == "" && defaultVal != "" {
 			return defaultVal

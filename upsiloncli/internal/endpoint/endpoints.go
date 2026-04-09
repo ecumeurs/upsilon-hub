@@ -448,6 +448,25 @@ func extractCharacterIDs(resp *api.Response, sess *session.Session) {
 	if !ok {
 		return
 	}
+
+	// Capture user info if present (flat or nested)
+	if id, ok := data["user_id"].(string); ok {
+		sess.Set("user_id", id)
+	}
+	if name, ok := data["account_name"].(string); ok {
+		sess.Set("account_name", name)
+	}
+
+	// Deep capture if nested in "user" object
+	if user, ok := data["user"].(map[string]interface{}); ok {
+		if id, ok := user["id"].(string); ok {
+			sess.Set("user_id", id)
+		}
+		if name, ok := user["account_name"].(string); ok {
+			sess.Set("account_name", name)
+		}
+	}
+
 	if chars, ok := data["characters"].([]interface{}); ok && len(chars) > 0 {
 		var ids []string
 		for _, item := range chars {
