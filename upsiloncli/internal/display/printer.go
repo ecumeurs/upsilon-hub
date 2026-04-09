@@ -7,7 +7,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sort"
 	"strings"
+
+	"github.com/ecumeurs/upsiloncli/internal/dto"
 )
 
 // ANSI color codes
@@ -141,6 +144,173 @@ func (p *Printer) SessionInfo(data map[string]string) {
 	fmt.Printf("  %s%s%s\n", Dim, strings.Repeat("─", 40), Reset)
 	for k, v := range data {
 		fmt.Printf("  %-20s %s\n", Cyan+k+Reset, v)
+	}
+	fmt.Println()
+}
+// Board renders the tactical map and entity status table.
+func (p *Printer) Board(bs *dto.BoardState, currentUserID string, participants []dto.Participant) {
+	if bs == nil {
+		p.Warn("No board state available.")
+		return
+	}
+
+	// 1. Setup Roles and Symbols
+	var myTeam int
+	var actualCurrentUserID string
+	for _, part := range participants {
+		// Matching current user by ID or by matching nickname if we have it in session
+		if part.PlayerID == currentUserID || (currentUserID != "" && part.Nickname == currentUserID) {
+			myTeam = part.Team
+			actualCurrentUserID = part.PlayerID // Normalize to the ID used in the match
+			break
+		}
+	}
+
+	// Fallback if no exact match (e.g. currentUserID is account_name but participants uses UUIDs)
+	if actualCurrentUserID == "" && currentUserID != "" {
+		// Try to find by nickname in session if available
+		for _, part := range participants {
+			if part.PlayerID == currentUserID {
+				actualCurrentUserID = part.PlayerID
+				myTeam = part.Team
+				break
+			}
+		}
+	}
+
+	var allyID string
+	var enemies []string
+	nicknames := make(map[string]string)
+	for _, part := range participants {
+		nicknames[part.PlayerID] = part.Nickname
+		if part.PlayerID == actualCurrentUserID {
+			continue
+		}
+		if part.Team == myTeam {
+			allyID = part.PlayerID
+		} else {
+			enemies = append(enemies, part.PlayerID)
+		}
+	}
+
+	// Group entities by player
+	playerEntities := make(map[string][]dto.Entity)
+	for _, ent := range bs.Entities {
+		if ent.HP > 0 {
+			playerEntities[ent.PlayerID] = append(playerEntities[ent.PlayerID], ent)
+		}
+	}
+	// Sort for deterministic symbols
+	for pid := range playerEntities {
+		sort.Slice(playerEntities[pid], func(i, j int) bool {
+			return playerEntities[pid][i].ID < playerEntities[pid][j].ID
+		})
+	}
+
+	entitySymbols := make(map[string]string)
+	entityColors := make(map[string]string)
+
+	assign := func(pID string, syms []string, color string) {
+		for i, ent := range playerEntities[pID] {
+			if i < len(syms) {
+				entitySymbols[ent.ID] = syms[i]
+				entityColors[ent.ID] = color
+			} else {
+				entitySymbols[ent.ID] = "?"
+				entityColors[ent.ID] = color
+			}
+		}
+	}
+
+	assign(actualCurrentUserID, []string{"A", "B", "C"}, Green)
+	if allyID != "" {
+		assign(allyID, []string{"a", "b", "c"}, Green)
+	}
+	if len(enemies) > 0 {
+		assign(enemies[0], []string{"X", "Y", "Z"}, Red)
+	}
+	if len(enemies) > 1 {
+		assign(enemies[1], []string{"x", "y", "z"}, Red)
+	}
+
+	// 2. Render Grid
+	fmt.Println()
+	fmt.Printf("  %sTACTICAL FEED — MATCH DATA%s\n", Cyan+Bold, Reset)
+	fmt.Printf("  %s%s%s\n", Dim, strings.Repeat("─", 40), Reset)
+
+	// Top border
+	fmt.Print("    ")
+	for x := 0; x < bs.Grid.Width; x++ {
+		fmt.Printf("%2d", x)
+	}
+	fmt.Println()
+
+	for y := 0; y < bs.Grid.Height; y++ {
+		fmt.Printf("%2d │", y)
+		for x := 0; x < bs.Grid.Width; x++ {
+			cell := bs.Grid.Cells[x][y]
+			if cell.EntityID != "" {
+				sym := entitySymbols[cell.EntityID]
+				color := entityColors[cell.EntityID]
+				if cell.EntityID == bs.CurrentEntityID {
+					fmt.Printf("%s%s%s ", color+Bold+BgGreen, sym, Reset) // Highlight current turn? No, let's keep it simple
+				} else {
+					fmt.Printf("%s%s%s ", color+Bold, sym, Reset)
+				}
+			} else if cell.Obstacle {
+				fmt.Printf("%s#%s ", Dim, Reset)
+			} else {
+				fmt.Printf("%s.%s ", Dim, Reset)
+			}
+		}
+		fmt.Println("│")
+	}
+
+	// Map entity ID to delay
+	delays := make(map[string]int)
+	for _, t := range bs.Turn {
+		delays[t.EntityID] = t.Delay
+	}
+
+	// 3. Entity List
+	fmt.Println()
+	fmt.Printf("  %s%-3s %-15s %-12s %-10s %-7s %-5s %s\n", Bold, "ID", "UNIT NAME", "OWNER", "HP/MAX", "MVT", "DELAY", Reset)
+	fmt.Printf("  %s%s%s\n", Dim, strings.Repeat("─", 70), Reset)
+
+	// Sort entities by symbol for the list
+	displayEnts := bs.Entities
+	sort.Slice(displayEnts, func(i, j int) bool {
+		symI := entitySymbols[displayEnts[i].ID]
+		symJ := entitySymbols[displayEnts[j].ID]
+		return symI < symJ
+	})
+
+	for _, ent := range displayEnts {
+		if ent.HP <= 0 {
+			continue // Hide dead units
+		}
+		sym := entitySymbols[ent.ID]
+		color := entityColors[ent.ID]
+		owner := nicknames[ent.PlayerID]
+		if owner == "" {
+			owner = "System/AI"
+		}
+		if ent.ID == bs.CurrentEntityID {
+			fmt.Print(Cyan + "> " + Reset)
+		} else {
+			fmt.Print("  ")
+		}
+		
+		delayStr := fmt.Sprintf("%d", delays[ent.ID])
+
+		fmt.Printf("%s%s%s %-15s %-12s %-10s %-7d %-5s\n",
+			color+Bold, sym, Reset,
+			ent.Name,
+			owner,
+			fmt.Sprintf("%d/%d", ent.HP, ent.MaxHP),
+			ent.Move,
+			delayStr,
+		)
 	}
 	fmt.Println()
 }

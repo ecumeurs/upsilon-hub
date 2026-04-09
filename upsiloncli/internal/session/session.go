@@ -7,20 +7,25 @@ import (
 	"fmt"
 	"os"
 	"sync"
+
+	"github.com/ecumeurs/upsiloncli/internal/dto"
 )
 
 // SessionData is the serializable part of the session.
 type SessionData struct {
-	Token   string            `json:"token"`
-	Context map[string]string `json:"context"`
+	Token        string            `json:"token"`
+	Context      map[string]string `json:"context"`
+	Participants []dto.Participant `json:"participants"`
 }
 
 // Session holds the active JWT and a key-value context store
 // populated from API response data (user_id, match_id, etc.).
 type Session struct {
-	mu      sync.RWMutex
-	token   string
-	context map[string]string
+	mu           sync.RWMutex
+	token        string
+	context      map[string]string
+	lastBoard    *dto.BoardState
+	participants []dto.Participant
 }
 
 // New creates an empty session.
@@ -99,6 +104,59 @@ func (s *Session) ClearAll() {
 	defer s.mu.Unlock()
 	s.token = ""
 	s.context = make(map[string]string)
+	s.lastBoard = nil
+	s.participants = nil
+}
+
+// --- Tactical State ---
+
+// SetLastBoard updates the cached tactical board.
+func (s *Session) SetLastBoard(board *dto.BoardState) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.lastBoard = board
+	if board != nil && board.CurrentEntityID != "" {
+		s.context["current_entity_id"] = board.CurrentEntityID
+	}
+}
+
+// LastBoard returns the cached tactical board.
+func (s *Session) LastBoard() *dto.BoardState {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.lastBoard
+}
+
+// SetParticipants store the team mapping for the current match.
+func (s *Session) SetParticipants(participants []dto.Participant) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.participants = participants
+}
+
+// Participants returns the current match participants.
+func (s *Session) Participants() []dto.Participant {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.participants
+}
+
+// UserID returns the current user UUID.
+func (s *Session) UserID() string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.context["user_id"]
+}
+
+// UserIdentifier returns either the user_id (UUID) or account_name (Nickname).
+// This is used for matching against match participants.
+func (s *Session) UserIdentifier() string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if id := s.context["user_id"]; id != "" {
+		return id
+	}
+	return s.context["account_name"]
 }
 
 // Dump returns a snapshot of the session for display.
@@ -177,8 +235,9 @@ func valueOrDash(v string) string {
 func (s *Session) SaveToFile(path string) error {
 	s.mu.RLock()
 	data := SessionData{
-		Token:   s.token,
-		Context: s.context,
+		Token:        s.token,
+		Context:      s.context,
+		Participants: s.participants,
 	}
 	s.mu.RUnlock()
 
@@ -206,6 +265,7 @@ func (s *Session) LoadFromFile(path string) error {
 	defer s.mu.Unlock()
 	s.token = data.Token
 	s.context = data.Context
+	s.participants = data.Participants
 	if s.context == nil {
 		s.context = make(map[string]string)
 	}

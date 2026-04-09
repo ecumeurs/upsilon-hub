@@ -10,6 +10,7 @@ import (
 	"github.com/ecumeurs/upsiloncli/internal/display"
 	"github.com/ecumeurs/upsiloncli/internal/endpoint"
 	"github.com/ecumeurs/upsiloncli/internal/session"
+	"github.com/ecumeurs/upsiloncli/internal/ws"
 )
 
 // CLI is the interactive command-line application.
@@ -19,6 +20,7 @@ type CLI struct {
 	Printer  *display.Printer
 	Registry *endpoint.Registry
 	ReadLine *readline.Instance
+	Listener *ws.Listener
 	Persist  bool
 }
 
@@ -43,6 +45,7 @@ func New(baseURL string, persist bool) *CLI {
 		Client:   client,
 		Printer:  printer,
 		Registry: reg,
+		Listener: ws.NewListener(client, sess, printer),
 		Persist:  persist,
 	}
 }
@@ -82,6 +85,9 @@ func (c *CLI) Run() {
 	c.ReadLine = rl
 	c.printBanner()
 	defer c.ReadLine.Close()
+
+	// Start WebSocket listener in background
+	c.Listener.Start()
 
 	for {
 		// Update prompt dynamically with current session state
@@ -138,7 +144,15 @@ func (c *CLI) Run() {
 			c.Printer.SessionInfo(c.Session.Dump())
 
 		case "redraw":
-			c.Printer.System("Board redraw — not yet implemented (pending WebSocket integration).")
+			bs := c.Session.LastBoard()
+			parts := c.Session.Participants()
+			if bs != nil {
+				// Identify ourself using either UUID or Nickname
+				ident := c.Session.UserIdentifier()
+				c.Printer.Board(bs, ident, parts)
+			} else {
+				c.Printer.Warn("No board state cached. Use 'call game_state' first or wait for a push update.")
+			}
 
 		default:
 			// Check if it's a valid route_name shortcut
@@ -236,6 +250,9 @@ func (c *CLI) executeEndpoint(name string, cliArgs []string) {
 	if c.Persist {
 		c.Session.SaveToFile(sessionFile)
 	}
+
+	// Sync WebSocket subscriptions
+	c.Listener.Sync()
 
 	// Suggest next routes (only in interactive mode)
 	if len(cliArgs) == 0 {

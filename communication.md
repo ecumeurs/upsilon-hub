@@ -161,9 +161,9 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 - **Intent:** [[uc_combat_turn]]: Proxy tactical commands to the Upsilon Go Engine.
 - **Input:**
   - `id`: `string (UUID)` (URL Parameter - Match ID)
-  - `payload`: `ArenaActionRequest` (See [[#4.2-arenaactionrequest]])
+  - `payload`: `ArenaActionRequest` (Note: `player_id` is automatically injected by Laravel from JWT)
 - **Logic:** Proxies request to Upsilon `/internal/arena/:id/action` via [[api_go_battle_action]].
-- **Output:** `ArenaActionResponse` (See [[#4.1-arenaactionresponse]])
+- **Output:** `ArenaActionResponse` (See [[#4.1-arenaactionrequest]])
 
 ---
 
@@ -222,7 +222,7 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 - **`initial_state`**: `BoardState`
 
 #### ArenaActionRequest
-- **`player_id`**: `string (UUID)`
+- **`player_id`**: `string (UUID)` (Implicit; extracted from JWT by Gateway)
 - **`entity_id`**: `string (UUID)`
 - **`type`**: `string` ("MOVE", "ATTACK", "PASS", "FORFEIT")
 - **`target_coords`**: `Array<Position>`

@@ -31,8 +31,9 @@ To facilitate communication between the player and the core game engine for acti
   - **Verb:** `POST`
   - **Intent:** Command Transmission
   - **Input:** 
-    - `type`: (string) [Mandatory] 'MOVE', 'SKILL', or 'END_TURN'.
-    - `params`: (object) [Optional] Extra data like coordinates or target IDs.
+    - `entity_id`: (string) [Mandatory] The acting character identifier.
+    - `type`: (string) [Mandatory] 'MOVE', 'ATTACK', 'PASS', or 'FORFEIT'.
+    - `target_coords`: (object) [Optional] Extra data like coordinates or target IDs.
   - **Output:** `{ "success": true, "result": "action_processed" }`
 
 ## TECHNICAL INTERFACE (The Bridge)

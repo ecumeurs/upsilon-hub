@@ -1,11 +1,13 @@
 package endpoint
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/ecumeurs/upsiloncli/internal/api"
 	"github.com/ecumeurs/upsiloncli/internal/session"
+	"github.com/ecumeurs/upsiloncli/internal/dto"
 )
 
 // --- Profile ---
@@ -364,9 +366,29 @@ func (e *GameState) Next() []string {
 
 func (e *GameState) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
 	path := strings.ReplaceAll(e.Path(), "{id}", inputs["id"])
-	_, err := client.Get(path)
-	// TODO: parse board state and trigger display.DrawBoard()
-	return err
+	resp, err := client.Get(path)
+	if err != nil {
+		return err
+	}
+
+	// Parse custom response structure
+	var game dto.GameResponse
+	// Re-marshal/unmarshal because resp.Data is interface{}
+	dataBytes, _ := json.Marshal(resp.Data)
+	if err := json.Unmarshal(dataBytes, &game); err == nil {
+		sess.SetParticipants(game.Participants)
+		sess.SetLastBoard(&game.GameState)
+		client.Printer.System("Tactical state synchronized.")
+		client.Printer.Board(&game.GameState, sess.UserIdentifier(), game.Participants)
+	}
+
+	return nil
+}
+
+// json tag helper
+func (e *GameState) marshal(data interface{}) []byte {
+	b, _ := json.Marshal(data)
+	return b
 }
 
 // GameAction implements Endpoint for POST /api/v1/game/{id}/action.
@@ -380,8 +402,7 @@ func (e *GameAction) Auth() bool          { return true }
 func (e *GameAction) Params() []Param {
 	return []Param{
 		{Name: "id", Hint: "match UUID", Required: true, ContextKey: "match_id"},
-		{Name: "player_id", Hint: "your player UUID", Required: true, ContextKey: "user_id"},
-		{Name: "entity_id", Hint: "acting entity UUID", Required: true, ContextKey: "entity_id"},
+		{Name: "entity_id", Hint: "acting entity UUID", Required: true, ContextKey: "current_entity_id"},
 		{Name: "type", Hint: "MOVE|ATTACK|PASS|FORFEIT", Required: true},
 		{Name: "target_coords", Hint: "x,y coordinates (e.g. 3,2)"},
 	}
