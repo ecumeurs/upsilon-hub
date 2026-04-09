@@ -130,11 +130,14 @@ func (l *Listener) listenLoop() {
 				Data dto.BoardState `json:"data"`
 			}
 
+			l.Printer.WebSocket("board.updated", envelope.Data)
+
 			var dataStr string
 			if err := json.Unmarshal(envelope.Data, &dataStr); err == nil {
 				if err := json.Unmarshal([]byte(dataStr), &payload); err == nil {
 					l.Session.SetLastBoard(&payload.Data)
 					l.Printer.System("Tactical feed updated.")
+					l.Printer.Suggestions([]string{"redraw"})
 				} else {
 					l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated data string: %v", err))
 				}
@@ -142,6 +145,7 @@ func (l *Listener) listenLoop() {
 				if err := json.Unmarshal(envelope.Data, &payload); err == nil {
 					l.Session.SetLastBoard(&payload.Data)
 					l.Printer.System("Tactical feed updated.")
+					l.Printer.Suggestions([]string{"redraw"})
 				} else {
 					l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated payload: %v", err))
 				}

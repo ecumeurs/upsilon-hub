@@ -112,6 +112,18 @@ func (p *Printer) Warn(msg string) {
 	fmt.Printf("%s[WARN]%s %s\n", Red+Bold, Reset, msg)
 }
 
+// Suggestions prints a list of recommended next commands.
+func (p *Printer) Suggestions(commands []string) {
+	if len(commands) == 0 {
+		return
+	}
+	var formatted []string
+	for _, cmd := range commands {
+		formatted = append(formatted, Green+cmd+Reset)
+	}
+	fmt.Printf("\n  %sSuggested next steps:%s %s\n", Dim, Reset, strings.Join(formatted, ", "))
+}
+
 // WebSocket prints a received WebSocket event.
 func (p *Printer) WebSocket(eventType string, payload []byte) {
 	fmt.Printf("\n%s[WS]%s %s event received.\n", Magenta+Bold, Reset, eventType)

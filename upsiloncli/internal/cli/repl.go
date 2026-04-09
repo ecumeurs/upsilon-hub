@@ -263,17 +263,9 @@ func (c *CLI) executeEndpoint(name string, cliArgs []string) {
 	// Suggest next routes (only in interactive mode)
 	if len(cliArgs) == 0 {
 		next := ep.Next()
-		if len(next) > 0 {
-			var formatted []string
-			for _, n := range next {
-				if nxtEp := c.Registry.Get(n); nxtEp != nil {
-					formatted = append(formatted, display.Green+n+display.Reset)
-				}
+			if len(next) > 0 {
+				c.Printer.Suggestions(next)
 			}
-			if len(formatted) > 0 {
-				fmt.Printf("\n  %sSuggested next steps:%s %s\n", display.Dim, display.Reset, strings.Join(formatted, ", "))
-			}
-		}
 	}
 }
 
