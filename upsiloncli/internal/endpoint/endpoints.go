@@ -395,7 +395,7 @@ func (e *GameState) marshal(data interface{}) []byte {
 type GameAction struct{}
 
 func (e *GameAction) Name() string        { return "game_action" }
-func (e *GameAction) Description() string { return "Send tactical action (MOVE/ATTACK/PASS/FORFEIT)" }
+func (e *GameAction) Description() string { return "Send tactical action (move/attack/pass/forfeit)" }
 func (e *GameAction) Method() string      { return "POST" }
 func (e *GameAction) Path() string        { return "/api/v1/game/{id}/action" }
 func (e *GameAction) Auth() bool          { return true }
@@ -403,7 +403,7 @@ func (e *GameAction) Params() []Param {
 	return []Param{
 		{Name: "id", Hint: "match UUID", Required: true, ContextKey: "match_id"},
 		{Name: "entity_id", Hint: "acting entity UUID", Required: true, ContextKey: "current_entity_id"},
-		{Name: "type", Hint: "MOVE|ATTACK|PASS|FORFEIT", Required: true},
+		{Name: "type", Hint: "move|attack|pass|forfeit", Required: true},
 		{Name: "target_coords", Hint: "x,y coordinates (e.g. 3,2)"},
 	}
 }

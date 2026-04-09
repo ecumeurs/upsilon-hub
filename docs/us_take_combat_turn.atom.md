@@ -10,8 +10,8 @@ tags: [combat, turn, board]
 parents:
   - [[uc_combat_turn]]
 dependents:
-  - [[rule_forfeit_battle]]
   - [[rule_team_mechanics]]
+  - [[rule_forfeit_battle]]
 ---
 # Taking a Combat Turn Story
 

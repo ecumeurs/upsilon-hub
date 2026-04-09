@@ -9,9 +9,9 @@ priority: 5
 tags: [api, tracing, uuid, header]
 parents: []
 dependents:
-  - [[rule_tracing_logging]]
   - [[req_logging_traceability]]
   - [[api_standard_envelope]]
+  - [[rule_tracing_logging]]
 ---
 # API Request Identification
 

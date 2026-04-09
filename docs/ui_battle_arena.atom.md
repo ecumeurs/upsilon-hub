@@ -12,11 +12,11 @@ parents:
 human_name: Battle Arena Page UI
 priority: 5
 dependents:
-  - [[ui_combat_header]]
-  - [[ui_team_roster_panel]]
-  - [[ui_iso_board]]
   - [[ui_initiative_timeline]]
+  - [[ui_combat_header]]
+  - [[ui_iso_board]]
   - [[ui_action_panel]]
+  - [[ui_team_roster_panel]]
 ---
 
 # New Atom

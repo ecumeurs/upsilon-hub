@@ -64,6 +64,7 @@ func (c *CLI) Run() {
 		readline.PcItem("jwt"),
 		readline.PcItem("session"),
 		readline.PcItem("redraw"),
+		readline.PcItem("status"),
 		readline.PcItem("help"),
 		readline.PcItem("exit"),
 	)
@@ -154,6 +155,9 @@ func (c *CLI) Run() {
 				c.Printer.Warn("No board state cached. Use 'call game_state' first or wait for a push update.")
 			}
 
+		case "status":
+			c.handleStatus()
+
 		default:
 			// Check if it's a valid route_name shortcut
 			if ep := c.Registry.Get(cmd); ep != nil {
@@ -179,6 +183,8 @@ func (c *CLI) ExecuteDirect(args []string) {
 		}
 	case "session":
 		c.Printer.SessionInfo(c.Session.Dump())
+	case "status":
+		c.handleStatus()
 	default:
 		// Attempt shortcut call
 		if ep := c.Registry.Get(cmd); ep != nil {
@@ -271,6 +277,50 @@ func (c *CLI) executeEndpoint(name string, cliArgs []string) {
 	}
 }
 
+func (c *CLI) handleStatus() {
+	fmt.Println()
+	fmt.Printf("  %sEnd-to-End Connectivity Status%s\n", display.Bold, display.Reset)
+	fmt.Printf("  %s%s%s\n", display.Dim, strings.Repeat("─", 50), display.Reset)
+
+	// 1. API Check
+	apiStatus := display.Red + "OFFLINE" + display.Reset
+	if _, err := c.Client.Get("/api/v1/help"); err == nil {
+		apiStatus = display.Green + "ONLINE" + display.Reset
+	}
+	fmt.Printf("  %-20s %s\n", "Laravel API:", apiStatus)
+
+	// 2. Session Check
+	sessStatus := display.Red + "UNAUTHENTICATED" + display.Reset
+	if c.Session.HasToken() {
+		sessStatus = display.Green + "AUTHENTICATED" + display.Reset
+	}
+	fmt.Printf("  %-20s %s\n", "Session Status:", sessStatus)
+
+	// 3. WebSocket Check
+	wsConn, wsSocket, wsSubs := c.Listener.Status()
+	wsStatus := display.Red + "DISCONNECTED" + display.Reset
+	if wsConn {
+		if wsSocket != "" {
+			wsStatus = display.Green + "CONNECTED (Handshake OK)" + display.Reset
+		} else {
+			wsStatus = display.Yellow + "CONNECTED (Waiting for Handshake)" + display.Reset
+		}
+	}
+	fmt.Printf("  %-20s %s\n", "WebSocket Link:", wsStatus)
+	if wsSocket != "" {
+		fmt.Printf("  %-20s %s%s%s\n", "Socket ID:", display.Dim, wsSocket, display.Reset)
+	}
+
+	// 4. Subscriptions
+	fmt.Printf("  %-20s ", "Subscriptions:")
+	if len(wsSubs) > 0 {
+		fmt.Println(display.Cyan + strings.Join(wsSubs, ", ") + display.Reset)
+	} else {
+		fmt.Println(display.Dim + "None" + display.Reset)
+	}
+	fmt.Println()
+}
+
 // prompt asks the user for a value, showing the default if available.
 func (c *CLI) prompt(name, hint, defaultVal string, required bool) string {
 	for {
@@ -342,6 +392,7 @@ func (c *CLI) printHelp() {
 	fmt.Printf("  %-22s %s\n", display.Green+"jwt <token>"+display.Reset, "Manually override the JWT (for testing)")
 	fmt.Printf("  %-22s %s\n", display.Green+"session"+display.Reset, "Display current session context")
 	fmt.Printf("  %-22s %s\n", display.Green+"redraw"+display.Reset, "Re-render last known tactical board")
+	fmt.Printf("  %-22s %s\n", display.Green+"status"+display.Reset, "Check end-to-end connectivity status (API & WS)")
 	fmt.Printf("  %-22s %s\n", display.Green+"help"+display.Reset, "Show this help message")
 	fmt.Printf("  %-22s %s\n", display.Green+"exit"+display.Reset, "Quit the CLI")
 	fmt.Println()

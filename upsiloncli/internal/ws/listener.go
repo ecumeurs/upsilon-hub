@@ -1,9 +1,12 @@
+// @spec-link [[api_websocket_game_events]]
 package ws
 
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 
@@ -34,8 +37,8 @@ func NewListener(client *api.Client, sess *session.Session, printer *display.Pri
 		Client:  client,
 		Session: sess,
 		Printer: printer,
-		AppKey:  "qtjp54myattne9euwedu", // Hardcoded for this environment
-		Host:    "127.0.0.1:8080",      // Hardcoded for this environment
+		AppKey:  os.Getenv("REVERB_APP_KEY"),
+		Host:    "127.0.0.1:8080", // Hardcoded for this environment
 		subs:    make(map[string]bool),
 	}
 }
@@ -43,13 +46,15 @@ func NewListener(client *api.Client, sess *session.Session, printer *display.Pri
 // Start opens the connection and starts the message loop.
 func (l *Listener) Start() {
 	u := fmt.Sprintf("ws://%s/app/%s?protocol=7&client=js&version=8.4.0-rc2&flash=false", l.Host, l.AppKey)
+	l.Printer.Wscat(u)
 
 	conn, _, err := websocket.DefaultDialer.Dial(u, nil)
 	if err != nil {
-		l.Printer.Warn(fmt.Sprintf("WebSocket connection failed: %v", err))
+		l.Printer.Warn(fmt.Sprintf("WebSocket connection failed (is Reverb running?): %v", err))
 		return
 	}
 	l.Conn = conn
+	l.Printer.System("WebSocket link established. Waiting for handshake...")
 
 	go l.listenLoop()
 }
@@ -78,46 +83,80 @@ func (l *Listener) listenLoop() {
 			var data struct {
 				SocketID string `json:"socket_id"`
 			}
-			// Pusher data is sometimes double-encoded in JSON strings
-			unquotedData := strings.Trim(string(envelope.Data), "\"")
-			if err := json.Unmarshal([]byte(unquotedData), &data); err != nil {
-				// Try direct unmarshal if not double-encoded
+			// Pusher data is sometimes double-encoded as a JSON string
+			var dataStr string
+			if err := json.Unmarshal(envelope.Data, &dataStr); err == nil {
+				json.Unmarshal([]byte(dataStr), &data)
+			} else {
 				json.Unmarshal(envelope.Data, &data)
 			}
+			
 			l.SocketID = data.SocketID
+			l.Printer.System(fmt.Sprintf("Handshake successful. SocketID: %s", l.SocketID))
 			l.subscribeToUserChannel()
+			l.Sync()
 
 		case "match.found":
-			var data struct {
+			// Laravel payload: { match_id: "...", user_id: "...", data: [] }
+			var payload struct {
 				MatchID string `json:"match_id"`
 			}
-			unquoted := strings.Trim(string(envelope.Data), "\"")
-			json.Unmarshal([]byte(unquoted), &data)
 			
-			if data.MatchID != "" {
-				l.Session.Set("match_id", data.MatchID)
+			// Reverb/Pusher data is sometimes double-encoded as a JSON string
+			var dataStr string
+			if err := json.Unmarshal(envelope.Data, &dataStr); err == nil {
+				json.Unmarshal([]byte(dataStr), &payload)
+			} else {
+				json.Unmarshal(envelope.Data, &payload)
+			}
+			
+			if payload.MatchID != "" {
+				l.Session.Set("match_id", payload.MatchID)
 				l.Printer.WebSocket("MatchFound", envelope.Data)
-				l.Printer.System(fmt.Sprintf("Match detected! Initializing arena %s...", data.MatchID))
+				l.Printer.System(fmt.Sprintf("Match detected! Initializing arena %s...", payload.MatchID))
 				
 				// Fetch full state (participants + board)
-				l.initializeMatch(data.MatchID)
+				l.initializeMatch(payload.MatchID)
 				
 				// Subscribe to arena updates
-				l.subscribeToArenaChannel(data.MatchID)
+				l.subscribeToArenaChannel(payload.MatchID)
+			} else {
+				l.Printer.Warn(fmt.Sprintf("Received match.found but match_id is empty. Raw: %s", string(envelope.Data)))
 			}
 
 		case "board.updated":
-			var board dto.BoardState
-			unquoted := strings.Trim(string(envelope.Data), "\"")
-			if err := json.Unmarshal([]byte(unquoted), &board); err == nil {
-				l.Session.SetLastBoard(&board)
-				l.Printer.System("Tactical feed updated.")
-				// Auto-redraw if board is already displayed? 
-				// For now let's just notify. The user can type 'redraw'.
+			// Laravel payload: { match_id: "...", data: { ...board... } }
+			var payload struct {
+				Data dto.BoardState `json:"data"`
+			}
+
+			var dataStr string
+			if err := json.Unmarshal(envelope.Data, &dataStr); err == nil {
+				if err := json.Unmarshal([]byte(dataStr), &payload); err == nil {
+					l.Session.SetLastBoard(&payload.Data)
+					l.Printer.System("Tactical feed updated.")
+				} else {
+					l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated data string: %v", err))
+				}
+			} else {
+				if err := json.Unmarshal(envelope.Data, &payload); err == nil {
+					l.Session.SetLastBoard(&payload.Data)
+					l.Printer.System("Tactical feed updated.")
+				} else {
+					l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated payload: %v", err))
+				}
 			}
 
 		case "pusher_internal:subscription_succeeded":
-			// Handled silently
+			l.Printer.System(fmt.Sprintf("Subscription for %s acknowledged by server.", envelope.Channel))
+		
+		case "pusher:ping":
+			// Respond to server heartbeats to prevent timeout (Error 4201)
+			l.Conn.WriteJSON(map[string]string{"event": "pusher:pong"})
+		
+		default:
+			// Print all other events for transparency as requested
+			l.Printer.WebSocket(envelope.Event, envelope.Data)
 		}
 	}
 }
@@ -146,6 +185,20 @@ func (l *Listener) Sync() {
 		channel := fmt.Sprintf("private-arena.%s", mid)
 		l.ensureSubscription(channel)
 	}
+}
+
+// Status returns the current health of the listener.
+func (l *Listener) Status() (connected bool, socketID string, subscriptions []string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	
+	connected = l.Conn != nil
+	socketID = l.SocketID
+	subscriptions = make([]string, 0, len(l.subs))
+	for sub := range l.subs {
+		subscriptions = append(subscriptions, sub)
+	}
+	return
 }
 
 func (l *Listener) subscribeToUserChannel() {
@@ -196,13 +249,20 @@ func (l *Listener) getAuth(channel string) (string, error) {
 		return "", fmt.Errorf("not authenticated")
 	}
 
-	// POST /api/broadcasting/auth
-	url := l.Client.BaseURL + "/api/broadcasting/auth"
-	body := strings.NewReader(fmt.Sprintf("socket_id=%s&channel_name=%s", l.SocketID, channel))
+	// broadcasting/auth (no /api prefix)
+	url := l.Client.BaseURL + "/broadcasting/auth"
+	formBody := fmt.Sprintf("socket_id=%s&channel_name=%s", l.SocketID, channel)
 	
+	// Display the manual test command as requested
+	headers := http.Header{}
+	headers.Set("Content-Type", "application/x-www-form-urlencoded")
+	headers.Set("Accept", "application/json") // Explicitly request JSON
+	headers.Set("Authorization", "Bearer "+token)
+	l.Printer.Curl("POST", url, headers, []byte(formBody))
+
+	body := strings.NewReader(formBody)
 	req, _ := http.NewRequest("POST", url, body)
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header = headers
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -210,10 +270,24 @@ func (l *Listener) getAuth(channel string) (string, error) {
 	}
 	defer resp.Body.Close()
 
+	raw, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		l.Printer.Warn(fmt.Sprintf("Authorization failed for %s (Status %d)", channel, resp.StatusCode))
+		l.Printer.Warn(fmt.Sprintf("Raw Body: %s", string(raw)))
+		return "", fmt.Errorf("auth failed: %d", resp.StatusCode)
+	}
+
 	var result struct {
 		Auth string `json:"auth"`
 	}
-	json.NewDecoder(resp.Body).Decode(&result)
+	if err := json.Unmarshal(raw, &result); err != nil {
+		l.Printer.Warn(fmt.Sprintf("Failed to decode auth response: %v", err))
+		return "", err
+	}
+
+	// Display the manual wscat payload as requested
+	l.Printer.WscatPayload(channel, result.Auth)
+
 	return result.Auth, nil
 }
 

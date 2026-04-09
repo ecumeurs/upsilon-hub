@@ -8,6 +8,7 @@ package bridge
 import (
 	"fmt"
 	"log"
+	"strings"
 	"sync"
 
 	"time"
@@ -154,7 +155,10 @@ func (b *ArenaBridge) ArenaAction(arenaID uuid.UUID, req api.ArenaActionMessage)
 	defer close(respChan)
 	// Translate HTTP action to Ruler message
 	// This is a simplified mapping; more logic needed for full support
-	switch req.Data.Type {
+	// Normalize type to lowercase for case-insensitive matching
+	actionType := strings.ToLower(req.Data.Type)
+
+	switch actionType {
 	case "attack":
 		r.SendActor(message.Create(nil, rulermethods.ControllerAttack{
 			ControllerID: uuid.MustParse(req.Data.PlayerID),

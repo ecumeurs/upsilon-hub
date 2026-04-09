@@ -10,7 +10,8 @@ tags: [battle, proxy, webhook, api]
 parents:
   - [[api_laravel_gateway]]
   - [[api_standard_envelope]]
-dependents: []
+dependents:
+  - [[api_websocket_arena_updates]]
 ---
 # Battle Proxy & Webhook API
 
@@ -32,7 +33,7 @@ To facilitate communication between the player and the core game engine for acti
   - **Intent:** Command Transmission
   - **Input:** 
     - `entity_id`: (string) [Mandatory] The acting character identifier.
-    - `type`: (string) [Mandatory] 'MOVE', 'ATTACK', 'PASS', or 'FORFEIT'.
+    - `type`: (string) [Mandatory] Action type must be **LOWERCASE**: 'move', 'attack', 'pass', or 'forfeit'.
     - `target_coords`: (object) [Optional] Extra data like coordinates or target IDs.
   - **Output:** `{ "success": true, "result": "action_processed" }`
 
