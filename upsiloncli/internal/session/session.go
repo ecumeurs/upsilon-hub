@@ -3,9 +3,17 @@
 package session
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 	"sync"
 )
+
+// SessionData is the serializable part of the session.
+type SessionData struct {
+	Token   string            `json:"token"`
+	Context map[string]string `json:"context"`
+}
 
 // Session holds the active JWT and a key-value context store
 // populated from API response data (user_id, match_id, etc.).
@@ -164,3 +172,43 @@ func valueOrDash(v string) string {
 	}
 	return v
 }
+
+// SaveToFile exports the session to a JSON file.
+func (s *Session) SaveToFile(path string) error {
+	s.mu.RLock()
+	data := SessionData{
+		Token:   s.token,
+		Context: s.context,
+	}
+	s.mu.RUnlock()
+
+	bytes, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(path, bytes, 0600)
+}
+
+// LoadFromFile imports the session from a JSON file.
+func (s *Session) LoadFromFile(path string) error {
+	bytes, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	var data SessionData
+	if err := json.Unmarshal(bytes, &data); err != nil {
+		return err
+	}
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.token = data.Token
+	s.context = data.Context
+	if s.context == nil {
+		s.context = make(map[string]string)
+	}
+	return nil
+}
+

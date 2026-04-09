@@ -18,12 +18,14 @@ import (
 type HTTPController struct {
 	*controller.Controller
 	CallbackURL string
+	MatchID     uuid.UUID
 }
 
-func NewHTTPController(id uuid.UUID, callbackURL string) *HTTPController {
+func NewHTTPController(id uuid.UUID, matchID uuid.UUID, callbackURL string) *HTTPController {
 	hc := &HTTPController{
 		Controller:  controller.NewController(id),
 		CallbackURL: callbackURL,
+		MatchID:     matchID,
 	}
 
 	// Override or add methods to handle Ruler's broadcasts
@@ -54,6 +56,7 @@ func (hc *HTTPController) forwardToWebhook(ctx actor.NotificationContext) {
 
 	payload := map[string]interface{}{
 		"event_type": hc.getEventName(ctx.Msg.TargetMethod),
+		"match_id":   hc.MatchID.String(),
 		"data":       ctx.Msg.TargetMethod,
 	}
 

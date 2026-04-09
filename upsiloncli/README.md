@@ -4,16 +4,23 @@
 
 **Tracking Issue:** [ISS-026](../issues/ISS-026_20260409_api_journey_tester_cli.md)
 
-## Quick Start
+## Installation & Building
 
 ```bash
 cd /workspace/upsiloncli
-go run ./cmd/upsiloncli
+go build -o bin/upsiloncli ./cmd/upsiloncli
+```
+
+## Quick Start
+
+### Interactive REPL
+```bash
+./bin/upsiloncli
 ```
 
 The CLI defaults to `http://localhost:8000` as the Laravel API base URL. Override with:
 ```bash
-go run ./cmd/upsiloncli --base-url http://custom-host:8000
+./bin/upsiloncli --base-url http://custom-host:8000
 ```
 
 ## Commands
@@ -29,12 +36,34 @@ go run ./cmd/upsiloncli --base-url http://custom-host:8000
 | `help` | Show available commands. |
 | `exit` | Quit the CLI. |
 
-### Auto Mode
+### Agent-Friendly Automation & Scripting
 
-Run a full end-to-end journey (Register → Login → Profile → Matchmaking → Combat → Cleanup) non-interactively:
+For AI agents (like Antigravity) and CI/CD pipelines, UpsilonCLI provides a non-interactive "Direct-Call" mode. This allows executing commands and sharing state across multiple terminal sessions.
+
+#### 1. Direct Execution
+Skip the REPL by passing the command and arguments directly.
 ```bash
-go run ./cmd/upsiloncli --auto
+./bin/upsiloncli auth_login email=alpha@example.com password=...
 ```
+
+#### 2. Argument Injection
+Parameters can be provided in `key=value` format. If all required parameters for a route are provided via CLI arguments, the interaction is fully non-interactive.
+
+#### 3. Session Persistence (`--persist` / `-P`)
+By default, the session (JWT and context) is purely in-memory. Use the `--persist` flag to sync state to a local `.upsilon_session.json` file.
+```bash
+# Login and save the token
+./bin/upsiloncli --persist auth_login email=... password=...
+
+# Use the saved token in a subsequent call
+./bin/upsiloncli --persist profile_get
+```
+
+> [!WARNING]
+> The `.upsilon_session.json` file contains your active JWT. It is listed in `.gitignore` to prevent accidental commits, but treat it as sensitive data in your local environment.
+
+### Auto Mode (WIP)
+...
 
 ## Architecture
 

@@ -19,19 +19,39 @@ type CLI struct {
 	Printer  *display.Printer
 	Registry *endpoint.Registry
 	ReadLine *readline.Instance
+	Persist  bool
 }
 
+const sessionFile = ".upsilon_session.json"
+
 // New creates a new CLI instance.
-func New(baseURL string) *CLI {
+func New(baseURL string, persist bool) *CLI {
 	sess := session.New()
+	if persist {
+		if err := sess.LoadFromFile(sessionFile); err != nil {
+			// Silently fail if file doesn't exist yet
+		}
+	}
+
 	printer := display.NewPrinter()
 	client := api.NewClient(baseURL, sess, printer)
 	reg := endpoint.NewRegistry()
 	endpoint.RegisterAll(reg)
 
+	return &CLI{
+		Session:  sess,
+		Client:   client,
+		Printer:  printer,
+		Registry: reg,
+		Persist:  persist,
+	}
+}
+
+// Run starts the interactive REPL loop.
+func (c *CLI) Run() {
 	// Build completer
 	var callItems []readline.PrefixCompleterInterface
-	for _, name := range reg.Names() {
+	for _, name := range c.Registry.Names() {
 		callItems = append(callItems, readline.PcItem(name))
 	}
 
@@ -46,12 +66,12 @@ func New(baseURL string) *CLI {
 	)
 
 	// Add shortcut routes to root completer
-	for _, name := range reg.Names() {
+	for _, name := range c.Registry.Names() {
 		completer.Children = append(completer.Children, readline.PcItem(name))
 	}
 
 	rl, err := readline.NewEx(&readline.Config{
-		Prompt:          fmt.Sprintf("\001%s\002[\001%s\002]\001%s\002 > ", display.Cyan, sess.String(), display.Reset),
+		Prompt:          fmt.Sprintf("\001%s\002[\001%s\002]\001%s\002 > ", display.Cyan, c.Session.String(), display.Reset),
 		AutoComplete:    completer,
 		InterruptPrompt: "^C",
 		EOFPrompt:       "exit",
@@ -59,18 +79,7 @@ func New(baseURL string) *CLI {
 	if err != nil {
 		panic(err)
 	}
-
-	return &CLI{
-		Session:  sess,
-		Client:   client,
-		Printer:  printer,
-		Registry: reg,
-		ReadLine: rl,
-	}
-}
-
-// Run starts the interactive REPL loop.
-func (c *CLI) Run() {
+	c.ReadLine = rl
 	c.printBanner()
 	defer c.ReadLine.Close()
 
@@ -108,7 +117,7 @@ func (c *CLI) Run() {
 				c.Printer.Warn("Usage: call <route_name>")
 				continue
 			}
-			c.executeEndpoint(args[0])
+			c.executeEndpoint(args[0], nil)
 
 		case "jwt":
 			if len(args) == 0 {
@@ -134,7 +143,7 @@ func (c *CLI) Run() {
 		default:
 			// Check if it's a valid route_name shortcut
 			if ep := c.Registry.Get(cmd); ep != nil {
-				c.executeEndpoint(cmd)
+				c.executeEndpoint(cmd, nil)
 			} else {
 				c.Printer.Warn(fmt.Sprintf("Unknown command: %q. Type 'help' for available commands.", cmd))
 			}
@@ -142,12 +151,49 @@ func (c *CLI) Run() {
 	}
 }
 
+// ExecuteDirect runs a single command sequence from CLI arguments and exits.
+func (c *CLI) ExecuteDirect(args []string) {
+	cmd := strings.ToLower(args[0])
+	cmdArgs := args[1:]
+
+	switch cmd {
+	case "routes":
+		c.Printer.RouteTable(c.Registry.List())
+	case "call":
+		if len(cmdArgs) > 0 {
+			c.executeEndpoint(cmdArgs[0], cmdArgs[1:])
+		}
+	case "session":
+		c.Printer.SessionInfo(c.Session.Dump())
+	default:
+		// Attempt shortcut call
+		if ep := c.Registry.Get(cmd); ep != nil {
+			c.executeEndpoint(cmd, cmdArgs)
+		} else {
+			c.Printer.Warn(fmt.Sprintf("Unknown command: %q", cmd))
+		}
+	}
+
+	if c.Persist {
+		c.Session.SaveToFile(sessionFile)
+	}
+}
+
 // executeEndpoint runs an endpoint by name, prompting for parameters.
-func (c *CLI) executeEndpoint(name string) {
+func (c *CLI) executeEndpoint(name string, cliArgs []string) {
 	ep := c.Registry.Get(name)
 	if ep == nil {
 		c.Printer.Warn(fmt.Sprintf("Unknown route: %q. Use 'routes' to list available endpoints.", name))
 		return
+	}
+
+	// Parse CLI key=value arguments
+	cliInputs := make(map[string]string)
+	for _, arg := range cliArgs {
+		if strings.Contains(arg, "=") {
+			parts := strings.SplitN(arg, "=", 2)
+			cliInputs[parts[0]] = parts[1]
+		}
 	}
 
 	// Check auth requirement
@@ -161,7 +207,13 @@ func (c *CLI) executeEndpoint(name string) {
 	inputs := make(map[string]string)
 
 	for _, p := range params {
-		// Resolve default from session context
+		// Priority 1: CLI argument override
+		if val, ok := cliInputs[p.Name]; ok {
+			inputs[p.Name] = val
+			continue
+		}
+
+		// Priority 2: Resolve default from session context
 		defaultVal := ""
 		if p.ContextKey != "" {
 			if v, ok := c.Session.Get(p.ContextKey); ok {
@@ -169,7 +221,7 @@ func (c *CLI) executeEndpoint(name string) {
 			}
 		}
 
-		// Prompt user
+		// Prompt user if not provided in CLI args
 		value := c.prompt(p.Name, p.Hint, defaultVal, p.Required)
 		inputs[p.Name] = value
 	}
@@ -180,17 +232,24 @@ func (c *CLI) executeEndpoint(name string) {
 		return
 	}
 
-	// Suggest next routes
-	next := ep.Next()
-	if len(next) > 0 {
-		var formatted []string
-		for _, n := range next {
-			if nxtEp := c.Registry.Get(n); nxtEp != nil {
-				formatted = append(formatted, display.Green+n+display.Reset)
+	// Save session if persistence is enabled
+	if c.Persist {
+		c.Session.SaveToFile(sessionFile)
+	}
+
+	// Suggest next routes (only in interactive mode)
+	if len(cliArgs) == 0 {
+		next := ep.Next()
+		if len(next) > 0 {
+			var formatted []string
+			for _, n := range next {
+				if nxtEp := c.Registry.Get(n); nxtEp != nil {
+					formatted = append(formatted, display.Green+n+display.Reset)
+				}
 			}
-		}
-		if len(formatted) > 0 {
-			fmt.Printf("\n  %sSuggested next steps:%s %s\n", display.Dim, display.Reset, strings.Join(formatted, ", "))
+			if len(formatted) > 0 {
+				fmt.Printf("\n  %sSuggested next steps:%s %s\n", display.Dim, display.Reset, strings.Join(formatted, ", "))
+			}
 		}
 	}
 }
@@ -205,6 +264,22 @@ func (c *CLI) prompt(name, hint, defaultVal string, required bool) string {
 			promptStr = fmt.Sprintf("  \001%s\002%s\001%s\002 (%s): ", display.Bold, name, display.Reset, hint)
 		} else {
 			promptStr = fmt.Sprintf("  \001%s\002%s\001%s\002: ", display.Bold, name, display.Reset)
+		}
+
+		if c.ReadLine == nil {
+			// Non-interactive fallback
+			fmt.Print(promptStr)
+			var value string
+			fmt.Scanln(&value)
+			value = strings.TrimSpace(value)
+			if value == "" && defaultVal != "" {
+				return defaultVal
+			}
+			if value == "" && required {
+				c.Printer.Warn(fmt.Sprintf("%s is required.", name))
+				continue
+			}
+			return value
 		}
 
 		c.ReadLine.SetPrompt(promptStr)

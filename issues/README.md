@@ -22,3 +22,6 @@
 | ISS-022 | [ISS-022_20260316_battleui_error_handling.md](ISS-022_20260316_battleui_error_handling.md)                             | High     | Open     | Improper major error handling (HTML instead of JSON).                          |
 | ISS-023 | [ISS-023_20260316_logging_tag_traceability.md](ISS-023_20260316_logging_tag_traceability.md) | High | Open | Ensure all logs are tagged with Request ID for cross-service tracing. |
 | ISS-024 | [Ref_20260316_battleui_api_responder_inconsistency.md](Ref_20260316_battleui_api_responder_inconsistency.md) | Medium | Open | BattleUI ApiResponder Inconsistency and Underuse. |
+| ISS-025 | [ISS-025_20260408_dashboard_hub_implementation.md](ISS-025_20260408_dashboard_hub_implementation.md) | Medium | Open | Dashboard Hub Implementation for Upsilon Battle. |
+| ISS-026 | [ISS-026_20260409_api_journey_tester_cli.md](ISS-026_20260409_api_journey_tester_cli.md) | Medium | Open | Upsilon API Journey Explorer & Tester CLI. |
+| ISS-027 | [ISS-027_20260409_upsiloncli_scripting_support.md](ISS-027_20260409_upsiloncli_scripting_support.md) | Medium | Open | UpsilonCLI Scripting & Automated Scenario Support. |
