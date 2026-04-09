@@ -1,6 +1,6 @@
 ---
 id: ui_dashboard_profile_edit
-status: DRAFT
+status: STABLE
 type: UI
 layer: ARCHITECTURE
 version: 1.0

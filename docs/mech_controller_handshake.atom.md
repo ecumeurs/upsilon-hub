@@ -4,7 +4,7 @@ human_name: Controller Handshake Protocol
 type: MECHANIC
 layer: IMPLEMENTATION
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [handshake, initialization, controller]
 parents:

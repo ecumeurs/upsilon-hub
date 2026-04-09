@@ -1,14 +1,14 @@
 ---
 id: requirement_customer_user_account
-status: DRAFT
+status: STABLE
 version: 1.0
 parents: []
 human_name: User Account Identity Management
 priority: 3
 tags: [auth, identity, account]
 dependents:
-  - [[api_auth_user]]
   - [[ui_modal_box]]
+  - [[api_auth_user]]
 type: REQUIREMENT
 layer: CUSTOMER
 ---

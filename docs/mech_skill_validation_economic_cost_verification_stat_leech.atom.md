@@ -4,7 +4,7 @@ human_name: Economic Cost Verification - Stat Leech
 type: MECHANIC
 layer: IMPLEMENTATION
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: []
 parents: 

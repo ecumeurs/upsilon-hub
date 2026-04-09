@@ -1,6 +1,6 @@
 ---
 id: requirement_req_ui_session_timeout
-status: DRAFT
+status: STABLE
 type: REQUIREMENT
 layer: CUSTOMER
 version: 1.0

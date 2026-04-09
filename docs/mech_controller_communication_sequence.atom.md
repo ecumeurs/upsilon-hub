@@ -4,7 +4,7 @@ human_name: Controller-Ruler Communication Sequence
 type: MECHANIC
 layer: IMPLEMENTATION
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [sequence, protocol, controller, ruler]
 parents:

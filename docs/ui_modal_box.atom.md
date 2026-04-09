@@ -1,6 +1,6 @@
 ---
 id: ui_modal_box
-status: DRAFT
+status: STABLE
 layer: ARCHITECTURE
 tags: [ui, modal, design-system]
 parents:

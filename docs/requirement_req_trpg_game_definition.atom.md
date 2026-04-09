@@ -1,6 +1,6 @@
 ---
 id: requirement_req_trpg_game_definition
-status: DRAFT
+status: STABLE
 layer: CUSTOMER
 version: 1.0
 type: REQUIREMENT

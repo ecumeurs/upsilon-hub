@@ -4,7 +4,7 @@ human_name: Administrator Account Seeding Requirement
 type: MODULE
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [infra, seed, admin]
 parents: [entity_player]

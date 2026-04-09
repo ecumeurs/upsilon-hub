@@ -1,6 +1,6 @@
 ---
 id: api_help_endpoint
-status: DRAFT
+status: STABLE
 tags: api,discovery,meta
 human_name: API Help & Discovery Endpoint
 layer: ARCHITECTURE

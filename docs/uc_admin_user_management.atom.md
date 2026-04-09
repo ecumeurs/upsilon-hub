@@ -4,7 +4,7 @@ human_name: Administrative User Management Use Case
 type: MODULE
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [admin, user-management]
 parents:

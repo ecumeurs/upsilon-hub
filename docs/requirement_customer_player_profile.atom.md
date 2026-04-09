@@ -1,6 +1,6 @@
 ---
 id: requirement_customer_player_profile
-status: DRAFT
+status: STABLE
 human_name: Player Meta-game Management
 type: REQUIREMENT
 layer: CUSTOMER

@@ -4,7 +4,7 @@ human_name: "Single Queue Restriction"
 type: RULE
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 3
 tags: [matchmaking, rule]
 parents:

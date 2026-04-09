@@ -1,6 +1,6 @@
 ---
 id: ui_team_roster_panel
-status: DRAFT
+status: STABLE
 human_name: Team Roster Panel UI
 type: UI
 layer: ARCHITECTURE

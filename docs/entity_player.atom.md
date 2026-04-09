@@ -10,13 +10,13 @@ tags: []
 parents:
   - [[requirement_customer_user_id_privacy]]
 dependents:
-  - [[entity_player_entity_player_registration]]
-  - [[entity_player_entity_player_stats_tracking]]
   - [[entity_player_entity_character_rules_apply]]
+  - [[entity_player_entity_player_stats_tracking]]
+  - [[entity_player_entity_player_registration]]
   - [[rule_admin_access_restriction]]
+  - [[infra_seed_admin]]
   - [[entity_player_entity_player_initial_setup]]
   - [[uc_admin_user_management]]
-  - [[infra_seed_admin]]
 ---
 # Player Account Entity
 

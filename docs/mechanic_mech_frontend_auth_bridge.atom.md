@@ -1,6 +1,6 @@
 ---
 id: mechanic_mech_frontend_auth_bridge
-status: DRAFT
+status: STABLE
 human_name: Frontend Auth Bridge
 type: MECHANIC
 priority: 3

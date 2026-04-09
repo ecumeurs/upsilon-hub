@@ -9,15 +9,15 @@ priority: 5
 tags: [player, experience]
 parents: []
 dependents:
-  - [[uc_player_login]]
-  - [[requirement_customer_api_first]]
-  - [[uc_player_registration]]
+  - [[requirement_req_trpg_game_definition]]
   - [[uc_matchmaking]]
+  - [[uc_combat_turn]]
   - [[uc_match_resolution]]
+  - [[uc_player_login]]
+  - [[uc_player_registration]]
   - [[us_auth_logout]]
   - [[uc_progression_stat_allocation]]
-  - [[requirement_req_trpg_game_definition]]
-  - [[uc_combat_turn]]
+  - [[requirement_customer_api_first]]
 ---
 
 # Player Experience Requirement

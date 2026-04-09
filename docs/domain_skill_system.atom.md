@@ -4,7 +4,7 @@ human_name: Entity Skill System Domain
 type: DOMAIN
 layer: CUSTOMER
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [combat, skills, abilities]
 parents:

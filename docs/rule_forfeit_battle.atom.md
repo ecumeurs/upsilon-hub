@@ -4,7 +4,7 @@ human_name: "Forfeit Battle Rule"
 type: RULE
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [combat, forfeit, resolution]
 parents:

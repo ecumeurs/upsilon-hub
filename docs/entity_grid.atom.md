@@ -4,7 +4,7 @@ human_name: Grid Entity
 type: ENTITY
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [spatial, map, 3d]
 parents: []

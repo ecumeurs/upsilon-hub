@@ -10,8 +10,8 @@ tags: []
 parents:
   - [[req_player_experience]]
 dependents:
-  - [[us_new_player_onboard]]
   - [[ui_registration]]
+  - [[us_new_player_onboard]]
 ---
 # Player Registration Use Case
 

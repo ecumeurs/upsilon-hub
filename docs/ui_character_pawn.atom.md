@@ -1,6 +1,6 @@
 ---
 id: ui_character_pawn
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [ui, combat, pawn, holographic, 3d]
 parents:

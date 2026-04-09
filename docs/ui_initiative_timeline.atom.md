@@ -1,6 +1,6 @@
 ---
 id: ui_initiative_timeline
-status: DRAFT
+status: STABLE
 parents:
   - [[ui_battle_arena]]
   - [[mech_action_economy]]

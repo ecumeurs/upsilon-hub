@@ -1,6 +1,6 @@
 ---
 id: rule_character_renaming
-status: DRAFT
+status: STABLE
 layer: CUSTOMER
 priority: 3
 tags: profile,character,safety

@@ -1,6 +1,6 @@
 ---
 id: ui_character_battle_card
-status: DRAFT
+status: STABLE
 human_name: Character Battle Card UI
 type: UI
 layer: ARCHITECTURE

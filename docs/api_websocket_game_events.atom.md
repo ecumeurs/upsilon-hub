@@ -4,7 +4,7 @@ human_name: "WebSocket Game Events"
 type: API
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 3
 tags: [websocket, real-time, api]
 parents:

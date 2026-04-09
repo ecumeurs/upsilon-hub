@@ -1,6 +1,6 @@
 ---
 id: usecase_api_flow_game_turn
-status: DRAFT
+status: STABLE
 layer: CUSTOMER
 priority: 3
 tags: flow,game,combat,turn,api
@@ -21,44 +21,52 @@ To detail the exact API interaction sequence required for a complete tactical tu
 ## THE RULE / LOGIC
 ### Step 1: Turn Awareness
 - **Action**: `GET /api/v1/game/{match_id}`
-- **Validation**: Check `current_turn.entity_id` and ensuring it maps to a character under the player's control.
+- **Validation**: Check `game_state.current_entity_id` and ensuring it maps to a character under the player's control.
 
 ### Step 2: Movement Phase
 - **Action**: `POST /api/v1/game/{match_id}/action`
 - **Payload**: 
   ```json
   {
+    "player_id": "...",
+    "entity_id": "...",
     "type": "MOVE",
-    "params": { "path": [[x1, y1], [x2, y2]] }
+    "target_coords": [{ "x": 1, "y": 2 }]
   }
   ```
 - **Intent**: Reposition the combatant on the grid.
 
-### Step 3: Skill Phase
+### Step 3: Attack Phase
 - **Action**: `POST /api/v1/game/{match_id}/action`
 - **Payload**: 
   ```json
   {
-    "type": "SKILL",
-    "params": { 
-      "skill_id": "heavy_strike",
-      "target_id": "enemy_entity_01" 
-    }
+    "player_id": "...",
+    "entity_id": "...",
+    "type": "ATTACK",
+    "target_coords": [{ "x": 2, "y": 2 }]
   }
   ```
-- **Intent**: Exhaust AP to perform a combat maneuver.
+- **Intent**: Strike an adjacent or in-range enemy.
 
 ### Step 4: Turn Finalization
 - **Action**: `POST /api/v1/game/{match_id}/action`
-- **Payload**: `{ "type": "END_TURN" }`
+- **Payload**: 
+  ```json
+  {
+    "player_id": "...",
+    "entity_id": "...",
+    "type": "PASS"
+  }
+  ```
 - **Intent**: Commit all changes and hand over control to the next character in the initiative queue.
 
 ### Step 5: State Synchronization
-- **Action**: `GET /api/v1/game/{match_id}`
+- **Action**: `GET /api/v1/game/{match_id}` (or wait for WebSocket `board.updated` event)
 - **Intent**: Verify match state has been updated and observe the result of the actions.
 
 ## TECHNICAL INTERFACE
-- **Related Specs:** `[[api_go_battle_action]]`, `[[api_go_battle_engine]]`
+- **Related Specs:** `[[api_battle_proxy]]`, `[[api_laravel_gateway]]`
 - **Code Tag:** `@spec-link [[usecase_api_flow_game_turn]]`
 
 ## EXPECTATION

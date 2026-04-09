@@ -4,7 +4,7 @@ human_name: "Battle Team Mechanics"
 type: RULE
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [combat, team, logic]
 parents:

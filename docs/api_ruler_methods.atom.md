@@ -10,8 +10,8 @@ tags: [api, messaging, queue]
 parents:
   - [[domain_ruler_state]]
 dependents:
-  - [[api_controller_methods]]
   - [[mech_controller_communication_sequence]]
+  - [[api_controller_methods]]
 ---
 # Ruler Message Methods API
 

@@ -4,3 +4,4 @@ pipeline_output
 .env
 *.log
 exo.md
+upsiloncli/bin/*

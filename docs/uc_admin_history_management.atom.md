@@ -4,7 +4,7 @@ human_name: Administrative Match History Management Use Case
 type: MODULE
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [admin, match-history]
 parents:

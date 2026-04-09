@@ -4,7 +4,7 @@ human_name: "Secure Logout User Story"
 type: USER_STORY
 layer: CUSTOMER
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 3
 tags: [auth, logout, experience]
 parents:

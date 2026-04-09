@@ -4,7 +4,7 @@ human_name: Button Lockdown After Three Rerolls
 type: USER_STORY
 layer: CUSTOMER
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: []
 parents: 

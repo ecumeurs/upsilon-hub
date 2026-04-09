@@ -1,6 +1,6 @@
 ---
 id: requirement_customer_api_first
-status: DRAFT
+status: STABLE
 human_name: API-First Experience & Documentation
 type: REQUIREMENT
 layer: CUSTOMER
@@ -10,8 +10,8 @@ parents:
   - [[req_player_experience]]
 priority: 3
 dependents:
-  - [[usecase_api_flow_matchmaking]]
   - [[api_help_endpoint]]
+  - [[usecase_api_flow_matchmaking]]
   - [[usecase_api_flow_game_turn]]
 ---
 

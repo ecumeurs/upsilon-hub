@@ -4,7 +4,7 @@ human_name: Initial Setup for Players
 type: ENTITY
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: []
 parents: 

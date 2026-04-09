@@ -1,6 +1,6 @@
 ---
 id: ui_iso_board
-status: DRAFT
+status: STABLE
 type: UI
 layer: ARCHITECTURE
 version: 1.0

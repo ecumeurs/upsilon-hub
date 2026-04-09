@@ -4,24 +4,24 @@ human_name: Standard JSON Message Envelope
 type: API
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [api, json, envelope, standard]
 parents:
   - [[api_request_id]]
 dependents:
-  - [[api_go_battle_action]]
-  - [[rule_tracing_logging]]
-  - [[api_battle_proxy]]
-  - [[api_profile_export]]
-  - [[api_go_battle_engine]]
   - [[api_go_webhook_callback]]
-  - [[api_profile_character]]
-  - [[api_matchmaking]]
-  - [[api_auth_logout]]
-  - [[api_auth_login]]
-  - [[api_auth_register]]
   - [[api_go_battle_start]]
+  - [[api_profile_character]]
+  - [[api_go_battle_engine]]
+  - [[api_auth_logout]]
+  - [[api_go_battle_action]]
+  - [[api_auth_login]]
+  - [[api_battle_proxy]]
+  - [[api_matchmaking]]
+  - [[api_auth_register]]
+  - [[rule_tracing_logging]]
+  - [[api_profile_export]]
 ---
 # Standard JSON Message Envelope
 

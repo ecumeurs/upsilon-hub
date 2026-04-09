@@ -4,7 +4,7 @@ human_name: Sanctum Token Renewal Mechanic
 type: MECHANIC
 layer: IMPLEMENTATION
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [auth, sanctum, middleware]
 parents: 

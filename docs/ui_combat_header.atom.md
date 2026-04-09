@@ -1,6 +1,6 @@
 ---
 id: ui_combat_header
-status: DRAFT
+status: STABLE
 human_name: Combat Header UI
 version: 1.0
 priority: 5

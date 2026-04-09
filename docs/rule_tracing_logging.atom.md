@@ -4,7 +4,7 @@ human_name: Global Request Traceability Logging
 type: RULE
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [logging, tracing, debug, standard]
 parents:

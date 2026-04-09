@@ -4,7 +4,7 @@ human_name: Battle Proxy & Webhook API
 type: API
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [battle, proxy, webhook, api]
 parents:

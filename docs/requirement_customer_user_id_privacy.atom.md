@@ -1,6 +1,6 @@
 ---
 id: requirement_customer_user_id_privacy
-status: DRAFT
+status: STABLE
 type: REQUIREMENT
 layer: CUSTOMER
 priority: 3

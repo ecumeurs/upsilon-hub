@@ -4,7 +4,7 @@ human_name: Security Check
 type: UI
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: []
 parents: 

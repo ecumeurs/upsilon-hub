@@ -4,15 +4,15 @@ human_name: Token TTL Requirement
 type: REQUIREMENT
 layer: CUSTOMER
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [auth, sanctum, security]
 parents: 
   - [[req_security]]
 dependents:
-  - [[mech_sanctum_token_renewal]]
-  - [[requirement_req_ui_session_timeout]]
   - [[mechanic_mech_frontend_auth_bridge]]
+  - [[requirement_req_ui_session_timeout]]
+  - [[mech_sanctum_token_renewal]]
 ---
 # Token TTL Requirement
 

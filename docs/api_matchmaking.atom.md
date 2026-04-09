@@ -4,7 +4,7 @@ human_name: Matchmaking API
 type: API
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [matchmaking, queue, api]
 parents:

@@ -4,7 +4,7 @@ human_name: BattleUI UpsilonAPI Service
 type: SERVICE
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [battleui, service, api, integration]
 parents:

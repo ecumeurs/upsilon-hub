@@ -1,6 +1,6 @@
 ---
 id: ui_battle_arena
-status: DRAFT
+status: STABLE
 type: UI
 layer: ARCHITECTURE
 version: 1.0
@@ -12,9 +12,9 @@ parents:
 human_name: Battle Arena Page UI
 priority: 5
 dependents:
-  - [[ui_combat_header]]
   - [[ui_iso_board]]
   - [[ui_team_roster_panel]]
+  - [[ui_combat_header]]
   - [[ui_initiative_timeline]]
 ---
 

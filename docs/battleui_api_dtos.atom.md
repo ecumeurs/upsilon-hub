@@ -4,7 +4,7 @@ human_name: BattleUI API Data Transfer Objects
 type: DATA
 layer: IMPLEMENTATION
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [battleui, dto, api, types]
 parents:
