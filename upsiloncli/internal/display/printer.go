@@ -303,12 +303,12 @@ func (p *Printer) Board(bs *dto.BoardState, currentUserID string, participants [
 		
 		delayStr := fmt.Sprintf("%d", delays[ent.ID])
 
-		fmt.Printf("%s%s%s %-15s %-12s %-10s %-7d %-5s\n",
+		fmt.Printf("%s%s%s %-15s %-12s %-10s %-7s %-5s\n",
 			color+Bold, sym, Reset,
 			ent.Name,
 			owner,
 			fmt.Sprintf("%d/%d", ent.HP, ent.MaxHP),
-			ent.Move,
+			fmt.Sprintf("%d/%d", ent.Move, ent.MaxMove),
 			delayStr,
 		)
 	}

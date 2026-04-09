@@ -9,10 +9,10 @@ priority: 5
 tags: []
 parents: []
 dependents:
+  - [[us_win_progression_stat_reflection]]
+  - [[us_win_progression_progression_screen]]
   - [[us_win_progression_win_alloc_point]]
   - [[us_win_progression_movement_locked]]
-  - [[us_win_progression_progression_screen]]
-  - [[us_win_progression_stat_reflection]]
 ---
 # Post-Win Progression Story
 

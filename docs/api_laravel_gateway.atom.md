@@ -9,13 +9,13 @@ priority: 5
 tags: [api, gateway, websockets, proxy, laravel-reverb]
 parents: []
 dependents:
+  - [[api_auth_register]]
+  - [[api_battle_proxy]]
+  - [[api_matchmaking]]
+  - [[api_profile_character]]
   - [[api_auth_login]]
   - [[api_auth_logout]]
-  - [[api_matchmaking]]
   - [[api_profile_export]]
-  - [[api_battle_proxy]]
-  - [[api_profile_character]]
-  - [[api_auth_register]]
 ---
 # Laravel API Gateway & WebSockets Hub
 
