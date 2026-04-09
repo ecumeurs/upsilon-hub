@@ -127,11 +127,19 @@ func (p *Printer) Suggestions(commands []string) {
 // WebSocket prints a received WebSocket event.
 func (p *Printer) WebSocket(eventType string, payload []byte) {
 	fmt.Printf("\n%s[WS]%s %s event received.\n", Magenta+Bold, Reset, eventType)
+
+	displayPayload := payload
+	// Reverb/Pusher data is often double-encoded as a JSON string
+	var s string
+	if err := json.Unmarshal(payload, &s); err == nil {
+		displayPayload = []byte(s)
+	}
+
 	var pretty bytes.Buffer
-	if err := json.Indent(&pretty, payload, "  ", "  "); err == nil {
+	if err := json.Indent(&pretty, displayPayload, "  ", "  "); err == nil {
 		fmt.Println("  " + Dim + pretty.String() + Reset)
 	} else {
-		fmt.Println("  " + Dim + string(payload) + Reset)
+		fmt.Println("  " + Dim + string(displayPayload) + Reset)
 	}
 }
 

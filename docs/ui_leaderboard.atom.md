@@ -9,10 +9,10 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[ui_leaderboard_secondary_sorting]]
   - [[ui_leaderboard_data_display]]
-  - [[ui_leaderboard_metrics_displayed]]
+  - [[ui_leaderboard_secondary_sorting]]
   - [[ui_leaderboard_primary_sorting]]
+  - [[ui_leaderboard_metrics_displayed]]
   - [[ui_leaderboard_security]]
 ---
 # Leaderboard Page UI

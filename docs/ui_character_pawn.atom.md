@@ -35,3 +35,4 @@ The holographic 3D character pawn rendered on the isometric board — a faceted 
 - Team colors are clearly distinguishable.
 - Active character has enhanced visual feedback.
 - Holographic glitch effect fires intermittently.
+- **Pointer Events:** Pawn does not capture mouse clicks, allowing players to select the tile underneath.
