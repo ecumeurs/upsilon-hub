@@ -10,12 +10,12 @@ tags: []
 parents: []
 dependents:
   - [[module_frontend_board_ui_rendering]]
-  - [[module_frontend_character_entity_creation]]
-  - [[module_frontend_session_management]]
   - [[module_frontend_matchmaking_orchestration]]
   - [[ui_dashboard]]
   - [[ui_landing]]
   - [[module_frontend_integration_constraint]]
+  - [[module_frontend_session_management]]
+  - [[module_frontend_character_entity_creation]]
 ---
 # BattleUI Frontend Component
 

@@ -12,16 +12,16 @@ parents:
   - [[uc_player_login]]
 dependents:
   - [[uc_player_login]]
-  - [[module_ui_tactical_layout]]
   - [[ui_character_roster]]
-  - [[ui_dashboard_navigation]]
   - [[ui_dashboard_queue_selection]]
+  - [[ui_dashboard_navigation]]
   - [[ui_dashboard_security_check]]
-  - [[ui_dashboard_match_statistics]]
   - [[ui_dashboard_player_statistics]]
-  - [[uc_progression_stat_allocation]]
-  - [[ui_dashboard_profile_edit]]
   - [[ui_dashboard_roster_display]]
+  - [[uc_progression_stat_allocation]]
+  - [[ui_dashboard_match_statistics]]
+  - [[ui_dashboard_profile_edit]]
+  - [[module_ui_tactical_layout]]
 ---
 # Dashboard Page UI
 

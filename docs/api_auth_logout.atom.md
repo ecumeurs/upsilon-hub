@@ -17,12 +17,15 @@ dependents: []
 # Player Logout API
 
 ## INTENT
-To securely terminate the active authentication session by revoking the user's current access token.
+To securely terminate an active session by revoking the client's current access token.
 
 ## THE RULE / LOGIC
-1. **Authentication**: Requester must provide a valid Bearer Token (Sanctum).
-2. **Token Revocation**: The system must identify the specific token used and delete it from the database.
-3. **Redirection**: Following successful revocation, the client should treat the session as invalidated.
+- **URI:** `/api/v1/auth/logout`
+- **Verb:** `POST`
+- **Intent:** Session Termination
+- **Fully Detailed Input:** [] (Requires Authorization Header)
+- **Fully Detailed Output:**
+  - `success`: (boolean) Confirmation of token revocation.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `POST /api/v1/auth/logout`

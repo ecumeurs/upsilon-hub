@@ -15,31 +15,21 @@ dependents: []
 # Player Registration API
 
 ## INTENT
-To allow new users to create an account and receive an authentication token.
+To initialize a new survivor entity by creating an account and generating an initial character roster.
 
 ## THE RULE / LOGIC
-**Endpoint:** `POST /api/v1/auth/register`
-
-### Request (Wrapped in [[api_standard_envelope]])
-- `account_name`: `string` - The user's displayed name.
-- `email`: `string` - Must be unique and valid.
-- `password`: `string` - Minimum 15 characters.
-- `password_confirmation`: `string` - Must match `password`.
-- `full_address`: `string` - Mandatory residential address.
-- `birth_date`: `string (ISO8601)` - Mandatory date of birth.
-
-### Response (Wrapped in [[api_standard_envelope]])
-- `user`: `UserResource`
-  - `id`: `string (UUID)`
-  - `account_name`: `string`
-  - `email`: `string`
-  - `full_address`: `string`
-  - `birth_date`: `string (ISO8601)`
-  - `total_wins`: `int`
-  - `total_losses`: `int`
-  - `ratio`: `float`
-  - `reroll_count`: `int`
-- `token`: `string` - JWT Bearer Token.
+- **URI:** `/api/v1/auth/register`
+- **Verb:** `POST`
+- **Intent:** Entity Initialization
+- **Fully Detailed Input:**
+  - `account_name`: (string) [Mandatory] Unique tactical identifier.
+  - `email`: (string) [Mandatory] Valid communication address.
+  - `password`: (string) [Mandatory] Must meet entropy requirements.
+  - `password_confirmation`: (string) [Mandatory] Matching credential verification.
+- **Fully Detailed Output:**
+  - `user`: (object) Newly created profile data.
+  - `token`: (string) Immediate access token.
+  - `roster`: (array) Initial character entities generated for the user.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `POST /api/v1/auth/register`

@@ -10,18 +10,18 @@ tags: [api, json, envelope, standard]
 parents:
   - [[api_request_id]]
 dependents:
-  - [[api_matchmaking]]
-  - [[rule_tracing_logging]]
-  - [[api_auth_logout]]
-  - [[api_go_battle_start]]
-  - [[api_profile_export]]
-  - [[api_profile_character]]
   - [[api_go_battle_action]]
-  - [[api_auth_login]]
+  - [[rule_tracing_logging]]
   - [[api_battle_proxy]]
-  - [[api_auth_register]]
-  - [[api_go_webhook_callback]]
+  - [[api_profile_export]]
   - [[api_go_battle_engine]]
+  - [[api_go_webhook_callback]]
+  - [[api_profile_character]]
+  - [[api_matchmaking]]
+  - [[api_auth_logout]]
+  - [[api_auth_login]]
+  - [[api_auth_register]]
+  - [[api_go_battle_start]]
 ---
 # Standard JSON Message Envelope
 

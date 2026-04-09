@@ -16,18 +16,18 @@ dependents:
 # Player Login API
 
 ## INTENT
-To authenticate existing users and provide a session token.
+To authenticate a survivor by verifying credentials and issuing a secure access token.
 
 ## THE RULE / LOGIC
-**Endpoint:** `POST /api/v1/auth/login`
-
-### Request (Wrapped in [[api_standard_envelope]])
-- `email`: `string`
-- `password`: `string`
-
-### Response (Wrapped in [[api_standard_envelope]])
-- `user`: `UserResource` (See [[api_auth_register]] for details)
-- `token`: `string` - JWT Bearer Token.
+- **URI:** `/api/v1/auth/login`
+- **Verb:** `POST`
+- **Intent:** Identity Authentication
+- **Fully Detailed Input:**
+  - `email`: (string) [Mandatory] The registered email address.
+  - `password`: (string) [Mandatory] The survivor's secret credential.
+- **Fully Detailed Output:**
+  - `user`: (object) Profile data (id, account_name, email).
+  - `token`: (string) JWT Bearer token for session authorization.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `POST /api/v1/auth/login`

@@ -15,25 +15,25 @@ dependents: []
 # Battle Proxy & Webhook API
 
 ## INTENT
-To proxy user actions to the Go engine and ingest engine state updates back into the Laravel ecosystem.
+To facilitate communication between the player and the core game engine for active matches.
 
 ## THE RULE / LOGIC
-**Endpoints:**
-- `GET /api/v1/game/{match_id}`: Retrieve the cached board state/match details.
-- `POST /api/v1/game/{match_id}/action`: Proxy tactical user commands to the Go engine.
+- **Endpoint 1: Get Game State**
+  - **URI:** `/api/v1/game/{match_id}`
+  - **Verb:** `GET`
+  - **Intent:** Tactical Synchronization
+  - **Input:** 
+    - `match_id`: (uuid) [Mandatory] The active arena identifier.
+  - **Output:** Current board state, entity positions, and turn order.
 
-### Response - Match Details (Wrapped in [[api_standard_envelope]])
-- `id`: `string (UUID)`
-- `game_mode`: `string`
-- `started_at`: `string (ISO8601)`
-- `concluded_at`: `string (ISO8601)|null`
-- `winning_team_id`: `int|null`
-
-### Request - Action (Wrapped in [[api_standard_envelope]])
-- `payload`: `ArenaActionRequest` (See [[api_go_battle_action]])
-
-### Response - Action (Wrapped in [[api_standard_envelope]])
-- `status`: `string` ("accepted" | "rejected")
+- **Endpoint 2: Perform Action**
+  - **URI:** `/api/v1/game/{match_id}/action`
+  - **Verb:** `POST`
+  - **Intent:** Command Transmission
+  - **Input:** 
+    - `type`: (string) [Mandatory] 'MOVE', 'SKILL', or 'END_TURN'.
+    - `params`: (object) [Optional] Extra data like coordinates or target IDs.
+  - **Output:** `{ "success": true, "result": "action_processed" }`
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `/api/v1/game/*`, `/api/webhook/*`

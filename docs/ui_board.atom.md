@@ -9,7 +9,8 @@ priority: 5
 tags: [ui, secure, combat]
 parents:
   - [[module_game]]
-dependents: []
+dependents:
+  - [[ui_battle_arena]]
 ---
 # Board Page UI
 

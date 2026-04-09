@@ -15,15 +15,30 @@ dependents: []
 # Matchmaking API
 
 ## INTENT
-To allow players to enter a queue and be matched with opponents.
+To manage survivor entry and exit from competitive and cooperative matchmaking queues.
 
 ## THE RULE / LOGIC
-**Endpoints:**
-- `POST /api/v1/matchmaking/join`: Add player to queue for a specific game mode.
-- `GET /api/v1/matchmaking/status`: Poll current matchmaking/match status.
-- `DELETE /api/v1/matchmaking/leave`: Remove player from any active queue.
-- `GET /api/v1/match/stats/waiting`: Get number of players currently in queue.
-- `GET /api/v1/match/stats/active`: Get number of active matches from the engine.
+- **Endpoint 1: Join Queue**
+  - **URI:** `/api/v1/matchmaking/join`
+  - **Verb:** `POST`
+  - **Intent:** Enter Search Pool
+  - **Input:** 
+    - `queue_type`: (string) [Mandatory] 'pvp' or 'pve'.
+  - **Output:** `{ "status": "queued", "estimated_wait": 30 }`
+
+- **Endpoint 2: Leave Queue**
+  - **URI:** `/api/v1/matchmaking/leave`
+  - **Verb:** `DELETE`
+  - **Intent:** Exit Search Pool
+  - **Input:** []
+  - **Output:** `{ "status": "idle" }`
+
+- **Endpoint 3: Match Status**
+  - **URI:** `/api/v1/matchmaking/status`
+  - **Verb:** `GET`
+  - **Intent:** Poll Search State
+  - **Input:** []
+  - **Output:** `{ "status": "queued|matched|idle", "match_id": "optional-uuid" }`
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `/api/v1/matchmaking/*`

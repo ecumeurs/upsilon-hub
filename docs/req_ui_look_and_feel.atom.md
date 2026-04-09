@@ -2,6 +2,7 @@
 id: req_ui_look_and_feel
 status: DRAFT
 dependents:
+  - [[ui_battle_arena]]
   - [[ui_theme]]
 parents: []
 human_name: UI Look and Feel Aesthetic

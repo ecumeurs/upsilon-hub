@@ -9,7 +9,8 @@ priority: 5
 tags: []
 parents: 
   - [[mech_board_generation]]
-dependents: []
+dependents:
+  - [[ui_iso_board]]
 ---
 # Board Dimensions Mechanic
 

@@ -16,34 +16,39 @@ dependents: []
 # Character Management API
 
 ## INTENT
-To manage player characters, including registration-time rerolls, stat updates, and level-ups.
+To view and modify character entities, including statistical progression and cosmetic identity.
 
 ## THE RULE / LOGIC
-**Endpoints:**
-- `GET /api/v1/profile/characters`: List all characters for the authenticated user.
-- `GET /api/v1/profile/character/{characterId}`: Get specific character details.
-- `POST /api/v1/profile/character/{characterId}/reroll`: Reroll stats (restricted to new accounts). 
-- `POST /api/v1/profile/character/{characterId}/upgrade`: Allocate points. Validated against [[rule_progression]].
-- `POST /api/v1/profile/character/{characterId}/rename`: Change display name. Validated against [[rule_character_renaming]].
+- **Endpoint 1: List Roster**
+  - **URI:** `/api/v1/profile/characters`
+  - **Verb:** `GET`
+  - **Intent:** Inventory Review
+  - **Input:** []
+  - **Output:** Array of character objects.
 
-### CharacterResource (Common Response)
-- `id`: `string (UUID)`
-- `name`: `string`
-- `hp`: `int`
-- `attack`: `int`
-- `defense`: `int`
-- `movement`: `int`
-- `initial_movement`: `int`
+- **Endpoint 2: Character Detail**
+  - **URI:** `/api/v1/profile/character/{characterId}`
+  - **Verb:** `GET`
+  - **Intent:** Deep Inspection
+  - **Input:** 
+    - `characterId`: (uuid) [Mandatory] Target character identifier.
+  - **Output:** Detailed character data including stats, traits, and bio.
 
-### Request - Upgrade (Wrapped in [[api_standard_envelope]])
-- `stats`: `object` - Increments for stats (e.g., `{"attack": 1, "hp": 2}`).
+- **Endpoint 3: Upgrade stats**
+  - **URI:** `/api/v1/profile/character/{characterId}/upgrade`
+  - **Verb:** `POST`
+  - **Intent:** Progression Allocation
+  - **Input:** 
+    - `stats`: (object) Map of stat names to increase values.
+  - **Output:** Updated character state.
 
-### Request - Rename (Wrapped in [[api_standard_envelope]])
-- `name`: `string` - The new name for the character.
-
-### Response - Reroll (Wrapped in [[api_standard_envelope]])
-- `character`: `CharacterResource`
-- `reroll_count`: `int`
+- **Endpoint 4: Rename**
+  - **URI:** `/api/v1/profile/character/{characterId}/rename`
+  - **Verb:** `POST`
+  - **Intent:** Identity Modification
+  - **Input:** 
+    - `name`: (string) [Mandatory] New tactical name.
+  - **Output:** `{ "success": true, "name": "new_name" }`
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `/api/v1/profile/*`
