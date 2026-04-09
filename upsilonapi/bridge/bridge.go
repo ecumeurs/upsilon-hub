@@ -10,6 +10,8 @@ import (
 	"log"
 	"sync"
 
+	"time"
+
 	"github.com/ecumeurs/upsilonapi/api"
 	"github.com/ecumeurs/upsilonbattle/battlearena"
 	"github.com/ecumeurs/upsilonbattle/battlearena/controller/controllers"
@@ -124,6 +126,22 @@ func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.
 		res,
 		battleArena.Ruler.GameState.Turner.GetTurnState(),
 		nil
+}
+
+func (b *ArenaBridge) GetBoardState(matchID uuid.UUID) (api.BoardState, error) {
+	b.mu.RLock()
+	arena, ok := b.arenas[matchID]
+	b.mu.RUnlock()
+	if !ok {
+		return api.BoardState{}, fmt.Errorf("arena %s not found", matchID)
+	}
+
+	res := make([]entity.Entity, 0, len(arena.Ruler.GameState.Entities))
+	for _, v := range arena.Ruler.GameState.Entities {
+		res = append(res, v)
+	}
+
+	return api.NewBoardState(matchID, arena.Ruler.GameState.Grid, res, arena.Ruler.GameState.Turner.GetTurnState(), time.Now(), time.Now().Add(30*time.Second)), nil
 }
 
 func (b *ArenaBridge) ArenaAction(arenaID uuid.UUID, req api.ArenaActionMessage) (bool, string, interface{}) {

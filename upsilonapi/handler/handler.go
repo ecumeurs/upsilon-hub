@@ -8,8 +8,6 @@ import (
 	"github.com/ecumeurs/upsilonapi/bridge"
 	"github.com/ecumeurs/upsilonapi/stdmessage"
 	"github.com/ecumeurs/upsilonbattle/battlearena/ruler/rulermethods"
-	"github.com/ecumeurs/upsilonmapdata/grid/cell"
-	"github.com/ecumeurs/upsilonmapdata/grid/position"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -31,53 +29,7 @@ func HandleArenaStart(c *gin.Context) {
 		return
 	}
 
-	bs := api.BoardState{
-		StartTime:       time.Now(),
-		Timeout:         time.Now().Add(30 * time.Second),
-		CurrentEntityID: turner.CurrentEntityTurn.String(),
-	}
-
-	// Map Grid - assuming 2D for now as per api.Grid comment
-	bs.Grid = api.Grid{
-		Width:  g.Width,
-		Height: g.Length,
-		Cells:  make([][]api.Cell, g.Width),
-	}
-	for x := 0; x < g.Width; x++ {
-		bs.Grid.Cells[x] = make([]api.Cell, g.Length)
-		for y := 0; y < g.Length; y++ {
-			z := g.TopMostCellAt(x, y)
-			cl, ok := g.CellAt(position.New(x, y, z))
-			if ok {
-				bs.Grid.Cells[x][y] = api.Cell{
-					EntityID: cl.EntityID.String(),
-					Obstacle: cl.Type == cell.Obstacle,
-				}
-				if cl.EntityID == uuid.Nil {
-					bs.Grid.Cells[x][y].EntityID = ""
-				}
-			}
-		}
-	}
-
-	entityToPlayer := make(map[uuid.UUID]string)
-	for _, e := range entities {
-		entityToPlayer[e.ID] = e.ControllerID.String()
-
-		bs.Entities = append(bs.Entities, api.NewEntity(e))
-
-		if e.ID == turner.CurrentEntityTurn {
-			bs.CurrentPlayerID = e.ControllerID.String()
-		}
-	}
-
-	for _, t := range turner.RemainingTurns {
-		bs.Turn = append(bs.Turn, api.Turn{
-			EntityID: t.EntityId.String(),
-			PlayerID: entityToPlayer[t.EntityId],
-			Delay:    t.Delay,
-		})
-	}
+	bs := api.NewBoardState(id, g, entities, turner, time.Now(), time.Now().Add(30*time.Second))
 
 	c.JSON(http.StatusOK, api.NewSuccess(req.RequestID, "Arena started", api.ArenaStartResponse{
 		ArenaID:      id.String(),

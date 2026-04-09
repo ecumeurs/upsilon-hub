@@ -10,8 +10,8 @@ tags: [admin, experience]
 parents: []
 dependents:
   - [[uc_admin_history_management]]
-  - [[us_auth_logout]]
   - [[uc_admin_login]]
+  - [[us_auth_logout]]
   - [[uc_admin_user_management]]
 ---
 

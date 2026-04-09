@@ -23,16 +23,18 @@ To authenticate a survivor by verifying credentials and issuing a secure access 
 - **Verb:** `POST`
 - **Intent:** Identity Authentication
 - **Fully Detailed Input:**
-  - `email`: (string) [Mandatory] The registered email address.
+  - `account_name`: (string) [Mandatory] The unique tactical identifier.
   - `password`: (string) [Mandatory] The survivor's secret credential.
 - **Fully Detailed Output:**
   - `user`: (object) Profile data (id, account_name, email).
   - `token`: (string) JWT Bearer token for session authorization.
 
+**Requirement Boundary:** Authentication MUST strictly use `account_name`. Email-based authentication is explicitly forbidden to maintain thematic consistency and primary key privacy.
+
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `POST /api/v1/auth/login`
 - **Code Tag:** `@spec-link [[api_auth_login]]`
-- **Related Issue:** `ISS-007`
+- **Related Issue:** `ISS-029`
 - **Test Names:** `TestSuccessfulLogin`, `TestInvalidCredentials`
 
 ## EXPECTATION (For Testing)

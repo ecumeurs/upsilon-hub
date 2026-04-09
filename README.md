@@ -50,6 +50,7 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [AI enemies (for PVE) require database user records](issues/Ref_20260409_ai_enemies_require_user.md) | 2026-04-09 | Open | Medium | Currently, the `match_participants` table has a foreign key constraint requir... |
 | [UpsilonCLI Scripting & Automated Scenario Support](issues/ISS-027_20260409_upsiloncli_scripting_support.md) | 2026-04-09 | Open | Medium | Currently, UpsilonCLI is primarily an interactive explorer. To facilitate com... |
 | [Upsilon API Journey Explorer & Tester CLI](issues/ISS-026_20260409_api_journey_tester_cli.md) | 2026-04-09 | Open | Medium | The system requires a versatile CLI tool to facilitate development and testin... |
 | [Dashboard Hub Implementation](issues/ISS-025_20260408_dashboard_hub_implementation.md) | 2026-04-08 | Open | Medium | This issue tracks the implementation of the Dashboard Hub for the Upsilon Bat... |

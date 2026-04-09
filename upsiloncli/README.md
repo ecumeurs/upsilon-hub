@@ -43,7 +43,7 @@ For AI agents (like Antigravity) and CI/CD pipelines, UpsilonCLI provides a non-
 #### 1. Direct Execution
 Skip the REPL by passing the command and arguments directly.
 ```bash
-./bin/upsiloncli auth_login email=alpha@example.com password=...
+./bin/upsiloncli auth_login account_name=alpha password=...
 ```
 
 #### 2. Argument Injection
@@ -53,7 +53,7 @@ Parameters can be provided in `key=value` format. If all required parameters for
 By default, the session (JWT and context) is purely in-memory. Use the `--persist` flag to sync state to a local `.upsilon_session.json` file.
 ```bash
 # Login and save the token
-./bin/upsiloncli --persist auth_login email=... password=...
+./bin/upsiloncli --persist auth_login account_name=... password=...
 
 # Use the saved token in a subsequent call
 ./bin/upsiloncli --persist profile_get
@@ -61,6 +61,9 @@ By default, the session (JWT and context) is purely in-memory. Use the `--persis
 
 > [!WARNING]
 > The `.upsilon_session.json` file contains your active JWT. It is listed in `.gitignore` to prevent accidental commits, but treat it as sensitive data in your local environment.
+
+
+Note: when creating new users, make sure to take into account [[rule_password_policy]]
 
 ### Auto Mode (WIP)
 ...

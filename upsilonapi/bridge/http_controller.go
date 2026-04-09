@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/ecumeurs/upsilonapi/api"
 	"github.com/ecumeurs/upsilonbattle/battlearena/controller"
 	"github.com/ecumeurs/upsilonbattle/battlearena/ruler/rulermethods"
 	"github.com/ecumeurs/upsilontools/tools/actor"
@@ -54,10 +55,17 @@ func (hc *HTTPController) BattleStart(ctx actor.NotificationContext) {
 func (hc *HTTPController) forwardToWebhook(ctx actor.NotificationContext) {
 	logrus.Infof("Forwarding event to webhook: %T", ctx.Msg.TargetMethod)
 
-	payload := map[string]interface{}{
-		"event_type": hc.getEventName(ctx.Msg.TargetMethod),
-		"match_id":   hc.MatchID.String(),
-		"data":       ctx.Msg.TargetMethod,
+	bs, err := Get().GetBoardState(hc.MatchID)
+	if err != nil {
+		logrus.Errorf("Failed to get board state for webhook: %v", err)
+		return
+	}
+
+	payload := api.ArenaEvent{
+		MatchID:   hc.MatchID.String(),
+		EventType: hc.getEventName(ctx.Msg.TargetMethod),
+		Data:      bs,
+		Timeout:   bs.Timeout,
 	}
 
 	jsonData, err := json.Marshal(payload)

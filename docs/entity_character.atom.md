@@ -10,8 +10,8 @@ tags: []
 parents: []
 dependents:
   - [[rule_character_create_character]]
-  - [[entity_character_distribute_remaining_points]]
   - [[rule_progression]]
+  - [[entity_character_distribute_remaining_points]]
 ---
 # Character Entity
 

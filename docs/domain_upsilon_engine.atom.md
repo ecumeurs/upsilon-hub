@@ -10,12 +10,12 @@ tags: []
 parents: []
 dependents:
   - [[domain_skill_system]]
-  - [[domain_upsilon_engine_domain_upsilon_engine_expectation]]
+  - [[domain_upsilon_engine_domain_upsilon_engine_entity_stat_integration]]
   - [[domain_upsilon_engine_domain_upsilon_engine_resolution]]
   - [[domain_upsilon_engine_domain_upsilon_engine_technical_interface]]
   - [[domain_upsilon_engine_domain_upsilon_engine_api_orchestration]]
-  - [[domain_upsilon_engine_domain_upsilon_engine_entity_stat_integration]]
   - [[domain_upsilon_engine_domain_upsilon_engine_combat_isolation]]
+  - [[domain_upsilon_engine_domain_upsilon_engine_expectation]]
 ---
 # UpsilonBattle Core Engine Domain
 

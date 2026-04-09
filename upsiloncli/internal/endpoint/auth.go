@@ -17,7 +17,7 @@ func (e *AuthLogin) Path() string        { return "/api/v1/auth/login" }
 func (e *AuthLogin) Auth() bool          { return false }
 func (e *AuthLogin) Params() []Param {
 	return []Param{
-		{Name: "email", Hint: "user email", Required: true},
+		{Name: "account_name", Hint: "tactical identifier", Required: true},
 		{Name: "password", Hint: "min 15 chars", Required: true},
 	}
 }
@@ -28,8 +28,8 @@ func (e *AuthLogin) Next() []string {
 
 func (e *AuthLogin) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
 	resp, err := client.Post(e.Path(), map[string]string{
-		"email":    inputs["email"],
-		"password": inputs["password"],
+		"account_name": inputs["account_name"],
+		"password":     inputs["password"],
 	})
 	if err != nil {
 		return err

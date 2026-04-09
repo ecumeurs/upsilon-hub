@@ -5,6 +5,11 @@ import (
 
 	"github.com/ecumeurs/upsilonapi/stdmessage"
 	"github.com/ecumeurs/upsilonbattle/battlearena/entity"
+	"github.com/ecumeurs/upsilonbattle/battlearena/ruler/turner"
+	"github.com/ecumeurs/upsilonmapdata/grid"
+	"github.com/ecumeurs/upsilonmapdata/grid/cell"
+	"github.com/ecumeurs/upsilonmapdata/grid/position"
+	"github.com/google/uuid"
 )
 
 // @spec-link [[api_go_battle_engine]]
@@ -103,4 +108,56 @@ func NewEntity(entity entity.Entity) Entity {
 		MaxMove:  entity.GetPropertyC("Movement").GetMaxValue(),
 		Position: Position{X: entity.Position.X, Y: entity.Position.Y},
 	}
+}
+
+// NewBoardState creates a new BoardState DTO from internal state.
+func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, ts turner.TurnState, startTime time.Time, timeout time.Time) BoardState {
+	bs := BoardState{
+		StartTime:       startTime,
+		Timeout:         timeout,
+		CurrentEntityID: ts.CurrentEntityTurn.String(),
+	}
+
+	// Map Grid
+	bs.Grid = Grid{
+		Width:  g.Width,
+		Height: g.Length,
+		Cells:  make([][]Cell, g.Width),
+	}
+	for x := 0; x < g.Width; x++ {
+		bs.Grid.Cells[x] = make([]Cell, g.Length)
+		for y := 0; y < g.Length; y++ {
+			z := g.TopMostCellAt(x, y)
+			cl, ok := g.CellAt(position.New(x, y, z))
+			if ok {
+				bs.Grid.Cells[x][y] = Cell{
+					EntityID: cl.EntityID.String(),
+					Obstacle: cl.Type == cell.Obstacle,
+				}
+				if cl.EntityID == uuid.Nil {
+					bs.Grid.Cells[x][y].EntityID = ""
+				}
+			}
+		}
+	}
+
+	entityToPlayer := make(map[uuid.UUID]string)
+	for _, e := range entities {
+		entityToPlayer[e.ID] = e.ControllerID.String()
+		bs.Entities = append(bs.Entities, NewEntity(e))
+
+		if e.ID == ts.CurrentEntityTurn {
+			bs.CurrentPlayerID = e.ControllerID.String()
+		}
+	}
+
+	for _, t := range ts.RemainingTurns {
+		bs.Turn = append(bs.Turn, Turn{
+			EntityID: t.EntityId.String(),
+			PlayerID: entityToPlayer[t.EntityId],
+			Delay:    t.Delay,
+		})
+	}
+
+	return bs
 }

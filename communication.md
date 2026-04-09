@@ -69,8 +69,8 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 - **Specification:** [[api_auth_login]]
 - **Intent:** [[uc_player_login]]: Authenticate existing users and provide a session token.
 - **Input:**
-  - `email`: `string`
-  - `password`: `string`
+  - `account_name`: `string` [Mandatory]
+  - `password`: `string` [Mandatory]
 - **Output:**
   - `user`: `UserResource` (See [[#4.4-userresource]])
   - `token`: `string` (JWT Bearer Token)
