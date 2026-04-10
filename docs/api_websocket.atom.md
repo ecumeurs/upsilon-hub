@@ -10,8 +10,8 @@ tags: [websocket, real-time, api, pusher, reverb]
 parents:
   - [[api_laravel_gateway]]
 dependents:
-  - [[api_websocket_arena_updates]]
   - [[api_websocket_user_notifications]]
+  - [[api_websocket_arena_updates]]
 ---
 
 # WebSocket Protocol (Master)

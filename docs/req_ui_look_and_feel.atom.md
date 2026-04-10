@@ -2,8 +2,8 @@
 id: req_ui_look_and_feel
 status: STABLE
 dependents:
-  - [[ui_battle_arena]]
   - [[ui_theme]]
+  - [[ui_battle_arena]]
 parents: []
 human_name: UI Look and Feel Aesthetic
 type: REQUIREMENT

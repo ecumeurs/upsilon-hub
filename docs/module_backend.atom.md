@@ -10,10 +10,10 @@ tags: []
 parents: []
 dependents:
   - [[module_backend_initiative_evaluation]]
-  - [[infra_mvp_docker]]
+  - [[module_backend_action_economy]]
   - [[module_backend_board_generation]]
   - [[module_backend_combat_math]]
-  - [[module_backend_action_economy]]
+  - [[infra_mvp_docker]]
 ---
 # UpsilonBattle Backend Component
 
