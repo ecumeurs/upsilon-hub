@@ -4,7 +4,7 @@
 **Ref:** `ISS-028`
 **Date:** 2026-04-09
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `battleui/app/Http/Controllers/API`
 **Affects:** `MatchMakingController.php`, `MatchParticipant` model
 

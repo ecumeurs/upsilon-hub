@@ -26,8 +26,12 @@ func (e *ProfileGet) Next() []string {
 	return []string{"profile_characters"}
 }
 
+func (e *ProfileGet) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Get(e.Path())
+}
+
 func (e *ProfileGet) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	resp, err := client.Get(e.Path())
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -50,8 +54,12 @@ func (e *ProfileCharacters) Next() []string {
 	return []string{"profile_character", "character_reroll", "character_upgrade", "character_rename", "matchmaking_join"}
 }
 
+func (e *ProfileCharacters) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Get(e.Path())
+}
+
 func (e *ProfileCharacters) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	resp, err := client.Get(e.Path())
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -96,9 +104,13 @@ func (e *ProfileCharacter) Next() []string {
 	return []string{"profile_characters", "character_upgrade"}
 }
 
-func (e *ProfileCharacter) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+func (e *ProfileCharacter) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
 	path := strings.ReplaceAll(e.Path(), "{characterId}", inputs["characterId"])
-	_, err := client.Get(path)
+	return client.Get(path)
+}
+
+func (e *ProfileCharacter) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	_, err := e.ExecuteRaw(client, sess, inputs)
 	return err
 }
 
@@ -120,9 +132,13 @@ func (e *CharacterReroll) Next() []string {
 	return []string{"profile_character"}
 }
 
-func (e *CharacterReroll) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+func (e *CharacterReroll) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
 	path := strings.ReplaceAll(e.Path(), "{characterId}", inputs["characterId"])
-	_, err := client.Post(path, nil)
+	return client.Post(path, nil)
+}
+
+func (e *CharacterReroll) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	_, err := e.ExecuteRaw(client, sess, inputs)
 	return err
 }
 
@@ -148,7 +164,7 @@ func (e *CharacterUpgrade) Next() []string {
 	return []string{"profile_character"}
 }
 
-func (e *CharacterUpgrade) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+func (e *CharacterUpgrade) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
 	path := strings.ReplaceAll(e.Path(), "{characterId}", inputs["characterId"])
 	stats := make(map[string]string)
 	for _, k := range []string{"hp", "attack", "defense", "movement"} {
@@ -157,7 +173,11 @@ func (e *CharacterUpgrade) Execute(client *api.Client, sess *session.Session, in
 		}
 	}
 	body := map[string]interface{}{"stats": stats}
-	_, err := client.Post(path, body)
+	return client.Post(path, body)
+}
+
+func (e *CharacterUpgrade) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	_, err := e.ExecuteRaw(client, sess, inputs)
 	return err
 }
 
@@ -180,9 +200,13 @@ func (e *CharacterRename) Next() []string {
 	return []string{"profile_character"}
 }
 
-func (e *CharacterRename) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+func (e *CharacterRename) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
 	path := strings.ReplaceAll(e.Path(), "{characterId}", inputs["characterId"])
-	_, err := client.Post(path, map[string]string{"name": inputs["name"]})
+	return client.Post(path, map[string]string{"name": inputs["name"]})
+}
+
+func (e *CharacterRename) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	_, err := e.ExecuteRaw(client, sess, inputs)
 	return err
 }
 
@@ -204,9 +228,13 @@ func (e *CharacterDelete) Next() []string {
 	return []string{"profile_characters"}
 }
 
-func (e *CharacterDelete) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+func (e *CharacterDelete) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
 	path := strings.ReplaceAll(e.Path(), "{characterId}", inputs["characterId"])
-	_, err := client.Delete(path)
+	return client.Delete(path)
+}
+
+func (e *CharacterDelete) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	_, err := e.ExecuteRaw(client, sess, inputs)
 	return err
 }
 
@@ -230,10 +258,14 @@ func (e *MatchmakingJoin) Next() []string {
 	return []string{"matchmaking_status", "game_state"}
 }
 
-func (e *MatchmakingJoin) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	resp, err := client.Post(e.Path(), map[string]string{
+func (e *MatchmakingJoin) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Post(e.Path(), map[string]string{
 		"game_mode": inputs["game_mode"],
 	})
+}
+
+func (e *MatchmakingJoin) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -264,8 +296,12 @@ func (e *MatchmakingStatus) Next() []string {
 	return []string{"matchmaking_join", "game_state", "matchmaking_leave"}
 }
 
+func (e *MatchmakingStatus) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Get(e.Path())
+}
+
 func (e *MatchmakingStatus) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	resp, err := client.Get(e.Path())
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -294,8 +330,12 @@ func (e *MatchmakingLeave) Next() []string {
 	return []string{"matchmaking_join", "profile_get"}
 }
 
+func (e *MatchmakingLeave) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Delete(e.Path())
+}
+
 func (e *MatchmakingLeave) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	resp, err := client.Delete(e.Path())
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -320,8 +360,12 @@ func (e *StatsWaiting) Next() []string {
 	return []string{"matchmaking_join"}
 }
 
+func (e *StatsWaiting) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Get(e.Path())
+}
+
 func (e *StatsWaiting) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	_, err := client.Get(e.Path())
+	_, err := e.ExecuteRaw(client, sess, inputs)
 	return err
 }
 
@@ -339,8 +383,12 @@ func (e *StatsActive) Next() []string {
 	return []string{"matchmaking_join"}
 }
 
+func (e *StatsActive) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Get(e.Path())
+}
+
 func (e *StatsActive) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	_, err := client.Get(e.Path())
+	_, err := e.ExecuteRaw(client, sess, inputs)
 	return err
 }
 
@@ -364,9 +412,13 @@ func (e *GameState) Next() []string {
 	return []string{"game_action", "game_state"}
 }
 
-func (e *GameState) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+func (e *GameState) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
 	path := strings.ReplaceAll(e.Path(), "{id}", inputs["id"])
-	resp, err := client.Get(path)
+	return client.Get(path)
+}
+
+func (e *GameState) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -404,7 +456,7 @@ func (e *GameAction) Params() []Param {
 		{Name: "id", Hint: "match UUID", Required: true, ContextKey: "match_id"},
 		{Name: "entity_id", Hint: "acting entity UUID", Required: true, ContextKey: "current_entity_id"},
 		{Name: "type", Hint: "move|attack|pass|forfeit", Required: true},
-		{Name: "target_coords", Hint: "x,y coordinates (e.g. 3,2)"},
+		{Name: "target_coords", Hint: "x,y coordinates (e.g. 3,2;4,2) semicolon-separated path"},
 	}
 }
 
@@ -412,7 +464,7 @@ func (e *GameAction) Next() []string {
 	return []string{"game_state", "game_action"}
 }
 
-func (e *GameAction) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+func (e *GameAction) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
 	path := strings.ReplaceAll(e.Path(), "{id}", inputs["id"])
 
 	body := map[string]interface{}{
@@ -437,7 +489,11 @@ func (e *GameAction) Execute(client *api.Client, sess *session.Session, inputs m
 		body["target_coords"] = coords
 	}
 
-	_, err := client.Post(path, body)
+	return client.Post(path, body)
+}
+
+func (e *GameAction) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	_, err := e.ExecuteRaw(client, sess, inputs)
 	return err
 }
 
@@ -457,8 +513,12 @@ func (e *HelpEndpoint) Next() []string {
 	return nil
 }
 
+func (e *HelpEndpoint) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Get(e.Path())
+}
+
 func (e *HelpEndpoint) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	_, err := client.Get(e.Path())
+	_, err := e.ExecuteRaw(client, sess, inputs)
 	return err
 }
 

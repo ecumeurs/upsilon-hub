@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/ecumeurs/upsiloncli/internal/api"
 	"github.com/ecumeurs/upsiloncli/internal/display"
@@ -29,32 +30,46 @@ type Listener struct {
 
 	mu   sync.Mutex
 	subs map[string]bool
+
+	waitMu  sync.Mutex
+	waiters map[string][]chan interface{}
 }
 
 // NewListener creates a new WebSocket listener.
 func NewListener(client *api.Client, sess *session.Session, printer *display.Printer) *Listener {
-	return &Listener{
+	l := &Listener{
 		Client:  client,
 		Session: sess,
 		Printer: printer,
 		AppKey:  os.Getenv("REVERB_APP_KEY"),
-		Host:    "127.0.0.1:8080", // Hardcoded for this environment
+		Host:    os.Getenv("REVERB_HOST"),
 		subs:    make(map[string]bool),
+		waiters: make(map[string][]chan interface{}),
 	}
+	if l.Host == "" {
+		l.Host = "127.0.0.1:8080"
+	}
+	return l
 }
 
 // Start opens the connection and starts the message loop.
 func (l *Listener) Start() {
 	u := fmt.Sprintf("ws://%s/app/%s?protocol=7&client=js&version=8.4.0-rc2&flash=false", l.Host, l.AppKey)
-	l.Printer.Wscat(u)
+	if l.Printer != nil {
+		l.Printer.Wscat(u)
+	}
 
 	conn, _, err := websocket.DefaultDialer.Dial(u, nil)
 	if err != nil {
-		l.Printer.Warn(fmt.Sprintf("WebSocket connection failed (is Reverb running?): %v", err))
+		if l.Printer != nil {
+			l.Printer.Warn(fmt.Sprintf("WebSocket connection failed (is Reverb running?): %v", err))
+		}
 		return
 	}
 	l.Conn = conn
-	l.Printer.System("WebSocket link established. Waiting for handshake...")
+	if l.Printer != nil {
+		l.Printer.System("WebSocket link established. Waiting for handshake...")
+	}
 
 	go l.listenLoop()
 }
@@ -92,7 +107,9 @@ func (l *Listener) listenLoop() {
 			}
 			
 			l.SocketID = data.SocketID
-			l.Printer.System(fmt.Sprintf("Handshake successful. SocketID: %s", l.SocketID))
+			if l.Printer != nil {
+				l.Printer.System(fmt.Sprintf("Handshake successful. SocketID: %s", l.SocketID))
+			}
 			l.subscribeToUserChannel()
 			l.Sync()
 
@@ -112,8 +129,10 @@ func (l *Listener) listenLoop() {
 			
 			if payload.MatchID != "" {
 				l.Session.Set("match_id", payload.MatchID)
-				l.Printer.WebSocket("MatchFound", envelope.Data)
-				l.Printer.System(fmt.Sprintf("Match detected! Initializing arena %s...", payload.MatchID))
+				if l.Printer != nil {
+					l.Printer.WebSocket("MatchFound", envelope.Data)
+					l.Printer.System(fmt.Sprintf("Match detected! Initializing arena %s...", payload.MatchID))
+				}
 				
 				// Fetch full state (participants + board)
 				l.initializeMatch(payload.MatchID)
@@ -121,7 +140,9 @@ func (l *Listener) listenLoop() {
 				// Subscribe to arena updates
 				l.subscribeToArenaChannel(payload.MatchID)
 			} else {
-				l.Printer.Warn(fmt.Sprintf("Received match.found but match_id is empty. Raw: %s", string(envelope.Data)))
+				if l.Printer != nil {
+					l.Printer.Warn(fmt.Sprintf("Received match.found but match_id is empty. Raw: %s", string(envelope.Data)))
+				}
 			}
 
 		case "board.updated":
@@ -130,29 +151,41 @@ func (l *Listener) listenLoop() {
 				Data dto.BoardState `json:"data"`
 			}
 
-			l.Printer.WebSocket("board.updated", envelope.Data)
+			if l.Printer != nil {
+				l.Printer.WebSocket("board.updated", envelope.Data)
+			}
 
 			var dataStr string
 			if err := json.Unmarshal(envelope.Data, &dataStr); err == nil {
 				if err := json.Unmarshal([]byte(dataStr), &payload); err == nil {
 					l.Session.SetLastBoard(&payload.Data)
-					l.Printer.System("Tactical feed updated.")
-					l.Printer.Suggestions([]string{"redraw"})
+					if l.Printer != nil {
+						l.Printer.System("Tactical feed updated.")
+						l.Printer.Suggestions([]string{"redraw"})
+					}
 				} else {
-					l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated data string: %v", err))
+					if l.Printer != nil {
+						l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated data string: %v", err))
+					}
 				}
 			} else {
 				if err := json.Unmarshal(envelope.Data, &payload); err == nil {
 					l.Session.SetLastBoard(&payload.Data)
-					l.Printer.System("Tactical feed updated.")
-					l.Printer.Suggestions([]string{"redraw"})
+					if l.Printer != nil {
+						l.Printer.System("Tactical feed updated.")
+						l.Printer.Suggestions([]string{"redraw"})
+					}
 				} else {
-					l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated payload: %v", err))
+					if l.Printer != nil {
+						l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated payload: %v", err))
+					}
 				}
 			}
 
 		case "pusher_internal:subscription_succeeded":
-			l.Printer.System(fmt.Sprintf("Subscription for %s acknowledged by server.", envelope.Channel))
+			if l.Printer != nil {
+				l.Printer.System(fmt.Sprintf("Subscription for %s acknowledged by server.", envelope.Channel))
+			}
 		
 		case "pusher:ping":
 			// Respond to server heartbeats to prevent timeout (Error 4201)
@@ -160,7 +193,68 @@ func (l *Listener) listenLoop() {
 		
 		default:
 			// Print all other events for transparency as requested
-			l.Printer.WebSocket(envelope.Event, envelope.Data)
+			if l.Printer != nil {
+				l.Printer.WebSocket(envelope.Event, envelope.Data)
+			}
+		}
+
+		// Notify any waiters for this event
+		l.notifyWaiters(envelope.Event, envelope.Data)
+	}
+}
+
+// WaitForData blocks until an event of the given name is received or timeout occurs.
+func (l *Listener) WaitForData(eventName string, timeoutMs int) (interface{}, error) {
+	ch := make(chan interface{}, 1)
+	
+	l.waitMu.Lock()
+	l.waiters[eventName] = append(l.waiters[eventName], ch)
+	l.waitMu.Unlock()
+
+	defer func() {
+		l.waitMu.Lock()
+		defer l.waitMu.Unlock()
+		// Remove ch from waiters
+		list := l.waiters[eventName]
+		for i, v := range list {
+			if v == ch {
+				l.waiters[eventName] = append(list[:i], list[i+1:]...)
+				break
+			}
+		}
+	}()
+
+	select {
+	case data := <-ch:
+		return data, nil
+	case <-time.After(time.Duration(timeoutMs) * time.Millisecond):
+		return nil, fmt.Errorf("timeout waiting for event: %s", eventName)
+	}
+}
+
+func (l *Listener) notifyWaiters(eventName string, data json.RawMessage) {
+	l.waitMu.Lock()
+	defer l.waitMu.Unlock()
+
+	waiters, ok := l.waiters[eventName]
+	if !ok || len(waiters) == 0 {
+		return
+	}
+
+	// Parse data into interface{} so it's clean for JS
+	var parsed interface{}
+	// Reverb/Pusher data is sometimes double-encoded as a JSON string
+	var dataStr string
+	if err := json.Unmarshal(data, &dataStr); err == nil {
+		json.Unmarshal([]byte(dataStr), &parsed)
+	} else {
+		json.Unmarshal(data, &parsed)
+	}
+
+	for _, ch := range waiters {
+		select {
+		case ch <- parsed:
+		default: // skip if channel is full
 		}
 	}
 }
@@ -262,7 +356,9 @@ func (l *Listener) getAuth(channel string) (string, error) {
 	headers.Set("Content-Type", "application/x-www-form-urlencoded")
 	headers.Set("Accept", "application/json") // Explicitly request JSON
 	headers.Set("Authorization", "Bearer "+token)
-	l.Printer.Curl("POST", url, headers, []byte(formBody))
+	if l.Printer != nil {
+		l.Printer.Curl("POST", url, headers, []byte(formBody))
+	}
 
 	body := strings.NewReader(formBody)
 	req, _ := http.NewRequest("POST", url, body)
@@ -276,8 +372,10 @@ func (l *Listener) getAuth(channel string) (string, error) {
 
 	raw, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode != http.StatusOK {
-		l.Printer.Warn(fmt.Sprintf("Authorization failed for %s (Status %d)", channel, resp.StatusCode))
-		l.Printer.Warn(fmt.Sprintf("Raw Body: %s", string(raw)))
+		if l.Printer != nil {
+			l.Printer.Warn(fmt.Sprintf("Authorization failed for %s (Status %d)", channel, resp.StatusCode))
+			l.Printer.Warn(fmt.Sprintf("Raw Body: %s", string(raw)))
+		}
 		return "", fmt.Errorf("auth failed: %d", resp.StatusCode)
 	}
 
@@ -285,12 +383,16 @@ func (l *Listener) getAuth(channel string) (string, error) {
 		Auth string `json:"auth"`
 	}
 	if err := json.Unmarshal(raw, &result); err != nil {
-		l.Printer.Warn(fmt.Sprintf("Failed to decode auth response: %v", err))
+		if l.Printer != nil {
+			l.Printer.Warn(fmt.Sprintf("Failed to decode auth response: %v", err))
+		}
 		return "", err
 	}
 
 	// Display the manual wscat payload as requested
-	l.Printer.WscatPayload(channel, result.Auth)
+	if l.Printer != nil {
+		l.Printer.WscatPayload(channel, result.Auth)
+	}
 
 	return result.Auth, nil
 }

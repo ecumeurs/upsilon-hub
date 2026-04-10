@@ -40,6 +40,9 @@ type Endpoint interface {
 	// It receives the resolved parameter map (name -> user-provided value).
 	Execute(client *api.Client, sess *session.Session, inputs map[string]string) error
 
+	// ExecuteRaw runs the endpoint and returns the full API response.
+	ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error)
+
 	// Next returns a list of route_name identifiers that typically follow this endpoint.
 	Next() []string
 }

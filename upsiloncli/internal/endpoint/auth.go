@@ -26,11 +26,15 @@ func (e *AuthLogin) Next() []string {
 	return []string{"matchmaking_status", "matchmaking_join", "profile_get"}
 }
 
-func (e *AuthLogin) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	resp, err := client.Post(e.Path(), map[string]string{
+func (e *AuthLogin) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Post(e.Path(), map[string]string{
 		"account_name": inputs["account_name"],
 		"password":     inputs["password"],
 	})
+}
+
+func (e *AuthLogin) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -77,8 +81,12 @@ func (e *AuthRegister) Next() []string {
 	return []string{"profile_get", "matchmaking_join"}
 }
 
+func (e *AuthRegister) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Post(e.Path(), inputs)
+}
+
 func (e *AuthRegister) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	resp, err := client.Post(e.Path(), inputs)
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -115,8 +123,12 @@ func (e *AuthLogout) Next() []string {
 	return []string{"auth_login"}
 }
 
+func (e *AuthLogout) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Post(e.Path(), nil)
+}
+
 func (e *AuthLogout) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	resp, err := client.Post(e.Path(), nil)
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -146,7 +158,7 @@ func (e *AuthUpdate) Next() []string {
 	return []string{"profile_get"}
 }
 
-func (e *AuthUpdate) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+func (e *AuthUpdate) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
 	// Filter out empty optional fields
 	body := make(map[string]string)
 	for k, v := range inputs {
@@ -154,7 +166,11 @@ func (e *AuthUpdate) Execute(client *api.Client, sess *session.Session, inputs m
 			body[k] = v
 		}
 	}
-	resp, err := client.Post(e.Path(), body)
+	return client.Post(e.Path(), body)
+}
+
+func (e *AuthUpdate) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -182,8 +198,12 @@ func (e *AuthPassword) Next() []string {
 	return []string{"profile_get", "auth_login"}
 }
 
+func (e *AuthPassword) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Post(e.Path(), inputs)
+}
+
 func (e *AuthPassword) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	resp, err := client.Post(e.Path(), inputs)
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}
@@ -205,8 +225,12 @@ func (e *AuthExport) Next() []string {
 	return nil
 }
 
+func (e *AuthExport) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Get(e.Path())
+}
+
 func (e *AuthExport) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	_, err := client.Get(e.Path())
+	_, err := e.ExecuteRaw(client, sess, inputs)
 	return err
 }
 
@@ -224,8 +248,12 @@ func (e *AuthDelete) Next() []string {
 	return []string{"auth_register"}
 }
 
+func (e *AuthDelete) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	return client.Delete(e.Path())
+}
+
 func (e *AuthDelete) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
-	resp, err := client.Delete(e.Path())
+	resp, err := e.ExecuteRaw(client, sess, inputs)
 	if err != nil {
 		return err
 	}

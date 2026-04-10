@@ -53,6 +53,19 @@ services:
     depends_on:
       - db
 
+  cli:
+    build:
+      context: .
+      dockerfile: ./upsiloncli/Dockerfile
+    depends_on:
+      - app
+      - ws
+      - engine
+    environment:
+      - UPSILON_BASE_URL=http://app
+      - REVERB_HOST=ws:8080
+      - REVERB_APP_KEY=${REVERB_APP_KEY}
+
   db:
     image: postgres:18-alpine
     environment:

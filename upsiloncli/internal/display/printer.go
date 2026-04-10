@@ -6,7 +6,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"sort"
 	"strings"
 
@@ -32,17 +34,24 @@ const (
 )
 
 // Printer handles formatted terminal output.
-type Printer struct{}
+type Printer struct {
+	Output io.Writer
+}
 
-// NewPrinter creates a new terminal printer.
+// NewPrinter creates a new terminal printer writing to stdout.
 func NewPrinter() *Printer {
-	return &Printer{}
+	return &Printer{Output: os.Stdout}
+}
+
+// NewPrinterWithWriter creates a new terminal printer writing to the given writer.
+func NewPrinterWithWriter(w io.Writer) *Printer {
+	return &Printer{Output: w}
 }
 
 // Curl prints the equivalent curl command for an API request.
 func (p *Printer) Curl(method, url string, headers http.Header, body []byte) {
-	fmt.Println()
-	fmt.Printf("%s[CURL]%s ", Cyan+Bold, Reset)
+	fmt.Fprintln(p.Output)
+	fmt.Fprintf(p.Output, "%s[CURL]%s ", Cyan+Bold, Reset)
 
 	var parts []string
 	parts = append(parts, "curl", "-X", method)
@@ -58,18 +67,18 @@ func (p *Printer) Curl(method, url string, headers http.Header, body []byte) {
 	}
 
 	parts = append(parts, fmt.Sprintf("'%s'", url))
-	fmt.Println(Dim + strings.Join(parts, " ") + Reset)
+	fmt.Fprintln(p.Output, Dim+strings.Join(parts, " ")+Reset)
 }
 
 // Wscat prints a manual wscat connection command.
 func (p *Printer) Wscat(url string) {
-	fmt.Printf("%s[WSCAT]%s %sconnect -c \"%s\"%s\n", Magenta+Bold, Reset, Dim, url, Reset)
+	fmt.Fprintf(p.Output, "%s[WSCAT]%s %sconnect -c \"%s\"%s\n", Magenta+Bold, Reset, Dim, url, Reset)
 }
 
 // WscatPayload prints a JSON payload for manual pusher subscription via wscat.
 func (p *Printer) WscatPayload(channel, auth string) {
-	fmt.Println()
-	fmt.Printf("%s[WSCAT-SEND]%s To subscribe manually, paste this into wscat:\n", Magenta+Bold, Reset)
+	fmt.Fprintln(p.Output)
+	fmt.Fprintf(p.Output, "%s[WSCAT-SEND]%s To subscribe manually, paste this into wscat:\n", Magenta+Bold, Reset)
 	msg := map[string]interface{}{
 		"event": "pusher:subscribe",
 		"data": map[string]string{
@@ -78,7 +87,7 @@ func (p *Printer) WscatPayload(channel, auth string) {
 		},
 	}
 	raw, _ := json.Marshal(msg)
-	fmt.Println("  " + Dim + string(raw) + Reset)
+	fmt.Fprintln(p.Output, "  "+Dim+string(raw)+Reset)
 }
 
 // Response prints the HTTP status and pretty-printed JSON body.
@@ -90,26 +99,26 @@ func (p *Printer) Response(statusCode int, body []byte) {
 		color = Yellow
 	}
 
-	fmt.Printf("%s[REPLY %d]%s ", color+Bold, statusCode, Reset)
+	fmt.Fprintf(p.Output, "%s[REPLY %d]%s ", color+Bold, statusCode, Reset)
 
 	// Pretty-print JSON
 	var pretty bytes.Buffer
 	if err := json.Indent(&pretty, body, "  ", "  "); err == nil {
-		fmt.Println()
-		fmt.Println("  " + Dim + pretty.String() + Reset)
+		fmt.Fprintln(p.Output)
+		fmt.Fprintln(p.Output, "  "+Dim+pretty.String()+Reset)
 	} else {
-		fmt.Println(Dim + string(body) + Reset)
+		fmt.Fprintln(p.Output, Dim+string(body)+Reset)
 	}
 }
 
 // System prints a system-level informational message.
 func (p *Printer) System(msg string) {
-	fmt.Printf("%s[SYSTEM]%s %s\n", Yellow+Bold, Reset, msg)
+	fmt.Fprintf(p.Output, "%s[SYSTEM]%s %s\n", Yellow+Bold, Reset, msg)
 }
 
 // Warn prints a warning message.
 func (p *Printer) Warn(msg string) {
-	fmt.Printf("%s[WARN]%s %s\n", Red+Bold, Reset, msg)
+	fmt.Fprintf(p.Output, "%s[WARN]%s %s\n", Red+Bold, Reset, msg)
 }
 
 // Suggestions prints a list of recommended next commands.
@@ -121,12 +130,12 @@ func (p *Printer) Suggestions(commands []string) {
 	for _, cmd := range commands {
 		formatted = append(formatted, Green+cmd+Reset)
 	}
-	fmt.Printf("\n  %sSuggested next steps:%s %s\n", Dim, Reset, strings.Join(formatted, ", "))
+	fmt.Fprintf(p.Output, "\n  %sSuggested next steps:%s %s\n", Dim, Reset, strings.Join(formatted, ", "))
 }
 
 // WebSocket prints a received WebSocket event.
 func (p *Printer) WebSocket(eventType string, payload []byte) {
-	fmt.Printf("\n%s[WS]%s %s event received.\n", Magenta+Bold, Reset, eventType)
+	fmt.Fprintf(p.Output, "\n%s[WS]%s %s event received.\n", Magenta+Bold, Reset, eventType)
 
 	displayPayload := payload
 	// Reverb/Pusher data is often double-encoded as a JSON string
@@ -137,37 +146,37 @@ func (p *Printer) WebSocket(eventType string, payload []byte) {
 
 	var pretty bytes.Buffer
 	if err := json.Indent(&pretty, displayPayload, "  ", "  "); err == nil {
-		fmt.Println("  " + Dim + pretty.String() + Reset)
+		fmt.Fprintln(p.Output, "  "+Dim+pretty.String()+Reset)
 	} else {
-		fmt.Println("  " + Dim + string(displayPayload) + Reset)
+		fmt.Fprintln(p.Output, "  "+Dim+string(displayPayload)+Reset)
 	}
 }
 
 // Prompt displays a prompt for user input with an optional default value.
 func (p *Printer) Prompt(name, hint, defaultVal string) string {
 	if defaultVal != "" {
-		fmt.Printf("  %s%s%s [default: %s%s%s]: ", Bold, name, Reset, Green, defaultVal, Reset)
+		fmt.Fprintf(p.Output, "  %s%s%s [default: %s%s%s]: ", Bold, name, Reset, Green, defaultVal, Reset)
 	} else if hint != "" {
-		fmt.Printf("  %s%s%s (%s): ", Bold, name, Reset, hint)
+		fmt.Fprintf(p.Output, "  %s%s%s (%s): ", Bold, name, Reset, hint)
 	} else {
-		fmt.Printf("  %s%s%s: ", Bold, name, Reset)
+		fmt.Fprintf(p.Output, "  %s%s%s: ", Bold, name, Reset)
 	}
 	return "" // actual reading is done by the caller
 }
 
 // RouteTable prints the endpoint registry as a table.
 func (p *Printer) RouteTable(routes []RouteInfo) {
-	fmt.Println()
-	fmt.Printf("  %s%-25s %-8s %-40s %s%s\n", Bold, "ROUTE NAME", "VERB", "PATH", "DESCRIPTION", Reset)
-	fmt.Printf("  %s%s%s\n", Dim, strings.Repeat("─", 100), Reset)
+	fmt.Fprintln(p.Output)
+	fmt.Fprintf(p.Output, "  %s%-25s %-8s %-40s %s%s\n", Bold, "ROUTE NAME", "VERB", "PATH", "DESCRIPTION", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", Dim, strings.Repeat("─", 100), Reset)
 	for _, r := range routes {
 		authMark := " "
 		if r.Auth {
 			authMark = "🔒"
 		}
-		fmt.Printf("  %-25s %-8s %-40s %s %s\n", Green+r.Name+Reset, r.Method, Dim+r.Path+Reset, r.Description, authMark)
+		fmt.Fprintf(p.Output, "  %-25s %-8s %-40s %s %s\n", Green+r.Name+Reset, r.Method, Dim+r.Path+Reset, r.Description, authMark)
 	}
-	fmt.Println()
+	fmt.Fprintln(p.Output)
 }
 
 // RouteInfo is used by RouteTable to describe a registered endpoint.
@@ -181,13 +190,13 @@ type RouteInfo struct {
 
 // SessionInfo prints the current session state.
 func (p *Printer) SessionInfo(data map[string]string) {
-	fmt.Println()
-	fmt.Printf("  %sSession Context%s\n", Bold, Reset)
-	fmt.Printf("  %s%s%s\n", Dim, strings.Repeat("─", 40), Reset)
+	fmt.Fprintln(p.Output)
+	fmt.Fprintf(p.Output, "  %sSession Context%s\n", Bold, Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", Dim, strings.Repeat("─", 40), Reset)
 	for k, v := range data {
-		fmt.Printf("  %-20s %s\n", Cyan+k+Reset, v)
+		fmt.Fprintf(p.Output, "  %-20s %s\n", Cyan+k+Reset, v)
 	}
-	fmt.Println()
+	fmt.Fprintln(p.Output)
 }
 // Board renders the tactical map and entity status table.
 func (p *Printer) Board(bs *dto.BoardState, currentUserID string, participants []dto.Participant) {
@@ -276,36 +285,36 @@ func (p *Printer) Board(bs *dto.BoardState, currentUserID string, participants [
 	}
 
 	// 2. Render Grid
-	fmt.Println()
-	fmt.Printf("  %sTACTICAL FEED — MATCH DATA%s\n", Cyan+Bold, Reset)
-	fmt.Printf("  %s%s%s\n", Dim, strings.Repeat("─", 40), Reset)
+	fmt.Fprintln(p.Output)
+	fmt.Fprintf(p.Output, "  %sTACTICAL FEED — MATCH DATA%s\n", Cyan+Bold, Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", Dim, strings.Repeat("─", 40), Reset)
 
 	// Top border
-	fmt.Print("    ")
+	fmt.Fprint(p.Output, "    ")
 	for x := 0; x < bs.Grid.Width; x++ {
-		fmt.Printf("%2d", x)
+		fmt.Fprintf(p.Output, "%2d", x)
 	}
-	fmt.Println()
+	fmt.Fprintln(p.Output)
 
 	for y := 0; y < bs.Grid.Height; y++ {
-		fmt.Printf("%2d │", y)
+		fmt.Fprintf(p.Output, "%2d │", y)
 		for x := 0; x < bs.Grid.Width; x++ {
 			cell := bs.Grid.Cells[x][y]
 			if cell.EntityID != "" {
 				sym := entitySymbols[cell.EntityID]
 				color := entityColors[cell.EntityID]
 				if cell.EntityID == bs.CurrentEntityID {
-					fmt.Printf("%s%s%s ", color+Bold+BgGreen, sym, Reset) // Highlight current turn? No, let's keep it simple
+					fmt.Fprintf(p.Output, "%s%s%s ", color+Bold+BgGreen, sym, Reset) // Highlight current turn? No, let's keep it simple
 				} else {
-					fmt.Printf("%s%s%s ", color+Bold, sym, Reset)
+					fmt.Fprintf(p.Output, "%s%s%s ", color+Bold, sym, Reset)
 				}
 			} else if cell.Obstacle {
-				fmt.Printf("%s#%s ", Dim, Reset)
+				fmt.Fprintf(p.Output, "%s#%s ", Dim, Reset)
 			} else {
-				fmt.Printf("%s.%s ", Dim, Reset)
+				fmt.Fprintf(p.Output, "%s.%s ", Dim, Reset)
 			}
 		}
-		fmt.Println("│")
+		fmt.Fprintln(p.Output, "│")
 	}
 
 	// Map entity ID to delay
@@ -315,9 +324,9 @@ func (p *Printer) Board(bs *dto.BoardState, currentUserID string, participants [
 	}
 
 	// 3. Entity List
-	fmt.Println()
-	fmt.Printf("  %s%-3s %-15s %-12s %-10s %-7s %-5s %s\n", Bold, "ID", "UNIT NAME", "OWNER", "HP/MAX", "MVT", "DELAY", Reset)
-	fmt.Printf("  %s%s%s\n", Dim, strings.Repeat("─", 70), Reset)
+	fmt.Fprintln(p.Output)
+	fmt.Fprintf(p.Output, "  %s%-3s %-15s %-12s %-10s %-7s %-5s %s\n", Bold, "ID", "UNIT NAME", "OWNER", "HP/MAX", "MVT", "DELAY", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", Dim, strings.Repeat("─", 70), Reset)
 
 	// Sort entities by symbol for the list
 	displayEnts := bs.Entities
@@ -338,14 +347,14 @@ func (p *Printer) Board(bs *dto.BoardState, currentUserID string, participants [
 			owner = "System/AI"
 		}
 		if ent.ID == bs.CurrentEntityID {
-			fmt.Print(Cyan + "> " + Reset)
+			fmt.Fprint(p.Output, Cyan+"> "+Reset)
 		} else {
-			fmt.Print("  ")
+			fmt.Fprint(p.Output, "  ")
 		}
 		
 		delayStr := fmt.Sprintf("%d", delays[ent.ID])
 
-		fmt.Printf("%s%s%s %-15s %-12s %-10s %-7s %-5s\n",
+		fmt.Fprintf(p.Output, "%s%s%s %-15s %-12s %-10s %-7s %-5s\n",
 			color+Bold, sym, Reset,
 			ent.Name,
 			owner,
@@ -354,5 +363,5 @@ func (p *Printer) Board(bs *dto.BoardState, currentUserID string, participants [
 			delayStr,
 		)
 	}
-	fmt.Println()
+	fmt.Fprintln(p.Output)
 }
