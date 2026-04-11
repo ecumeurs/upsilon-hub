@@ -10,13 +10,13 @@ tags: [auth, sanctum]
 parents: []
 dependents:
   - [[rule_admin_access_restriction]]
-  - [[req_security_public_access]]
-  - [[req_security_token_exchange]]
-  - [[uc_auth_logout]]
-  - [[req_security_token_ttl]]
   - [[rule_gdpr_compliance]]
+  - [[req_security_public_access]]
+  - [[req_security_token_ttl]]
   - [[rule_password_policy]]
+  - [[req_security_token_exchange]]
   - [[req_security_authorization]]
+  - [[uc_auth_logout]]
 ---
 # Sanctum Token Security Requirement
 

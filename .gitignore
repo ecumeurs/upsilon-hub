@@ -5,3 +5,7 @@ pipeline_output
 *.log
 exo.md
 upsiloncli/bin/*
+core*
+.services.pids
+.services.running
+.services.stopped

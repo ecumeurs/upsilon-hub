@@ -6,8 +6,8 @@ layer: ARCHITECTURE
 version: 1.0
 tags: [ui, combat, board, isometric, 3d]
 dependents:
-  - [[ui_holo_obstacle]]
   - [[ui_character_pawn]]
+  - [[ui_holo_obstacle]]
 human_name: Isometric Board Grid UI
 priority: 5
 parents:

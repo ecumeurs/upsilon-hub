@@ -9,12 +9,12 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[domain_ruler_state_data_custody]]
   - [[api_ruler_methods]]
-  - [[domain_ruler_state_technical_interface]]
-  - [[rule_turn_clock]]
   - [[domain_ruler_state_action_validation]]
+  - [[domain_ruler_state_data_custody]]
+  - [[domain_ruler_state_technical_interface]]
   - [[domain_ruler_state_game_states]]
+  - [[rule_turn_clock]]
 ---
 # Ruler State Machine Domain
 

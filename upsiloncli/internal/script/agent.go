@@ -38,6 +38,9 @@ func NewAgent(id, baseURL string, reg *endpoint.Registry, logger io.Writer, shar
 		Shared:   shared,
 	}
 
+	// Use JSON tags for Go struct field names in JS (consistent with API keys)
+	agent.VM.SetFieldNameMapper(goja.TagFieldNameMapper("json", true))
+
 	agent.bindJSAPI()
 	return agent
 }

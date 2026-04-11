@@ -3,6 +3,7 @@ package script
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 	"github.com/dop251/goja"
 	"github.com/ecumeurs/upsiloncli/internal/dto"
@@ -29,7 +30,11 @@ func (a *Agent) bindJSAPI() {
 		"sleep": a.jsSleep,
 
 		// Pathfinding
-		"findPath": a.jsFindPath,
+		"findPath":         a.jsFindPath,
+		"planTravelToward": a.jsPlanTravelToward,
+
+		// Environment
+		"getEnv": a.jsGetEnv,
 	}
 	a.VM.Set("upsilon", upsilonObj)
 }
@@ -132,4 +137,28 @@ func (a *Agent) jsFindPath(call goja.FunctionCall) goja.Value {
 
 	path := FindPath(&board, start, end)
 	return a.VM.ToValue(path)
+}
+
+// @spec-link [[api_plan_travel_toward]]
+func (a *Agent) jsPlanTravelToward(call goja.FunctionCall) goja.Value {
+	if len(call.Arguments) < 3 {
+		return a.VM.ToValue(nil)
+	}
+
+	entityID := call.Arguments[0].String()
+
+	var target dto.Position
+	targetBytes, _ := json.Marshal(call.Arguments[1].Export())
+	json.Unmarshal(targetBytes, &target)
+
+	var board dto.BoardState
+	boardBytes, _ := json.Marshal(call.Arguments[2].Export())
+	json.Unmarshal(boardBytes, &board)
+
+	path := PlanTravelToward(&board, entityID, target)
+	return a.VM.ToValue(path)
+}
+
+func (a *Agent) jsGetEnv(key string) string {
+	return os.Getenv(key)
 }

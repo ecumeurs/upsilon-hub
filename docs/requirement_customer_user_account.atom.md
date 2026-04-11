@@ -7,8 +7,8 @@ human_name: User Account Identity Management
 priority: 3
 tags: [auth, identity, account]
 dependents:
-  - [[ui_modal_box]]
   - [[api_auth_user]]
+  - [[ui_modal_box]]
 type: REQUIREMENT
 layer: CUSTOMER
 ---

@@ -2,38 +2,56 @@
 
 # Configuration
 PID_FILE=".services.pids"
-
-if [ ! -f "$PID_FILE" ]; then
-    echo "Summary: No tracked services appear to be running (missing $PID_FILE)."
-    exit 0
-fi
+PORTS=(8000 8080 5173 8081)
 
 echo "---------------------------------------"
 echo "Stopping Upsilon Stack..."
 echo "---------------------------------------"
 
-# Read PIDs and kill them
-while IFS= read -r pid; do
-    if [ ! -z "$pid" ]; then
-        # Check if process exists before killing
-        if ps -p "$pid" > /dev/null; then
-            echo "[-] Stopping process $pid and its children..."
-            # Try to kill the process group
-            pkill -P "$pid" 2>/dev/null
-            kill "$pid" 2>/dev/null
-            sleep 0.5
+# 1. Try graceful stop of tracked PIDs
+if [ -f "$PID_FILE" ]; then
+    while IFS='|' read -r name pid log_file port; do
+        if [ ! -z "$pid" ]; then
             if ps -p "$pid" > /dev/null; then
-                kill -9 "$pid" 2>/dev/null
+                echo "[-] Stopping $name (PID: $pid)..."
+                pkill -P "$pid" 2>/dev/null
+                kill "$pid" 2>/dev/null
             fi
-        else
-            echo "[!] Process $pid already stopped or defunct."
         fi
+    done < "$PID_FILE"
+    rm "$PID_FILE"
+fi
+
+# 2. Forceful port cleanup (Authoritative)
+echo "[!] Ensuring ports are free..."
+for port in "${PORTS[@]}"; do
+    # Find PIDs on the port using ss
+    pids=$(ss -tulpn | grep ":$port " | grep -oP 'users:\(\("\S+",pid=\K\d+')
+    if [ ! -z "$pids" ]; then
+        echo "    Cleaning up port $port (PIDs: $pids)..."
+        for pid in $pids; do
+            sudo kill -9 "$pid" 2>/dev/null
+        done
+        sleep 1
     fi
-done < "$PID_FILE"
+done
 
-# Clean up
-rm "$PID_FILE"
+# 3. Final Verification
+STUCK=0
+for port in "${PORTS[@]}"; do
+    if ss -tulpn | grep -q ":$port "; then
+        echo "[ERROR] Port $port is still in use!"
+        STUCK=1
+    fi
+done
 
-echo "---------------------------------------"
-echo "All tracked services stopped."
-echo "---------------------------------------"
+if [ $STUCK -eq 0 ]; then
+    echo "---------------------------------------"
+    echo "All tracked services stopped."
+    echo "---------------------------------------"
+else
+    echo "---------------------------------------"
+    echo "Warning: Some ports remain occupied."
+    echo "---------------------------------------"
+    exit 1
+fi

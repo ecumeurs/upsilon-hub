@@ -9,8 +9,8 @@ priority: 1
 tags: [scripting, farm, qa]
 parents: []
 dependents:
-  - [[mechanic_shared_memory]]
   - [[mechanic_script_lifecycle]]
+  - [[mechanic_shared_memory]]
 ---
 
 # Multi-Agent Scripting Farm

@@ -9,7 +9,8 @@ priority: 5
 tags: [docker, infrastructure, mvp]
 parents:
   - [[module_backend]]
-dependents: []
+dependents:
+  - [[watch_services]]
 ---
 # MVP Docker Infrastructure
 

@@ -9,8 +9,8 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[us_leaderboard_view_sort_leaderboard]]
   - [[us_leaderboard_view_auth_leaderboard]]
+  - [[us_leaderboard_view_sort_leaderboard]]
 ---
 # Leaderboard View Story
 

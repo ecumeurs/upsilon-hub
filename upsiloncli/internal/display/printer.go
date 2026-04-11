@@ -365,3 +365,30 @@ func (p *Printer) Board(bs *dto.BoardState, currentUserID string, participants [
 	}
 	fmt.Fprintln(p.Output)
 }
+
+// Victory prints a large success banner.
+func (p *Printer) Victory(name string) {
+	fmt.Fprintln(p.Output)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", BgGreen+White+Bold, "                                        ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", BgGreen+White+Bold, "     VICTORY IS YOURS, "+strings.ToUpper(name)+"!     ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", BgGreen+White+Bold, "                                        ", Reset)
+	fmt.Fprintln(p.Output)
+}
+
+// Defeat prints a large failure banner.
+func (p *Printer) Defeat(winner string) {
+	fmt.Fprintln(p.Output)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", BgRed+White+Bold, "                                        ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", BgRed+White+Bold, "     DEFEAT... WINNER: "+strings.ToUpper(winner)+"     ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", BgRed+White+Bold, "                                        ", Reset)
+	fmt.Fprintln(p.Output)
+}
+
+// Draw prints a stalemate banner.
+func (p *Printer) Draw() {
+	fmt.Fprintln(p.Output)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", Yellow+Bold, "                                        ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", Yellow+Bold, "          STALEMATE / DRAW          ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s\n", Yellow+Bold, "                                        ", Reset)
+	fmt.Fprintln(p.Output)
+}

@@ -432,6 +432,18 @@ func (e *GameState) Execute(client *api.Client, sess *session.Session, inputs ma
 		sess.SetLastBoard(&game.GameState)
 		client.Printer.System("Tactical state synchronized.")
 		client.Printer.Board(&game.GameState, sess.UserIdentifier(), game.Participants)
+
+		// Detect game conclusion
+		if game.GameState.WinnerID != "" {
+			if game.GameState.WinnerID == "DRAW" {
+				client.Printer.Draw()
+			} else if game.GameState.WinnerID == sess.UserIdentifier() {
+				name, _ := sess.Get("account_name")
+				client.Printer.Victory(name)
+			} else {
+				client.Printer.Defeat(game.GameState.WinnerID)
+			}
+		}
 	}
 
 	return nil

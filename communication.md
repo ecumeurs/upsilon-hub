@@ -24,11 +24,23 @@ To guarantee traceability and consistent error handling, every JSON exchange bet
 
 The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the originator (typically the Vue frontend for user actions) to generate this ID. It must be propagated across all distributed calls spanning Laravel and Go to maintain the trace defined in [[rule_tracing_logging]].
 
+### 1.3 Service Ports & Network Topology
+
+| Service | Port (Dev) | Protocol | Role |
+| :--- | :--- | :--- | :--- |
+| **Laravel API** | `8000` | HTTP | External Gateway & Orchestration |
+| **Reverb Server** | `8080` | WS/WSS | Tactical WebSocket Bridge |
+| **Upsilon Engine** | `8081` | HTTP | Stateless Combat Engine (Internal) |
+| **Vue.js (Vite)** | `5173` | HTTP | "Neon in the Dust" Frontend (Dev Only) |
+
+> [!TIP]
+> **Production Note:** In production, the Vue.js app is pre-built and served directly by the Laravel API at the same port as the web server, eliminating the need for the Vite dev server (Port 5173).
+
 ---
 
 ## 2. Laravel API (External Gateway)
 **Source Module:** [[api_laravel_gateway]]  
-**Base URL:** `/api/v1`  
+**Base URL:** `http://localhost:8000/api/v1`  
 **Authentication:** Bearer Token (Laravel Sanctum)
 
 ### 2.0 API Summary
@@ -169,7 +181,7 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 
 ## 3. Upsilon API (Go Internal Engine)
 **Source Module:** [[api_go_battle_engine]]  
-**Base URL:** `http://upsilonapi:8080/internal`
+**Base URL:** `http://localhost:8081/internal`
 
 ### 3.0 API Summary
 

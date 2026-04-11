@@ -183,7 +183,21 @@ func (l *Listener) listenLoop() {
 					l.Session.SetLastBoard(&payload.Data)
 					if l.Printer != nil {
 						l.Printer.System("Tactical feed updated.")
-						l.Printer.Suggestions([]string{"redraw"})
+						l.Printer.Board(&payload.Data, l.Session.UserIdentifier(), l.Session.Participants())
+
+						// Detect game conclusion
+						if payload.Data.WinnerID != "" {
+							if payload.Data.WinnerID == "DRAW" {
+								l.Printer.Draw()
+							} else if payload.Data.WinnerID == l.Session.UserIdentifier() {
+								name, _ := l.Session.Get("account_name")
+								l.Printer.Victory(name)
+							} else {
+								l.Printer.Defeat(payload.Data.WinnerID)
+							}
+						} else {
+							l.Printer.Suggestions([]string{"redraw"})
+						}
 					}
 				} else {
 					if l.Printer != nil {

@@ -43,6 +43,14 @@ The system relies on a strictly separated logic implementation:
 4. **Database (PostgreSQL):**
    - Persistent, serialized memory holding Player access credentials, individual Character state logs, match resolutions, and leaderboard calculations.
 
+## Development & Monitoring
+The project includes a suite of scripts at the root to manage and monitor the service stack during development:
+
+- **[start_services.sh](start_services.sh)**: Launches the Laravel API, Reverb Server, Vue Frontend, and Upsilon Engine in the background. Tracks PIDs and log file mappings.
+- **[stop_services.sh](stop_services.sh)**: Gracefully stops all tracked services.
+- **[watch_services.go](watch_services.go)**: Real-time TUI dashboard for monitoring CPU/Mem and log errors. Run with `go run watch_services.go`.
+- **[check_services.sh](check_services.sh)**: Lightweight status utility for quick health checks (useful for agents and CI).
+
 ## Specification (ATD) Maps
 All fundamental mechanics, structural constraints, entities, and network rules that form the game are housed individually in `/workspace/docs/`. These Atoms serve as the uncompromising basis for evaluating developer implementation logic.
 

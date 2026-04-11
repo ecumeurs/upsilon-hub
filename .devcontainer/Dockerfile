@@ -29,6 +29,9 @@ RUN apt-get update && apt-get install -y \
     wget \
     golang-go \
     procps \
+    iproute2 \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && docker-php-ext-install gd pdo pdo_pgsql zip bcmath intl pcntl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -47,6 +50,11 @@ USER ${USERNAME}
 WORKDIR /workspace
 
 ENV PATH="/home/vscode/.local/bin:${PATH}"
+
+EXPOSE 8000
+EXPOSE 8080
+EXPOSE 8081
+EXPOSE 5173
 
 # Keep container running until we create the Symfony project
 CMD ["sleep", "infinity"]

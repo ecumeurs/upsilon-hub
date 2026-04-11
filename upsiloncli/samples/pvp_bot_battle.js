@@ -65,9 +65,9 @@ const slipMs = Math.floor(Math.random() * 3000);
 upsilon.log("Preventing race condition: slipping for " + slipMs + "ms...");
 upsilon.sleep(slipMs);
 
-upsilon.log("Entering 1v1 PVP queue...");
+upsilon.log("Entering " + (upsilon.getEnv("UPSILON_GAME_MODE") || upsilon.getShared("game_mode") || "1v1_PVP") + " queue...");
 upsilon.call("matchmaking_join", {
-    game_mode: "1v1_PVP"
+    game_mode: upsilon.getEnv("UPSILON_GAME_MODE") || upsilon.getShared("game_mode") || "1v1_PVP"
 });
 
 // 3. Wait for MatchFound
@@ -177,29 +177,12 @@ function executeTacticalLogic(board, myPlayerId) {
 
     // 1. Move toward enemy if not already adjacent
     if (minDistance > 1 && actingEntity.move > 0) {
-        // Find path to all 4 adjacent spots to the enemy
-        const adjacents = [
-            { x: nearestEnemy.position.x + 1, y: nearestEnemy.position.y },
-            { x: nearestEnemy.position.x - 1, y: nearestEnemy.position.y },
-            { x: nearestEnemy.position.x, y: nearestEnemy.position.y + 1 },
-            { x: nearestEnemy.position.x, y: nearestEnemy.position.y - 1 }
-        ];
+        const pathSteps = upsilon.planTravelToward(actingEntity.id, nearestEnemy.position, board);
 
-        let bestPath = null;
-        for (const spot of adjacents) {
-            const p = upsilon.findPath(actingEntity.position, spot, board);
-            if (p && (!bestPath || p.length < bestPath.length)) {
-                bestPath = p;
-            }
-        }
-
-        if (bestPath && bestPath.length > 0) {
-            // Take up to 'move' points
-            const moveCount = Math.min(bestPath.length, actingEntity.move);
-            const pathSteps = bestPath.slice(0, moveCount);
+        if (pathSteps && pathSteps.length > 0) {
             const pathString = pathSteps.map(p => p.x + "," + p.y).join(";");
             
-            upsilon.log("Moving " + moveCount + " cells along path: " + pathString);
+            upsilon.log("Moving " + pathSteps.length + " cells along path: " + pathString);
             upsilon.call("game_action", {
                 id: matchId,
                 entity_id: actingEntity.id,
@@ -210,7 +193,7 @@ function executeTacticalLogic(board, myPlayerId) {
             currentPos = pathSteps[pathSteps.length - 1];
             minDistance = Math.abs(currentPos.x - nearestEnemy.position.x) + Math.abs(currentPos.y - nearestEnemy.position.y);
         } else {
-            upsilon.log("No path found to any tile adjacent to enemy.");
+            upsilon.log("No valid path found to get closer to " + nearestEnemy.name);
         }
     }
 

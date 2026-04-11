@@ -8,6 +8,7 @@ Before writing a script, you need to know the tools available in your JavaScript
 * **`upsilon.call(route_name, {params})`**: Executes an API request. The `route_name` must match an endpoint in the registry (e.g., `auth_login`, `game_action`). Returns the parsed JSON `data` object.
 * **`upsilon.waitForEvent(event_name, timeout_ms)`**: Pauses the script until the WebSocket receives the specified event (e.g., `match.found`, `board.updated`). Returns the event payload.
 * **`upsilon.log(message)`**: Prints a message to the console, automatically prefixed with the agent's ID (e.g., `[Bot-1] Moving to 3,2`).
+* **`upsilon.planTravelToward(entity_id, target_pos, board)`**: Calculates the optimal path for an entity toward a coordinate. It handles grid occupancy (units/obstacles) and movement credit limits. Returns an array of positions.
 
 #### Session Context (Local to this specific Agent)
 * **`upsilon.getContext(key)`**: Retrieves a value from the agent's local session (e.g., `user_id`, `match_id`).
@@ -39,6 +40,38 @@ upsilon.onTeardown(() => {
     try {
         // auth_delete removes the account from the database
         upsilon.call("auth_delete", {}); 
+    } catch (e) {
+        upsilon.log("Failed to clean up account: " + e.message);
+    }
+});
+
+
+
+// Register teardown for robust cleanup
+upsilon.onTeardown(() => {
+    upsilon.log("Running Teardown: Cleanup sequence triggered.");
+    
+    // 1. Ensure we leave matchmaking queue if still waiting
+    try {
+        upsilon.call("matchmaking_leave", {});
+    } catch (e) {
+        // Expected if not in queue
+    }
+
+    // 2. Forfeit if currently in a match
+    if (matchId) {
+        try {
+            upsilon.log("Forfeiting match " + matchId);
+            upsilon.call("game_action", { id: matchId, type: "forfeit" });
+        } catch (e) {
+            // Expected if game already ended or not our turn
+        }
+    }
+
+    // 3. Always delete the temporary account
+    try {
+        upsilon.log("Deleting temporary account: " + accountName);
+        upsilon.call("auth_delete", {});
     } catch (e) {
         upsilon.log("Failed to clean up account: " + e.message);
     }
