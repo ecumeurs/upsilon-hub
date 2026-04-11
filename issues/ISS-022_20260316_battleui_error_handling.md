@@ -4,7 +4,7 @@
 **Ref:** `ISS-022`
 **Date:** 2026-03-16
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `battleui/bootstrap/app.php`
 **Affects:** All API consumers (Vue frontend, Go engine)
 

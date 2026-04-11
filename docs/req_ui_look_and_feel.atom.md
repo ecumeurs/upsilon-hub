@@ -2,7 +2,10 @@
 id: req_ui_look_and_feel
 status: STABLE
 dependents:
+  - [[mech_ai_name_generation]]
   - [[ui_theme]]
+  - [[rule_pve_winnability_balance]]
+  - [[rule_pvp_stalemate_draw]]
   - [[ui_battle_arena]]
 parents: []
 human_name: UI Look and Feel Aesthetic

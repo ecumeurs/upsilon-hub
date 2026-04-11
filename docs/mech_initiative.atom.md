@@ -10,8 +10,8 @@ tags: []
 parents: []
 dependents:
   - [[mech_initiative_active_state]]
-  - [[mech_initiative_delay_costs]]
   - [[mech_initiative_requeue_calculation]]
+  - [[mech_initiative_delay_costs]]
   - [[mech_initiative_initiative_roll]]
 ---
 # Initiative & Delay Mechanic

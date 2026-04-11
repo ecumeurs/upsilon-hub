@@ -10,9 +10,9 @@ tags: []
 parents:
   - [[uc_player_registration]]
 dependents:
-  - [[ui_registration_success_state]]
   - [[ui_registration_minimal_form_fields]]
   - [[ui_registration_reroll_limit]]
+  - [[ui_registration_success_state]]
   - [[ui_registration_character_generation_flow]]
 ---
 # Registration Page UI

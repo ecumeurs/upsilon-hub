@@ -1,6 +1,6 @@
 # Upsilon Battle: WebSocket Protocol Specification
 
-This document details the real-time communication protocol used by the Upsilon Battle Arena, based on the **Pusher v7 Protocol** implemented via **Laravel Reverb**.
+This document details the real-time communication protocol used by the Upsilon Battle Arena, based on the **Pusher v7 Protocol** implemented via **Laravel Reverb**. This implementation follows the `[[api_websocket]]` specification.
 
 ## 1. Connection Initiation
 
@@ -28,8 +28,7 @@ Upon connection, the server immediately sends a connection establishment event. 
 
 ---
 
-## 3. Channel Authorization (Private Channels)
-
+Channel authorization ensures that only the rightful owners can access private streams, as defined in `[[api_websocket]]`.
 Authentication happens at the **channel level**, not the connection level. Sensitive data (match updates, notifications) is sent over `private-` channels.
 
 ### Auth Request (HTTP)
@@ -85,14 +84,16 @@ If successful, the server replies with:
 ## 5. Game Events
 
 ### MatchFound
-Sent on the `private-user.{user_id}` channel when the matchmaking engine pairs you with an opponent.
+Sent on the `private-user.{ws_channel_key}` channel when the matchmaking engine pairs you with an opponent.
+- **Specification:** `[[api_websocket_user_notifications]]`
 - **Event Name:** `match.found`
-- **Payload:** `{"match_id": "uuid", "user_id": "uuid", "data": []}`
+- **Payload:** `{"match_id": "uuid", "channel_key": "uuid", "data": []}`
 
 ### Board Updated
 Sent on the `private-arena.{match_id}` channel whenever an entity moves, attacks, or passes.
+- **Specification:** `[[api_websocket_arena_updates]]`
 - **Event Name:** `board.updated`
-- **Payload:** `{"match_id": "uuid", "data": { ...BoardState... }}`
+- **Payload:** `{"match_id": "uuid", "data": { ...BoardState... }}` (See `[[battleui_api_dtos]]`)
 
 ---
 
@@ -125,3 +126,17 @@ Paste this into `wscat`:
    ```
 4. **Subscribe**: Paste `{"event":"pusher:subscribe","data":{"channel":"private-arena.my-match-id","auth":"key:sig"}}` into wscat.
 5. **Listen**: Wait for `board.updated` events.
+
+---
+
+## 8. Traceability
+
+This protocol is governed by the following ATD atoms:
+- **Master Protocol:** `[[api_websocket]]`
+- **User Notifications:** `[[api_websocket_user_notifications]]`
+- **Arena Updates:** `[[api_websocket_arena_updates]]`
+- **Data Structures:** `[[battleui_api_dtos]]`
+
+@spec-link [[api_websocket]]
+@spec-link [[api_websocket_user_notifications]]
+@spec-link [[api_websocket_arena_updates]]

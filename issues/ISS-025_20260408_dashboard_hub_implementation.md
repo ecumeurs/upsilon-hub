@@ -4,7 +4,7 @@
 **Ref:** `ISS-025`
 **Date:** 2026-04-08
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `battleui/resources/js/Pages/Dashboard.vue`
 **Affects:** `battleui`
 

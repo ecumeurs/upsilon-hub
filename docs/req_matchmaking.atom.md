@@ -9,10 +9,10 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[req_matchmaking_matchmaking_queue]]
   - [[ui_waiting_room]]
-  - [[mech_matchmaking]]
+  - [[req_matchmaking_matchmaking_queue]]
   - [[req_matchmaking_pve_pvp_transition]]
+  - [[mech_matchmaking]]
   - [[req_matchmaking_transition_rules]]
 ---
 # Matchmaking Flow Requirement

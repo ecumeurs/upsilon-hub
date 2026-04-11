@@ -14,6 +14,7 @@ import (
 // SessionData is the serializable part of the session.
 type SessionData struct {
 	Token        string            `json:"token"`
+	WSChannelKey string            `json:"ws_channel_key"`
 	Context      map[string]string `json:"context"`
 	Participants []dto.Participant `json:"participants"`
 }
@@ -23,6 +24,7 @@ type SessionData struct {
 type Session struct {
 	mu           sync.RWMutex
 	token        string
+	wsChannelKey string
 	context      map[string]string
 	lastBoard    *dto.BoardState
 	participants []dto.Participant
@@ -35,13 +37,27 @@ func New() *Session {
 	}
 }
 
-// --- JWT Management ---
+// --- JWT & Key Management ---
 
 // SetToken stores a new JWT. Called after login/register or renewal.
 func (s *Session) SetToken(token string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.token = token
+}
+
+// SetWSChannelKey stores the private WS pseudonym.
+func (s *Session) SetWSChannelKey(key string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.wsChannelKey = key
+}
+
+// WSChannelKey returns the private WS pseudonym.
+func (s *Session) WSChannelKey() string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.wsChannelKey
 }
 
 // Token returns the current JWT (empty string if unauthenticated).
@@ -103,6 +119,7 @@ func (s *Session) ClearAll() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.token = ""
+	s.wsChannelKey = ""
 	s.context = make(map[string]string)
 	s.lastBoard = nil
 	s.participants = nil
@@ -236,6 +253,7 @@ func (s *Session) SaveToFile(path string) error {
 	s.mu.RLock()
 	data := SessionData{
 		Token:        s.token,
+		WSChannelKey: s.wsChannelKey,
 		Context:      s.context,
 		Participants: s.participants,
 	}
@@ -264,6 +282,7 @@ func (s *Session) LoadFromFile(path string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.token = data.Token
+	s.wsChannelKey = data.WSChannelKey
 	s.context = data.Context
 	s.participants = data.Participants
 	if s.context == nil {

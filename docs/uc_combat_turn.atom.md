@@ -10,8 +10,8 @@ tags: []
 parents:
   - [[req_player_experience]]
 dependents:
-  - [[us_take_combat_turn]]
   - [[usecase_api_flow_game_turn]]
+  - [[us_take_combat_turn]]
 ---
 # Combat Turn Use Case
 

@@ -33,6 +33,7 @@ type Entity struct {
 // @spec-link [[entity_player]]
 type Player struct {
 	ID       string   `json:"id"`
+	Nickname string   `json:"nickname"`
 	Entities []Entity `json:"entities"`
 	Team     int      `json:"team"`
 	IA       bool     `json:"ia"`

@@ -56,6 +56,7 @@ type BoardState struct {
 	Timeout         time.Time `json:"timeout"` // End of turn date.
 	StartTime       time.Time `json:"start_time"`
 	WinnerID        string    `json:"winner_id"` // if any, the game is done; based on player id.
+	Players         []Player  `json:"players"`   // Full roster
 }
 
 // ArenaEvent is the payload for the webhook
@@ -111,11 +112,12 @@ func NewEntity(entity entity.Entity) Entity {
 }
 
 // NewBoardState creates a new BoardState DTO from internal state.
-func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, ts turner.TurnState, startTime time.Time, timeout time.Time) BoardState {
+func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, players []Player, ts turner.TurnState, startTime time.Time, timeout time.Time) BoardState {
 	bs := BoardState{
 		StartTime:       startTime,
 		Timeout:         timeout,
 		CurrentEntityID: ts.CurrentEntityTurn.String(),
+		Players:         players,
 	}
 
 	// Map Grid

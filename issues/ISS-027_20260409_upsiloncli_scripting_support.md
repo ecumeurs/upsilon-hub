@@ -4,7 +4,7 @@
 **Ref:** `ISS-027`
 **Date:** 2026-04-09
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsiloncli/internal/script`
 **Affects:** Developers, QA, CI/CD Pipelines
 

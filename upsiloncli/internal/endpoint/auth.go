@@ -49,6 +49,9 @@ func (e *AuthLogin) Execute(client *api.Client, sess *session.Session, inputs ma
 			if uid, ok := user["id"].(string); ok {
 				sess.Set("user_id", uid)
 			}
+			if key, ok := user["ws_channel_key"].(string); ok {
+				sess.SetWSChannelKey(key)
+			}
 			if name, ok := user["account_name"].(string); ok {
 				sess.Set("account_name", name)
 			}
@@ -99,6 +102,9 @@ func (e *AuthRegister) Execute(client *api.Client, sess *session.Session, inputs
 		if user, ok := data["user"].(map[string]interface{}); ok {
 			if uid, ok := user["id"].(string); ok {
 				sess.Set("user_id", uid)
+			}
+			if key, ok := user["ws_channel_key"].(string); ok {
+				sess.SetWSChannelKey(key)
 			}
 			if name, ok := user["account_name"].(string); ok {
 				sess.Set("account_name", name)

@@ -5,7 +5,7 @@ type: REQUIREMENT
 layer: CUSTOMER
 priority: 3
 tags: security,privacy,auth
-version: 1.0
+version: 1.1
 parents: []
 dependents:
   - [[entity_player]]
@@ -19,7 +19,7 @@ To ensure that internal database user IDs are never exposed to the frontend, pro
 
 ## THE RULE / LOGIC
 - The primary UUID (database ID) of a user MUST NOT be sent to the client (frontend).
-- The frontend MUST use a locally generated, persistent pseudonym (Tactical ID) for display purposes if an identifier is required in the UI.
+- WebSocket private channels MUST be keyed using a secure, persistent pseudonym (`ws_channel_key`) generated on the backend and exposed via the UserResource.
 - Identity resolution for API requests MUST be handled purely by backend session or JWT token processing, never by a client-provided user ID.
 
 ## TECHNICAL INTERFACE

@@ -103,10 +103,39 @@ By default, the session (JWT and context) is purely in-memory. Use the `--persis
 
 Note: when creating new users, make sure to take into account [[rule_password_policy]]
 
-### Auto Mode (WIP)
-...
+### Multi-Agent Scripting Farm 🤖🤖🤖
 
-## Architecture
+UpsilonCLI can transform into a high-performance bot farm using the integrated **Goja JavaScript engine**. This allows you to run multiple automated agents in parallel for matchmaking load testing, balance verification, or end-to-end journey validation.
+
+#### 1. Execution Flags
+
+| Flag | Description |
+|---|---|
+| `--farm <script...>` | Execute one or more JavaScript files in parallel. Each script gets its own isolated network and session context ("Agent"). |
+| `--logs <dir>` / `-L` | Redirect all output (including internal CURL and WebSocket logs) to individual files in the specified directory. |
+
+Example:
+```bash
+./bin/upsiloncli --logs ./bot_logs --farm samples/onboard_and_match.js samples/onboard_and_match.js
+```
+
+#### 2. JavaScript API (`upsilon` object)
+
+Scripts have access to a global `upsilon` bridge to interact with the Go backend:
+
+- **`upsilon.call(route_name, params)`**: Execute any API endpoint. Returns a parsed JSON object.
+- **`upsilon.waitForEvent(event_name, timeout_ms)`**: Block execution until a specific WebSocket event is received.
+- **`upsilon.log(message)`**: Print a message to the agent's output stream, prefixed with the Agent ID.
+- **`upsilon.getContext(key)` / `upsilon.setContext(key, value)`**: Read or write values from the agent's persistent session context.
+- **`upsilon.onTeardown(callback)`**: Register a function to run when the script exits or crashes ([[mechanic_script_lifecycle]]).
+- **`upsilon.assert(condition, message)`**: Halt script and trigger teardown on failure.
+- **`upsilon.setShared(key, value)` / `upsilon.getShared(key)`**: Access thread-safe shared memory across agents ([[mechanic_shared_memory]]).
+- **`upsilon.sleep(ms)`**: Precise flow control/delay.
+
+#### 3. Sample Script: Onboarding & Matchmaking
+See [samples/onboard_and_match.js](samples/onboard_and_match.js) for a complete example that creates a new account (adhering to `@rule_password_policy`) and joins a PVE queue.
+
+### Architecture
 
 ```
 cmd/upsiloncli/       Entry point (main.go)
@@ -161,3 +190,6 @@ The CLI tracks named values from API responses (e.g., `user_id`, `match_id`, `ch
 - [Matchmaking Flow](../docs/usecase_api_flow_matchmaking.atom.md)
 - [Game Turn Flow](../docs/usecase_api_flow_game_turn.atom.md)
 - [Token Renewal](../docs/mech_sanctum_token_renewal.atom.md)
+- [Script Farm MODULE](../docs/script_farm.atom.md)
+- [Agent Lifecycle MECHANIC](../docs/mechanic_script_lifecycle.atom.md)
+- [Shared Memory MECHANIC](../docs/mechanic_shared_memory.atom.md)

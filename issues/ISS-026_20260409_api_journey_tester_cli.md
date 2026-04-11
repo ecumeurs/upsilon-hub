@@ -4,7 +4,7 @@
 **Ref:** `ISS-026`
 **Date:** 2026-04-09
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `tools/journey-tester`
 **Affects:** Developers, QA, API Users, Integrators
 

@@ -9,13 +9,13 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[ui_dashboard]]
-  - [[ui_landing]]
   - [[module_frontend_session_management]]
-  - [[module_frontend_character_entity_creation]]
-  - [[module_frontend_integration_constraint]]
-  - [[module_frontend_matchmaking_orchestration]]
+  - [[ui_landing]]
   - [[module_frontend_board_ui_rendering]]
+  - [[ui_dashboard]]
+  - [[module_frontend_matchmaking_orchestration]]
+  - [[module_frontend_integration_constraint]]
+  - [[module_frontend_character_entity_creation]]
 ---
 # BattleUI Frontend Component
 

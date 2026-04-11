@@ -50,14 +50,9 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [AI enemies (for PVE) require database user records](issues/Ref_20260409_ai_enemies_require_user.md) | 2026-04-09 | Open | Medium | Currently, the `match_participants` table has a foreign key constraint requir... |
-| [UpsilonCLI Scripting & Automated Scenario Support](issues/ISS-027_20260409_upsiloncli_scripting_support.md) | 2026-04-09 | Open | Medium | Currently, UpsilonCLI is primarily an interactive explorer. To facilitate com... |
-| [Upsilon API Journey Explorer & Tester CLI](issues/ISS-026_20260409_api_journey_tester_cli.md) | 2026-04-09 | Open | Medium | The system requires a versatile CLI tool to facilitate development and testin... |
-| [Dashboard Hub Implementation](issues/ISS-025_20260408_dashboard_hub_implementation.md) | 2026-04-08 | Open | Medium | This issue tracks the implementation of the Dashboard Hub for the Upsilon Bat... |
+| [PVP Stalemate Logic Not Enforced](issues/ISS-029_20260410_stalemate_logic_not_enforced.md) | 2026-04-10 | Open | Medium | Currently, there is no logic to detect and resolve a stalemate when remaining... |
 | [Ensure all logs are tagged with Request ID](issues/ISS-023_20260316_logging_tag_traceability.md) | 2026-03-16 | Open | High | The system currently lacks a strictly enforced requirement to tag every log e... |
-| [Improper major error handling in BattleUI](issues/ISS-022_20260316_battleui_error_handling.md) | 2026-03-16 | Open | High | In BattleUI, major internal errors or unhandled exceptions currently return H... |
 | [Security Risk: Lack of Match Participant Access Control](issues/ISS-018_20260312_match_participant_access_control.md) | 2026-03-12 | Open | Critical | Currently, any authenticated user can attempt to act or view the state of ANY... |
-| [Security Risk: Battle Action player_id Usurpation](issues/ISS-017_20260312_action_player_id_usurpation.md) | 2026-03-12 | Open | Critical | The battle action proxy endpoint accepts a `player_id` directly from the requ... |
 | [Arena not destroyed on battle end](issues/ISS-012_20260311_arena_destruction_leak.md) | 2026-03-11 | Open | Medium | Arenas are added to the `ArenaBridge.arenas` map during startup but are never... |
 | [Ruler readiness trigger enhancements](issues/ISS-010_20260311_ruler_readiness_logic.md) | 2026-03-11 | Open | Low | The current readiness trigger for the `Ruler` (the `BattleStart` notification... |
 | [Ruler ownership bypass in bridge.go and public GameState](issues/ISS-009_20260311_ruler_ownership_bypass.md) | 2026-03-11 | Open | Low | In `bridge.go`'s `StartArena` function, the `Ruler`'s ownership of game resou... |

@@ -41,10 +41,11 @@ func Get() *ArenaBridge {
 	return bridge
 }
 
-func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.Grid, []entity.Entity, turner.TurnState, error) {
+func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.Grid, []entity.Entity, []api.Player, turner.TurnState, error) {
 	matchID := uuid.MustParse(start.MatchID)
 	battleArena := battlearena.NewBattleArena(matchID)
 	battleArena.Metadata["CallbackURL"] = start.CallbackURL
+	battleArena.Metadata["Players"] = start.Players
 
 	// Ensure Ruler ID matches MatchID as per caller expectations
 	battleArena.Ruler.ID = matchID
@@ -111,9 +112,14 @@ func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.
 		}
 	}
 
-	for ; count > 0; count-- {
-		log.Printf("Waiting ... (%d)", count)
-		<-respChan
+	for i := 0; i < count; i++ {
+		log.Printf("[ArenaBridge] Waiting for controller reply (%d/%d) for match %s", i+1, count, matchID)
+		select {
+		case msg := <-respChan:
+			log.Printf("[ArenaBridge] Received reply from controller for match %s (Error: %v)", matchID, msg.HasError)
+		case <-time.After(10 * time.Second):
+			log.Printf("[ArenaBridge] TIMEOUT waiting for controller reply for match %s", matchID)
+		}
 	}
 
 	res := make([]entity.Entity, 0, 6)
@@ -125,6 +131,7 @@ func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.
 	return matchID,
 		battleArena.Ruler.GameState.Grid,
 		res,
+		start.Players,
 		battleArena.Ruler.GameState.Turner.GetTurnState(),
 		nil
 }
@@ -142,7 +149,9 @@ func (b *ArenaBridge) GetBoardState(matchID uuid.UUID) (api.BoardState, error) {
 		res = append(res, v)
 	}
 
-	return api.NewBoardState(matchID, arena.Ruler.GameState.Grid, res, arena.Ruler.GameState.Turner.GetTurnState(), time.Now(), time.Now().Add(30*time.Second)), nil
+	players, _ := arena.Metadata["Players"].([]api.Player)
+
+	return api.NewBoardState(matchID, arena.Ruler.GameState.Grid, res, players, arena.Ruler.GameState.Turner.GetTurnState(), time.Now(), time.Now().Add(30*time.Second)), nil
 }
 
 func (b *ArenaBridge) ArenaAction(arenaID uuid.UUID, req api.ArenaActionMessage) (bool, string, interface{}) {

@@ -4,7 +4,7 @@
 **Ref:** `ISS-017`
 **Date:** 2026-03-12
 **Severity:** Critical
-**Status:** Open
+**Status:** Resolved
 **Component:** `app/Http/Controllers/API/GameController.php`
 **Affects:** Battle engine integrity
 

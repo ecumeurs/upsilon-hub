@@ -35,8 +35,8 @@ func (e *ProfileGet) Execute(client *api.Client, sess *session.Session, inputs m
 	if err != nil {
 		return err
 	}
-	// Extract character IDs from response data for context
-	extractCharacterIDs(resp, sess)
+	// Extract character IDs and token from response data for context
+	SyncSession(resp, sess)
 	return nil
 }
 
@@ -524,10 +524,17 @@ func (e *HelpEndpoint) Execute(client *api.Client, sess *session.Session, inputs
 
 // --- Helpers ---
 
-func extractCharacterIDs(resp *api.Response, sess *session.Session) {
+// SyncSession extracts contextual state (JWT, user_id, match_id, character_ids)
+// from a standard API response envelope and updates the session.
+func SyncSession(resp *api.Response, sess *session.Session) {
 	data, ok := resp.Data.(map[string]interface{})
 	if !ok {
 		return
+	}
+
+	// Capture security tokens
+	if token, ok := data["token"].(string); ok && token != "" {
+		sess.SetToken(token)
 	}
 
 	// Capture user info if present (flat or nested)
@@ -537,6 +544,9 @@ func extractCharacterIDs(resp *api.Response, sess *session.Session) {
 	if name, ok := data["account_name"].(string); ok {
 		sess.Set("account_name", name)
 	}
+	if key, ok := data["ws_channel_key"].(string); ok {
+		sess.SetWSChannelKey(key)
+	}
 
 	// Deep capture if nested in "user" object
 	if user, ok := data["user"].(map[string]interface{}); ok {
@@ -545,6 +555,9 @@ func extractCharacterIDs(resp *api.Response, sess *session.Session) {
 		}
 		if name, ok := user["account_name"].(string); ok {
 			sess.Set("account_name", name)
+		}
+		if key, ok := user["ws_channel_key"].(string); ok {
+			sess.SetWSChannelKey(key)
 		}
 	}
 
@@ -561,6 +574,11 @@ func extractCharacterIDs(resp *api.Response, sess *session.Session) {
 			sess.Set("character_id", ids[0])
 			sess.Set("character_ids", strings.Join(ids, ","))
 		}
+	}
+
+	// Capture match info
+	if matchID, ok := data["match_id"].(string); ok && matchID != "" {
+		sess.Set("match_id", matchID)
 	}
 }
 

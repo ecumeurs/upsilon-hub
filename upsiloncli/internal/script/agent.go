@@ -11,16 +11,18 @@ import (
 )
 
 type Agent struct {
-	ID       string
-	Session  *session.Session
-	Client   *api.Client
-	Listener *ws.Listener
-	Registry *endpoint.Registry
-	VM       *goja.Runtime
-	Logger   io.Writer
+	ID           string
+	Session      *session.Session
+	Client       *api.Client
+	Listener     *ws.Listener
+	Registry     *endpoint.Registry
+	VM           *goja.Runtime
+	Logger       io.Writer
+	TeardownHook goja.Callable
+	Shared       *SharedStore
 }
 
-func NewAgent(id, baseURL string, reg *endpoint.Registry, logger io.Writer) *Agent {
+func NewAgent(id, baseURL string, reg *endpoint.Registry, logger io.Writer, shared *SharedStore) *Agent {
 	sess := session.New()
 	printer := display.NewPrinterWithWriter(logger)
 	client := api.NewClient(baseURL, sess, printer)
@@ -33,6 +35,7 @@ func NewAgent(id, baseURL string, reg *endpoint.Registry, logger io.Writer) *Age
 		Registry: reg,
 		VM:       goja.New(),
 		Logger:   logger,
+		Shared:   shared,
 	}
 
 	agent.bindJSAPI()

@@ -74,6 +74,16 @@ func (l *Listener) Start() {
 	go l.listenLoop()
 }
 
+// Stop closes the WebSocket connection.
+func (l *Listener) Stop() {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	if l.Conn != nil {
+		l.Conn.Close()
+		l.Conn = nil
+	}
+}
+
 func (l *Listener) listenLoop() {
 	defer l.Conn.Close()
 
@@ -272,9 +282,9 @@ func (l *Listener) Sync() {
 	}
 
 	// 1. Sync User Channel
-	uid := l.Session.UserIdentifier()
-	if uid != "" {
-		channel := fmt.Sprintf("private-user.%s", uid)
+	key := l.Session.WSChannelKey()
+	if key != "" {
+		channel := fmt.Sprintf("private-user.%s", key)
 		l.ensureSubscription(channel)
 	}
 
@@ -300,11 +310,11 @@ func (l *Listener) Status() (connected bool, socketID string, subscriptions []st
 }
 
 func (l *Listener) subscribeToUserChannel() {
-	uid := l.Session.UserIdentifier()
-	if uid == "" {
+	key := l.Session.WSChannelKey()
+	if key == "" {
 		return
 	}
-	l.ensureSubscription(fmt.Sprintf("private-user.%s", uid))
+	l.ensureSubscription(fmt.Sprintf("private-user.%s", key))
 }
 
 func (l *Listener) subscribeToArenaChannel(matchID string) {

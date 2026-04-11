@@ -197,7 +197,7 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 - **Output:** `ArenaActionResponse` (See [[#4.1-arenaactionresponse]])
 
 ### 3.3 Asynchronous Webhook (Callback)
-**Destination:** `POST /api/webhook/upsilon` (in [[api_battle_proxy]])
+**Destination:** `POST /api/webhook/upsilon` (in [[api_battle_proxy]]) — Must be reachable internally from the Go Engine (e.g. `http://127.0.0.1:8000`).
 
 #### Webhook Event Payload
 - **Specification:** [[api_go_webhook_callback]]
@@ -229,7 +229,7 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 
 #### ArenaStartRequest
 - **`match_id`**: `string (UUID)`
-- **`callback_url`**: `string` (Webhook URL)
+- **`callback_url`**: `string` (Webhook URL - Must be reachable internally by the Go Engine)
 - **`players`**: `Array<Player>`
 
 ### 4.2 Arena Components
@@ -249,6 +249,7 @@ Defines the complete state of a tactical arena at a specific moment in time.
 | `timeout` | `string (ISO8601)` | Timestamp when the current turn expires. |
 | `start_time` | `string (ISO8601)` | Timestamp when the arena started. |
 | `winner_id` | `string (UUID)|null` | ID of the winning player. |
+| `players` | `Array<Player>` | Full roster of current participants and their metadata. |
 
 #### Grid
 - **`width`**: `int`
@@ -291,6 +292,7 @@ Detailed state of a single actor.
 
 #### Player
 - **`id`**: `string (UUID)`
+- **`nickname`**: `string`
 - **`team`**: `int`
 - **`ia`**: `boolean` (True if controlled by engine)
 - **`entities`**: `Array<Entity>`
@@ -302,6 +304,7 @@ Detailed state of a single actor.
 | :--- | :--- | :--- |
 | `id` | `string (UUID)` | User's unique identifier. |
 | `account_name` | `string` | Displayed name. |
+| `ws_channel_key`| `string (UUID)` | Pseudonym for secure WebSocket private channel subscription. |
 | `email` | `string` | User's email address. |
 | `full_address` | `string` | User's residential address. |
 | `birth_date` | `string (ISO8601)` | User's date of birth. |
