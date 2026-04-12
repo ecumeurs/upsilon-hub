@@ -7,7 +7,7 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: []
-parents: 
+parents:
   - [[data_persistence]]
 dependents:
   - [[uc_admin_history_management]]

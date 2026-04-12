@@ -8,9 +8,9 @@ status: STABLE
 priority: 5
 tags: [sequence, protocol, controller, ruler]
 parents:
-  - [[mech_controller_handshake]]
-  - [[api_ruler_methods]]
   - [[api_controller_methods]]
+  - [[api_ruler_methods]]
+  - [[mech_controller_handshake]]
 dependents: []
 ---
 # Controller-Ruler Communication Sequence

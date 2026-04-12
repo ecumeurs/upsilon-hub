@@ -190,9 +190,15 @@ func (b *ArenaBridge) ArenaAction(arenaID uuid.UUID, req api.ArenaActionMessage)
 			Path:         path,
 		}, nil), respChan)
 	case "forfeit":
+		entityID := uuid.Nil
+		if req.Data.EntityID != "" {
+			if uid, err := uuid.Parse(req.Data.EntityID); err == nil {
+				entityID = uid
+			}
+		}
 		r.SendActor(message.Create(nil, rulermethods.ControllerForfeit{
 			ControllerID: uuid.MustParse(req.Data.PlayerID),
-			EntityID:     uuid.MustParse(req.Data.EntityID),
+			EntityID:     entityID,
 		}, nil), respChan)
 	default:
 		// Just notify the ruler for now with a generic message if type matches?

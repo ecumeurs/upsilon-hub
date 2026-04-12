@@ -8,7 +8,8 @@ layer: ARCHITECTURE
 version: 1.0
 priority: 5
 tags: [ui, styling, theme]
-parents: [[req_ui_look_and_feel]]
+parents:
+  - [[req_ui_look_and_feel]]
 ---
 
 # New Atom

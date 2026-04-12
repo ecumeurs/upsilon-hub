@@ -59,6 +59,11 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 | `DELETE` | `/matchmaking/leave` | Exit Battle Queue | [[api_matchmaking]] |
 | `GET` | `/game/{id}` | Get Cached Board State | [[api_battle_proxy]] |
 | `POST` | `/game/{id}/action` | Proxy Tactical Action to Engine | [[api_battle_proxy]] |
+| `POST` | `/game/{id}/forfeit` | Standalone Forfeit Route | [[rule_forfeit_battle]] |
+| `GET` | `/admin/dashboard` | Administrative Landing Hub | [[ui_admin_dashboard]] |
+| `GET` | `/admin/users` | List Users for Auditing | [[uc_admin_user_management]] |
+| `POST` | `/admin/users/{id}/anonymize` | GDPR Right to be Forgotten | [[uc_admin_user_management]] |
+| `DELETE` | `/admin/users/{id}` | Administrative Soft Delete | [[uc_admin_user_management]] |
 | `POST` | `/api/webhook/upsilon` | Ingest Engine State Update | [[api_go_webhook_callback]] |
 
 ### 2.1 Authentication
@@ -167,7 +172,6 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 - **Input:**
   - `id`: `string (UUID)` (URL Parameter - Match ID)
 - **Output:** `GameMatchResource` (See [[#4.6-gamematchresource]])
-
 #### `POST /game/{id}/action`
 - **Specification:** [[api_battle_proxy]]
 - **Intent:** [[uc_combat_turn]]: Proxy tactical commands to the Upsilon Go Engine.
@@ -176,6 +180,15 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
   - `payload`: `ArenaActionRequest` (Note: `player_id` is automatically injected by Laravel from JWT)
 - **Logic:** Proxies request to Upsilon `/internal/arena/:id/action` via [[api_go_battle_action]].
 - **Output:** `ArenaActionResponse` (See [[#4.1-arenaactionrequest]])
+
+#### `POST /game/{id}/forfeit`
+- **Specification:** [[rule_forfeit_battle]]
+- **Intent:** Allow a player to concede the match.
+- **Input:**
+  - `id`: `string (UUID)` (URL Parameter - Match ID)
+- **Logic:** Calls standalone forfeit logic in the engine. Bypasses the need for `entity_id`.
+- **Constraint:** Can only be called during a turn owned by the authenticated player (Enforced by Engine).
+- **Output:** Standard Success Envelope.
 
 ---
 
@@ -236,7 +249,7 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 #### ArenaActionRequest
 - **`player_id`**: `string (UUID)` (Implicit; extracted from JWT by Gateway)
 - **`entity_id`**: `string (UUID)`
-- **`type`**: `string` ("MOVE", "ATTACK", "PASS", "FORFEIT")
+- **`type`**: `string` ("move", "attack", "pass", "forfeit")
 - **`target_coords`**: `Array<Position>`
 
 #### ArenaStartRequest
@@ -389,9 +402,9 @@ Payload for the asynchronous engine callback.
 Based on a cross-reference with `usecase.md` and `BRD.md`, the following requirements have **no currently defined endpoints** in the API surface:
 
 ### 6.1 Administrative Management
-- **Missing Auth (UC-7):** No dedicated administrator login or high-privilege JWT exchange.
-- **Missing User Controls (UC-8):** No administrative endpoints to `LIST` all players or perform `SOFT DELETE` operations from the **Admin Dashboard**.
-- **Missing History Maintenance (UC-9):** No endpoint for auditing full match history or triggering the 90-day retention purge.
+- **Auth (UC-7):** Dedicated administrator login and high-privilege JWT exchange via `/admin/login` and role-based redirect.
+- **User Controls (UC-8):** Admin can `LIST` players, `SOFT DELETE` accounts, and `ANONYMIZE` (GDPR) data via `/admin/users`.
+- **Match History (UC-9):** Placeholder established in Admin Dashboard; full implementation pending log audit service logic.
 
 ### 6.2 Advanced Identity & Privacy
 - **Missing Anonymization (UC-8 / BRD 3.2):** While Data Portability exists, there is no endpoint for "Right to be Forgotten" (anonymization of Address/Birth Date).

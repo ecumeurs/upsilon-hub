@@ -33,9 +33,16 @@ To facilitate communication between the player and the core game engine for acti
   - **Intent:** Command Transmission
   - **Input:** 
     - `entity_id`: (string) [Mandatory] The acting character identifier.
-    - `type`: (string) [Mandatory] Action type must be **LOWERCASE**: 'move', 'attack', 'pass', or 'forfeit'.
+    - `type`: (string) [Mandatory] Action type must be **LOWERCASE**: 'move', 'attack', or 'pass'.
     - `target_coords`: (object) [Optional] Extra data like coordinates or target IDs.
   - **Output:** `{ "success": true, "result": "action_processed" }`
+
+- **Endpoint 3: Forfeit Match**
+  - **URI:** `/api/v1/game/{match_id}/forfeit`
+  - **Verb:** `POST`
+  - **Intent:** Sudden Concession
+  - **Logic:** Defined in [[rule_forfeit_battle]].
+  - **Output:** Standard success envelope.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `/api/v1/game/*`, `/api/webhook/*`

@@ -8,8 +8,8 @@ status: STABLE
 priority: 5
 tags: [combat, forfeit, resolution]
 parents:
-  - [[us_take_combat_turn]]
   - [[rule_team_mechanics]]
+  - [[us_take_combat_turn]]
 dependents: []
 ---
 
@@ -30,7 +30,8 @@ To allow a player to concede a match, resulting in an immediate victory for the 
   - In a 2v2 scenario, the forfeit of any single player on a team covers the entire team.
 
 ## TECHNICAL INTERFACE (The Bridge)
-- **API Endpoint:** `POST /internal/arena/:id/action` (Type: "FORFEIT")
+- **API Endpoint:** `POST /api/v1/game/:id/forfeit` (Standalone Route)
+- **Engine Call:** `controllerForfeit`
 - **Code Tag:** `@spec-link [[rule_forfeit_battle]]`
 - **Related Issue:** `#ISS-003`
 

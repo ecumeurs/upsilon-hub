@@ -7,7 +7,8 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: [security, password]
-parents: [req_security]
+parents:
+  - [[req_security]]
 dependents: []
 ---
 # Password Strength Policy Rule

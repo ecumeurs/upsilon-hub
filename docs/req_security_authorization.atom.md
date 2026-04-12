@@ -7,7 +7,7 @@ version: 1.1
 status: STABLE
 priority: 5
 tags: [auth, authorization]
-parents: 
+parents:
   - [[req_security]]
 dependents: []
 ---

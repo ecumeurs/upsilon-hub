@@ -7,7 +7,9 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: [security, admin, privacy]
-parents: [req_security, entity_player]
+parents:
+  - [[entity_player]]
+  - [[req_security]]
 dependents:
   - [[uc_admin_login]]
 ---

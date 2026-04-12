@@ -22,7 +22,7 @@ upsilon.onTeardown(() => {
     if (matchId) {
         try {
             upsilon.log("Forfeiting match " + matchId);
-            upsilon.call("game_action", { id: matchId, type: "forfeit" });
+            upsilon.call("game_forfeit", { id: matchId });
         } catch (e) {
             // Expected if game already ended or not our turn
         }

@@ -7,7 +7,7 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: [auth, sanctum, middleware]
-parents: 
+parents:
   - [[req_security_token_ttl]]
 dependents: []
 ---

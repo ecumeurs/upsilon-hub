@@ -58,6 +58,9 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Lack of Random Seeding and Coordinate Desync in Tactical State](issues/ISS-033_20260412_randomness_and_coordinate_desync.md) | 2026-04-12 | Open | Medium | Combat matches in the Upsilon engine suffer from deterministic initialization... |
+| [Aggressive AI Controller Deadlocks on Match Termination](issues/ISS-032_20260412_ai_deadlock_termination.md) | 2026-04-12 | Open | Medium | The `AggressiveController` (AI) implementation uses an unbuffered channel to ... |
+| [Combat Concludes but WinnerID is Not Communicated to DTOs](issues/ISS-031_20260412_winner_id_missing.md) | 2026-04-12 | Open | High | When a battle concludes naturally (all enemies eliminated or player forfeits)... |
 | [PVP Stalemate Logic Not Enforced](issues/ISS-029_20260410_stalemate_logic_not_enforced.md) | 2026-04-10 | Open | Medium | Currently, there is no logic to detect and resolve a stalemate when remaining... |
 | [Ensure all logs are tagged with Request ID](issues/ISS-023_20260316_logging_tag_traceability.md) | 2026-03-16 | Open | High | The system currently lacks a strictly enforced requirement to tag every log e... |
 | [Security Risk: Lack of Match Participant Access Control](issues/ISS-018_20260312_match_participant_access_control.md) | 2026-03-12 | Open | Critical | Currently, any authenticated user can attempt to act or view the state of ANY... |

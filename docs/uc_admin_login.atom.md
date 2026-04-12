@@ -8,8 +8,8 @@ status: STABLE
 priority: 5
 tags: [admin, login]
 parents:
-  - [[req_admin_experience]]
   - [[infra_seed_admin]]
+  - [[req_admin_experience]]
   - [[rule_admin_access_restriction]]
 dependents:
   - [[ui_admin_dashboard]]
@@ -27,6 +27,7 @@ To authenticate administrative users via a secure route and grant management pri
 4. Administrator is redirected to the Admin Dashboard (UC-5/UC-6).
 
 ## TECHNICAL INTERFACE (The Bridge)
+- **API Endpoint:** `GET /admin/login` (Portal), `POST /login` (Handled via Role Redirect)
 - **Code Tag:** `@spec-link [[uc_admin_login]]`
 - **Related Issue:** `#admin-auth`
 

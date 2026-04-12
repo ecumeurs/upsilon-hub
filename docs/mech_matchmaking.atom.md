@@ -7,7 +7,7 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: [matchmaking, logic, logic-flow]
-parents: 
+parents:
   - [[req_matchmaking]]
 dependents: []
 ---

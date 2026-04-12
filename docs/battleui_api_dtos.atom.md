@@ -8,9 +8,9 @@ status: STABLE
 priority: 5
 tags: [battleui, dto, api, types]
 parents:
-  - [[battleui_upsilon_api_service]]
-  - [[api_go_battle_start]]
   - [[api_go_battle_action]]
+  - [[api_go_battle_start]]
+  - [[battleui_upsilon_api_service]]
 dependents: []
 ---
 # BattleUI API Data Transfer Objects
@@ -29,7 +29,7 @@ The following DTOs must mirror the Go types defined in `api/input.go` and `api/o
 - **ArenaActionRequest**
     - `player_id`: `string (UUID)`
     - `entity_id`: `string (UUID)`
-    - `type`: `string` ("MOVE", "ATTACK", "PASS", "FORFEIT")
+    - `type`: `string` ("move", "attack", "pass", "forfeit")
     - `target_coords`: `Array<PositionDTO>`
 
 ### Incoming Responses

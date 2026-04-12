@@ -8,8 +8,8 @@ status: STABLE
 priority: 5
 tags: [admin, user-management]
 parents:
-  - [[req_admin_experience]]
   - [[entity_player]]
+  - [[req_admin_experience]]
 dependents: []
 ---
 # Administrative User Management Use Case
@@ -25,8 +25,12 @@ Allows administrators to perform system maintenance tasks on user accounts, spec
   - Admin cannot reverse a "Right to be Forgotten" anonymization once finalized.
 
 ## TECHNICAL INTERFACE (The Bridge)
+- **API Endpoints:**
+  - `GET /admin/users` (List)
+  - `POST /admin/users/{id}/anonymize` (GDPR)
+  - `DELETE /admin/users/{id}` (Soft Delete)
 - **Code Tag:** `@spec-link [[uc_admin_user_management]]`
-- **Test Names:** `TestAdminUserSoftDelete`
+- **Test Names:** `TestAdminUserSoftDelete`, `TestAdminUserAnonymization`
 
 ## EXPECTATION (For Testing)
 - Admin selects "Delete" on user -> User `deleted_at` is set -> Data is anonymized -> Admin confirms user is no longer active.

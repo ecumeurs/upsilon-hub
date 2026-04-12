@@ -23,6 +23,7 @@ To define the requirements for managing user authentication and personal identit
 - Account names must remain unique across the system.
 - Password changes require secure validation and conform to the password policy.
 - All sensitive updates require a valid session.
+- **Account Deletion:** Users must have the right to request full account deletion, which must be handled via soft-deletion and anonymization as per [[rule_gdpr_compliance]].
 
 ## TECHNICAL INTERFACE
 - **Controller:** `AuthController`

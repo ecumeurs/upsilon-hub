@@ -8,8 +8,8 @@ status: STABLE
 priority: 5
 tags: [logging, tracing, debug, standard]
 parents:
-  - [[api_standard_envelope]]
   - [[api_request_id]]
+  - [[api_standard_envelope]]
   - [[req_logging_traceability]]
 dependents: []
 ---

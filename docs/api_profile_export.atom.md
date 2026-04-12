@@ -7,7 +7,10 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: [api, gdpr, profile]
-parents: [api_laravel_gateway, api_standard_envelope, rule_gdpr_compliance]
+parents:
+  - [[api_laravel_gateway]]
+  - [[api_standard_envelope]]
+  - [[rule_gdpr_compliance]]
 dependents: []
 ---
 # Profile Data Export API

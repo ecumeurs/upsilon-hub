@@ -7,7 +7,7 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: []
-parents: 
+parents:
   - [[rule_friendly_fire]]
 dependents: []
 ---

@@ -10,10 +10,10 @@ tags: []
 parents: []
 dependents:
   - [[mech_action_economy_action_cost_rules]]
-  - [[ui_initiative_timeline]]
-  - [[ui_action_panel]]
-  - [[mech_action_economy_timeout_penalty_rules]]
   - [[mech_action_economy_time_constraint_rules]]
+  - [[mech_action_economy_timeout_penalty_rules]]
+  - [[ui_action_panel]]
+  - [[ui_initiative_timeline]]
 ---
 # Turn Action Economy Mechanic
 

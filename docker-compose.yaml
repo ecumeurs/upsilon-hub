@@ -8,6 +8,10 @@ services:
       - db
     volumes:
       - .:/workspace
+      - $HOME/.ssh:/home/vscode/.ssh:cached
+      - $HOME/.local/bin:/home/vscode/.local/bin:cached
+      - $HOME/.antigravity/extensions/local-dev.atd-linker:/home/vscode/extensions/local-dev.atd-linker:cached
+      - $HOME/.gemini/antigravity:/home/vscode/.gemini/antigravity:cached
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
     ports:

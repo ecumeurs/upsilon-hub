@@ -7,7 +7,7 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: []
-parents: 
+parents:
   - [[mech_board_generation]]
 dependents:
   - [[ui_iso_board]]

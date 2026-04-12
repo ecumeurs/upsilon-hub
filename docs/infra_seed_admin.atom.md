@@ -7,7 +7,8 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: [infra, seed, admin]
-parents: [entity_player]
+parents:
+  - [[entity_player]]
 dependents:
   - [[uc_admin_login]]
 ---
@@ -27,6 +28,8 @@ Ensures that a default administrator account is available upon system deployment
 - **Persistence:** Seeding must be idempotent; it should not overwrite an existing admin or fail if already seeded.
 
 ## TECHNICAL INTERFACE (The Bridge)
+- **Seeder Class:** `DatabaseSeeder.php`
+- **ENV Context:** `ADMIN_INITIAL_PASSWORD`
 - **Code Tag:** `@spec-link [[infra_seed_admin]]`
 - **Test Names:** `TestAdminAccountSeededCorrectly`
 

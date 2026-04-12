@@ -25,7 +25,7 @@ To allow players to perform actions (Move, Attack, Skill) within an active battl
 - `id`: `string (UUID)` (URL Parameter)
 - `player_id`: `string (UUID)`
 - `entity_id`: `string (UUID)`
-- `type`: `string` ("MOVE", "ATTACK", "PASS", "FORFEIT")
+- `type`: `string` ("move", "attack", "pass", "forfeit")
 - `target_coords`: `Array<Position>`
   - `x`: `int`, `y`: `int`
 

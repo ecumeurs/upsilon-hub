@@ -1,15 +1,29 @@
 package main
 
 import (
+	"runtime/debug"
+
 	"github.com/ecumeurs/upsilonapi/handler"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
+func getGitRevision() string {
+	if info, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range info.Settings {
+			if setting.Key == "vcs.revision" {
+				return setting.Value
+			}
+		}
+	}
+	return "unknown"
+}
+
 func main() {
 	r := gin.Default()
 
-	logrus.Info("Starting UpsilonAPI server on :8081")
+	rev := getGitRevision()
+	logrus.Infof("Starting UpsilonAPI server on :8081 (rev: %s)", rev)
 
 	// Internal Arena Management
 	internal := r.Group("/internal")

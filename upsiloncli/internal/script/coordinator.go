@@ -16,19 +16,24 @@ func RunFarm(baseURL string, reg *endpoint.Registry, scriptPaths []string, logDi
 	var wg sync.WaitGroup
 	sharedStore := NewSharedStore()
 
+	var agents []*Agent
+	var agentsMu sync.Mutex
+
 	// Catch SIGINT/SIGTERM to allow graceful teardown
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 	
 	go func() {
 		sig := <-sigChan
-		fmt.Printf("\n[Farm] Received %v. Waiting for agents to clean up...\n", sig)
-		// We don't exit immediately; we let the main thread reach wg.Wait()
-		// If we wanted to force stop agents, we would need context cancellation.
-		// For now, most bots are in loops that will eventually check something or we rely on the user
-		// hitting Ctrl+C again if it's really stuck.
-		// But usually, Go's default Ctrl+C behavior is to kill the process.
-		// By catching it, we prevent the immediate exit.
+		fmt.Printf("\n[Farm] Received %v. Interrupting agents for cleanup...\n", sig)
+		
+		agentsMu.Lock()
+		for _, a := range agents {
+			// Interrupt the VM execution. This causes RunString and any blocking bridge 
+			// calls (like sleep or waitForEvent) to return with an error.
+			a.VM.Interrupt(fmt.Errorf("interrupted by %v", sig))
+		}
+		agentsMu.Unlock()
 	}()
 
 	for i, path := range scriptPaths {
@@ -54,6 +59,11 @@ func RunFarm(baseURL string, reg *endpoint.Registry, scriptPaths []string, logDi
 			}
 
 			agent := NewAgent(agentID, baseURL, reg, logger, sharedStore)
+			
+			agentsMu.Lock()
+			agents = append(agents, agent)
+			agentsMu.Unlock()
+
 			agent.Listener.Start()
 			
 			// GUARANTEED TEARDOWN BLOCK

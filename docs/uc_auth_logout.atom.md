@@ -8,8 +8,8 @@ status: STABLE
 priority: 3
 tags: [auth, logout, session]
 parents:
-  - [[us_auth_logout]]
   - [[req_security]]
+  - [[us_auth_logout]]
 dependents:
   - [[api_auth_logout]]
 ---

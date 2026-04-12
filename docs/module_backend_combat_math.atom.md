@@ -7,9 +7,11 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: []
-parents: 
+parents:
   - [[module_backend]]
-dependents: []
+dependents:
+  - [[mech_combat_attack_computation]]
+  - [[mech_combat_standard_attack_computation]]
 ---
 # Combat Math Logic
 

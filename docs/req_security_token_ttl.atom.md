@@ -7,12 +7,12 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: [auth, sanctum, security]
-parents: 
+parents:
   - [[req_security]]
 dependents:
-  - [[requirement_req_ui_session_timeout]]
   - [[mech_sanctum_token_renewal]]
   - [[mechanic_mech_frontend_auth_bridge]]
+  - [[requirement_req_ui_session_timeout]]
 ---
 # Token TTL Requirement
 

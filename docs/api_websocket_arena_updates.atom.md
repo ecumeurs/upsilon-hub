@@ -8,8 +8,8 @@ status: STABLE
 priority: 2
 tags: [websocket, battle, tactical, updates]
 parents:
-  - [[api_websocket]]
   - [[api_battle_proxy]]
+  - [[api_websocket]]
 dependents: []
 ---
 

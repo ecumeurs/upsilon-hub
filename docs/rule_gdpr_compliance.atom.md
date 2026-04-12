@@ -7,7 +7,8 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: [gdpr, privacy]
-parents: [req_security]
+parents:
+  - [[req_security]]
 dependents:
   - [[api_profile_export]]
 ---
@@ -30,7 +31,7 @@ Ensures personal data protection through secure deletion (soft delete) and anony
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[rule_gdpr_compliance]]`
-- **Test Names:** `TestPlayerSoftDelete`, `TestPlayerDataAnonymization`
+- **Test Names:** `GdprTest::test_user_account_soft_delete_and_anonymization`, `GdprTest::test_user_hard_delete_cascades_to_characters`
 
 ## EXPECTATION (For Testing)
 - Request account delete -> `deleted_at` timestamp set -> User cannot login.

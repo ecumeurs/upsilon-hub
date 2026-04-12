@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"runtime/debug"
 
 	"github.com/ecumeurs/upsiloncli/internal/cli"
 	"github.com/ecumeurs/upsiloncli/internal/endpoint"
@@ -11,9 +12,23 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func getGitRevision() string {
+	if info, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range info.Settings {
+			if setting.Key == "vcs.revision" {
+				return setting.Value
+			}
+		}
+	}
+	return "unknown"
+}
+
 func main() {
 	// Load .env if it exists
 	_ = godotenv.Load()
+
+	rev := getGitRevision()
+	fmt.Printf("[INFO] UpsilonCLI starting (rev: %s)\n", rev)
 
 	appKey := os.Getenv("REVERB_APP_KEY")
 	if appKey == "" {

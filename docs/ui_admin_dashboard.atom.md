@@ -23,6 +23,7 @@ To serve as the primary landing hub for authorized Administrators to manage syst
 3. Enforces [[rule_admin_access_restriction]] at the presentation layer.
 
 ## TECHNICAL INTERFACE (The Bridge)
+- **Frontend Page:** `Admin/Dashboard.vue`
 - **Code Tag:** `@spec-link [[ui_admin_dashboard]]`
 - **Related Issue:** `#admin-dashboard`
 

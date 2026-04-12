@@ -11,8 +11,8 @@ dependents:
 human_name: Isometric Board Grid UI
 priority: 5
 parents:
-  - [[ui_battle_arena]]
   - [[mech_board_generation_board_dimensions]]
+  - [[ui_battle_arena]]
 ---
 
 # New Atom

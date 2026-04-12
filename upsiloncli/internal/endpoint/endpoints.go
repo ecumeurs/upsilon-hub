@@ -509,6 +509,34 @@ func (e *GameAction) Execute(client *api.Client, sess *session.Session, inputs m
 	return err
 }
 
+// GameForfeit implements Endpoint for POST /api/v1/game/{id}/forfeit.
+type GameForfeit struct{}
+
+func (e *GameForfeit) Name() string        { return "game_forfeit" }
+func (e *GameForfeit) Description() string { return "Concede the match" }
+func (e *GameForfeit) Method() string      { return "POST" }
+func (e *GameForfeit) Path() string        { return "/api/v1/game/{id}/forfeit" }
+func (e *GameForfeit) Auth() bool          { return true }
+func (e *GameForfeit) Params() []Param {
+	return []Param{
+		{Name: "id", Hint: "match UUID", Required: true, ContextKey: "match_id"},
+	}
+}
+
+func (e *GameForfeit) Next() []string {
+	return []string{"profile_get"}
+}
+
+func (e *GameForfeit) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	path := strings.ReplaceAll(e.Path(), "{id}", inputs["id"])
+	return client.Post(path, nil)
+}
+
+func (e *GameForfeit) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	_, err := e.ExecuteRaw(client, sess, inputs)
+	return err
+}
+
 // --- Help ---
 
 // HelpEndpoint implements Endpoint for GET /api/v1/help.
@@ -626,6 +654,7 @@ func RegisterAll(reg *Registry) {
 	// Game Proxy
 	reg.Register(&GameState{})
 	reg.Register(&GameAction{})
+	reg.Register(&GameForfeit{})
 
 	// Help
 	reg.Register(&HelpEndpoint{})

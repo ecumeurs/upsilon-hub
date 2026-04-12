@@ -9,8 +9,8 @@ priority: 5
 tags: [progression, stats]
 parents:
   - [[req_player_experience]]
-  - [[ui_dashboard]]
   - [[rule_progression]]
+  - [[ui_dashboard]]
 dependents: []
 ---
 

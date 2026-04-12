@@ -12,8 +12,8 @@ dependents:
   - [[api_ruler_methods]]
   - [[domain_ruler_state_action_validation]]
   - [[domain_ruler_state_data_custody]]
-  - [[domain_ruler_state_technical_interface]]
   - [[domain_ruler_state_game_states]]
+  - [[domain_ruler_state_technical_interface]]
   - [[rule_turn_clock]]
 ---
 # Ruler State Machine Domain

@@ -8,8 +8,8 @@ status: STABLE
 priority: 5
 tags: [auth, login]
 parents:
-  - [[req_player_experience]]
   - [[api_auth_login]]
+  - [[req_player_experience]]
   - [[ui_dashboard]]
 dependents:
   - [[ui_dashboard]]

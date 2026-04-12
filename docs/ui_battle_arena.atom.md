@@ -6,17 +6,17 @@ layer: ARCHITECTURE
 version: 1.0
 tags: [ui, combat, arena, battle]
 parents:
-  - [[ui_board]]
   - [[req_trpg_game_definition]]
   - [[req_ui_look_and_feel]]
+  - [[ui_board]]
 human_name: Battle Arena Page UI
 priority: 5
 dependents:
-  - [[ui_team_roster_panel]]
-  - [[ui_iso_board]]
-  - [[ui_initiative_timeline]]
   - [[ui_action_panel]]
   - [[ui_combat_header]]
+  - [[ui_initiative_timeline]]
+  - [[ui_iso_board]]
+  - [[ui_team_roster_panel]]
 ---
 
 # New Atom

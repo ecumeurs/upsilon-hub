@@ -8,8 +8,8 @@ status: STABLE
 priority: 5
 tags: [admin, match-history]
 parents:
-  - [[req_admin_experience]]
   - [[entity_game_match]]
+  - [[req_admin_experience]]
 dependents: []
 ---
 # Administrative Match History Management Use Case

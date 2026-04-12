@@ -7,7 +7,7 @@ version: 1.1
 status: STABLE
 priority: 5
 tags: [character, creation]
-parents: 
+parents:
   - [[entity_character]]
 dependents: []
 ---

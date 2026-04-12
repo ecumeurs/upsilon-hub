@@ -136,7 +136,13 @@ func (a *Agent) jsFindPath(call goja.FunctionCall) goja.Value {
 	json.Unmarshal(boardBytes, &board)
 
 	path := FindPath(&board, start, end)
-	return a.VM.ToValue(path)
+	
+	// Ensure proper JSON mapping for the return value
+	var result interface{}
+	pathBytes, _ := json.Marshal(path)
+	json.Unmarshal(pathBytes, &result)
+
+	return a.VM.ToValue(result)
 }
 
 // @spec-link [[api_plan_travel_toward]]
@@ -156,7 +162,13 @@ func (a *Agent) jsPlanTravelToward(call goja.FunctionCall) goja.Value {
 	json.Unmarshal(boardBytes, &board)
 
 	path := PlanTravelToward(&board, entityID, target)
-	return a.VM.ToValue(path)
+	
+	// Ensure proper JSON mapping for the return value
+	var result interface{}
+	pathBytes, _ := json.Marshal(path)
+	json.Unmarshal(pathBytes, &result)
+
+	return a.VM.ToValue(result)
 }
 
 func (a *Agent) jsGetEnv(key string) string {

@@ -10,13 +10,13 @@ tags: []
 parents:
   - [[requirement_customer_user_id_privacy]]
 dependents:
+  - [[entity_player_entity_character_rules_apply]]
+  - [[entity_player_entity_player_initial_setup]]
+  - [[entity_player_entity_player_registration]]
+  - [[entity_player_entity_player_stats_tracking]]
+  - [[infra_seed_admin]]
   - [[rule_admin_access_restriction]]
   - [[uc_admin_user_management]]
-  - [[entity_player_entity_character_rules_apply]]
-  - [[entity_player_entity_player_stats_tracking]]
-  - [[entity_player_entity_player_registration]]
-  - [[infra_seed_admin]]
-  - [[entity_player_entity_player_initial_setup]]
 ---
 # Player Account Entity
 
@@ -31,6 +31,7 @@ Core attributes for identity:
 - `birth_date` (Private)
 - `role` (Admin, Player)
 - `id` (Internal UUID, NOT exposed to frontend per [[requirement_customer_user_id_privacy]])
+- **Deletion Protocol:** Supports soft-deletion and anonymization as specified in [[rule_gdpr_compliance]].
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[entity_player]]`
