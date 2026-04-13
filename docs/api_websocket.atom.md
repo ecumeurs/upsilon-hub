@@ -33,6 +33,7 @@ To define the low-level communication contract and authorization handshake for a
 ## TECHNICAL INTERFACE (The Bridge)
 - **Base URL (Dev):** `ws://127.0.0.1:8080`
 - **Auth URL:** `/broadcasting/auth`
+- **Registry:** `GET /api/v1/help` -> `websocket` section.
 - **Code Tag:** `@spec-link [[api_websocket]]`
 
 ## EXPECTATION (For Testing)

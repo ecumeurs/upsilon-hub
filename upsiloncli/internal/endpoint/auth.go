@@ -18,7 +18,7 @@ func (e *AuthLogin) Auth() bool          { return false }
 func (e *AuthLogin) Params() []Param {
 	return []Param{
 		{Name: "account_name", Hint: "tactical identifier", Required: true},
-		{Name: "password", Hint: "min 15 chars", Required: true},
+		{Name: "password", Hint: "min 15 chars", Required: true, Secret: true},
 	}
 }
 
@@ -61,6 +61,30 @@ func (e *AuthLogin) Execute(client *api.Client, sess *session.Session, inputs ma
 	return nil
 }
 
+// AdminLogin implements Endpoint for POST /api/v1/auth/admin/login.
+type AdminLogin struct {
+	AuthLogin
+}
+
+func (e *AdminLogin) Name() string        { return "admin_login" }
+func (e *AdminLogin) Description() string { return "Authenticate as administrator and receive high-privilege JWT" }
+func (e *AdminLogin) Path() string        { return "/api/v1/auth/admin/login" }
+
+func (e *AdminLogin) Next() []string {
+	return []string{"admin_users", "profile_get"}
+}
+
+func (e *AdminLogin) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	resp, err := e.ExecuteRaw(client, sess, inputs)
+	if err != nil {
+		return err
+	}
+
+	SyncSession(resp, sess)
+	client.Printer.System(fmt.Sprintf("Admin Login: %s", resp.Message))
+	return nil
+}
+
 // AuthRegister implements Endpoint for POST /api/v1/auth/register.
 type AuthRegister struct{}
 
@@ -73,8 +97,8 @@ func (e *AuthRegister) Params() []Param {
 	return []Param{
 		{Name: "account_name", Hint: "display name", Required: true},
 		{Name: "email", Hint: "unique email", Required: true},
-		{Name: "password", Hint: "min 15 chars", Required: true},
-		{Name: "password_confirmation", Hint: "must match password", Required: true},
+		{Name: "password", Hint: "min 15 chars", Required: true, Secret: true},
+		{Name: "password_confirmation", Hint: "must match password", Required: true, Secret: true},
 		{Name: "full_address", Hint: "residential address", Required: true},
 		{Name: "birth_date", Hint: "ISO8601 e.g. 1990-01-15", Required: true},
 	}
@@ -194,9 +218,9 @@ func (e *AuthPassword) Path() string        { return "/api/v1/auth/password" }
 func (e *AuthPassword) Auth() bool          { return true }
 func (e *AuthPassword) Params() []Param {
 	return []Param{
-		{Name: "current_password", Hint: "current password", Required: true},
-		{Name: "password", Hint: "new password (min 15 chars)", Required: true},
-		{Name: "password_confirmation", Hint: "confirm new password", Required: true},
+		{Name: "current_password", Hint: "current password", Required: true, Secret: true},
+		{Name: "password", Hint: "new password (min 15 chars)", Required: true, Secret: true},
+		{Name: "password_confirmation", Hint: "confirm new password", Required: true, Secret: true},
 	}
 }
 

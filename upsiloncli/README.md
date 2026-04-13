@@ -133,7 +133,27 @@ Scripts have access to a global `upsilon` bridge to interact with the Go backend
 - **`upsilon.sleep(ms)`**: Precise flow control/delay.
 
 #### 3. Sample Script: Onboarding & Matchmaking
-See [samples/onboard_and_match.js](samples/onboard_and_match.js) for a complete example that creates a new account (adhering to `@rule_password_policy`) and joins a PVE queue.
+See [samples/onboard_and_match.js](samples/onboard_and_match.js) for a complete example.
+
+### Diagnostics & Automated Testing
+
+UpsilonCLI includes built-in tools for analyzing battle logs and ensuring engine stability via zero-tolerance protocol testing.
+
+#### 1. Bot-Identified Logging
+When running in `--farm` mode, every log line (CURL, REPLY, WS) is automatically prefixed with the Agent ID (e.g., `[Bot-01]`). This allows for seamless debugging even when multiple bots are acting simultaneously.
+
+#### 2. Log Parser & Diagnostic Tool
+The [upsilon_log_parser.py](upsilon_log_parser.py) utility provides a structured summary of battle execution from a log file:
+- **Casualty Tracking**: Lists every entity eliminated and on which line.
+- **Survivor Status**: Displays final HP for all surviving units.
+- **Error Analysis**: Categorizes and counts `400/500` status codes to detect protocol violations.
+
+#### 3. Automated Battle Suite
+Run the full battery of tactical engine tests (1v1, 2v2, PVE, PVP) using:
+```bash
+./tests/run_all_battles.sh
+```
+This script runs the bot farm, parses the resulting logs, and **fails** if any engine errors or protocol violations are detected.
 
 ### Architecture
 

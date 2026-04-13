@@ -84,6 +84,12 @@ func (hc *HTTPController) forwardToWebhook(ctx actor.NotificationContext) {
 	if resp.StatusCode != http.StatusOK {
 		logrus.Warnf("Webhook returned non-OK status: %d", resp.StatusCode)
 	}
+
+	// @spec-link [[mech_arena_lifecycle]]
+	if payload.EventType == "game.ended" {
+		logrus.Infof("Battle %s ended, triggering arena destruction", hc.MatchID)
+		Get().DestroyArena(hc.MatchID)
+	}
 }
 
 func (hc *HTTPController) getEventName(content interface{}) string {

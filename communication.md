@@ -1,5 +1,8 @@
 # Upsilon Battle: API Communication Reference
 
+> [!TIP]
+> **Live Documentation:** For the most accurate and up-to-date technical reference, including experimental endpoints and current validation rules, use the [Live API Help Endpoint](http://localhost:8000/api/v1/help).
+
 This document provides a comprehensive reference for the communication interfaces between the Vue.js frontend, the Laravel API Gateway, and the Upsilon (Go) Battle Engine.
 
 ## 1. Shared Infrastructure
@@ -60,11 +63,13 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 | `GET` | `/game/{id}` | Get Cached Board State | [[api_battle_proxy]] |
 | `POST` | `/game/{id}/action` | Proxy Tactical Action to Engine | [[api_battle_proxy]] |
 | `POST` | `/game/{id}/forfeit` | Standalone Forfeit Route | [[rule_forfeit_battle]] |
+| `POST` | `/auth/admin/login` | Administrative Authentication (CLI/API) | [[uc_admin_login]] |
 | `GET` | `/admin/dashboard` | Administrative Landing Hub | [[ui_admin_dashboard]] |
 | `GET` | `/admin/users` | List Users for Auditing | [[uc_admin_user_management]] |
-| `POST` | `/admin/users/{id}/anonymize` | GDPR Right to be Forgotten | [[uc_admin_user_management]] |
-| `DELETE` | `/admin/users/{id}` | Administrative Soft Delete | [[uc_admin_user_management]] |
+| `POST` | `/admin/users/{account_name}/anonymize` | GDPR Right to be Forgotten | [[uc_admin_user_management]] |
+| `DELETE` | `/admin/users/{account_name}` | Administrative Soft Delete | [[uc_admin_user_management]] |
 | `POST` | `/api/webhook/upsilon` | Ingest Engine State Update | [[api_go_webhook_callback]] |
+| `GET` | `/leaderboard` | Global Rankings (Mode-based) | [[api_leaderboard]] |
 
 ### 2.1 Authentication
 
@@ -88,6 +93,17 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 - **Input:**
   - `account_name`: `string` [Mandatory]
   - `password`: `string` [Mandatory]
+- **Output:**
+  - `user`: `UserResource` (See [[#4.4-userresource]])
+  - `token`: `string` (JWT Bearer Token)
+
+#### `POST /auth/admin/login`
+- **Specification:** [[uc_admin_login]]
+- **Intent:** Authenticate administrators for CLI or high-privilege API access.
+- **Input:**
+  - `account_name`: `string` [Mandatory]
+  - `password`: `string` [Mandatory]
+- **Validation:** Must have `Admin` role.
 - **Output:**
   - `user`: `UserResource` (See [[#4.4-userresource]])
   - `token`: `string` (JWT Bearer Token)
@@ -177,8 +193,8 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 - **Intent:** [[uc_combat_turn]]: Proxy tactical commands to the Upsilon Go Engine.
 - **Input:**
   - `id`: `string (UUID)` (URL Parameter - Match ID)
-  - `payload`: `ArenaActionRequest` (Note: `player_id` is automatically injected by Laravel from JWT)
-- **Logic:** Proxies request to Upsilon `/internal/arena/:id/action` via [[api_go_battle_action]].
+  - `payload`: `ArenaActionRequest` (Note: `player_id` is automatically injected and validated by Laravel)
+- **Logic:** Validates that the authenticated user owns the targeted `entity_id` before proxying the request to Upsilon `/internal/arena/:id/action` via [[api_go_battle_action]].
 - **Output:** `ArenaActionResponse` (See [[#4.1-arenaactionrequest]])
 
 #### `POST /game/{id}/forfeit`
@@ -189,6 +205,22 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 - **Logic:** Calls standalone forfeit logic in the engine. Bypasses the need for `entity_id`.
 - **Constraint:** Can only be called during a turn owned by the authenticated player (Enforced by Engine).
 - **Output:** Standard Success Envelope.
+
+### 2.5 Social & Competitive
+
+#### `GET /leaderboard`
+- **Specification:** [[api_leaderboard]]
+- **Intent:** Retrieve global rankings for a specific battle mode, filtered by the current weekly cycle.
+- **Input:**
+  - `mode`: `string` ("1v1_PVP", "2v2_PVP", "1v1_PVE", "2v2_PVE") [Mandatory]
+  - `page`: `int` (Default: 1)
+- **Rules Applied:**
+  - [[rule_leaderboard_score_calculation]]: Scoring formula.
+  - [[rule_leaderboard_cycle]]: Temporal filter (Current Week).
+- **Output:**
+  - `results`: `Array<RankingResource>` (Rank, Account Name, Wins, Losses, Score) - Paginated (10 per page).
+  - `self`: `RankingResource|null` (Current user's ranking context).
+  - `meta`: `PaginationMeta`
 
 ---
 
@@ -247,7 +279,6 @@ The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the 
 - **`initial_state`**: `BoardState`
 
 #### ArenaActionRequest
-- **`player_id`**: `string (UUID)` (Implicit; extracted from JWT by Gateway)
 - **`entity_id`**: `string (UUID)`
 - **`type`**: `string` ("move", "attack", "pass", "forfeit")
 - **`target_coords`**: `Array<Position>`
@@ -266,15 +297,15 @@ Defines the complete state of a tactical arena at a specific moment in time.
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `entities` | `Array<Entity>` | List of all active characters/actors on the board. |
+| `entities` | `Array<Entity>` | List of all active characters/actors on the board. (Player IDs masked). |
 | `grid` | `Grid` | The tactical map structure. |
-| `turn` | `Array<Turn>` | Sequence of actors based on initiative. |
-| `current_player_id` | `string (UUID)` | ID of the player currently controlling the active entity. |
+| `turn` | `Array<Turn>` | Sequence of actors based on initiative. (Player IDs masked). |
+| `is_my_turn` | `boolean` | True if the current player is the acting player. |
 | `current_entity_id` | `string (UUID)` | ID of the entity currently acting. |
 | `timeout` | `string (ISO8601)` | Timestamp when the current turn expires. |
 | `start_time` | `string (ISO8601)` | Timestamp when the arena started. |
-| `winner_id` | `string (UUID)|null` | ID of the winning player. |
-| `players` | `Array<Player>` | Full roster of current participants and their metadata. |
+| `is_winner` | `boolean\|null` | True if the current player has won. |
+| `players` | `Array<Player>` | Full roster of current participants (User IDs masked). |
 
 #### Grid
 - **`width`**: `int`
@@ -305,7 +336,7 @@ Detailed state of a single actor.
 | Field | Type | Description |
 | :--- | :--- | :--- |
 | `id` | `string (UUID)` | Unique identifier for the entity. |
-| `player_id` | `string (UUID)` | ID of the owning player. |
+| `is_self` | `boolean` | True if the entity belongs to the requesting player. |
 | `name` | `string` | Display name. |
 | `hp` | `int` | Current Hit Points. |
 | `max_hp` | `int` | Maximum Hit Points. |
@@ -316,7 +347,7 @@ Detailed state of a single actor.
 | `position` | `Position` | Current `{x, y}` coordinates. |
 
 #### Player
-- **`id`**: `string (UUID)`
+- **`is_self`**: `boolean` (True if this is the requesting user)
 - **`nickname`**: `string`
 - **`team`**: `int`
 - **`ia`**: `boolean` (True if controlled by engine)
@@ -327,8 +358,8 @@ Detailed state of a single actor.
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `id` | `string (UUID)` | User's unique identifier. |
 | `account_name` | `string` | Displayed name. |
+| `role` | `string` | User's role (e.g., 'Player', 'Admin'). |
 | `ws_channel_key`| `string (UUID)` | Pseudonym for secure WebSocket private channel subscription. |
 | `email` | `string` | User's email address. |
 | `full_address` | `string` | User's residential address. |
@@ -393,6 +424,7 @@ Payload for the asynchronous engine callback.
 | `GET /api/profile/export` | [[api_profile_export]] | Data Portability | 3.2 GDPR & Data Privacy |
 | `POST /auth/logout` | [[api_auth_logout]] | [[uc_auth_logout]] | [[req_security]] |
 | `Universal Envelope` | [[api_standard_envelope]] | All Interactions | 3.3 Traceability & Request ID |
+| `GET /leaderboard` | [[api_leaderboard]] | [[us_leaderboard_view]] | 4 Social & Competitive |
 | `POST /internal/arena/start` | [[api_go_battle_start]] | Queue to Battle transition | 2.3 PvP/PvE Matchmaking |
 
 ---
@@ -411,5 +443,4 @@ Based on a cross-reference with `usecase.md` and `BRD.md`, the following require
 - **Missing Account Management:** No endpoint for updating `Full Address` or `Birth Date` post-registration (though registration is covered).
 
 ### 6.3 Social & Competitive
-- **Missing Leaderboards (BRD 4 / [[ui_leaderboard]]):** No `GET /rankings` or `GET /leaderboard` to retrieve top-performing players or competitive metrics.
 - **Missing Match History (BRD 2.3):** No endpoint for a player to view their own personal history of past matches (separate from current cached board state).

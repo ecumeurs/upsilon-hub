@@ -27,8 +27,8 @@ Allows administrators to perform system maintenance tasks on user accounts, spec
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoints:**
   - `GET /admin/users` (List)
-  - `POST /admin/users/{id}/anonymize` (GDPR)
-  - `DELETE /admin/users/{id}` (Soft Delete)
+  - `POST /admin/users/{user:account_name}/anonymize` (GDPR)
+  - `DELETE /admin/users/{user:account_name}` (Soft Delete)
 - **Code Tag:** `@spec-link [[uc_admin_user_management]]`
 - **Test Names:** `TestAdminUserSoftDelete`, `TestAdminUserAnonymization`
 

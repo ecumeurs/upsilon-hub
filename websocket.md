@@ -1,5 +1,8 @@
 # Upsilon Battle: WebSocket Protocol Specification
 
+> [!TIP]
+> **Live Event Registry:** A machine-readable list of all WebSocket events, channel patterns, and subscription triggers is available via the [Live API Help Endpoint](http://localhost:8000/api/v1/help).
+
 This document details the real-time communication protocol used by the Upsilon Battle Arena, based on the **Pusher v7 Protocol** implemented via **Laravel Reverb**. This implementation follows the `[[api_websocket]]` specification.
 
 ## 1. Connection Initiation
@@ -86,12 +89,14 @@ If successful, the server replies with:
 ### MatchFound
 Sent on the `private-user.{ws_channel_key}` channel when the matchmaking engine pairs you with an opponent.
 - **Specification:** `[[api_websocket_user_notifications]]`
+- **Pseudonym:** Uses the `ws_channel_key` pseudonym retrieved from the `UserResource` to avoid revealing the raw User UUID.
 - **Event Name:** `match.found`
-- **Payload:** `{"match_id": "uuid", "channel_key": "uuid", "data": []}`
+- **Payload:** `{"match_id": "uuid"}`
 
 ### Board Updated
 Sent on the `private-arena.{match_id}` channel whenever an entity moves, attacks, or passes.
 - **Specification:** `[[api_websocket_arena_updates]]`
+- **Masking Layer:** The Laravel Gateway strips all raw Player and User UUIDs before broadcasting. All `player_id` fields are removed, and clients should rely on `team` IDs or `is_self` flags.
 - **Event Name:** `board.updated`
 - **Payload:** `{"match_id": "uuid", "data": { ...BoardState... }}` (See `[[battleui_api_dtos]]`)
 

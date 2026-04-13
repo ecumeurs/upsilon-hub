@@ -14,6 +14,7 @@ type Param struct {
 	Hint       string // Descriptive hint (e.g., "your email address")
 	Required   bool   // If true, user cannot skip
 	ContextKey string // Session context key to use as default (e.g., "match_id")
+	Secret     bool   // If true, input is masked and hidden in logs/curl
 }
 
 // Endpoint is the interface every API route must implement.

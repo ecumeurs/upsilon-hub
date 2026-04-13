@@ -19,34 +19,38 @@ dependents: []
 To provide strongly-typed representations of the JSON payloads exchanged with the Go Battle Engine, ensuring that Laravel's implementation matches the Go `api` package exactly.
 
 ## THE RULE / LOGIC
-The following DTOs must mirror the Go types defined in `api/input.go` and `api/output.go` exactly.
+The following DTOs represent the **Secure Client-Facing** representations. Laravel acts as a Masking Gateway, stripping internal UUIDs before transmission.
 
-### Outgoing Requests
-- **ArenaStartRequest**
-    - `match_id`: `string (UUID)`
-    - `callback_url`: `string`
-    - `players`: `Array<PlayerDTO>`
+### Outgoing Requests (Frontend -> Laravel)
 - **ArenaActionRequest**
-    - `player_id`: `string (UUID)`
     - `entity_id`: `string (UUID)`
     - `type`: `string` ("move", "attack", "pass", "forfeit")
     - `target_coords`: `Array<PositionDTO>`
+    - *Note: `player_id` is automatically injected/verified by Laravel.*
 
-### Incoming Responses
-- **ArenaStartResponse**
-    - `arena_id`: `string (UUID)`
-    - `initial_state`: `BoardStateDTO`
-- **ArenaActionResponse**
-    - `status`: `string` ("accepted" | "rejected")
-
-### Core Structures
-- **PlayerDTO**: `{id: string (UUID), nickname: string, entities: Array<EntityDTO>, team: int, ia: boolean}`
-- **EntityDTO**: `{id: string (UUID), player_id: string (UUID), name: string, hp: int, max_hp: int, attack: int, defense: int, move: int, max_move: int, position: PositionDTO}`
-- **PositionDTO**: `{x: int, y: int}`
-- **BoardStateDTO**: `{entities: Array<EntityDTO>, grid: GridDTO, turn: Array<TurnDTO>, current_player_id: string (UUID), current_entity_id: string (UUID), timeout: string (ISO8601), start_time: string (ISO8601), winner_id: string (UUID)|null, players: Array<PlayerDTO>}`
-- **GridDTO**: `{width: int, height: int, cells: Array<Array<CellDTO>>}`
-- **CellDTO**: `{entity_id: string (UUID)|null, obstacle: boolean}`
-- **TurnDTO**: `{player_id: string (UUID), entity_id: string (UUID), delay: int}`
+### Core Structures (Masked for Privacy)
+- **UserDTO**
+    - `account_name`: `string`
+    - `role`: `string`
+    - `ws_channel_key`: `string (UUID)` (Pseudonym)
+    - `email`: `string`
+    - `total_wins`: `integer`
+    - `ratio`: `string`
+- **LeaderboardEntryDTO**
+    - `account_name`: `string`
+    - `wins`: `integer`
+    - `losses`: `integer`
+    - `score`: `float`
+    - `rank`: `integer`
+    - `is_self`: `boolean`
+- **PlayerDTO**
+    - `is_self`: `boolean`
+    - `nickname`: `string`
+    - `team`: `int`
+    - `entities`: `Array<EntityDTO>`
+- **EntityDTO**: `{id: string (UUID), is_self: boolean, name: string, hp: int, max_hp: int, attack: int, defense: int, move: int, max_move: int, position: PositionDTO}`
+- **BoardStateDTO**: `{entities: Array<EntityDTO>, grid: GridDTO, turn: Array<TurnDTO>, is_my_turn: boolean, current_entity_id: string (UUID), timeout: string (ISO8601), start_time: string (ISO8601), is_winner: boolean|null, players: Array<PlayerDTO>}`
+- **TurnDTO**: `{is_self: boolean, entity_id: string (UUID), delay: int}`
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Namespace:** `App\DTOs` or `App\Http\Resources`

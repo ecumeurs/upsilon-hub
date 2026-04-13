@@ -37,18 +37,25 @@ run_test() {
     
     # Run the farm and capture output
     # We use a timeout to prevent hanging tests if the engine stalls
+    echo "Running arena..."
     timeout 300 $CLI --farm $paths > "$log_file" 2>&1 || true
     
-    # Check for success indicators
-    if grep -q "Game Over! Winner:" "$log_file"; then
-        local winner=$(grep "Game Over! Winner:" "$log_file" | head -n 1 | awk -F': ' '{print $2}')
-        echo -e "\033[32m[SUCCESS]\033[0m Match concluded! Winner: $winner"
-    elif grep -q "STALEMATE" "$log_file"; then
-        echo -e "\033[33m[SUCCESS]\033[0m Match concluded in a DRAW."
+    # 1. Basic Health Check (Success indicators)
+    if grep -q "Game Over! Winner:" "$log_file" || grep -q "STALEMATE" "$log_file"; then
+        echo -e "\033[32m[OK]\033[0m Match concluded naturally."
     else
-        echo -e "\033[31m[FAILURE]\033[0m $mode did not conclude naturally or timed out."
-        echo "Check $log_file for details."
-        tail -n 20 "$log_file"
+        echo -e "\033[31m[CRITICAL]\033[0m $mode did not finish or timed out."
+        tail -n 10 "$log_file"
+        exit 1
+    fi
+
+    # 2. Detailed Diagnostic Analysis
+    echo "Analyzing logs for errors/casualties..."
+    if python3 upsilon_log_parser.py "$log_file"; then
+        echo -e "\033[32m[SUCCESS]\033[0m No engine errors detected in $mode."
+    else
+        echo -e "\033[31m[FAILURE]\033[0m Engine errors or protocol violations detected in $mode."
+        tail -n 5 "$log_file"
         exit 1
     fi
     echo ""
@@ -61,5 +68,5 @@ run_test "1v1_PVP" 2
 run_test "2v2_PVP" 4
 
 echo "=================================================="
-echo -e "\033[32m\033[1mALL TESTS PASSED SUCCESSFULLY!\033[0m"
+echo -e "\033[32m\033[1mALL BATTLES PASSED AND LOGS ARE CLEAN!\033[0m"
 echo "=================================================="

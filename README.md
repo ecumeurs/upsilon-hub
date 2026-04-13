@@ -58,6 +58,7 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Internal ID Exposure in Public APIs](issues/ISS-034_20260413_id_exposure.md) | 2026-04-13 | Open | Medium | Internal database UUIDs are currently being emitted directly to front-end and... |
 | [Lack of Random Seeding and Coordinate Desync in Tactical State](issues/ISS-033_20260412_randomness_and_coordinate_desync.md) | 2026-04-12 | Open | Medium | Combat matches in the Upsilon engine suffer from deterministic initialization... |
 | [Aggressive AI Controller Deadlocks on Match Termination](issues/ISS-032_20260412_ai_deadlock_termination.md) | 2026-04-12 | Open | Medium | The `AggressiveController` (AI) implementation uses an unbuffered channel to ... |
 | [Combat Concludes but WinnerID is Not Communicated to DTOs](issues/ISS-031_20260412_winner_id_missing.md) | 2026-04-12 | Open | High | When a battle concludes naturally (all enemies eliminated or player forfeits)... |

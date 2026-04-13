@@ -24,6 +24,7 @@ import (
 	"github.com/ecumeurs/upsilonmapdata/grid"
 	"github.com/ecumeurs/upsilonmapdata/grid/position"
 	"github.com/ecumeurs/upsilonmapmaker/gridgenerator"
+	"github.com/ecumeurs/upsilontools/tools/actor"
 	"github.com/ecumeurs/upsilontools/tools/messagequeue/message"
 	"github.com/google/uuid"
 )
@@ -151,7 +152,7 @@ func (b *ArenaBridge) GetBoardState(matchID uuid.UUID) (api.BoardState, error) {
 
 	players, _ := arena.Metadata["Players"].([]api.Player)
 
-	return api.NewBoardState(matchID, arena.Ruler.GameState.Grid, res, players, arena.Ruler.GameState.Turner.GetTurnState(), time.Now(), time.Now().Add(30*time.Second)), nil
+	return api.NewBoardState(matchID, arena.Ruler.GameState.Grid, res, players, arena.Ruler.GameState.Turner.GetTurnState(), time.Now(), time.Now().Add(30*time.Second), arena.Ruler.GameState.WinnerID), nil
 }
 
 func (b *ArenaBridge) ArenaAction(arenaID uuid.UUID, req api.ArenaActionMessage) (bool, string, interface{}) {
@@ -228,6 +229,23 @@ func (b *ArenaBridge) GetArena(id uuid.UUID) (*ruler.Ruler, bool) {
 		return nil, false
 	}
 	return r.Ruler, ok
+}
+
+// DestroyArena stops the Ruler and all controllers, then removes the arena from memory.
+// @spec-link [[mech_arena_lifecycle]]
+func (b *ArenaBridge) DestroyArena(matchID uuid.UUID) {
+	b.mu.Lock()
+	arena, ok := b.arenas[matchID]
+	if ok {
+		delete(b.arenas, matchID)
+	}
+	b.mu.Unlock()
+
+	if ok && arena.Ruler != nil {
+		log.Printf("[ArenaBridge] Destroying arena %s", matchID)
+		// Sending ActorStop to Ruler triggers cascading shutdown of controllers
+		arena.Ruler.NotifyActor(message.Create(nil, actor.ActorStop{}, nil))
+	}
 }
 
 // GetActiveMatchCount returns the number of active arenas.

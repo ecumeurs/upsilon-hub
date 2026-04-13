@@ -242,7 +242,7 @@ func (c *CLI) executeEndpoint(name string, cliArgs []string) {
 		}
 
 		// Prompt user if not provided in CLI args
-		value := c.prompt(p.Name, p.Hint, defaultVal, p.Required)
+		value := c.prompt(p.Name, p.Hint, defaultVal, p.Required, p.Secret)
 		inputs[p.Name] = value
 	}
 
@@ -313,8 +313,9 @@ func (c *CLI) handleStatus() {
 	fmt.Println()
 }
 
+// @spec-link [[mechanic_mech_cli_sensitive_data_masking]]
 // prompt asks the user for a value, showing the default if available.
-func (c *CLI) prompt(name, hint, defaultVal string, required bool) string {
+func (c *CLI) prompt(name, hint, defaultVal string, required, secret bool) string {
 	for {
 		var promptStr string
 		if defaultVal != "" {
@@ -346,7 +347,17 @@ func (c *CLI) prompt(name, hint, defaultVal string, required bool) string {
 		oldCompleter := c.ReadLine.Config.AutoComplete
 		c.ReadLine.Config.AutoComplete = nil
 
-		line, err := c.ReadLine.Readline()
+		var line string
+		var err error
+
+		if secret {
+			var pbytes []byte
+			pbytes, err = c.ReadLine.ReadPassword(promptStr)
+			line = string(pbytes)
+		} else {
+			line, err = c.ReadLine.Readline()
+		}
+
 		c.ReadLine.Config.AutoComplete = oldCompleter
 		if err != nil {
 			return ""

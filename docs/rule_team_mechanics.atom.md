@@ -22,8 +22,9 @@ To allow grouping entities into teams, enabling cooperative gameplay and team-ba
 - Each entity must possess a `TeamID` (Integer) property.
 - All entities sharing the same `TeamID` are considered allies.
 - All entities with different `TeamID`s are considered enemies.
+- **Automatic Team Assignment:** For testing or mock scenarios, if an entity is assigned to a controller without a pre-existing `TeamID` (Team 0), the engine will automatically assign a unique team ID based on the controller's join order (1, 2, ...).
 - **Targeting Restriction:** Defensive or supportive actions target allies. Offensive actions must target enemies.
-- **Victory Condition:** A team wins when all entities belonging to all other teams are defeated or have forfeited.
+- **Victory Condition:** A team wins when all entities belonging to all other teams are defeated or have forfeited. The `WinnerID` (Controller UUID) is persisted in the game state upon conclusion.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[rule_team_mechanics]]`

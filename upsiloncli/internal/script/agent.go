@@ -1,18 +1,21 @@
 package script
 
 import (
+	"fmt"
+	"io"
+
 	"github.com/dop251/goja"
 	"github.com/ecumeurs/upsiloncli/internal/api"
 	"github.com/ecumeurs/upsiloncli/internal/display"
 	"github.com/ecumeurs/upsiloncli/internal/endpoint"
 	"github.com/ecumeurs/upsiloncli/internal/session"
 	"github.com/ecumeurs/upsiloncli/internal/ws"
-	"io"
 )
 
 type Agent struct {
 	ID           string
 	Session      *session.Session
+	Display      *display.Printer
 	Client       *api.Client
 	Listener     *ws.Listener
 	Registry     *endpoint.Registry
@@ -24,12 +27,13 @@ type Agent struct {
 
 func NewAgent(id, baseURL string, reg *endpoint.Registry, logger io.Writer, shared *SharedStore) *Agent {
 	sess := session.New()
-	printer := display.NewPrinterWithWriter(logger)
+	printer := display.NewPrinterWithWriter(logger).WithPrefix(fmt.Sprintf("[%s] ", id))
 	client := api.NewClient(baseURL, sess, printer)
 	
 	agent := &Agent{
 		ID:       id,
 		Session:  sess,
+		Display:  printer,
 		Client:   client,
 		Listener: ws.NewListener(client, sess, printer),
 		Registry: reg,

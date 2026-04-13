@@ -29,6 +29,7 @@ To define the core visual identity and aesthetic philosophy of the Upsilon Battl
   * Apply texture overlays (dust, noise, rust) to backgrounds.
   * Glow effects must be used sparingly for primary feedback.
   * Motion should be linear and 'robotic'.
+- We favor the usage of sci-fi / computer-like terminology (Link terminated, Connection lost, etc.) along with a bit of mad max-like terminology (Scavenged, jury-rigged, etc.) to describe the game state and events.
 
 ## TECHNICAL INTERFACE
 - **Code Tag:** `@spec-link [[req_ui_look_and_feel]]`

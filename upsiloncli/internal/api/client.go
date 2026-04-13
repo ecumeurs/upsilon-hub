@@ -117,6 +117,18 @@ func (c *Client) Get(path string) (*Response, error) {
 	return c.Do("GET", path, nil)
 }
 
+// GetWithParams is a convenience wrapper for GET requests with query parameters.
+func (c *Client) GetWithParams(path string, params map[string]string) (*Response, error) {
+	if len(params) > 0 {
+		var q []string
+		for k, v := range params {
+			q = append(q, fmt.Sprintf("%s=%s", k, v))
+		}
+		path += "?" + strings.Join(q, "&")
+	}
+	return c.Get(path)
+}
+
 // Post is a convenience wrapper for POST requests.
 func (c *Client) Post(path string, body interface{}) (*Response, error) {
 	return c.Do("POST", path, body)

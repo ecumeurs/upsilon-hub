@@ -392,6 +392,50 @@ func (e *StatsActive) Execute(client *api.Client, sess *session.Session, inputs 
 	return err
 }
 
+// --- Leaderboard ---
+
+// LeaderboardGet implements Endpoint for GET /api/v1/leaderboard.
+type LeaderboardGet struct{}
+
+func (e *LeaderboardGet) Name() string        { return "leaderboard" }
+func (e *LeaderboardGet) Description() string { return "Get competitive rankings" }
+func (e *LeaderboardGet) Method() string      { return "GET" }
+func (e *LeaderboardGet) Path() string        { return "/api/v1/leaderboard" }
+func (e *LeaderboardGet) Auth() bool          { return true }
+func (e *LeaderboardGet) Params() []Param {
+	return []Param{
+		{Name: "mode", Hint: "1v1_PVP|2v2_PVP|1v1_PVE|2v2_PVE", Required: true},
+		{Name: "page", Hint: "page index (Default: 1)"},
+		{Name: "search", Hint: "filter by name (Optional)"},
+	}
+}
+
+func (e *LeaderboardGet) Next() []string {
+	return []string{"matchmaking_join"}
+}
+
+func (e *LeaderboardGet) ExecuteRaw(client *api.Client, sess *session.Session, inputs map[string]string) (*api.Response, error) {
+	path := "/api/v1/leaderboard"
+	params := make(map[string]string)
+	if v := inputs["mode"]; v != "" {
+		params["mode"] = v
+	}
+	if v := inputs["page"]; v != "" {
+		params["page"] = v
+	} else {
+		params["page"] = "1"
+	}
+	if v := inputs["search"]; v != "" {
+		params["search"] = v
+	}
+	return client.GetWithParams(path, params)
+}
+
+func (e *LeaderboardGet) Execute(client *api.Client, sess *session.Session, inputs map[string]string) error {
+	_, err := e.ExecuteRaw(client, sess, inputs)
+	return err
+}
+
 // --- Game Proxy ---
 
 // GameState implements Endpoint for GET /api/v1/game/{id}.
@@ -632,6 +676,12 @@ func RegisterAll(reg *Registry) {
 	reg.Register(&AuthPassword{})
 	reg.Register(&AuthExport{})
 	reg.Register(&AuthDelete{})
+	reg.Register(&AdminLogin{})
+
+	// Admin
+	reg.Register(&AdminUserList{})
+	reg.Register(&AdminUserAnonymize{})
+	reg.Register(&AdminUserDelete{})
 
 	// Profile & Characters
 	reg.Register(&ProfileGet{})
@@ -655,6 +705,9 @@ func RegisterAll(reg *Registry) {
 	reg.Register(&GameState{})
 	reg.Register(&GameAction{})
 	reg.Register(&GameForfeit{})
+
+	// Leaderboard
+	reg.Register(&LeaderboardGet{})
 
 	// Help
 	reg.Register(&HelpEndpoint{})

@@ -40,7 +40,7 @@ func (a *Agent) bindJSAPI() {
 }
 
 func (a *Agent) jsLog(msg interface{}) {
-	fmt.Fprintf(a.Logger, "[%s] %v\n", a.ID, msg)
+	a.Display.Print(fmt.Sprintf("%v", msg))
 }
 
 func (a *Agent) jsCall(routeName string, params map[string]interface{}) (interface{}, error) {

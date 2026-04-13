@@ -47,6 +47,8 @@ type Turn struct {
 	EntityID string `json:"entity_id"`
 }
 
+// BoardState represents the current state of the board.
+// @spec-link [[battleui_api_dtos]]
 type BoardState struct {
 	Entities        []Entity  `json:"entities"`
 	Grid            Grid      `json:"grid"`
@@ -112,12 +114,16 @@ func NewEntity(entity entity.Entity) Entity {
 }
 
 // NewBoardState creates a new BoardState DTO from internal state.
-func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, players []Player, ts turner.TurnState, startTime time.Time, timeout time.Time) BoardState {
+func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, players []Player, ts turner.TurnState, startTime time.Time, timeout time.Time, winnerID uuid.UUID) BoardState {
 	bs := BoardState{
 		StartTime:       startTime,
 		Timeout:         timeout,
 		CurrentEntityID: ts.CurrentEntityTurn.String(),
 		Players:         players,
+	}
+
+	if winnerID != uuid.Nil {
+		bs.WinnerID = winnerID.String()
 	}
 
 	// Map Grid
@@ -144,12 +150,27 @@ func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, pl
 	}
 
 	entityToPlayer := make(map[uuid.UUID]string)
+	entityMap := make(map[uuid.UUID]Entity)
 	for _, e := range entities {
 		entityToPlayer[e.ID] = e.ControllerID.String()
-		bs.Entities = append(bs.Entities, NewEntity(e))
+		apiEntity := NewEntity(e)
+		bs.Entities = append(bs.Entities, apiEntity)
+		entityMap[e.ID] = apiEntity
 
 		if e.ID == ts.CurrentEntityTurn {
 			bs.CurrentPlayerID = e.ControllerID.String()
+		}
+	}
+
+	// Update Players' entity lists with actual engine data (fixes coordinate desync)
+	for i := range bs.Players {
+		for j := range bs.Players[i].Entities {
+			entID, err := uuid.Parse(bs.Players[i].Entities[j].ID)
+			if err == nil {
+				if actual, found := entityMap[entID]; found {
+					bs.Players[i].Entities[j] = actual
+				}
+			}
 		}
 	}
 

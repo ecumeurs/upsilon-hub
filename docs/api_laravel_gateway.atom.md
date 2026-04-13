@@ -3,7 +3,7 @@ id: api_laravel_gateway
 human_name: Laravel API Gateway & WebSockets Hub
 type: API
 layer: ARCHITECTURE
-version: 1.0
+version: 1.1
 status: REVIEW
 priority: 5
 tags: [api, gateway, websockets, proxy, laravel-reverb]
@@ -43,6 +43,7 @@ To define how the Vue.js frontend communicates with the overall ecosystem via La
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `/api/v1/*` and Laravel Reverb Channels.
+- **Discovery Tool:** `GET /api/v1/help` (Introspected via `CodeDiscoveryService`)
 - **Code Tag:** `@spec-link [[api_laravel_gateway]]`
 - **Related Issue:** `ISS-005`, `ISS-007`
 - **Test Names:** `TestLoginRoute`, `TestProxyAction`, `TestWebhookUpdatesDatabaseCacheAndBroadcasts`, `TestReverbBroadcasting`

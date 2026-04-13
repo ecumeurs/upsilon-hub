@@ -109,6 +109,7 @@ while (!gameOver) {
                 upsilon.log("Defeated... perishing with honor.");
             }
             gameOver = true;
+            matchId = ""; // Clear matchId to prevent teardown forfeit
             break;
         }
 
@@ -127,20 +128,42 @@ while (!gameOver) {
         if (myResolvedPlayerId && board.current_player_id === myResolvedPlayerId) {
             upsilon.log("--- My Turn! Acting with entity: " + board.current_entity_id + " ---");
             executeTacticalLogic(board, myResolvedPlayerId);
+            
+            // Check if game ended immediately after our action
+            const checkEnd = upsilon.call("game_state", { id: matchId });
+            if (checkEnd && checkEnd.game_state && checkEnd.game_state.winner_id) {
+                 upsilon.log("Game concluded after my action. Winner: " + checkEnd.game_state.winner_id);
+                 gameOver = true;
+                 matchId = "";
+                 break;
+            }
         } else {
             upsilon.log("Waiting for opponent (" + board.current_player_id + ")");
         }
     } catch (e) {
-        upsilon.log("No activity detected. Checking state...");
-        const stateResp = upsilon.call("game_state", { id: matchId });
-        if (stateResp && stateResp.game_state) {
-            const board = stateResp.game_state;
-            if (board.winner_id) {
-                upsilon.log("Game Over detected in poll. Winner: " + board.winner_id);
-                gameOver = true;
-            } else if (myResolvedPlayerId && board.current_player_id === myResolvedPlayerId) {
-                executeTacticalLogic(board, myResolvedPlayerId);
+        if (e.message.includes("interrupted") || e.message.includes("not found")) {
+            gameOver = true;
+            break;
+        }
+        upsilon.log("Event loop interrupted or timeout: " + e.message);
+        // Fallback poll
+        try {
+            const stateResp = upsilon.call("game_state", { id: matchId });
+            if (stateResp && stateResp.game_state) {
+                const board = stateResp.game_state;
+                if (board.winner_id) {
+                    upsilon.log("Game Over detected in poll. Winner: " + board.winner_id);
+                    gameOver = true;
+                    matchId = "";
+                } else if (myResolvedPlayerId && board.current_player_id === myResolvedPlayerId) {
+                    executeTacticalLogic(board, myResolvedPlayerId);
+                }
             }
+        } catch (pollErr) {
+             if (pollErr.message.includes("not found") || pollErr.message.includes("not in progress")) {
+                 gameOver = true;
+                 matchId = "";
+             }
         }
     }
 }

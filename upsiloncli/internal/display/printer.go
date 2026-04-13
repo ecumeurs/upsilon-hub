@@ -36,6 +36,7 @@ const (
 // Printer handles formatted terminal output.
 type Printer struct {
 	Output io.Writer
+	Prefix string
 }
 
 // NewPrinter creates a new terminal printer writing to stdout.
@@ -48,10 +49,16 @@ func NewPrinterWithWriter(w io.Writer) *Printer {
 	return &Printer{Output: w}
 }
 
+// WithPrefix returns a new printer with the given prefix.
+func (p *Printer) WithPrefix(prefix string) *Printer {
+	p.Prefix = prefix
+	return p
+}
+
 // Curl prints the equivalent curl command for an API request.
 func (p *Printer) Curl(method, url string, headers http.Header, body []byte) {
 	fmt.Fprintln(p.Output)
-	fmt.Fprintf(p.Output, "%s[CURL]%s ", Cyan+Bold, Reset)
+	fmt.Fprintf(p.Output, "%s%s[CURL]%s ", p.Prefix, Cyan+Bold, Reset)
 
 	var parts []string
 	parts = append(parts, "curl", "-X", method)
@@ -63,7 +70,7 @@ func (p *Printer) Curl(method, url string, headers http.Header, body []byte) {
 	}
 
 	if len(body) > 0 {
-		parts = append(parts, "-d", fmt.Sprintf("'%s'", string(body)))
+		parts = append(parts, "-d", fmt.Sprintf("'%s'", p.maskSensitive(body)))
 	}
 
 	parts = append(parts, fmt.Sprintf("'%s'", url))
@@ -72,13 +79,13 @@ func (p *Printer) Curl(method, url string, headers http.Header, body []byte) {
 
 // Wscat prints a manual wscat connection command.
 func (p *Printer) Wscat(url string) {
-	fmt.Fprintf(p.Output, "%s[WSCAT]%s %sconnect -c \"%s\"%s\n", Magenta+Bold, Reset, Dim, url, Reset)
+	fmt.Fprintf(p.Output, "%s%s[WSCAT]%s %sconnect -c \"%s\"%s\n", p.Prefix, Magenta+Bold, Reset, Dim, url, Reset)
 }
 
 // WscatPayload prints a JSON payload for manual pusher subscription via wscat.
 func (p *Printer) WscatPayload(channel, auth string) {
 	fmt.Fprintln(p.Output)
-	fmt.Fprintf(p.Output, "%s[WSCAT-SEND]%s To subscribe manually, paste this into wscat:\n", Magenta+Bold, Reset)
+	fmt.Fprintf(p.Output, "%s%s[WSCAT-SEND]%s To subscribe manually, paste this into wscat:\n", p.Prefix, Magenta+Bold, Reset)
 	msg := map[string]interface{}{
 		"event": "pusher:subscribe",
 		"data": map[string]string{
@@ -99,7 +106,7 @@ func (p *Printer) Response(statusCode int, body []byte) {
 		color = Yellow
 	}
 
-	fmt.Fprintf(p.Output, "%s[REPLY %d]%s ", color+Bold, statusCode, Reset)
+	fmt.Fprintf(p.Output, "%s%s[REPLY %d]%s ", p.Prefix, color+Bold, statusCode, Reset)
 
 	// Pretty-print JSON
 	var pretty bytes.Buffer
@@ -111,14 +118,19 @@ func (p *Printer) Response(statusCode int, body []byte) {
 	}
 }
 
+// Print prints a generic message with the prefix.
+func (p *Printer) Print(msg string) {
+	fmt.Fprintf(p.Output, "%s%s\n", p.Prefix, msg)
+}
+
 // System prints a system-level informational message.
 func (p *Printer) System(msg string) {
-	fmt.Fprintf(p.Output, "%s[SYSTEM]%s %s\n", Yellow+Bold, Reset, msg)
+	fmt.Fprintf(p.Output, "%s%s[SYSTEM]%s %s\n", p.Prefix, Yellow+Bold, Reset, msg)
 }
 
 // Warn prints a warning message.
 func (p *Printer) Warn(msg string) {
-	fmt.Fprintf(p.Output, "%s[WARN]%s %s\n", Red+Bold, Reset, msg)
+	fmt.Fprintf(p.Output, "%s%s[WARN]%s %s\n", p.Prefix, Red+Bold, Reset, msg)
 }
 
 // Suggestions prints a list of recommended next commands.
@@ -135,7 +147,7 @@ func (p *Printer) Suggestions(commands []string) {
 
 // WebSocket prints a received WebSocket event.
 func (p *Printer) WebSocket(eventType string, payload []byte) {
-	fmt.Fprintf(p.Output, "\n%s[WS]%s %s event received.\n", Magenta+Bold, Reset, eventType)
+	fmt.Fprintf(p.Output, "\n%s%s[WS]%s %s event received.\n", p.Prefix, Magenta+Bold, Reset, eventType)
 
 	displayPayload := payload
 	// Reverb/Pusher data is often double-encoded as a JSON string
@@ -286,8 +298,8 @@ func (p *Printer) Board(bs *dto.BoardState, currentUserID string, participants [
 
 	// 2. Render Grid
 	fmt.Fprintln(p.Output)
-	fmt.Fprintf(p.Output, "  %sTACTICAL FEED — MATCH DATA%s\n", Cyan+Bold, Reset)
-	fmt.Fprintf(p.Output, "  %s%s%s\n", Dim, strings.Repeat("─", 40), Reset)
+	fmt.Fprintf(p.Output, "%s%sTACTICAL FEED — MATCH DATA%s\n", p.Prefix, Cyan+Bold, Reset)
+	fmt.Fprintf(p.Output, "%s%s%s%s\n", p.Prefix, Dim, strings.Repeat("─", 40), Reset)
 
 	// Top border
 	fmt.Fprint(p.Output, "    ")
@@ -369,18 +381,18 @@ func (p *Printer) Board(bs *dto.BoardState, currentUserID string, participants [
 // Victory prints a large success banner.
 func (p *Printer) Victory(name string) {
 	fmt.Fprintln(p.Output)
-	fmt.Fprintf(p.Output, "  %s%s%s\n", BgGreen+White+Bold, "                                        ", Reset)
-	fmt.Fprintf(p.Output, "  %s%s%s\n", BgGreen+White+Bold, "     VICTORY IS YOURS, "+strings.ToUpper(name)+"!     ", Reset)
-	fmt.Fprintf(p.Output, "  %s%s%s\n", BgGreen+White+Bold, "                                        ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s%s\n", p.Prefix, BgGreen+White+Bold, "                                        ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s%s\n", p.Prefix, BgGreen+White+Bold, "     VICTORY IS YOURS, "+strings.ToUpper(name)+"!     ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s%s\n", p.Prefix, BgGreen+White+Bold, "                                        ", Reset)
 	fmt.Fprintln(p.Output)
 }
 
 // Defeat prints a large failure banner.
 func (p *Printer) Defeat(winner string) {
 	fmt.Fprintln(p.Output)
-	fmt.Fprintf(p.Output, "  %s%s%s\n", BgRed+White+Bold, "                                        ", Reset)
-	fmt.Fprintf(p.Output, "  %s%s%s\n", BgRed+White+Bold, "     DEFEAT... WINNER: "+strings.ToUpper(winner)+"     ", Reset)
-	fmt.Fprintf(p.Output, "  %s%s%s\n", BgRed+White+Bold, "                                        ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s%s\n", p.Prefix, BgRed+White+Bold, "                                        ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s%s\n", p.Prefix, BgRed+White+Bold, "     DEFEAT... WINNER: "+strings.ToUpper(winner)+"     ", Reset)
+	fmt.Fprintf(p.Output, "  %s%s%s%s\n", p.Prefix, BgRed+White+Bold, "                                        ", Reset)
 	fmt.Fprintln(p.Output)
 }
 
@@ -391,4 +403,34 @@ func (p *Printer) Draw() {
 	fmt.Fprintf(p.Output, "  %s%s%s\n", Yellow+Bold, "          STALEMATE / DRAW          ", Reset)
 	fmt.Fprintf(p.Output, "  %s%s%s\n", Yellow+Bold, "                                        ", Reset)
 	fmt.Fprintln(p.Output)
+}
+// @spec-link [[mechanic_mech_cli_sensitive_data_masking]]
+// maskSensitive hides password-like fields in JSON bodies.
+func (p *Printer) maskSensitive(body []byte) string {
+	var data map[string]interface{}
+	if err := json.Unmarshal(body, &data); err != nil {
+		return string(body)
+	}
+
+	sensitiveKeys := []string{"password", "password_confirmation", "current_password", "token"}
+
+	masked := false
+	for _, key := range sensitiveKeys {
+		if _, ok := data[key]; ok {
+			data[key] = "********"
+			masked = true
+		}
+	}
+
+	if !masked {
+		// Try recursive masking for nested structures if needed in the future.
+		// For now, these are the primary targets for login/register.
+		return string(body)
+	}
+
+	newBody, err := json.Marshal(data)
+	if err != nil {
+		return string(body)
+	}
+	return string(newBody)
 }

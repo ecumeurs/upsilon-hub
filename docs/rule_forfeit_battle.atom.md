@@ -19,7 +19,7 @@ dependents: []
 To allow a player to concede a match, resulting in an immediate victory for the opposing side(s) and proper arena closure.
 
 ## THE RULE / LOGIC
-- A player may declare "FORFEIT" at any time during their character's turn.
+- A player may declare "FORFEIT" at any time during the match.
 - **PvE Resolution (Single Player vs AI):**
   - If the human player forfeits, the battle arena is closed immediately.
   - The human player is marked as "DEFEATED".
@@ -27,6 +27,7 @@ To allow a player to concede a match, resulting in an immediate victory for the 
   - If a player forfeits, all entities belonging to that player's `TeamID` are considered to have surrendered.
   - The forfeiting team is marked as "DEFEATED".
   - Victory is handed to the remaining team(s) with active entities.
+  - The battle ends immediately and the WinnerID is broadcast to all clients via a `BattleEnd` event.
   - In a 2v2 scenario, the forfeit of any single player on a team covers the entire team.
 
 ## TECHNICAL INTERFACE (The Bridge)
