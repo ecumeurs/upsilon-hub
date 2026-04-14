@@ -10,7 +10,7 @@ let matchId = ""; // Moved up for accessibility by teardown
 // Register teardown for robust cleanup
 upsilon.onTeardown(() => {
     upsilon.log("Running Teardown: Cleanup sequence triggered.");
-    
+
     // 1. Ensure we leave matchmaking queue if still waiting
     try {
         upsilon.call("matchmaking_leave", {});
@@ -65,9 +65,9 @@ const slipMs = Math.floor(Math.random() * 3000);
 upsilon.log("Preventing race condition: slipping for " + slipMs + "ms...");
 upsilon.sleep(slipMs);
 
-upsilon.log("Entering " + (upsilon.getEnv("UPSILON_GAME_MODE") || upsilon.getShared("game_mode") || "1v1_PVP") + " queue...");
+upsilon.log("Entering " + ("1v1_PVE") + " queue...");
 upsilon.call("matchmaking_join", {
-    game_mode: upsilon.getEnv("UPSILON_GAME_MODE") || upsilon.getShared("game_mode") || "1v1_PVP"
+    game_mode: "1v1_PVE"
 });
 
 // 3. Wait for MatchFound
@@ -75,16 +75,6 @@ try {
     const matchData = upsilon.waitForEvent("match.found", 60000); // 60s timeout
     matchId = matchData.match_id;
     upsilon.log("Match Found! ID: " + matchId);
-
-    // Sync check via shared memory to ensure both bots target the same match
-    let sharedMatch = upsilon.getShared("current_test_match");
-    if (!sharedMatch) {
-        upsilon.log("First bot in. Setting shared expectation: " + matchId);
-        upsilon.setShared("current_test_match", matchId);
-    } else {
-        upsilon.log("Second bot verified. Expected match: " + sharedMatch);
-        upsilon.assert(sharedMatch === matchId, "Disjoint matches! Bot expected " + sharedMatch + " but joined " + matchId);
-    }
 } catch (e) {
     upsilon.log("Timed out waiting for match (match.found). Ensure another bot or player joins the 1v1_PVP queue.");
     throw e;
@@ -116,22 +106,22 @@ while (!gameOver) {
         upsilon.log("Waiting for next board update...");
         const eventData = upsilon.waitForEvent("board.updated", 60000);
         const board = eventData.data;
-        
+
         if (board.game_finished) {
-             const winner = board.winner_is_self;
-             if (winner !== undefined) {
-                 if (winner) {
-                     upsilon.log("VICTORY IS MINE!");
-                 } else {
-                     upsilon.log("Defeated... perishing with honor.");
-                 }
-             } else {
-                 upsilon.log("Game concluded.");
-             }
-             gameOver = true;
-             matchId = ""; // Clear matchId to prevent teardown forfeit
-             break;
-         }
+            const winner = board.winner_is_self;
+            if (winner !== undefined) {
+                if (winner) {
+                    upsilon.log("VICTORY IS MINE!");
+                } else {
+                    upsilon.log("Defeated... perishing with honor.");
+                }
+            } else {
+                upsilon.log("Game concluded.");
+            }
+            gameOver = true;
+            matchId = ""; // Clear matchId to prevent teardown forfeit
+            break;
+        }
 
         const me = upsilon.myPlayer();
         const isMyTurn = board.current_player_is_self;
@@ -139,13 +129,13 @@ while (!gameOver) {
         if (isMyTurn) {
             upsilon.log("--- My Turn! Acting with entity: " + board.current_entity_id + " ---");
             executeTacticalLogic(board);
-            
+
             // Check if game ended immediately after our action
             const checkEnd = upsilon.call("game_state", { id: matchId });
             if (checkEnd && checkEnd.game_state && checkEnd.game_state.game_finished) {
-                 gameOver = true;
-                 matchId = "";
-                 break;
+                gameOver = true;
+                matchId = "";
+                break;
             }
         } else {
             upsilon.log("Waiting for opponent...");
@@ -170,10 +160,10 @@ while (!gameOver) {
                 }
             }
         } catch (pollErr) {
-             if (pollErr.message.includes("not found") || pollErr.message.includes("not in progress")) {
-                 gameOver = true;
-                 matchId = "";
-             }
+            if (pollErr.message.includes("not found") || pollErr.message.includes("not in progress")) {
+                gameOver = true;
+                matchId = "";
+            }
         }
     }
 }
@@ -221,7 +211,7 @@ function executeTacticalLogic(board) {
 
         if (pathSteps && pathSteps.length > 0) {
             const pathString = pathSteps.map(p => p.x + "," + p.y).join(";");
-            
+
             upsilon.log("Moving " + pathSteps.length + " cells along path: " + pathString);
             upsilon.call("game_action", {
                 id: matchId,
@@ -229,7 +219,7 @@ function executeTacticalLogic(board) {
                 type: "move",
                 target_coords: pathString
             });
-            
+
             currentPos = pathSteps[pathSteps.length - 1];
             minDistance = Math.abs(currentPos.x - nearestEnemy.position.x) + Math.abs(currentPos.y - nearestEnemy.position.y);
         } else {

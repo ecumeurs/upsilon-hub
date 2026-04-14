@@ -2,6 +2,7 @@
 package ws
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -85,10 +86,18 @@ func (l *Listener) Stop() {
 }
 
 func (l *Listener) listenLoop() {
-	defer l.Conn.Close()
+	l.mu.Lock()
+	conn := l.Conn
+	l.mu.Unlock()
+	
+	if conn == nil {
+		return
+	}
+
+	defer conn.Close()
 
 	for {
-		_, message, err := l.Conn.ReadMessage()
+		_, message, err := conn.ReadMessage()
 		if err != nil {
 			return
 		}
@@ -156,10 +165,7 @@ func (l *Listener) listenLoop() {
 			}
 
 		case "board.updated":
-			// Laravel payload: { match_id: "...", data: { ...board... } }
-			var payload struct {
-				Data dto.BoardState `json:"data"`
-			}
+			var payload dto.BoardState
 
 			if l.Printer != nil {
 				l.Printer.WebSocket("board.updated", envelope.Data)
@@ -168,7 +174,9 @@ func (l *Listener) listenLoop() {
 			var dataStr string
 			if err := json.Unmarshal(envelope.Data, &dataStr); err == nil {
 				if err := json.Unmarshal([]byte(dataStr), &payload); err == nil {
-					l.Session.SetLastBoard(&payload.Data)
+					l.decorateBoard(&payload)
+					l.Session.SetParticipants(payload.Players)
+					l.Session.SetLastBoard(&payload)
 					if l.Printer != nil {
 						l.Printer.System("Tactical feed updated.")
 						l.Printer.Suggestions([]string{"redraw"})
@@ -180,20 +188,22 @@ func (l *Listener) listenLoop() {
 				}
 			} else {
 				if err := json.Unmarshal(envelope.Data, &payload); err == nil {
-					l.Session.SetLastBoard(&payload.Data)
+					l.decorateBoard(&payload)
+					l.Session.SetParticipants(payload.Players)
+					l.Session.SetLastBoard(&payload)
 					if l.Printer != nil {
 						l.Printer.System("Tactical feed updated.")
-						l.Printer.Board(&payload.Data, l.Session.UserIdentifier(), l.Session.Participants())
+						l.Printer.Board(&payload, l.Session.UserIdentifier(), l.Session.Participants())
 
 						// Detect game conclusion
-						if payload.Data.WinnerID != "" {
-							if payload.Data.WinnerID == "DRAW" {
-								l.Printer.Draw()
-							} else if payload.Data.WinnerID == l.Session.UserIdentifier() {
+						if payload.GameFinished {
+							if payload.WinnerIsSelf {
 								name, _ := l.Session.Get("account_name")
 								l.Printer.Victory(name)
+							} else if payload.WinnerTeamID != nil {
+								l.Printer.Defeat(fmt.Sprintf("Team %d", *payload.WinnerTeamID))
 							} else {
-								l.Printer.Defeat(payload.Data.WinnerID)
+								l.Printer.Draw()
 							}
 						} else {
 							l.Printer.Suggestions([]string{"redraw"})
@@ -213,7 +223,7 @@ func (l *Listener) listenLoop() {
 		
 		case "pusher:ping":
 			// Respond to server heartbeats to prevent timeout (Error 4201)
-			l.Conn.WriteJSON(map[string]string{"event": "pusher:pong"})
+			conn.WriteJSON(map[string]string{"event": "pusher:pong"})
 		
 		default:
 			// Print all other events for transparency as requested
@@ -227,8 +237,8 @@ func (l *Listener) listenLoop() {
 	}
 }
 
-// WaitForData blocks until an event of the given name is received or timeout occurs.
-func (l *Listener) WaitForData(eventName string, timeoutMs int) (interface{}, error) {
+// WaitForData blocks until an event of the given name is received or context is cancelled.
+func (l *Listener) WaitForData(ctx context.Context, eventName string, timeoutMs int) (interface{}, error) {
 	ch := make(chan interface{}, 1)
 	
 	l.waitMu.Lock()
@@ -251,6 +261,8 @@ func (l *Listener) WaitForData(eventName string, timeoutMs int) (interface{}, er
 	select {
 	case data := <-ch:
 		return data, nil
+	case <-ctx.Done():
+		return nil, ctx.Err()
 	case <-time.After(time.Duration(timeoutMs) * time.Millisecond):
 		return nil, fmt.Errorf("timeout waiting for event: %s", eventName)
 	}
@@ -429,15 +441,32 @@ func (l *Listener) initializeMatch(matchID string) {
 	}
 
 	var game dto.GameResponse
-	// We need to re-marshal/unmarshal because resp.Data is interface{}
 	dataBytes, _ := json.Marshal(resp.Data)
 	if err := json.Unmarshal(dataBytes, &game); err == nil {
-		l.Session.SetParticipants(game.Participants)
-		l.Session.SetLastBoard(&game.GameState)
-	} else {
-		// Try unmarshaling from root if it's a direct structured response
-		json.Unmarshal([]byte(resp.RawBody), &game)
-		l.Session.SetParticipants(game.Participants)
+		l.Session.SetParticipants(game.GameState.Players)
+		l.decorateBoard(&game.GameState)
 		l.Session.SetLastBoard(&game.GameState)
 	}
+}
+
+// decorateBoard re-hydrates semantic identity flags
+func (l *Listener) decorateBoard(bs *dto.BoardState) {
+	players := bs.Players
+	if len(players) == 0 {
+		players = l.Session.Participants()
+	}
+
+	// Create lookup of owned character IDs
+	ownedIDs := make(map[string]bool)
+	for _, p := range players {
+		if p.IsSelf {
+			for _, e := range p.Entities {
+				ownedIDs[e.ID] = true
+			}
+			break
+		}
+	}
+
+	// 1. Decorate Current Turn
+	bs.CurrentPlayerIsSelf = ownedIDs[bs.CurrentEntityID]
 }

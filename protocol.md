@@ -74,11 +74,13 @@ This document outlines the standard sequence of API requests and responses for t
 
 ### Step 6: Connect to WebSocket
 **Server:** Laravel Reverb (default port 8080 or 443).
-**Channel:** `private-arena.{match_id}` (Requires authentication).
-**Event:** `board.updated`.
+**Primary Tactical Channel:** `private-user.{ws_channel_key}` (Requires authentication).
+**Shared Interaction Channel:** `private-arena.{match_id}` (For common events like chat/emojis).
+**Core Event:** `board.updated`.
 
 **Expected Ingestion:**
-- Every time an action occurs or a webhook is received, a `board.updated` event is pushed with the current state of the board.
+- Every time a tactical action occurs (via engine webhook), a `board.updated` event is pushed to each participant's private channel.
+- These events are **surgically masked**: your view contains full data for your characters and limited data for opponents.
 
 ---
 

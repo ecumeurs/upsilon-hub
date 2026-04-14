@@ -472,20 +472,20 @@ func (e *GameState) Execute(client *api.Client, sess *session.Session, inputs ma
 	// Re-marshal/unmarshal because resp.Data is interface{}
 	dataBytes, _ := json.Marshal(resp.Data)
 	if err := json.Unmarshal(dataBytes, &game); err == nil {
-		sess.SetParticipants(game.Participants)
+		sess.SetParticipants(game.GameState.Players)
 		sess.SetLastBoard(&game.GameState)
 		client.Printer.System("Tactical state synchronized.")
-		client.Printer.Board(&game.GameState, sess.UserIdentifier(), game.Participants)
+		client.Printer.Board(&game.GameState, sess.UserIdentifier(), game.GameState.Players)
 
 		// Detect game conclusion
-		if game.GameState.WinnerID != "" {
-			if game.GameState.WinnerID == "DRAW" {
-				client.Printer.Draw()
-			} else if game.GameState.WinnerID == sess.UserIdentifier() {
+		if game.GameState.GameFinished {
+			if game.GameState.WinnerIsSelf {
 				name, _ := sess.Get("account_name")
 				client.Printer.Victory(name)
+			} else if game.GameState.WinnerTeamID != nil {
+				client.Printer.Defeat(fmt.Sprintf("Team %d", *game.GameState.WinnerTeamID))
 			} else {
-				client.Printer.Defeat(game.GameState.WinnerID)
+				client.Printer.Draw()
 			}
 		}
 	}
@@ -663,6 +663,25 @@ func SyncSession(resp *api.Response, sess *session.Session) {
 	// Capture match info
 	if matchID, ok := data["match_id"].(string); ok && matchID != "" {
 		sess.Set("match_id", matchID)
+	}
+
+	// Tactical State Auto-Sync
+	// If the response contains a game_state or participants (e.g. from a poll),
+	// we sync it to the session so that bridge methods like upsilon.currentCharacter()
+	// are always up to date.
+	// Tactical State Auto-Sync
+	var game dto.GameResponse
+	dataBytes, _ := json.Marshal(resp.Data)
+	if err := json.Unmarshal(dataBytes, &game); err == nil {
+		if game.MatchID != "" {
+			if len(game.GameState.Players) > 0 {
+				sess.SetParticipants(game.GameState.Players)
+			}
+			// Only sync board if it looks populated or the game is finished
+			if len(game.GameState.Players) > 0 || game.GameState.GameFinished {
+				sess.SetLastBoard(&game.GameState)
+			}
+		}
 	}
 }
 

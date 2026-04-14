@@ -22,6 +22,8 @@ Execute multiple isolated Bot agents in parallel to simulate complex multiplayer
 1.  Manage a collection of `Agent` instances.
 2.  Provide isolated network and session contexts for each agent.
 3.  Support synchronization and lifecycle hooks for coordinated testing.
+4.  EXPOSE high-level tactical utilities (`myPlayer`, `myFoesCharacters`, etc.) to simplify bot identity resolution without raw UUIDs.
+5.  SUPPORT graceful interruption via signal propagation to all active agents.
 
 ## TECHNICAL INTERFACE (The Bridge)
 -   **CLI Command:** `upsiloncli farm <scripts...>`

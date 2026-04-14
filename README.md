@@ -58,6 +58,9 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Standardize Win Condition: winner_team over winner_is_self](issues/ISS-037_20260414_standardize_win_condition_team.md) | 2026-04-14 | Open | Medium | The current win condition detection in the frontend and CLI relies on a serve... |
+| [Standardize Board State Naming: entities -> characters](issues/ISS-036_20260414_front_board_state_entity_naming.md) | 2026-04-14 | Open | Medium | The board state structure currently uses the term "entities" for game units. ... |
+| [WebSocket BoardState Privacy Leak](issues/ISS-035_20260413_websocket_boardstate_privacy_leak.md) | 2026-04-13 | Open | High | The `board.updated` WebSocket event currently broadcasts the same state paylo... |
 | [Internal ID Exposure in Public APIs](issues/ISS-034_20260413_id_exposure.md) | 2026-04-13 | Open | Medium | Internal database UUIDs are currently being emitted directly to front-end and... |
 | [Lack of Random Seeding and Coordinate Desync in Tactical State](issues/ISS-033_20260412_randomness_and_coordinate_desync.md) | 2026-04-12 | Open | Medium | Combat matches in the Upsilon engine suffer from deterministic initialization... |
 | [Aggressive AI Controller Deadlocks on Match Termination](issues/ISS-032_20260412_ai_deadlock_termination.md) | 2026-04-12 | Open | Medium | The `AggressiveController` (AI) implementation uses an unbuffered channel to ... |

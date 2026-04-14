@@ -19,7 +19,16 @@ Before writing a script, you need to know the tools available in your JavaScript
 #### Multi-Agent Sync (The Hive Mind @spec-link [[mechanic_shared_memory]])
 * **`upsilon.setShared(key, value)`**: Writes data to a thread-safe global store visible to all concurrent agents.
 * **`upsilon.getShared(key)`**: Reads data from the global store.
-* **`upsilon.sleep(ms)`**: Pauses this specific agent without blocking others.
+* **`upsilon.sleep(ms)`**: Pauses this specific agent without blocking others. (Interruptible via Ctrl+C).
+
+#### Tactical Utilities ([[script_farm]])
+* **`upsilon.myPlayer()`**: Returns the participant record for the current agent.
+* **`upsilon.currentPlayer()`**: Returns the participant record for the player whose turn it is.
+* **`upsilon.currentCharacter()`**: Returns the entity currently selected for the turn.
+* **`upsilon.myCharacters()`**: Returns an array of entities owned by the agent.
+* **`upsilon.myAllies()` / `upsilon.myAlliesCharacters()`**: Returns allies (excluding self) or their entities.
+* **`upsilon.myFoes()` / `upsilon.myFoesCharacters()`**: Returns opponents or their entities.
+* **`upsilon.cellContentAt(x, y)`**: Returns `{ obstacle: bool, entity: Entity|null }` for a specific grid coordinate.
 
 ---
 
@@ -113,22 +122,24 @@ Fetch the complex state, interact with it natively in JS, and assert the results
 
 ```javascript
 // Fetch the full tactical board
-let gameState = upsilon.call("game_state", { id: matchEvent.match_id });
-upsilon.assert(gameState.participants.length === 2, "Expected exactly 2 participants in a 1v1 match.");
+let board = upsilon.call("game_state", { id: matchEvent.match_id }).game_state;
 
-// Find our specific entity using the user_id stored during auth
-let myUserId = upsilon.getContext("user_id");
-let myEntity = gameState.participants.find(p => p.user_id === myUserId);
+// Identify self and foes easily
+let me = upsilon.myPlayer();
+let foes = upsilon.myFoesCharacters();
 
-upsilon.log("Attempting to move entity " + myEntity.id);
+upsilon.log("I am " + me.nickname + ". Engaging " + foes.length + " enemies.");
 
-// Execute a move action
-upsilon.call("game_action", {
-    id: matchEvent.match_id,
-    entity_id: myEntity.id,
-    type: "move",
-    target_coords: "3,3"
-});
+// Execute a move action using my first character
+let myUnits = upsilon.myCharacters();
+if (myUnits.length > 0) {
+    upsilon.call("game_action", {
+        id: matchEvent.match_id,
+        entity_id: myUnits[0].id,
+        type: "move",
+        target_coords: "3,3"
+    });
+}
 
 upsilon.log("Move executed successfully. Reaching end of script.");
 // The script naturally ends here, which automatically triggers the onTeardown block.
@@ -136,16 +147,23 @@ upsilon.log("Move executed successfully. Reaching end of script.");
 
 ---
 
+---
+
 ### **3. Running Your Scripts**
 
-Once your scripts are written, you execute them using the CLI coordinator we outlined. 
+Once your scripts are written, you execute them using the CLI coordinator. 
+
+**Execution Options:**
+*   `--timeout <seconds>`: Global execution timeout. Triggers `onTeardown()` if reached.
+*   `--logs <dir>`: Save individual agent logs to a directory.
+*   `--auto`: (Experimental) Full jouney autopilot.
 
 **Single Test Run:**
 ```bash
-./bin/upsiloncli --farm my_scenario.js
+./bin/upsiloncli --farm my_scenario.js --timeout 60
 ```
 
 **Multi-Agent Farm (e.g., 2v2 PVP):**
 ```bash
-./bin/upsiloncli --farm bot_alpha.js bot_beta.js bot_gamma.js bot_delta.js
+./bin/upsiloncli --farm bot_alpha.js bot_beta.js ... --logs ./logs
 ```

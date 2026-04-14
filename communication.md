@@ -297,15 +297,15 @@ Defines the complete state of a tactical arena at a specific moment in time.
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `entities` | `Array<Entity>` | List of all active characters/actors on the board. (Player IDs masked). |
+| `players` | `Array<Player>` | Consolidated roster of participants and their live entities. |
 | `grid` | `Grid` | The tactical map structure. |
 | `turn` | `Array<Turn>` | Sequence of actors based on initiative. (Player IDs masked). |
-| `is_my_turn` | `boolean` | True if the current player is the acting player. |
+| `current_player_is_self` | `boolean` | True if the current user is the acting player. |
 | `current_entity_id` | `string (UUID)` | ID of the entity currently acting. |
 | `timeout` | `string (ISO8601)` | Timestamp when the current turn expires. |
 | `start_time` | `string (ISO8601)` | Timestamp when the arena started. |
-| `is_winner` | `boolean\|null` | True if the current player has won. |
-| `players` | `Array<Player>` | Full roster of current participants (User IDs masked). |
+| `winner_is_self` | `boolean\|null` | True if the current player has won. |
+| `winner_team_id` | `int\|null` | ID of the winning team if match concluded. |
 
 #### Grid
 - **`width`**: `int`
@@ -337,9 +337,11 @@ Detailed state of a single actor.
 | :--- | :--- | :--- |
 | `id` | `string (UUID)` | Unique identifier for the entity. |
 | `is_self` | `boolean` | True if the entity belongs to the requesting player. |
+| `team` | `int` | Team identifier. |
 | `name` | `string` | Display name. |
-| `hp` | `int` | Current Hit Points. |
+| `hp` | `int` | Current Hit Points. Dead units are marked with `hp: 0`. |
 | `max_hp` | `int` | Maximum Hit Points. |
+| `dead` | `boolean` | True if the character has been eliminated in this session. |
 | `attack` | `int` | Base offensive power. |
 | `defense` | `int` | Base defensive mitigation. |
 | `move` | `int` | Remaining movement range for the current turn. |
@@ -392,7 +394,7 @@ Detailed state of a single actor.
 | `game_mode` | `string` | e.g., "1v1_PVP". |
 | `started_at` | `string (ISO8601)` | Start timestamp. |
 | `concluded_at` | `string (ISO8601)\|null` | End timestamp. |
-| `winning_team_id` | `int|null` | Winning team identifier. |
+| `winner_team_id` | `int|null` | Winning team identifier. |
 
 ### 4.7 ArenaEvent
 **Specification:** [[api_go_webhook_callback]]

@@ -16,7 +16,7 @@ type SessionData struct {
 	Token        string            `json:"token"`
 	WSChannelKey string            `json:"ws_channel_key"`
 	Context      map[string]string `json:"context"`
-	Participants []dto.Participant `json:"participants"`
+	Participants []dto.Player           `json:"participants"`
 }
 
 // Session holds the active JWT and a key-value context store
@@ -27,7 +27,7 @@ type Session struct {
 	wsChannelKey string
 	context      map[string]string
 	lastBoard    *dto.BoardState
-	participants []dto.Participant
+	participants []dto.Player
 }
 
 // New creates an empty session.
@@ -145,14 +145,14 @@ func (s *Session) LastBoard() *dto.BoardState {
 }
 
 // SetParticipants store the team mapping for the current match.
-func (s *Session) SetParticipants(participants []dto.Participant) {
+func (s *Session) SetParticipants(participants []dto.Player) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.participants = participants
 }
 
 // Participants returns the current match participants.
-func (s *Session) Participants() []dto.Participant {
+func (s *Session) Participants() []dto.Player {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return s.participants

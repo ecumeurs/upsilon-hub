@@ -22,13 +22,14 @@ To aggregate the constituent rules of Character Entity.
 Defines the baseline stat block and attributes of a playable character unit.
 
 Attributes:
-* HP (consumable, on the board, in game only)
+* HP (consumable, on the board, in game only). When a character is eliminated, HP is set to 0.
 * Max HP (attribute)
+* Dead (boolean, in game only): True if the character has been eliminated in the current session.
 * Attack (attribute)
 * Defense (attribute)
 * Move (consumable, on the board, in game only)
 * Max Move (attribute)
-* Position (on the board, in game only): {x,y}
+* Position (on the board, in game only): {x,y}. Note: Deceased characters have their position cleared from the grid.
 * Name
 * ID
 * Player ID (the player that owns this character, UUID assigned to that player for a game, in game only)

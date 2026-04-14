@@ -93,12 +93,13 @@ Sent on the `private-user.{ws_channel_key}` channel when the matchmaking engine 
 - **Event Name:** `match.found`
 - **Payload:** `{"match_id": "uuid"}`
 
-### Board Updated
-Sent on the `private-arena.{match_id}` channel whenever an entity moves, attacks, or passes.
+### Board Updated (Tactical State)
+Sent on the `private-user.{ws_channel_key}` channel whenever the tactical state changes.
 - **Specification:** `[[api_websocket_arena_updates]]`
-- **Masking Layer:** The Laravel Gateway strips all raw Player and User UUIDs before broadcasting. All `player_id` fields are removed, and clients should rely on `team` IDs or `is_self` flags.
+- **Surgical Masking:** Unlike global broadcasts, this event is customized for each recipient using the `BoardStateResource`. The `is_self` and `current_player_is_self` flags are pre-computed based on the recipient's identity. Additionally, characters that have been eliminated are preserved in the roster with `dead: true` and `hp: 0` to maintain state consistency.
 - **Event Name:** `board.updated`
-- **Payload:** `{"match_id": "uuid", "data": { ...BoardState... }}` (See `[[battleui_api_dtos]]`)
+- **Payload:** Strictly follows the `[[api_standard_envelope]]` format. The tactical state is located in the `data` field of the envelope.
+- **Envelope Example:** `{"request_id": "uuid", "success": true, "data": {"match_id": "uuid", ...BoardState...}}`
 
 ---
 
@@ -127,10 +128,10 @@ Paste this into `wscat`:
    ```bash
    curl -X POST http://localhost:8000/broadcasting/auth \
      -H "Authorization: Bearer <TOKEN>" \
-     -d "socket_id=888.999&channel_name=private-arena.my-match-id"
+     -d "socket_id=888.999&channel_name=private-user.my-ws-key"
    ```
-4. **Subscribe**: Paste `{"event":"pusher:subscribe","data":{"channel":"private-arena.my-match-id","auth":"key:sig"}}` into wscat.
-5. **Listen**: Wait for `board.updated` events.
+4. **Subscribe**: Paste `{"event":"pusher:subscribe","data":{"channel":"private-user.my-ws-key","auth":"key:sig"}}` into wscat.
+5. **Listen**: Wait for `match.found` and `board.updated` events on the same stream.
 
 ---
 

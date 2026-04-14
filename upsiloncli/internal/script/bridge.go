@@ -35,6 +35,17 @@ func (a *Agent) bindJSAPI() {
 
 		// Environment
 		"getEnv": a.jsGetEnv,
+		
+		// Tactical Helpers
+		"myPlayer":            a.jsMyPlayer,
+		"currentPlayer":       a.jsCurrentPlayer,
+		"currentCharacter":    a.jsCurrentCharacter,
+		"myCharacters":        a.jsMyCharacters,
+		"myAllies":            a.jsMyAllies,
+		"myAlliesCharacters":  a.jsMyAlliesCharacters,
+		"myFoes":              a.jsMyFoes,
+		"myFoesCharacters":    a.jsMyFoesCharacters,
+		"cellContentAt":       a.jsCellContentAt,
 	}
 	a.VM.Set("upsilon", upsilonObj)
 }
@@ -79,7 +90,7 @@ func (a *Agent) jsSetContext(key, value string) {
 }
 
 func (a *Agent) jsWaitForEvent(eventName string, timeoutMs int) (interface{}, error) {
-	return a.Listener.WaitForData(eventName, timeoutMs)
+	return a.Listener.WaitForData(a.Ctx, eventName, timeoutMs)
 }
 
 // jsOnTeardown stores a JS callback to be executed later
@@ -114,7 +125,20 @@ func (a *Agent) jsGetShared(key string) interface{} {
 
 // jsSleep pauses the current agent's goroutine without affecting others.
 func (a *Agent) jsSleep(ms int) {
-	time.Sleep(time.Duration(ms) * time.Millisecond)
+	select {
+	case <-a.Ctx.Done():
+		return
+	case <-time.After(time.Duration(ms) * time.Millisecond):
+	}
+}
+
+func (a *Agent) flattenEntities(board *dto.BoardState) []dto.Entity {
+	var all []dto.Entity
+	if board == nil { return all }
+	for _, p := range board.Players {
+		all = append(all, p.Entities...)
+	}
+	return all
 }
 
 func (a *Agent) jsFindPath(call goja.FunctionCall) goja.Value {
@@ -134,6 +158,9 @@ func (a *Agent) jsFindPath(call goja.FunctionCall) goja.Value {
 
 	boardBytes, _ := json.Marshal(call.Arguments[2].Export())
 	json.Unmarshal(boardBytes, &board)
+	
+	// Inject flattened entities for pathfinding algorithms that expect them
+	board.Entities = a.flattenEntities(&board)
 
 	path := FindPath(&board, start, end)
 	
@@ -161,6 +188,9 @@ func (a *Agent) jsPlanTravelToward(call goja.FunctionCall) goja.Value {
 	boardBytes, _ := json.Marshal(call.Arguments[2].Export())
 	json.Unmarshal(boardBytes, &board)
 
+	// Inject flattened entities
+	board.Entities = a.flattenEntities(&board)
+
 	path := PlanTravelToward(&board, entityID, target)
 	
 	// Ensure proper JSON mapping for the return value
@@ -173,4 +203,157 @@ func (a *Agent) jsPlanTravelToward(call goja.FunctionCall) goja.Value {
 
 func (a *Agent) jsGetEnv(key string) string {
 	return os.Getenv(key)
+}
+
+// --- Tactical Utility Implementations ---
+
+func (a *Agent) jsMyPlayer() interface{} {
+	parts := a.Session.Participants()
+	for _, p := range parts {
+		if p.IsSelf {
+			return p
+		}
+	}
+	return nil
+}
+
+func (a *Agent) jsCurrentPlayer() interface{} {
+	board := a.Session.LastBoard()
+	if board == nil { return nil }
+	
+	if board.CurrentPlayerIsSelf {
+		return a.jsMyPlayer()
+	}
+
+	// Find owner of the current entity
+	for _, p := range board.Players {
+		for _, e := range p.Entities {
+			if e.ID == board.CurrentEntityID {
+				return p
+			}
+		}
+	}
+
+	return nil
+}
+
+func (a *Agent) jsCurrentCharacter() interface{} {
+	board := a.Session.LastBoard()
+	if board == nil || board.Players == nil { return nil }
+	for _, p := range board.Players {
+		for _, e := range p.Entities {
+			if e.ID == board.CurrentEntityID {
+				return e
+			}
+		}
+	}
+	return nil
+}
+
+func (a *Agent) jsMyCharacters() []dto.Entity {
+	board := a.Session.LastBoard()
+	if board == nil { return nil }
+	var mine []dto.Entity
+	for _, p := range board.Players {
+		if p.IsSelf {
+			mine = append(mine, p.Entities...)
+		}
+	}
+	return mine
+}
+
+func (a *Agent) jsMyAllies() []dto.Player {
+	board := a.Session.LastBoard()
+	if board == nil { return nil }
+
+	var allies []dto.Player
+	var myTeam int
+	found := false
+	for _, p := range board.Players {
+		if p.IsSelf {
+			myTeam = p.Team
+			found = true
+			break
+		}
+	}
+
+	if !found { return nil }
+	
+	for _, p := range board.Players {
+		if p.Team == myTeam && !p.IsSelf {
+			allies = append(allies, p)
+		}
+	}
+	return allies
+}
+
+func (a *Agent) jsMyAlliesCharacters() []dto.Entity {
+	allies := a.jsMyAllies()
+	var all []dto.Entity
+	for _, p := range allies {
+		all = append(all, p.Entities...)
+	}
+	return all
+}
+
+func (a *Agent) jsMyFoes() []dto.Player {
+	board := a.Session.LastBoard()
+	if board == nil { return nil }
+
+	var foes []dto.Player
+	var myTeam int
+	found := false
+	for _, p := range board.Players {
+		if p.IsSelf {
+			myTeam = p.Team
+			found = true
+			break
+		}
+	}
+
+	if !found { return nil }
+	
+	for _, p := range board.Players {
+		if p.Team != myTeam {
+			foes = append(foes, p)
+		}
+	}
+	return foes
+}
+
+func (a *Agent) jsMyFoesCharacters() []dto.Entity {
+	foes := a.jsMyFoes()
+	var all []dto.Entity
+	for _, p := range foes {
+		all = append(all, p.Entities...)
+	}
+	return all
+}
+
+func (a *Agent) jsCellContentAt(x, y int) interface{} {
+	board := a.Session.LastBoard()
+	if board == nil { return nil }
+	
+	if y < 0 || y >= len(board.Grid.Cells) || x < 0 || x >= len(board.Grid.Cells[0]) {
+		return nil
+	}
+	
+	cell := board.Grid.Cells[y][x]
+	var foundEntity *dto.Entity
+	if cell.EntityID != "" {
+		for _, p := range board.Players {
+			for _, e := range p.Entities {
+				if e.ID == cell.EntityID {
+					foundEntity = &e
+					break
+				}
+			}
+			if foundEntity != nil { break }
+		}
+	}
+	
+	return map[string]interface{}{
+		"obstacle": cell.Obstacle,
+		"entity":   foundEntity,
+	}
 }

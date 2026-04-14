@@ -11,7 +11,8 @@ type Position struct {
 // Entity represents a tactical unit on the board.
 type Entity struct {
 	ID       string   `json:"id"`
-	PlayerID string   `json:"player_id"`
+	PlayerID string   `json:"player_id,omitempty"` // Player ID is masked in some responses
+	Team     int      `json:"team"`
 	Name     string   `json:"name"`
 	HP       int      `json:"hp"`
 	MaxHP    int      `json:"max_hp"`
@@ -20,6 +21,7 @@ type Entity struct {
 	Move     int      `json:"move"`
 	MaxMove  int      `json:"max_move"`
 	Position Position `json:"position"`
+	IsSelf   bool     `json:"is_self"`
 }
 
 // Cell represents a single tile on the grid.
@@ -37,34 +39,42 @@ type Grid struct {
 
 // Turn represents an entry in the initiative timeline.
 type Turn struct {
-	PlayerID string `json:"player_id"`
 	EntityID string `json:"entity_id"`
 	Delay    int    `json:"delay"`
+	IsSelf   bool   `json:"is_self"`
+	Team     int    `json:"team"`
+}
+
+// Player represents a participant in the match and their entities.
+type Player struct {
+	Nickname string   `json:"nickname"`
+	Team     int      `json:"team"`
+	IsSelf   bool     `json:"is_self"`
+	IA       bool     `json:"ia"`
+	Entities []Entity `json:"entities"`
 }
 
 // BoardState is the full DTO for the tactical situation.
 type BoardState struct {
-	Entities        []Entity  `json:"entities"`
-	Grid            Grid      `json:"grid"`
-	Turn            []Turn    `json:"turn"`
-	CurrentPlayerID string    `json:"current_player_id"`
-	CurrentEntityID string    `json:"current_entity_id"`
-	Timeout         time.Time `json:"timeout"`
-	StartTime       time.Time `json:"start_time"`
-	WinnerID        string    `json:"winner_id"`
-}
-
-// Participant links a player UUID to a team and nickname.
-type Participant struct {
-	PlayerID string `json:"player_id"`
-	Nickname string `json:"nickname"`
-	Team     int    `json:"team"`
+	Players             []Player  `json:"players"`           // Consolidated roster
+	Entities            []Entity  `json:"entities,omitempty"` // Deprecated: use players[].entities
+	Grid                Grid      `json:"grid"`
+	Turn                []Turn    `json:"turn"`
+	CurrentPlayerIsSelf bool      `json:"current_player_is_self"`
+	CurrentEntityID     string    `json:"current_entity_id"`
+	Timeout             time.Time `json:"timeout"`
+	StartTime           time.Time `json:"start_time"`
+	WinnerIsSelf        bool      `json:"winner_is_self"`
+	WinnerTeamID        *int      `json:"winner_team_id"`
+	GameFinished        bool      `json:"game_finished"`
 }
 
 // GameResponse is the expanded response from GET /api/v1/game/{id}
 type GameResponse struct {
-	MatchID      string        `json:"match_id"`
-	GameMode     string        `json:"game_mode"`
-	GameState    BoardState    `json:"game_state"`
-	Participants []Participant `json:"participants"`
+	MatchID      string     `json:"match_id"`
+	GameMode     string     `json:"game_mode"`
+	GameState    BoardState `json:"game_state"`
+	StartedAt    *time.Time `json:"started_at"`
+	ConcludedAt  *time.Time `json:"concluded_at"`
+	WinnerTeamID *int       `json:"winner_team_id"`
 }

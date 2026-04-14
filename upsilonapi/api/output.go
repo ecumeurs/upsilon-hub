@@ -9,6 +9,7 @@ import (
 	"github.com/ecumeurs/upsilonmapdata/grid"
 	"github.com/ecumeurs/upsilonmapdata/grid/cell"
 	"github.com/ecumeurs/upsilonmapdata/grid/position"
+	"github.com/ecumeurs/upsilonbattle/battlearena/property"
 	"github.com/google/uuid"
 )
 
@@ -50,15 +51,15 @@ type Turn struct {
 // BoardState represents the current state of the board.
 // @spec-link [[battleui_api_dtos]]
 type BoardState struct {
-	Entities        []Entity  `json:"entities"`
+	Players         []Player  `json:"players"`         // Consolidated roster
 	Grid            Grid      `json:"grid"`
 	Turn            []Turn    `json:"turn"`
 	CurrentPlayerID string    `json:"current_player_id"`
 	CurrentEntityID string    `json:"current_entity_id"`
-	Timeout         time.Time `json:"timeout"` // End of turn date.
+	Timeout         time.Time `json:"timeout"` 
 	StartTime       time.Time `json:"start_time"`
 	WinnerID        string    `json:"winner_id"` // if any, the game is done; based on player id.
-	Players         []Player  `json:"players"`   // Full roster
+	WinnerTeamID    *int      `json:"winner_team_id"`
 }
 
 // ArenaEvent is the payload for the webhook
@@ -99,16 +100,46 @@ func NewSuccess[T any](requestId string, msg string, data T) stdmessage.Standard
 
 // NewEntity creates a new Entity from the given entity (upsilonbattle's)
 func NewEntity(entity entity.Entity) Entity {
+	team := 0
+	if prop := entity.GetPropertyI(property.TeamID); prop != nil {
+		team = prop.I()
+	}
+
+	hp := 0
+	maxHP := 0
+	if prop := entity.GetProperty(property.HP); prop != nil {
+		if cp, ok := prop.(property.IntCounterProperty); ok {
+			hp = cp.GetValue()
+			maxHP = cp.GetMaxValue()
+		} else {
+			hp = prop.Get().(int)
+			maxHP = hp
+		}
+	}
+
+	move := 0
+	maxMove := 0
+	if prop := entity.GetProperty(property.Movement); prop != nil {
+		if cp, ok := prop.(property.IntCounterProperty); ok {
+			move = cp.GetValue()
+			maxMove = cp.GetMaxValue()
+		} else {
+			move = prop.Get().(int)
+			maxMove = move
+		}
+	}
+
 	return Entity{
 		ID:       entity.ID.String(),
 		PlayerID: entity.ControllerID.String(),
+		Team:     team,
 		Name:     entity.Name,
-		HP:       entity.GetPropertyC("HP").GetValue(),
-		MaxHP:    entity.GetPropertyC("HP").GetMaxValue(),
-		Attack:   entity.GetPropertyI("Attack").I(),
-		Defense:  entity.GetPropertyI("Defense").I(),
-		Move:     entity.GetPropertyC("Movement").GetValue(),
-		MaxMove:  entity.GetPropertyC("Movement").GetMaxValue(),
+		HP:       hp,
+		MaxHP:    maxHP,
+		Attack:   entity.GetPropertyI(property.Attack).I(),
+		Defense:  entity.GetPropertyI(property.Defense).I(),
+		Move:     move,
+		MaxMove:  maxMove,
 		Position: Position{X: entity.Position.X, Y: entity.Position.Y},
 	}
 }
@@ -123,7 +154,16 @@ func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, pl
 	}
 
 	if winnerID != uuid.Nil {
-		bs.WinnerID = winnerID.String()
+		winnerStr := winnerID.String()
+		bs.WinnerID = winnerStr
+		// Resolve the winning team
+		for _, p := range players {
+			if p.ID == winnerStr {
+				team := p.Team
+				bs.WinnerTeamID = &team
+				break
+			}
+		}
 	}
 
 	// Map Grid
@@ -154,7 +194,6 @@ func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, pl
 	for _, e := range entities {
 		entityToPlayer[e.ID] = e.ControllerID.String()
 		apiEntity := NewEntity(e)
-		bs.Entities = append(bs.Entities, apiEntity)
 		entityMap[e.ID] = apiEntity
 
 		if e.ID == ts.CurrentEntityTurn {
@@ -169,6 +208,10 @@ func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, pl
 			if err == nil {
 				if actual, found := entityMap[entID]; found {
 					bs.Players[i].Entities[j] = actual
+				} else {
+					// Entity is dead/removed from engine, ensure HP is 0
+					// Note: the dead flag will be added by the Laravel Gateway resource transformation.
+					bs.Players[i].Entities[j].HP = 0
 				}
 			}
 		}

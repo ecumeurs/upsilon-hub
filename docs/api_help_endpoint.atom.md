@@ -33,6 +33,7 @@ The endpoint uses **Code-First Introspection** to build the response:
 
 ## EXPECTATION
 - Request returns 200 OK JSON via `ApiResponder`.
+- Response contains accurate DTO schemas reflecting semantic flags (`is_self`, etc.) rather than masked UUIDs.
 - Response contains:
     - `envelope`: Documentation of the standard response structure.
     - `endpoints`: A non-empty array of introspected API routes with Intent (from Atoms), Input (from FormRequest), and Auth status.

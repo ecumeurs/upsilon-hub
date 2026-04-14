@@ -21,8 +21,8 @@ Ensure that every agent script executes a guaranteed cleanup phase regardless of
 1.  **Setup Phase**: The agent is initialized, WebSocket connection established.
 2.  **Execution Phase**: The main JS script runs.
 3.  **Teardown Phase**: 
-    -   Must run even if `Execution Phase` throws an exception or assertion fails.
-    -   Triggered by Go's `defer` mechanism in the Coordinator.
+    -   Must run even if `Execution Phase` throws an exception, assertion fails, or the process receives an INTERRUPT signal (SIGINT/SIGTERM).
+    -   Triggered by Go's `defer` mechanism and context cancellation.
     -   Executes the function registered via `upsilon.onTeardown(callback)`.
     -   Gracefully stops the WebSocket listener.
 

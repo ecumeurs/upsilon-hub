@@ -20,6 +20,7 @@ type ArenaActionRequest struct {
 type Entity struct {
 	ID       string   `json:"id"`
 	PlayerID string   `json:"player_id"`
+	Team     int      `json:"team"`
 	Name     string   `json:"name"`
 	HP       int      `json:"hp"`
 	MaxHP    int      `json:"max_hp"`

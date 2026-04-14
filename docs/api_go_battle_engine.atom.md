@@ -22,15 +22,7 @@ dependents:
 To define the external JSON boundary for UpsilonBattle, allowing the Laravel Gateway to instantiate arenas, proxy commands, and receive asynchronous state updates via webhooks.
 
 ## THE RULE / LOGIC
-The Go Battle Engine API is composed of several specialized endpoints and a webhook dispatch system. All communications must follow the [[api_standard_envelope]].
-
-### Core Components:
-- **Arena Initialization:** [[api_go_battle_start]] (Receives the initial player roster).
-- **In-Game Actions:** [[api_go_battle_action]]
-- **State Notifications:** [[api_go_webhook_callback]] (Broadcasts the `BoardState`).
-
-### Board State & Identification:
-The engine acts as the **Single Source of Truth** for player identity during a match. The `BoardState` includes a `players` list documenting the ID-to-Nickname mapping for all participants, enabling clients to correctly identify and render entities without external lookups.
+The Go Battle Engine API is composed of several specialized endpoints and a webhook dispatcher. It maintains a consolidated 'players' state where each player nests its live entities, including shared 'team' and 'is_self' status to prevent ID leakage. All communications follow the [[api_standard_envelope]].
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Base Path:** `/internal`

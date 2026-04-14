@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     curl \
     libpq-dev \
+    jq \
     postgresql-client \
     locales \ 
     libicu-dev \

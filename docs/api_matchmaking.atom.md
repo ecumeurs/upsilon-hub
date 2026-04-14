@@ -10,7 +10,8 @@ tags: [matchmaking, queue, api]
 parents:
   - [[api_laravel_gateway]]
   - [[api_standard_envelope]]
-dependents: []
+dependents:
+  - [[api_websocket_user_notifications]]
 ---
 # Matchmaking API
 

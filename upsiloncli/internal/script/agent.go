@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"context"
 	"github.com/dop251/goja"
 	"github.com/ecumeurs/upsiloncli/internal/api"
 	"github.com/ecumeurs/upsiloncli/internal/display"
@@ -23,6 +24,7 @@ type Agent struct {
 	Logger       io.Writer
 	TeardownHook goja.Callable
 	Shared       *SharedStore
+	Ctx          context.Context
 }
 
 func NewAgent(id, baseURL string, reg *endpoint.Registry, logger io.Writer, shared *SharedStore) *Agent {

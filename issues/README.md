@@ -20,3 +20,6 @@
 | ISS-025 | [ISS-025_20260408_dashboard_hub_implementation.md](ISS-025_20260408_dashboard_hub_implementation.md) | Medium | Open | Dashboard Hub Implementation for Upsilon Battle. |
 | ISS-026 | [ISS-026_20260409_api_journey_tester_cli.md](ISS-026_20260409_api_journey_tester_cli.md) | Medium | Open | Upsilon API Journey Explorer & Tester CLI. |
 | ISS-027 | [ISS-027_20260409_upsiloncli_scripting_support.md](ISS-027_20260409_upsiloncli_scripting_support.md) | Medium | Open | UpsilonCLI Scripting & Automated Scenario Support. |
+| ISS-035 | [ISS-035_20260413_websocket_boardstate_privacy_leak.md](ISS-035_20260413_websocket_boardstate_privacy_leak.md) | High | Open | WebSocket `board.updated` event leaks enemy character details. |
+| ISS-036 | [ISS-036_20260414_front_board_state_entity_naming.md](ISS-036_20260414_front_board_state_entity_naming.md) | Medium | Open | Standardize naming from 'entities' to 'characters' in frontend state. |
+| ISS-037 | [ISS-037_20260414_standardize_win_condition_team.md](ISS-037_20260414_standardize_win_condition_team.md) | Medium | Open | Standardize win condition: use team ID instead of 'winner_is_self'. |

@@ -61,6 +61,7 @@ start_service() {
     exit 1
 }
 
+
 # 1. Laravel API
 start_service "Laravel API" "battleui" "php artisan serve --host=0.0.0.0 --port=8000" "laravel.log" 8000
 
@@ -71,10 +72,11 @@ start_service "Reverb Server" "battleui" "php artisan reverb:start" "reverb.log"
 start_service "Vue Frontend" "battleui" "npm run dev" "vite.log" 5173
 
 # 4. Upsilon Engine (Go)
-start_service "Upsilon Engine" "upsilonapi" "go run main.go" "engine.log" 8081
+start_service "Upsilon Engine" "upsilonapi" "./bin/upsilonapi" "engine.log" 8081
 
 echo "---------------------------------------"
 echo "All services are running and verified."
 echo "Logs: $LOG_DIR/"
 echo "Stop: ./stop_services.sh"
 echo "---------------------------------------"
+

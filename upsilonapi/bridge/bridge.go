@@ -75,9 +75,9 @@ func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.
 			e.ControllerID = uuid.MustParse(p.ID)
 
 			e.RepsertPropertyCMaxValue("HP", ee.MaxHP)
-			e.RepsertPropertyValue("HP", ee.HP)
+			e.RepsertPropertyCValue("HP", ee.HP)
 			e.RepsertPropertyCMaxValue("Movement", ee.MaxMove)
-			e.RepsertPropertyValue("Movement", ee.Move)
+			e.RepsertPropertyCValue("Movement", ee.Move)
 			e.RepsertPropertyValue("Attack", ee.Attack)
 			e.RepsertPropertyValue("Defense", ee.Defense)
 			e.RepsertPropertyValue("TeamID", p.Team)
