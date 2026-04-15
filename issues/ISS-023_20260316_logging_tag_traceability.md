@@ -55,3 +55,4 @@ A request arrives at Laravel, gets an ID, and logs its receipt. It proxies to Go
 - [[api_request_id]]
 - [[req_logging_traceability]]
 - [[rule_tracing_logging]]
+- Related: [ISS-042](file:///workspace/issues/ISS-042_20260415_request_traceability_gaps.md)

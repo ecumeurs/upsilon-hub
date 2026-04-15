@@ -78,4 +78,5 @@ Investigation reveals the following gaps:
 
 - [rule_tracing_logging.atom.md](file:///workspace/docs/rule_tracing_logging.atom.md)
 - [api_standard_envelope.atom.md](file:///workspace/docs/api_standard_envelope.atom.md)
-- [upsilon_log_parser.py](file:///workspace/upsiloncli/upsilon_log_parser.py) (Reference for existing parser logic)
+- [upsilon_log_parser.py](file:///workspace/upsiloncli/upsilon_log_parser.py)
+- Related: [ISS-023](file:///workspace/issues/ISS-023_20260316_logging_tag_traceability.md)

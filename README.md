@@ -58,24 +58,18 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Friendly Fire Rule Enforcement Missing](issues/ISS-043_20260415_rule_friendly_fire_not_enforced.md) | 2026-04-15 | Open | High | The `Friendly Immunity Rule` (`rule_friendly_fire`) defined in the architectu... |
 | [Request Traceability Non-Compliance and Gaps](issues/ISS-042_20260415_request_traceability_gaps.md) | 2026-04-15 | Open | Medium | This issue documents the systematic non-compliance with `rule_tracing_logging... |
 | [Upgradable Pawn Appearance & Model System](issues/ISS-040_20260415_pawn_appearance_system.md) | 2026-04-15 | Open | Medium | Implement an upgradable "Pawn Appearance System" that allows players to custo... |
 | [Holo-Emote Procedural Reaction System](issues/ISS-039_20260415_holo_emote_system.md) | 2026-04-15 | Open | Medium | Implement a "Holo-Emote System" that triggers procedural reactions (emojis/te... |
-| [Standardize Win Condition: winner_team over winner_is_self](issues/ISS-037_20260414_standardize_win_condition_team.md) | 2026-04-14 | Open | Medium | The current win condition detection in the frontend and CLI relies on a serve... |
 | [Standardize Board State Naming: entities -> characters](issues/ISS-036_20260414_front_board_state_entity_naming.md) | 2026-04-14 | Open | Medium | The board state structure currently uses the term "entities" for game units. ... |
-| [WebSocket BoardState Privacy Leak](issues/ISS-035_20260413_websocket_boardstate_privacy_leak.md) | 2026-04-13 | Open | High | The `board.updated` WebSocket event currently broadcasts the same state paylo... |
 | [Internal ID Exposure in Public APIs](issues/ISS-034_20260413_id_exposure.md) | 2026-04-13 | Open | Medium | Internal database UUIDs are currently being emitted directly to front-end and... |
-| [Lack of Random Seeding and Coordinate Desync in Tactical State](issues/ISS-033_20260412_randomness_and_coordinate_desync.md) | 2026-04-12 | Open | Medium | Combat matches in the Upsilon engine suffer from deterministic initialization... |
-| [Aggressive AI Controller Deadlocks on Match Termination](issues/ISS-032_20260412_ai_deadlock_termination.md) | 2026-04-12 | Open | Medium | The `AggressiveController` (AI) implementation uses an unbuffered channel to ... |
-| [Combat Concludes but WinnerID is Not Communicated to DTOs](issues/ISS-031_20260412_winner_id_missing.md) | 2026-04-12 | Open | High | When a battle concludes naturally (all enemies eliminated or player forfeits)... |
 | [PVP Stalemate Logic Not Enforced](issues/ISS-029_20260410_stalemate_logic_not_enforced.md) | 2026-04-10 | Open | Medium | Currently, there is no logic to detect and resolve a stalemate when remaining... |
 | [Ensure all logs are tagged with Request ID](issues/ISS-023_20260316_logging_tag_traceability.md) | 2026-03-16 | Open | High | The system currently lacks a strictly enforced requirement to tag every log e... |
 | [Security Risk: Lack of Match Participant Access Control](issues/ISS-018_20260312_match_participant_access_control.md) | 2026-03-12 | Open | Critical | Currently, any authenticated user can attempt to act or view the state of ANY... |
 | [Arena not destroyed on battle end](issues/ISS-012_20260311_arena_destruction_leak.md) | 2026-03-11 | Open | Medium | Arenas are added to the `ArenaBridge.arenas` map during startup but are never... |
 | [Ruler readiness trigger enhancements](issues/ISS-010_20260311_ruler_readiness_logic.md) | 2026-03-11 | Open | Low | The current readiness trigger for the `Ruler` (the `BattleStart` notification... |
 | [Ruler ownership bypass in bridge.go and public GameState](issues/ISS-009_20260311_ruler_ownership_bypass.md) | 2026-03-11 | Open | Low | In `bridge.go`'s `StartArena` function, the `Ruler`'s ownership of game resou... |
-| [Transition WebSocket Events to Private Channels](issues/ISS-008_20260306_websocket_private_channel_transition.md) | 2026-03-06 | Open | High | WebSocket events, specifically the `BattleUpdated` event, are currently broad... |
 | [Implement Laravel WebSocket Communication Layer](issues/ISS-005_20260305_laravel_websockets.md) | 2026-03-05 | Open | High | To avoid aggressive REST polling, the system requires a real-time WebSocket l... |
-| [UpsilonBattle missing team handling](issues/ISS-003_20260305_upsilonbattle_missing_teams.md) | 2026-03-05 | Open | High | The `upsilonbattle` engine currently lacks any concept of "teams" or alliance... |
 | [UpsilonBattle Mechanics Gap Analysis](issues/ISS-001_20260305_upsilonbattle_mechanics_gap.md) | 2026-03-05 | Open | Medium | There are multiple inconsistencies between the high-level specifications (REA... |
 
