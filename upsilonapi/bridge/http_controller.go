@@ -1,6 +1,8 @@
 package bridge
 
-// @spec-link [[module_upsilonapi]]
+/*
+ * @spec-link [[module_upsilonapi]]
+ */
 
 import (
 	"bytes"
@@ -8,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/ecumeurs/upsilonapi/api"
+	"github.com/ecumeurs/upsilonapi/stdmessage"
 	"github.com/ecumeurs/upsilonbattle/battlearena/controller"
 	"github.com/ecumeurs/upsilonbattle/battlearena/ruler/rulermethods"
 	"github.com/ecumeurs/upsilontools/tools/actor"
@@ -53,11 +56,15 @@ func (hc *HTTPController) BattleStart(ctx actor.NotificationContext) {
 }
 
 func (hc *HTTPController) forwardToWebhook(ctx actor.NotificationContext) {
-	logrus.Infof("Forwarding event to webhook: %T", ctx.Msg.TargetMethod)
-
 	bs, err := Get().GetBoardState(hc.MatchID)
 	if err != nil {
 		logrus.Errorf("Failed to get board state for webhook: %v", err)
+		return
+	}
+
+	// @spec-link [[mech_game_state_versioning]]
+	if !Get().TrySendWebhook(hc.MatchID, bs.Version) {
+		// Version already sent by another controller belonging to the same match.
 		return
 	}
 
@@ -65,10 +72,14 @@ func (hc *HTTPController) forwardToWebhook(ctx actor.NotificationContext) {
 		MatchID:   hc.MatchID.String(),
 		EventType: hc.getEventName(ctx.Msg.TargetMethod),
 		Data:      bs,
+		Version:   bs.Version,
 		Timeout:   bs.Timeout,
 	}
 
-	jsonData, err := json.Marshal(payload)
+	// @spec-link [[api_standard_envelope]]
+	wrapped := stdmessage.New("Arena Event", true, payload)
+
+	jsonData, err := json.Marshal(wrapped)
 	if err != nil {
 		logrus.Errorf("Failed to marshal webhook payload: %v", err)
 		return

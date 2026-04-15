@@ -32,17 +32,20 @@ import (
 type ArenaBridge struct {
 	mu     sync.RWMutex
 	arenas map[uuid.UUID]*battlearena.BattleArena
+	// @spec-link [[mech_game_state_versioning]]
+	lastSentWebhookVersion map[uuid.UUID]int64
 }
 
 var bridge = &ArenaBridge{
-	arenas: make(map[uuid.UUID]*battlearena.BattleArena),
+	arenas:                 make(map[uuid.UUID]*battlearena.BattleArena),
+	lastSentWebhookVersion: make(map[uuid.UUID]int64),
 }
 
 func Get() *ArenaBridge {
 	return bridge
 }
 
-func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.Grid, []entity.Entity, []api.Player, turner.TurnState, error) {
+func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.Grid, []entity.Entity, []api.Player, turner.TurnState, int64, error) {
 	matchID := uuid.MustParse(start.MatchID)
 	battleArena := battlearena.NewBattleArena(matchID)
 	battleArena.Metadata["CallbackURL"] = start.CallbackURL
@@ -128,12 +131,12 @@ func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.
 		res = append(res, v)
 	}
 
-	// this is bad, because we access data directly, bypassing the actor... we should probably poll for appropriate data so that we're sure to have readonly copies.
 	return matchID,
 		battleArena.Ruler.GameState.Grid,
 		res,
 		start.Players,
 		battleArena.Ruler.GameState.Turner.GetTurnState(),
+		battleArena.Ruler.GameState.Version,
 		nil
 }
 
@@ -152,7 +155,23 @@ func (b *ArenaBridge) GetBoardState(matchID uuid.UUID) (api.BoardState, error) {
 
 	players, _ := arena.Metadata["Players"].([]api.Player)
 
-	return api.NewBoardState(matchID, arena.Ruler.GameState.Grid, res, players, arena.Ruler.GameState.Turner.GetTurnState(), time.Now(), time.Now().Add(30*time.Second), arena.Ruler.GameState.WinnerID), nil
+	return api.NewBoardState(matchID, arena.Ruler.GameState.Grid, res, players, arena.Ruler.GameState.Turner.GetTurnState(), time.Now(), time.Now().Add(30*time.Second), arena.Ruler.GameState.WinnerID, arena.Ruler.GameState.Version), nil
+}
+
+// TrySendWebhook checks if a webhook for this version has already been sent.
+// Returns true if this is the first time this version is being processed.
+// @spec-link [[mech_game_state_versioning]]
+func (b *ArenaBridge) TrySendWebhook(matchID uuid.UUID, version int64) bool {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	last, exists := b.lastSentWebhookVersion[matchID]
+	if exists && version <= last {
+		return false
+	}
+
+	b.lastSentWebhookVersion[matchID] = version
+	return true
 }
 
 func (b *ArenaBridge) ArenaAction(arenaID uuid.UUID, req api.ArenaActionMessage) (bool, string, interface{}) {
@@ -238,6 +257,7 @@ func (b *ArenaBridge) DestroyArena(matchID uuid.UUID) {
 	arena, ok := b.arenas[matchID]
 	if ok {
 		delete(b.arenas, matchID)
+		delete(b.lastSentWebhookVersion, matchID)
 	}
 	b.mu.Unlock()
 

@@ -133,86 +133,72 @@ func (l *Listener) listenLoop() {
 			l.Sync()
 
 		case "match.found":
-			// Laravel payload: { match_id: "...", user_id: "...", data: [] }
+			// Laravel payload: [[api_standard_envelope]] -> { data: { match_id: "..." } }
+			data, err := l.unwrapEnvelope(envelope.Data)
+			if err != nil {
+				if l.Printer != nil {
+					l.Printer.Warn(fmt.Sprintf("match.found envelope error: %v", err))
+				}
+				continue
+			}
+
 			var payload struct {
 				MatchID string `json:"match_id"`
 			}
-			
-			// Reverb/Pusher data is sometimes double-encoded as a JSON string
-			var dataStr string
-			if err := json.Unmarshal(envelope.Data, &dataStr); err == nil {
-				json.Unmarshal([]byte(dataStr), &payload)
-			} else {
-				json.Unmarshal(envelope.Data, &payload)
-			}
-			
-			if payload.MatchID != "" {
+			dataBytes, _ := json.Marshal(data)
+			if err := json.Unmarshal(dataBytes, &payload); err == nil && payload.MatchID != "" {
 				l.Session.Set("match_id", payload.MatchID)
 				if l.Printer != nil {
 					l.Printer.WebSocket("MatchFound", envelope.Data)
 					l.Printer.System(fmt.Sprintf("Match detected! Initializing arena %s...", payload.MatchID))
 				}
-				
-				// Fetch full state (participants + board)
 				l.initializeMatch(payload.MatchID)
-				
-				// Subscribe to arena updates
 				l.subscribeToArenaChannel(payload.MatchID)
 			} else {
 				if l.Printer != nil {
-					l.Printer.Warn(fmt.Sprintf("Received match.found but match_id is empty. Raw: %s", string(envelope.Data)))
+					l.Printer.Warn(fmt.Sprintf("Received match.found but match_id is missing or malformed. Raw: %s", string(envelope.Data)))
 				}
 			}
 
 		case "board.updated":
-			var payload dto.BoardState
-
+			// Laravel payload: [[api_standard_envelope]] -> { data: { ...BoardState... } }
 			if l.Printer != nil {
 				l.Printer.WebSocket("board.updated", envelope.Data)
 			}
 
-			var dataStr string
-			if err := json.Unmarshal(envelope.Data, &dataStr); err == nil {
-				if err := json.Unmarshal([]byte(dataStr), &payload); err == nil {
-					l.decorateBoard(&payload)
-					l.Session.SetParticipants(payload.Players)
-					l.Session.SetLastBoard(&payload)
-					if l.Printer != nil {
-						l.Printer.System("Tactical feed updated.")
+			data, err := l.unwrapEnvelope(envelope.Data)
+			if err != nil {
+				if l.Printer != nil {
+					l.Printer.Warn(fmt.Sprintf("board.updated envelope error: %v", err))
+				}
+				continue
+			}
+
+			var payload dto.BoardState
+			dataBytes, _ := json.Marshal(data)
+			if err := json.Unmarshal(dataBytes, &payload); err == nil {
+				l.decorateBoard(&payload)
+				l.Session.SetParticipants(payload.Players)
+				l.Session.SetLastBoard(&payload)
+				if l.Printer != nil {
+					l.Printer.System("Tactical feed updated.")
+					if payload.GameFinished {
+						if payload.WinnerIsSelf {
+							name, _ := l.Session.Get("account_name")
+							l.Printer.Victory(name)
+						} else if payload.WinnerTeamID != nil {
+							l.Printer.Defeat(fmt.Sprintf("Team %d", *payload.WinnerTeamID))
+						} else {
+							l.Printer.Draw()
+						}
+					} else {
+						l.Printer.Board(&payload, l.Session.UserIdentifier(), l.Session.Participants())
 						l.Printer.Suggestions([]string{"redraw"})
-					}
-				} else {
-					if l.Printer != nil {
-						l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated data string: %v", err))
 					}
 				}
 			} else {
-				if err := json.Unmarshal(envelope.Data, &payload); err == nil {
-					l.decorateBoard(&payload)
-					l.Session.SetParticipants(payload.Players)
-					l.Session.SetLastBoard(&payload)
-					if l.Printer != nil {
-						l.Printer.System("Tactical feed updated.")
-						l.Printer.Board(&payload, l.Session.UserIdentifier(), l.Session.Participants())
-
-						// Detect game conclusion
-						if payload.GameFinished {
-							if payload.WinnerIsSelf {
-								name, _ := l.Session.Get("account_name")
-								l.Printer.Victory(name)
-							} else if payload.WinnerTeamID != nil {
-								l.Printer.Defeat(fmt.Sprintf("Team %d", *payload.WinnerTeamID))
-							} else {
-								l.Printer.Draw()
-							}
-						} else {
-							l.Printer.Suggestions([]string{"redraw"})
-						}
-					}
-				} else {
-					if l.Printer != nil {
-						l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated payload: %v", err))
-					}
+				if l.Printer != nil {
+					l.Printer.Warn(fmt.Sprintf("Failed to decode board.updated payload: %v", err))
 				}
 			}
 
@@ -268,6 +254,35 @@ func (l *Listener) WaitForData(ctx context.Context, eventName string, timeoutMs 
 	}
 }
 
+// unwrapEnvelope extracts the 'data' field from a [[api_standard_envelope]].
+func (l *Listener) unwrapEnvelope(raw json.RawMessage) (interface{}, error) {
+	// 1. Handle double-encoding (Pusher/Reverb sends data as a JSON string sometimes)
+	var intermediate json.RawMessage
+	var dataStr string
+	if err := json.Unmarshal(raw, &dataStr); err == nil {
+		intermediate = json.RawMessage(dataStr)
+	} else {
+		intermediate = raw
+	}
+
+	// 2. Unmarshal into standard envelope structure
+	var envelope struct {
+		Success bool        `json:"success"`
+		Message string      `json:"message"`
+		Data    interface{} `json:"data"`
+	}
+	
+	if err := json.Unmarshal(intermediate, &envelope); err != nil {
+		return nil, fmt.Errorf("malformed envelope: %v", err)
+	}
+
+	if !envelope.Success {
+		return nil, fmt.Errorf("server error: %s", envelope.Message)
+	}
+
+	return envelope.Data, nil
+}
+
 func (l *Listener) notifyWaiters(eventName string, data json.RawMessage) {
 	l.waitMu.Lock()
 	defer l.waitMu.Unlock()
@@ -277,14 +292,22 @@ func (l *Listener) notifyWaiters(eventName string, data json.RawMessage) {
 		return
 	}
 
-	// Parse data into interface{} so it's clean for JS
-	var parsed interface{}
-	// Reverb/Pusher data is sometimes double-encoded as a JSON string
+	// 1. Handle double-encoding (Pusher/Reverb sends data as a JSON string sometimes)
+	var intermediate json.RawMessage
 	var dataStr string
 	if err := json.Unmarshal(data, &dataStr); err == nil {
-		json.Unmarshal([]byte(dataStr), &parsed)
+		intermediate = json.RawMessage(dataStr)
 	} else {
-		json.Unmarshal(data, &parsed)
+		intermediate = data
+	}
+
+	// Parse into interface{} for JS
+	var parsed interface{}
+	if err := json.Unmarshal(intermediate, &parsed); err != nil {
+		if l.Printer != nil {
+			l.Printer.Warn(fmt.Sprintf("Failed to parse event data for JS: %v", err))
+		}
+		return
 	}
 
 	for _, ch := range waiters {

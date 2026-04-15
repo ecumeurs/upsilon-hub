@@ -10,7 +10,8 @@ tags: [api, golang, callback, webhooks]
 parents:
   - [[api_go_battle_engine]]
   - [[api_standard_envelope]]
-dependents: []
+dependents:
+  - [[mech_game_state_versioning]]
 ---
 # UpsilonBattle Webhook Callback
 
@@ -18,7 +19,7 @@ dependents: []
 To asynchronously notify the Laravel Gateway of state changes, turn start/end, and battle results.
 
 ## THE RULE / LOGIC
-**Destination:** The `callback_url` provided during [[api_go_battle_start]]. This must be a reachable internal URL (e.g., pointing to port 8000 on the gateway host).
+**Destination:** The `callback_url` provided during [[api_go_battle_start]].
 
 ### ArenaEvent Payload (Wrapped in [[api_standard_envelope]])
 - `match_id`: `string (UUID)` - Targeted match in Laravel.
@@ -26,6 +27,7 @@ To asynchronously notify the Laravel Gateway of state changes, turn start/end, a
 - `player_id`: `string (UUID)` (if applicable)
 - `entity_id`: `string (UUID)` (if applicable)
 - `data`: `BoardState` (See [[api_go_battle_engine]]) - **Note:** Now includes the full `players` roster for identity synchronization.
+- `version`: `int64` - Monotonic sequence number synced with `data.sequence`.
 - `timeout`: `string (ISO8601)` - End of the current turn clock.
 
 ### Event Types:

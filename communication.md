@@ -27,7 +27,17 @@ To guarantee traceability and consistent error handling, every JSON exchange bet
 
 The `request_id` must be a **string (UUIDv7)**. It is the responsibility of the originator (typically the Vue frontend for user actions) to generate this ID. It must be propagated across all distributed calls spanning Laravel and Go to maintain the trace defined in [[rule_tracing_logging]].
 
-### 1.3 Service Ports & Network Topology
+### 1.3 State Versioning & Deduplication
+**Source:** [[mech_game_state_versioning]]
+
+To ensure consistency and optimize performance during high-frequency combat, Upsilon uses a monotonic versioning system. 
+
+1. **Versioning:** Every state mutation in the Go Engine increments a `Version` (int64).
+2. **De-duplication:** The Go Internal Engine drops outgoing webhooks if the state hasn't progressed since the last transmission.
+3. **Gateway Enforcement:** Laravel ignores incoming webhooks with a version lower than or equal to the current database state, effectively deduplicating the fan-out from multiple controllers. Laravel uses the `version` (int64) as the single source of truth for match progression, mapping it to both `version` and legacy `turn` columns.
+4. **Broadcast Efficiency:** Clients (Vue/CLI) rely on the `version` field to ensure they are processing the latest tactical state.
+
+### 1.4 Service Ports & Network Topology
 
 | Service | Port (Dev) | Protocol | Role |
 | :--- | :--- | :--- | :--- |
@@ -299,12 +309,13 @@ Defines the complete state of a tactical arena at a specific moment in time.
 | :--- | :--- | :--- |
 | `players` | `Array<Player>` | Consolidated roster of participants and their live entities. |
 | `grid` | `Grid` | The tactical map structure. |
-| `turn` | `Array<Turn>` | Sequence of actors based on initiative. (Player IDs masked). |
-| `current_player_is_self` | `boolean` | True if the current user is the acting player. |
+| `turn` | `Array<Turn>` | Sequence of actors based on initiative. |
+| `current_player_is_self` | `boolean` | **Gateway Only:** True if the current user is the acting player. Masked from Go's `current_player_id`. |
 | `current_entity_id` | `string (UUID)` | ID of the entity currently acting. |
 | `timeout` | `string (ISO8601)` | Timestamp when the current turn expires. |
 | `start_time` | `string (ISO8601)` | Timestamp when the arena started. |
-| `winner_is_self` | `boolean\|null` | True if the current player has won. |
+| `version` | `int64` | Monotonic sequence number for state changes. Required for deduplication. [[mech_game_state_versioning]] |
+| `winner_is_self` | `boolean\|null` | **Gateway Only:** True if the current player has won. Masked from Go's `winner_id`. |
 | `winner_team_id` | `int\|null` | ID of the winning team if match concluded. |
 
 #### Grid
@@ -408,6 +419,7 @@ Payload for the asynchronous engine callback.
 | `player_id` | `string (UUID)` | Optional: Targeted player. |
 | `entity_id` | `string (UUID)` | Optional: Targeted entity. |
 | `data` | `BoardState` | The current state of the board. |
+| `version` | `int64` | Monotonic sequence number (synced with `data.sequence`). |
 | `timeout` | `string (ISO8601)` | End of the current turn clock. |
 
 ---

@@ -72,8 +72,8 @@ upsilon.call("matchmaking_join", {
 
 // 3. Wait for MatchFound
 try {
-    const matchData = upsilon.waitForEvent("match.found", 60000); // 60s timeout
-    matchId = matchData.match_id;
+    const matchEnvelope = upsilon.waitForEvent("match.found", 60000); // 60s timeout
+    matchId = matchEnvelope.data.match_id;
     upsilon.log("Match Found! ID: " + matchId);
 } catch (e) {
     upsilon.log("Timed out waiting for match (match.found). Ensure another bot or player joins the 1v1_PVP queue.");

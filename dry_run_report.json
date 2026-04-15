@@ -1,0 +1,235 @@
+{
+    "test_duration_secs": 120,
+    "total_matches": 4,
+    "total_actions": 33,
+    "total_deaths": 0,
+    "total_errors": 9,
+    "error_distribution": {
+        "System Error: interrupted by terminated at <eval>:132:24(326)": 5,
+        "System Error: interrupted by terminated at sleepRandom (<eval>:149:18(30))": 3,
+        "System Error: interrupted by terminated at executeTacticalLogic (<eval>:216:21(309))": 1
+    },
+    "match_outcomes": {
+        "VICTORY": 0,
+        "DEFEAT": 0,
+        "TIMEOUT": 0
+    },
+    "metrics": [
+        {
+            "timestamp": "2026-04-15T14:03:35.064249",
+            "elapsed": 1,
+            "cpu_percent": 16.22950819672131,
+            "mem_mb": 7504.32421875,
+            "open_fds": 63,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:03:40.067123",
+            "elapsed": 6,
+            "cpu_percent": 14.416666666666666,
+            "mem_mb": 7239.55859375,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:03:45.069867",
+            "elapsed": 11,
+            "cpu_percent": 9.136630343671415,
+            "mem_mb": 7245.89453125,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:03:50.072551",
+            "elapsed": 16,
+            "cpu_percent": 5.3601340033500815,
+            "mem_mb": 7244.08984375,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:03:55.075300",
+            "elapsed": 21,
+            "cpu_percent": 9.286898839137647,
+            "mem_mb": 7232.203125,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:00.078221",
+            "elapsed": 26,
+            "cpu_percent": 3.797468354430378,
+            "mem_mb": 7246.78125,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:05.081189",
+            "elapsed": 31,
+            "cpu_percent": 4.453781512605037,
+            "mem_mb": 7244.6640625,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:10.084570",
+            "elapsed": 36,
+            "cpu_percent": 2.704987320371932,
+            "mem_mb": 7234.20703125,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:15.087984",
+            "elapsed": 41,
+            "cpu_percent": 3.898305084745768,
+            "mem_mb": 7210.59375,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:20.090789",
+            "elapsed": 46,
+            "cpu_percent": 3.959561920808763,
+            "mem_mb": 7231.5234375,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:25.093745",
+            "elapsed": 51,
+            "cpu_percent": 6.149957877000844,
+            "mem_mb": 7218.8046875,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:30.096309",
+            "elapsed": 56,
+            "cpu_percent": 9.47986577181208,
+            "mem_mb": 7220.15625,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:35.099258",
+            "elapsed": 61,
+            "cpu_percent": 6.265664160401007,
+            "mem_mb": 7213.8671875,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:40.102073",
+            "elapsed": 66,
+            "cpu_percent": 16.666666666666664,
+            "mem_mb": 7555.390625,
+            "open_fds": 55,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:45.104310",
+            "elapsed": 71,
+            "cpu_percent": 13.677313677313673,
+            "mem_mb": 7622.95703125,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:50.106171",
+            "elapsed": 76,
+            "cpu_percent": 17.622950819672134,
+            "mem_mb": 7975.21484375,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:04:55.107647",
+            "elapsed": 81,
+            "cpu_percent": 7.107023411371238,
+            "mem_mb": 7270.90625,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:05:00.109729",
+            "elapsed": 86,
+            "cpu_percent": 9.840201850294362,
+            "mem_mb": 7279.44921875,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:05:05.112615",
+            "elapsed": 91,
+            "cpu_percent": 7.890365448504988,
+            "mem_mb": 7247.50390625,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:05:10.115459",
+            "elapsed": 96,
+            "cpu_percent": 6.075949367088606,
+            "mem_mb": 7263.30078125,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:05:15.118520",
+            "elapsed": 101,
+            "cpu_percent": 13.091216216216218,
+            "mem_mb": 7261.0546875,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:05:20.121406",
+            "elapsed": 106,
+            "cpu_percent": 16.498316498316502,
+            "mem_mb": 7266.7578125,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:05:25.124643",
+            "elapsed": 111,
+            "cpu_percent": 13.173156586578294,
+            "mem_mb": 7302.97265625,
+            "open_fds": 54,
+            "active_matches": 4,
+            "active_bots": 9
+        },
+        {
+            "timestamp": "2026-04-15T14:05:30.127446",
+            "elapsed": 116,
+            "cpu_percent": 16.652926628194564,
+            "mem_mb": 7297.2578125,
+            "open_fds": 55,
+            "active_matches": 4,
+            "active_bots": 9
+        }
+    ]
+}

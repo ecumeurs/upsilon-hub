@@ -9,6 +9,7 @@ priority: 5
 tags: [rule, combat, clock]
 parents:
   - [[domain_ruler_state]]
+  - [[uc_combat_turn]]
 dependents: []
 ---
 # 30-Second Max Turn Clock

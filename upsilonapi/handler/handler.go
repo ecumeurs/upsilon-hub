@@ -23,13 +23,13 @@ func HandleArenaStart(c *gin.Context) {
 		return
 	}
 
-	id, g, entities, players, turner, err := bridge.Get().StartArena(req.Data)
+	id, g, entities, players, turner, version, err := bridge.Get().StartArena(req.Data)
 	if (err != nil) {
 		c.JSON(http.StatusInternalServerError, api.NewError(req.RequestID, err.Error()))
 		return
 	}
 
-	bs := api.NewBoardState(id, g, entities, players, turner, time.Now(), time.Now().Add(30*time.Second), uuid.Nil)
+	bs := api.NewBoardState(id, g, entities, players, turner, time.Now(), time.Now().Add(30*time.Second), uuid.Nil, version)
 
 	c.JSON(http.StatusOK, api.NewSuccess(req.RequestID, "Arena started", api.ArenaStartResponse{
 		ArenaID:      id.String(),

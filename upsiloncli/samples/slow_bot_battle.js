@@ -1,8 +1,9 @@
-// Upsilon Bot: PVP Battle Agent
+// Upsilon Bot: SLOW PVP Battle Agent (Stress Test)
+// Injects 1-15s delays between actions to stress the turn clock.
 // Adheres to [[rule_password_policy]]: 15+ chars, 1 uppercase, 1 digit, 1 special symbol
 
 const botId = Math.floor(Math.random() * 100000);
-const accountName = "bot_pvp_" + botId;
+const accountName = "bot_slow_" + botId;
 const password = "VeryLongBotPassword123!"; // 25 chars, satisfies policy
 
 let matchId = ""; // Moved up for accessibility by teardown
@@ -142,6 +143,12 @@ while (!gameOver) {
     }
 }
 
+function sleepRandom() {
+    const delay = Math.floor(Math.random() * 14000) + 1000;
+    upsilon.log("Thinking... (" + (delay/1000).toFixed(1) + "s)");
+    upsilon.sleep(delay);
+}
+
 function executeTacticalLogic(board) {
     if (!board.current_player_is_self) return;
 
@@ -186,6 +193,7 @@ function executeTacticalLogic(board) {
         if (pathSteps && pathSteps.length > 0) {
             const pathString = pathSteps.map(p => p.x + "," + p.y).join(";");
 
+            sleepRandom();
             upsilon.log("Moving " + pathSteps.length + " cells along path: " + pathString);
             upsilon.call("game_action", {
                 id: matchId,
@@ -203,6 +211,7 @@ function executeTacticalLogic(board) {
 
     // 2. Attack if adjacent (either from start or after moving)
     if (minDistance === 1) {
+        sleepRandom();
         upsilon.log("Target in range! Attacking!");
         upsilon.call("game_action", {
             id: matchId,
@@ -213,6 +222,7 @@ function executeTacticalLogic(board) {
     }
 
     // 3. Always PASS to end the turn
+    sleepRandom();
     upsilon.log("Ending turn with pass.");
     upsilon.call("game_action", { id: matchId, entity_id: actingEntity.id, type: "pass" });
 }

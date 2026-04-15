@@ -34,8 +34,8 @@ if (joinResponse) {
 
 // 3. Wait for MatchFound event (Real-time synchronization)
 try {
-    const matchData = upsilon.waitForEvent("MatchFound", 60000); // Wait up to 60s
-    upsilon.log("Match Found! ID: " + matchData.match_id);
+    const matchEnvelope = upsilon.waitForEvent("match.found", 60000); // Wait up to 60s
+    upsilon.log("Match Found! ID: " + matchEnvelope.data.match_id);
 } catch (e) {
     upsilon.log("Timed out waiting for match. Check Laravel Reverb connectivity.");
 }
