@@ -36,7 +36,7 @@ func TestArenaLifecycleDestruction(t *testing.T) {
 		},
 	}
 
-	_, _, _, _, _, err := bridge.StartArena(req)
+	_, _, _, _, _, _, err := bridge.StartArena(req)
 	assert.NoError(t, err)
 
 	// Verify it's in the map

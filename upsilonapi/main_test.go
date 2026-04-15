@@ -123,10 +123,13 @@ func TestArenaStartEndpoint(t *testing.T) {
 	for range 2 {
 		select {
 		case event := <-webhookEvents:
-			eventType, ok := event["event_type"].(string)
+			data, ok := event["data"].(map[string]interface{})
 			if ok {
-				if _, exists := expectedEvents[eventType]; exists {
-					expectedEvents[eventType] = true
+				eventType, ok := data["event_type"].(string)
+				if ok {
+					if _, exists := expectedEvents[eventType]; exists {
+						expectedEvents[eventType] = true
+					}
 				}
 			}
 		case <-time.After(2 * time.Second):
@@ -149,7 +152,7 @@ func TestBattleFullRoundtrip(t *testing.T) {
 		body, _ := io.ReadAll(r.Body)
 		var event map[string]interface{}
 		json.Unmarshal(body, &event)
-		log.Printf("Webhook received: %s", event["event_type"])
+		log.Printf("Webhook received FULL: %s", string(body))
 		webhookEvents <- event
 		w.WriteHeader(http.StatusOK)
 	}))
@@ -229,7 +232,13 @@ func TestBattleFullRoundtrip(t *testing.T) {
 	// 2. Discover actual positions
 	var p1e1Pos api.Position
 	var p2e1Pos api.Position
-	for _, e := range startResp.Data.InitialState.Entities {
+	
+	allEntities := []api.Entity{}
+	for _, p := range startResp.Data.InitialState.Players {
+		allEntities = append(allEntities, p.Entities...)
+	}
+
+	for _, e := range allEntities {
 		if e.ID == p1e1ID {
 			p1e1Pos = e.Position
 		}
@@ -314,8 +323,11 @@ func waitForWebhook(t *testing.T, events chan map[string]interface{}, expectedTy
 	for {
 		select {
 		case event := <-events:
-			if event["event_type"] == expectedType {
-				return
+			data, ok := event["data"].(map[string]interface{})
+			if ok {
+				if data["event_type"] == expectedType {
+					return
+				}
 			}
 		case <-timeout:
 			t.Fatalf("Timed out waiting for webhook event: %s", expectedType)

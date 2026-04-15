@@ -48,6 +48,17 @@ type Turn struct {
 	EntityID string `json:"entity_id"`
 }
 
+// ActionFeedback provides explicit data about the last tactical action.
+type ActionFeedback struct {
+	Type     string              `json:"type"` // "move", "attack", "pass"
+	ActorID  string              `json:"actor_id"`
+	TargetID string              `json:"target_id,omitempty"`
+	Path     []position.Position `json:"path,omitempty"`
+	Damage   int                 `json:"damage,omitempty"`
+	PrevHP   int                 `json:"prev_hp,omitempty"`
+	NewHP    int                 `json:"new_hp,omitempty"`
+}
+
 // BoardState represents the current state of the board.
 // @spec-link [[battleui_api_dtos]]
 type BoardState struct {
@@ -58,9 +69,9 @@ type BoardState struct {
 	CurrentEntityID string    `json:"current_entity_id"`
 	Timeout         time.Time `json:"timeout"` 
 	StartTime       time.Time `json:"start_time"`
-	WinnerID        string    `json:"winner_id"` // if any, the game is done; based on player id.
-	WinnerTeamID    *int      `json:"winner_team_id"`
-	Version         int64     `json:"version"`
+	WinnerTeamID    *int            `json:"winner_team_id"`
+	Action          *ActionFeedback `json:"action,omitempty"`
+	Version         int64           `json:"version"`
 }
 
 // ArenaEvent is the payload for the webhook
@@ -147,26 +158,18 @@ func NewEntity(entity entity.Entity) Entity {
 }
 
 // NewBoardState creates a new BoardState DTO from internal state.
-func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, players []Player, ts turner.TurnState, startTime time.Time, timeout time.Time, winnerID uuid.UUID, version int64) BoardState {
+func NewBoardState(matchID uuid.UUID, g *grid.Grid, entities []entity.Entity, players []Player, ts turner.TurnState, startTime time.Time, timeout time.Time, winnerTeamID int, version int64, action *ActionFeedback) BoardState {
 	bs := BoardState{
 		StartTime:       startTime,
 		Timeout:         timeout,
 		CurrentEntityID: ts.CurrentEntityTurn.String(),
 		Players:         players,
+		Action:          action,
 		Version:         version,
 	}
 
-	if winnerID != uuid.Nil {
-		winnerStr := winnerID.String()
-		bs.WinnerID = winnerStr
-		// Resolve the winning team
-		for _, p := range players {
-			if p.ID == winnerStr {
-				team := p.Team
-				bs.WinnerTeamID = &team
-				break
-			}
-		}
+	if winnerTeamID > 0 {
+		bs.WinnerTeamID = &winnerTeamID
 	}
 
 	// Map Grid

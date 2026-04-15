@@ -12,6 +12,10 @@ This document provides a comprehensive reference for the communication interface
 
 To guarantee traceability and consistent error handling, every JSON exchange between system units (Vue, Laravel, Go) MUST conform to the following root structure:
 
+- **Event Name:** `board.updated`
+- **Payload:** Strictly follows the `[[api_standard_envelope]]` format. The tactical state is located in the `data` field of the envelope. Team-based victory is reported via `winner_team_id`. The state includes an optional `action` object providing explicit data for animations (moves, attacks, passes).
+- **Envelope Example:** `{"request_id": "uuid", "success": true, "data": {"match_id": "uuid", "action": {"type": "attack", ...}, ...}}`
+
 ```json
 {
   "request_id": "018f5a...", // string (UUIDv7): For chronological sortability. Rules in [[api_request_id]].
@@ -315,8 +319,9 @@ Defines the complete state of a tactical arena at a specific moment in time.
 | `timeout` | `string (ISO8601)` | Timestamp when the current turn expires. |
 | `start_time` | `string (ISO8601)` | Timestamp when the arena started. |
 | `version` | `int64` | Monotonic sequence number for state changes. Required for deduplication. [[mech_game_state_versioning]] |
-| `winner_is_self` | `boolean\|null` | **Gateway Only:** True if the current player has won. Masked from Go's `winner_id`. |
-| `winner_team_id` | `int\|null` | ID of the winning team if match concluded. |
+| `winner_team_id` | `int?` | ID of the winning team (if match finished). 0 or null if draw. |
+| `action` | `object` | Optional. Explicit details about the last action for UI animations. |
+| `version` | `int64` | State version (Bit-packed: turn << 32 \| action). |
 
 #### Grid
 - **`width`**: `int`

@@ -140,7 +140,7 @@ func (b *ArenaBridge) StartArena(start api.ArenaStartRequest) (uuid.UUID, *grid.
 		nil
 }
 
-func (b *ArenaBridge) GetBoardState(matchID uuid.UUID) (api.BoardState, error) {
+func (b *ArenaBridge) GetBoardState(matchID uuid.UUID, action *api.ActionFeedback) (api.BoardState, error) {
 	b.mu.RLock()
 	arena, ok := b.arenas[matchID]
 	b.mu.RUnlock()
@@ -155,22 +155,38 @@ func (b *ArenaBridge) GetBoardState(matchID uuid.UUID) (api.BoardState, error) {
 
 	players, _ := arena.Metadata["Players"].([]api.Player)
 
-	return api.NewBoardState(matchID, arena.Ruler.GameState.Grid, res, players, arena.Ruler.GameState.Turner.GetTurnState(), time.Now(), time.Now().Add(30*time.Second), arena.Ruler.GameState.WinnerID, arena.Ruler.GameState.Version), nil
+	return api.NewBoardState(matchID, arena.Ruler.GameState.Grid, res, players, arena.Ruler.GameState.Turner.GetTurnState(), time.Now(), time.Now().Add(30*time.Second), arena.Ruler.GameState.WinnerTeamID, arena.Ruler.GameState.Version, action), nil
 }
 
-// TrySendWebhook checks if a webhook for this version has already been sent.
-// Returns true if this is the first time this version is being processed.
-// @spec-link [[mech_game_state_versioning]]
-func (b *ArenaBridge) TrySendWebhook(matchID uuid.UUID, version int64) bool {
-	b.mu.Lock()
-	defer b.mu.Unlock()
+type webhookSentKey struct {
+	matchID   uuid.UUID
+	version   int64
+	eventType string
+}
 
-	last, exists := b.lastSentWebhookVersion[matchID]
-	if exists && version <= last {
+var lastSentWebhook = make(map[webhookSentKey]bool)
+var lastSentMu sync.Mutex
+
+// TrySendWebhook checks if a webhook for this version and event type has already been sent.
+// Returns true if this is the first time this combination is being processed.
+// @spec-link [[mech_game_state_versioning]]
+func (b *ArenaBridge) TrySendWebhook(matchID uuid.UUID, version int64, eventType string) bool {
+	lastSentMu.Lock()
+	defer lastSentMu.Unlock()
+
+	key := webhookSentKey{matchID, version, eventType}
+	if lastSentWebhook[key] {
 		return false
 	}
 
-	b.lastSentWebhookVersion[matchID] = version
+	// Cleanup old versions for this match to prevent memory leak
+	for k := range lastSentWebhook {
+		if k.matchID == matchID && k.version < version {
+			delete(lastSentWebhook, k)
+		}
+	}
+
+	lastSentWebhook[key] = true
 	return true
 }
 

@@ -29,7 +29,7 @@ func HandleArenaStart(c *gin.Context) {
 		return
 	}
 
-	bs := api.NewBoardState(id, g, entities, players, turner, time.Now(), time.Now().Add(30*time.Second), uuid.Nil, version)
+	bs := api.NewBoardState(id, g, entities, players, turner, time.Now(), time.Now().Add(30*time.Second), 0, version, nil)
 
 	c.JSON(http.StatusOK, api.NewSuccess(req.RequestID, "Arena started", api.ArenaStartResponse{
 		ArenaID:      id.String(),

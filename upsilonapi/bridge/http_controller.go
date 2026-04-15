@@ -39,6 +39,8 @@ func NewHTTPController(id uuid.UUID, matchID uuid.UUID, callbackURL string) *HTT
 	hc.AddNotificationHandler(rulermethods.EntitiesStateChanged{}, hc.forwardToWebhook, nil)
 	hc.AddNotificationHandler(rulermethods.ControllerSkillUsed{}, hc.forwardToWebhook, nil)
 	hc.AddNotificationHandler(rulermethods.ControllerAttacked{}, hc.forwardToWebhook, nil)
+	hc.AddNotificationHandler(rulermethods.ControllerMoved{}, hc.forwardToWebhook, nil)
+	hc.AddNotificationHandler(rulermethods.ControllerPassed{}, hc.forwardToWebhook, nil)
 
 	return hc
 }
@@ -56,21 +58,47 @@ func (hc *HTTPController) BattleStart(ctx actor.NotificationContext) {
 }
 
 func (hc *HTTPController) forwardToWebhook(ctx actor.NotificationContext) {
-	bs, err := Get().GetBoardState(hc.MatchID)
+	var action *api.ActionFeedback
+	switch d := ctx.Msg.TargetMethod.(type) {
+	case rulermethods.ControllerAttacked:
+		action = &api.ActionFeedback{
+			Type:     "attack",
+			ActorID:  d.Attacker.ID.String(),
+			TargetID: d.Entity.ID.String(),
+			Damage:   d.Damage,
+			PrevHP:   d.PrevHP,
+			NewHP:    d.NewHP,
+		}
+	case rulermethods.ControllerMoved:
+		action = &api.ActionFeedback{
+			Type:    "move",
+			ActorID: d.EntityID.String(),
+			Path:    d.Path,
+		}
+	case rulermethods.ControllerPassed:
+		action = &api.ActionFeedback{
+			Type:    "pass",
+			ActorID: d.EntityID.String(),
+		}
+	}
+
+	bs, err := Get().GetBoardState(hc.MatchID, action)
 	if err != nil {
 		logrus.Errorf("Failed to get board state for webhook: %v", err)
 		return
 	}
 
+	eventName := hc.getEventName(ctx.Msg.TargetMethod)
+
 	// @spec-link [[mech_game_state_versioning]]
-	if !Get().TrySendWebhook(hc.MatchID, bs.Version) {
-		// Version already sent by another controller belonging to the same match.
+	if !Get().TrySendWebhook(hc.MatchID, bs.Version, eventName) {
+		// Version and event type already sent by another controller belonging to the same match.
 		return
 	}
 
 	payload := api.ArenaEvent{
 		MatchID:   hc.MatchID.String(),
-		EventType: hc.getEventName(ctx.Msg.TargetMethod),
+		EventType: eventName,
 		Data:      bs,
 		Version:   bs.Version,
 		Timeout:   bs.Timeout,
@@ -114,7 +142,11 @@ func (hc *HTTPController) getEventName(content interface{}) string {
 	case rulermethods.EntitiesStateChanged:
 		return "board.updated"
 	case rulermethods.ControllerAttacked:
-		return "attacked"
+		return "board.updated" // or "attacked"? user says board.update standardized for front usage
+	case rulermethods.ControllerMoved:
+		return "board.updated"
+	case rulermethods.ControllerPassed:
+		return "board.updated"
 	default:
 		return "unknown"
 	}

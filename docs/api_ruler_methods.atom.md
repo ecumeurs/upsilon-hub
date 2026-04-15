@@ -3,8 +3,8 @@ id: api_ruler_methods
 human_name: Ruler Message Methods API
 type: API
 layer: ARCHITECTURE
-version: 1.0
-status: REVIEW
+version: 1.1
+status: STABLE
 priority: 5
 tags: [api, messaging, queue]
 parents:
@@ -19,7 +19,7 @@ dependents:
 To define the explicit actor-message structures required to ingest data into the Ruler and extract state changes.
 
 ## THE RULE / LOGIC
-Interaction with the backend engine is strictly channeled through `messagequeue` structs. 
+Interaction with the backend engine is strictly channeled through `messagequeue` structs.
 
 **State Commands (Read & Init):**
 - `AddController`: Ingests a new player. Replies with `AddControllerReply` containing Grid, Entities, and TurnState.
@@ -38,7 +38,7 @@ Interaction with the backend engine is strictly channeled through `messagequeue`
 - `ControllerNextTurn`: Informs clients who just became the active entity.
 - `EntitiesStateChanged`: Emits updated states after movement, damage, or healing.
 - `ControllerSkillUsed` / `ControllerAttacked`: Specialized action notification for UX logging.
-- `BattleEnd`: Fires upon victory condition met; defines the winning Controller UUID.
+- `BattleEnd`: Fires upon victory condition met; defines the winning `WinnerTeamID` and the legacy `WinnerControllerID`.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** Implicit RPC/Message Queue over `actor` communication channels (e.g., `github.com/ecumeurs/upsilontools/tools/messagequeue/message`).

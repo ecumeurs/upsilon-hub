@@ -277,6 +277,34 @@ func (p *Printer) Board(bs *dto.BoardState, currentUserID string, players []dto.
 	fmt.Fprintln(p.Output)
 	fmt.Fprintf(p.Output, "%s%s%sTACTICAL FEED — MATCH DATA%s\n", p.timestamp(), p.Prefix, Cyan+Bold, Reset)
 	fmt.Fprintf(p.Output, "%s%s%s%s%s\n", p.timestamp(), p.Prefix, Dim, strings.Repeat("─", 40), Reset)
+	
+	// ACTION FEEDBACK (One-liner)
+	if bs.Action != nil {
+		actorSym := entitySymbols[bs.Action.ActorID]
+		actorColor := entityColors[bs.Action.ActorID]
+		if actorSym == "" { actorSym = "?" }
+		
+		fmt.Fprintf(p.Output, "  %s[FEEDBACK]%s ", Magenta+Bold, Reset)
+		
+		switch bs.Action.Type {
+		case "move":
+			dist := len(bs.Action.Path)
+			target := bs.Action.Path[dist-1]
+			fmt.Fprintf(p.Output, "Unit %s%s%s moved %d tiles to (%d, %d)\n", actorColor+Bold, actorSym, Reset, dist, target.X, target.Y)
+		case "attack":
+			targetSym := entitySymbols[bs.Action.TargetID]
+			targetColor := entityColors[bs.Action.TargetID]
+			if targetSym == "" { targetSym = "?" }
+			fmt.Fprintf(p.Output, "Unit %s%s%s hit Unit %s%s%s for %s%d DMG%s (%d -> %s%d HP%s)\n", 
+				actorColor+Bold, actorSym, Reset, 
+				targetColor+Bold, targetSym, Reset, 
+				Red+Bold, bs.Action.Damage, Reset,
+				bs.Action.PrevHP, Green+Bold, bs.Action.NewHP, Reset)
+		case "pass":
+			fmt.Fprintf(p.Output, "Unit %s%s%s passed their turn\n", actorColor+Bold, actorSym, Reset)
+		}
+		fmt.Fprintf(p.Output, "  %s%s%s\n", Dim, strings.Repeat("─", 40), Reset)
+	}
 
 	// Top border
 	fmt.Fprint(p.Output, "    ")

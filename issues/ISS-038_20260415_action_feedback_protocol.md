@@ -4,7 +4,7 @@
 **Ref:** `ISS-038`
 **Date:** 2026-04-15
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonapi`, `upsilonbattle`, `communication.md`
 **Affects:** `battleui` (Frontend), `upsiloncli`
 
@@ -59,3 +59,9 @@ The Upsilon Engine (Go) handles tactical actions and broadcasts state updates vi
 - [communication.md](file:///workspace/communication.md)
 - [upsilonapi/README.md](file:///workspace/upsilonapi/README.md)
 - [rulermethods.go](file:///workspace/upsilonbattle/battlearena/ruler/rulermethods/rulermethods.go)
+
+---
+
+## Change Log
+
+- **2026-04-15**: Resolved. Implemented the Action Feedback protocol in the engine, bridge, and UI. Extracted UI reporting into a standalone `TacticalActionReport.vue` component with full ATD traceability.

@@ -9,6 +9,7 @@ priority: 5
 tags: [player, experience]
 parents: []
 dependents:
+  - [[requirement_customer_action_reporting]]
   - [[requirement_customer_api_first]]
   - [[requirement_req_trpg_game_definition]]
   - [[uc_combat_turn]]

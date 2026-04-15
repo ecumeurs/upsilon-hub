@@ -143,12 +143,31 @@ UpsilonCLI includes built-in tools for analyzing battle logs and ensuring engine
 When running in `--farm` mode, every log line (CURL, REPLY, WS) is automatically prefixed with the Agent ID (e.g., `[Bot-01]`). This allows for seamless debugging even when multiple bots are acting simultaneously.
 
 #### 2. Log Parser & Diagnostic Tool
-The [upsilon_log_parser.py](upsilon_log_parser.py) utility provides a structured summary of battle execution from a log file:
-- **Casualty Tracking**: Lists every entity eliminated and on which line.
-- **Survivor Status**: Displays final HP for all surviving units.
-- **Error Analysis**: Categorizes and counts `400/500` status codes to detect protocol violations.
+The [upsilon_log_parser.py](upsilon_log_parser.py) utility provides a structured summary of battle execution from a log file or a live stream:
+- **Tactical Mode (`--tactical`)**: Performs deep analysis, tracking every entity eliminated, surviving unit HPs, and rendering the final board state.
+- **Filter Mode (`--filter`)**: Targeted for live monitoring. It extracts tactical one-liners (Turn start, Actions, Thinking time, Clock timeouts, and Results) while stripping verbose network and board data.
+- **Error Analysis**: Categorizes and counts `4xx/5xx` status codes to detect protocol violations.
 
-#### 3. Automated Battle Suite
+Example:
+```bash
+# Live filter tactical events from a bot farm
+./bin/upsiloncli --farm bot.js | python3 upsiloncli/upsilon_log_parser.py --filter
+```
+
+#### 3. Stress Testing & Performance Orchestration
+The [stress_test.py](../stress_test.py) script (located at the project root) is used for high-concurrency, long-duration evaluation of the entire Upsilon stack.
+
+- **Concurreny**: Manages 12 simultaneous matches (1v1/2v2 PVP/PVE) by default.
+- **Persistence**: Automatically respawns matches as they finish for the duration of the test (default 1 hour).
+- **Monitoring**: Samples system metrics (CPU, Memory, File Descriptors) every 10 seconds.
+- **Consolidation**: Aggregates logs from all matches into a unified `stress_test_report.md` (Markdown) and `stress_test_report.json` (Structured data).
+
+Usage:
+```bash
+python3 stress_test.py
+```
+
+#### 4. Automated Battle Suite
 Run the full battery of tactical engine tests (1v1, 2v2, PVE, PVP) using:
 ```bash
 ./tests/run_all_battles.sh

@@ -1,4 +1,6 @@
 pipeline_output
+stress_test_logs
+stress_test_report.*
 .agent
 *.db
 .env
@@ -9,3 +11,4 @@ core*
 .services.pids
 .services.running
 .services.stopped
+logs/*

@@ -19,7 +19,18 @@ dependents: []
 To provide strongly-typed representations of the JSON payloads exchanged with the Go Battle Engine, ensuring that Laravel's implementation matches the Go `api` package exactly.
 
 ## THE RULE / LOGIC
-Defines the Data Transfer Objects for the battle system. The primary structure is BoardState, which contains a 'players' array. Each Player nests an 'entities' array where tactical stats (HP, position) and identity metadata (team, is_self) are unified. This removes the need for flat entity mapping.
+Defines the Data Transfer Objects for the battle system. 
+
+### BoardState
+Contains `players`, `grid`, `turn`, and the new `action` field.
+
+### ActionFeedback
+Captures standard tactical outcomes:
+- `move`: includes `actor_id` and `path`.
+- `attack`: includes `actor_id`, `target_id`, `damage`, `prev_hp`, `new_hp`.
+- `pass`: includes `actor_id`.
+
+Each Player nests an 'entities' array where tactical stats (HP, position) and identity metadata (team, is_self) are unified. This removes the need for flat entity mapping.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Namespace:** `App\DTOs` or `App\Http\Resources`

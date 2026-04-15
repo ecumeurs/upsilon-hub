@@ -3,7 +3,7 @@ id: rule_team_mechanics
 human_name: "Battle Team Mechanics"
 type: RULE
 layer: ARCHITECTURE
-version: 1.0
+version: 1.1
 status: STABLE
 priority: 5
 tags: [combat, team, logic]
@@ -24,7 +24,7 @@ To allow grouping entities into teams, enabling cooperative gameplay and team-ba
 - All entities with different `TeamID`s are considered enemies.
 - **Automatic Team Assignment:** For testing or mock scenarios, if an entity is assigned to a controller without a pre-existing `TeamID` (Team 0), the engine will automatically assign a unique team ID based on the controller's join order (1, 2, ...).
 - **Targeting Restriction:** Defensive or supportive actions target allies. Offensive actions must target enemies.
-- **Victory Condition:** A team wins when all entities belonging to all other teams are defeated or have forfeited. The `WinnerID` (Controller UUID) is persisted in the game state upon conclusion.
+- **Victory Condition:** A team wins when all entities belonging to all other teams are defeated or have forfeited. The `WinnerTeamID` is persisted in the game state upon conclusion, which correctly recognizes all allies as victors.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[rule_team_mechanics]]`

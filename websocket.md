@@ -98,7 +98,7 @@ Sent on the `private-user.{ws_channel_key}` channel whenever the tactical state 
 - **Specification:** `[[api_websocket_arena_updates]]`
 - **Surgical Masking:** Unlike global broadcasts, this event is customized for each recipient using the `BoardStateResource`. The `is_self` and `current_player_is_self` flags are pre-computed based on the recipient's identity. Additionally, characters that have been eliminated are preserved in the roster with `dead: true` and `hp: 0` to maintain state consistency.
 - **Event Name:** `board.updated`
-- **Payload:** Strictly follows the `[[api_standard_envelope]]` format. The tactical state is located in the `data` field of the envelope.
+- **Payload:** Strictly follows the `[[api_standard_envelope]]` format. The tactical state is located in the `data` field of the envelope. Team-based victory is reported via `winner_team_id`, and client-side helpers in `tactical.js` should be used to resolve the final result.
 - **Envelope Example:** `{"request_id": "uuid", "success": true, "data": {"match_id": "uuid", ...BoardState...}}`
 
 ---

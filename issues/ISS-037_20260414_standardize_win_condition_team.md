@@ -4,7 +4,7 @@
 **Ref:** `ISS-037`
 **Date:** 2026-04-14
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `battleui/app/Http/Resources`, `battleui/resources/js`, `upsiloncli`
 **Affects:** `battleui/app/Http/Resources/BoardStateResource.php`, `battleui/resources/js/services/tactical.js`, `upsiloncli/upsilon_log_parser.py`
 

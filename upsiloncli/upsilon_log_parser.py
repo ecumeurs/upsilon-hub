@@ -73,14 +73,18 @@ def print_bot_summary(bot_id, data, tactical=False):
     print(f"\n>>>> STATUS FOR {bot_id} <<<<")
     
     is_finished = data.get('game_finished', False)
-    winner_is_self = data.get('winner_is_self', False)
+    bot_team = data.get('team_id')
+
     winner_team = data.get('winner_team')
 
     if is_finished:
-        if winner_is_self:
-            print("Outcome: CONCLUDED (Winner: Self)")
-        elif winner_team is not None:
-            print(f"Outcome: CONCLUDED (Winner: Team {winner_team})")
+        if winner_team is not None:
+            if bot_team is not None and winner_team == bot_team:
+                print(f"Outcome: CONCLUDED (Winner: Team {winner_team}) - VICTORY IS MINE!")
+            else:
+                print(f"Outcome: CONCLUDED (Winner: Team {winner_team})")
+        else:
+            print("Outcome: CONCLUDED (No Winner)")
     else:
         has_seen_board = data['last_board'] is not None
         survivors = [e for e in data['entities'].values() if e.get('id') in (data.get('last_board') or {}) and not e.get('dead')]
@@ -320,6 +324,7 @@ def process_game_state(bot_data, gs, line_no, tactical):
         nick_map[team] = nick
         if p.get('is_self'):
             nick_map['self'] = nick
+            bot_data['team_id'] = team
         
         for e in p.get('entities', []):
             e['nickname'] = nick
@@ -327,7 +332,6 @@ def process_game_state(bot_data, gs, line_no, tactical):
 
     bot_data['nickname_map'] = nick_map
     bot_data['game_finished'] = gs.get('game_finished', False)
-    bot_data['winner_is_self'] = gs.get('winner_is_self', False)
     winner_team = gs.get('winner_team_id')
     if winner_team is not None:
         bot_data['winner_team'] = winner_team
@@ -360,45 +364,230 @@ def process_game_state(bot_data, gs, line_no, tactical):
     bot_data['last_board'] = new_entity_ids
     bot_data['last_living_board'] = gs # Full object since we need grid
     
+    # Process explicit Action Feedback from the engine
+    action = gs.get('action')
+    if action and tactical:
+        action_type = action.get('type', 'action').upper()
+        actor_id = action.get('actor_id', 'Unknown')
+        
+        # Find actor name
+        actor_name = "Unknown"
+        if actor_id in new_entity_ids:
+            actor_name = f"{new_entity_ids[actor_id]['name']} ({new_entity_ids[actor_id].get('nickname', 'AI')})"
+            
+        if action_type == "ATTACK":
+            target_id = action.get('target_id')
+            damage = action.get('damage', 0)
+            target_name = "Unknown"
+            if target_id in new_entity_ids:
+                target_name = f"{new_entity_ids[target_id]['name']}"
+            bot_data['tactical'].append((f"Action: {actor_name} ATTACKED {target_name} for {damage} damage!", line_no))
+        elif action_type == "MOVE":
+            path_len = len(action.get('path', []))
+            bot_data['tactical'].append((f"Action: {actor_name} MOVED {path_len} cells.", line_no))
+        elif action_type == "PASS":
+            bot_data['tactical'].append((f"Action: {actor_name} PASSED their turn.", line_no))
+
     for e in entities:
         bot_data['entities'][e['id']] = e
 
+class BotState:
+    def __init__(self, bot_id):
+        self.bot_id = bot_id
+        self.entities = {} # id -> data
+        self.nicknames = {} # nickname -> info
+        self.team_nicknames = {} # team -> nickname
+        self.last_entity_ids = set()
+        self.game_finished = False
+        self.winner_team = None
+        self.active_entity = None
+        self.owner_map = {} # entity_id -> nickname
+
+    def update_from_board(self, board):
+        if not board: return
+        self.game_finished = board.get('game_finished', False)
+        self.winner_team = board.get('winner_team_id')
+        self.active_entity = board.get('current_entity_id')
+        
+        new_seen = set()
+        players = board.get('players', [])
+        for p in players:
+            nick = p.get('nickname')
+            team = p.get('team')
+            if nick and team is not None:
+                self.team_nicknames[team] = nick
+            
+            for e in p.get('entities', []):
+                eid = e.get('id')
+                if not eid: continue
+                new_seen.add(eid)
+                self.owner_map[eid] = nick
+                e['team'] = team # Inject team info
+                
+                # Check for deaths
+                was_dead = self.entities.get(eid, {}).get('dead', False)
+                is_dead = e.get('dead', False) or e.get('hp', 0) <= 0
+                
+                if is_dead and not was_dead and eid in self.last_entity_ids:
+                    print(f"[{self.bot_id}] [DEATH] {e.get('name')} (Owner: {nick}, Team: {team}) was eliminated.")
+
+                self.entities[eid] = e
+        
+        # Check for missing entities (alternative death detection)
+        for old_id in self.last_entity_ids:
+            if old_id not in new_seen:
+                old_e = self.entities.get(old_id, {})
+                if not old_e.get('dead'):
+                    print(f"[{self.bot_id}] [DEATH] {old_e.get('name')} (Owner: {self.owner_map.get(old_id, '?')}) went missing/eliminated.")
+        
+        self.last_entity_ids = new_seen
+
+    def get_summary(self):
+        summary = [f"\n>>>> FINAL RESULT FOR {self.bot_id} <<<<"]
+        if self.winner_team is not None:
+            summary.append(f"Outcome: CONCLUDED (Winner: Team {self.winner_team} - {self.team_nicknames.get(self.winner_team, 'Unknown')})")
+        else:
+            summary.append("Outcome: CONCLUDED (No/Partial Winner)")
+        
+        summary.append("\nSurvivors:")
+        for eid in self.last_entity_ids:
+            e = self.entities[eid]
+            if not e.get('dead') and e.get('hp', 0) > 0:
+                summary.append(f"  - {e.get('name')} (Owner: {self.owner_map.get(eid, '?')}, Team: {e.get('team', '?')}): {e['hp']}/{e['max_hp']} HP")
+        
+        summary.append("-" * 30)
+        return "\n".join(summary)
+
 def parse_log_stream(stream, args):
-    # Minimal version of parse_log for streaming
     bot_pattern = re.compile(r'\[(Bot-\d+)\]')
-    # Re-use patterns from parse_log? No, let's just use the ones defined locally
+    
     tactical_patterns = [
-        (re.compile(r'--- (My Turn! Acting with entity: .*) ---'), r'\1'),
+        (re.compile(r'--- (My Turn.*Acting with entity: .*) ---'), r'\1'),
         (re.compile(r'Moving \d+ cells along path: (.*)'), r'Moving: \1'),
-        (re.compile(r'Target in range! Attacking!'), r'Action: Attack'),
         (re.compile(r'Targeting nearest enemy: (\w+)'), r'Target: \1'),
-        (re.compile(r'Ending turn with pass\.'), r'Action: Pass'),
-        (re.compile(r'No enemies left\. Passing\.'), r'Action: Pass (No Enemies)'),
-        (re.compile(r'Thinking\.\.\. \((\d+\.\d+)s\)'), r'Thinking: \1s'),
+        (re.compile(r'\[FEEDBACK\] (.*)'), r'Action: \1'),
         (re.compile(r'Starting turn shot clock'), r'CLOCK: Started'),
         (re.compile(r'Turn timeout detected!'), r'CLOCK: TIMEOUT'),
         (re.compile(r'\[ERROR\] (.*)'), r'ERROR: \1'),
-        (re.compile(r'Winner: (.*)'), r'RESULT: Winner \1'),
-        (re.compile(r'VICTORY IS MINE!'), r'RESULT: VICTORY'),
-        (re.compile(r'Defeated\.\.\. perishing with honor\.'), r'RESULT: DEFEAT')
+        (re.compile(r'\[REPLY ([45]\d+)\] (.*)'), r'ERROR (\1): \2'),
     ]
     
-    current_bot = None
-    for line in stream:
-        bot_match = bot_pattern.search(line)
-        if bot_match:
-            current_bot = bot_match.group(1)
+    bots = {} # bot_id -> BotState
+    json_buffers = {} # bot_id -> list of lines
+    is_collecting_json = {} # bot_id -> bool
+    last_bot_id = None
+    
+    def get_state(bid):
+        if bid not in bots:
+            bots[bid] = BotState(bid)
+        return bots[bid]
+
+    try:
+        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
         
-        if not current_bot: continue
-        
-        cleaned = clean_line(line)
-        for ptrn, fmt in tactical_patterns:
-            match = ptrn.search(cleaned)
-            if match:
-                msg = match.expand(fmt)
-                print(f"[{current_bot}] {msg}")
-                sys.stdout.flush()
-                break
+        for line in stream:
+            bot_match = bot_pattern.search(line)
+            
+            if bot_match:
+                bot_id = bot_match.group(1)
+                last_bot_id = bot_id
+            else:
+                bot_id = last_bot_id
+            
+            if not bot_id:
+                continue
+                
+            state = get_state(bot_id)
+            cleaned = clean_line(line).strip()
+            
+            # JSON collection logic
+            # Note: We check the ORIGINAL line for markers as they might be removed by clean_line
+            if "[WS]" in line or "[REPLY]" in line:
+                is_collecting_json[bot_id] = True
+                json_buffers[bot_id] = []
+                continue
+            
+            if is_collecting_json.get(bot_id):
+                # Strip ANSI from JSON lines before adding to buffer
+                raw_json_line = ansi_escape.sub('', line)
+                # JSON lines start with indentation in the CLI output
+                if raw_json_line.startswith("  ") or raw_json_line.strip() in ("{", "}", "{,"):
+                    json_buffers[bot_id].append(raw_json_line.strip())
+                    if raw_json_line.strip() == "}":
+                        try:
+                            full_json = "".join(json_buffers[bot_id])
+                            raw_data = json.loads(full_json)
+                            # SUCCESS! Process it
+                            data = raw_data.get('data', raw_data)
+                            
+                            # Handle Pusher/Reverb double-encoding
+                            if isinstance(data, str):
+                                try:
+                                    data = json.loads(data)
+                                except:
+                                    pass
+
+                            board = data
+                            if isinstance(data, dict):
+                                if 'game_state' in data:
+                                    board = data['game_state']
+                                elif 'match_id' in data and 'players' in data:
+                                    board = data
+                            
+                            if isinstance(board, dict) and 'players' in board:
+                                state.update_from_board(board)
+                                if state.game_finished:
+                                    print(state.get_summary())
+                            
+                            is_collecting_json[bot_id] = False
+                        except:
+                            pass # Keep collecting
+                else:
+                    # Line doesn't look like JSON and we were collecting? 
+                    # If it's not a Bot-prefixed line, it might be the end of the block
+                    if not bot_match:
+                        is_collecting_json[bot_id] = False
+
+            # Normal tactical patterns
+            for ptrn, fmt in tactical_patterns:
+                match = ptrn.search(cleaned)
+                if match:
+                    msg = match.expand(fmt)
+                    # Resolve active entity name
+                    if "Acting with entity:" in msg:
+                        parts = msg.split(":")
+                        if len(parts) > 1:
+                            # Strip ID and trailing ---
+                            eid = parts[-1].replace("---", "").strip()
+                            name = state.entities.get(eid, {}).get('name', eid)
+                            msg = f"--- My Turn! Acting with entity: {name} ---"
+                    
+                    print(f"[{bot_id}] {msg}")
+                    sys.stdout.flush()
+                    break
+            
+            # Additional fallback for actions logged by the bot itself
+            if "Attacking!" in cleaned:
+                print(f"[{bot_id}] Action: Attack")
+            elif "Ending turn with pass" in cleaned or "No enemies left. Passing." in cleaned:
+                # We already capture Action: Pass from FEEDBACK, but this is a double-check
+                if not any(substring in cleaned for substring in ["[FEEDBACK]", "Action:"]):
+                    print(f"[{bot_id}] Action: Pass")
+            elif "Targeting nearest enemy:" in cleaned:
+                # Capture the name directly from the bot log if available
+                target_match = re.search(r'Targeting nearest enemy: (\w+)', cleaned)
+                if target_match:
+                    print(f"[{bot_id}] Target: {target_match.group(1)}")
+
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # Final summary for any bots that didn't finish properly
+        for bid, state in bots.items():
+            if not state.game_finished:
+                if state.entities:
+                    print(f"\n[Terminated Summary for {bid}]")
+                    print(state.get_summary())
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Upsilon Log Parser and Tactical Analyzer")
@@ -411,10 +600,7 @@ if __name__ == "__main__":
     if args.filter:
         args.tactical = True
         input_stream = sys.stdin if not args.logfile else open(args.logfile, 'r')
-        # We need to hack parse_log to accept a stream
         try:
-            # Simple wrapper to use existing logic
-            # Since parse_log expects a filepath, we'll re-implement a minimal version for stream
             parse_log_stream(input_stream, args)
         except KeyboardInterrupt:
             sys.exit(0)

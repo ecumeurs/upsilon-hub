@@ -27,7 +27,7 @@ To allow a player to concede a match, resulting in an immediate victory for the 
   - If a player forfeits, all entities belonging to that player's `TeamID` are considered to have surrendered.
   - The forfeiting team is marked as "DEFEATED".
   - Victory is handed to the remaining team(s) with active entities.
-  - The battle ends immediately and the WinnerID is broadcast to all clients via a `BattleEnd` event.
+  - The battle ends immediately and the `winner_team_id` is broadcast to all clients via a `BattleEnd` event.
   - In a 2v2 scenario, the forfeit of any single player on a team covers the entire team.
 
 ## TECHNICAL INTERFACE (The Bridge)
@@ -37,5 +37,5 @@ To allow a player to concede a match, resulting in an immediate victory for the 
 - **Related Issue:** `#ISS-003`
 
 ## EXPECTATION (For Testing)
-- Player A (Team 1) forfeits -> System broadcasts `BattleEnd` with `WinnerControllerID` from Team 2 -> Arena closed.
-- In PvE, Player A forfeits -> System broadcasts `BattleEnd` where Player A is not the winner.
+- Player A (Team 1) forfeits -> System broadcasts `BattleEnd` with `winner_team_id: 2` -> Arena closed.
+- In PvE, Player A forfeits -> System broadcasts `BattleEnd` where `winner_team_id` is the computer team (e.g. 2).

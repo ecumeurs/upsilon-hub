@@ -4,7 +4,7 @@
 **Ref:** `ISS-032`
 **Date:** 2026-04-12
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonbattle/battlearena/controller/controllers`
 **Affects:** `upsilonapi/bridge`
 

@@ -4,7 +4,7 @@
 **Ref:** `ISS-033`
 **Date:** 2026-04-12
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonbattle/battlearena/ruler`
 **Affects:** `upsilonapi/api`, `upsiloncli`
 

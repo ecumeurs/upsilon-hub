@@ -2,6 +2,7 @@
 
 | Ref     | File                                                                                                                 | Severity | Status   | Summary                                                                         |
 | ------- | -------------------------------------------------------------------------------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------- |
+| ISS-038 | [ISS-038_20260415_action_feedback_protocol.md](ISS-038_20260415_action_feedback_protocol.md) | Medium | Resolved | Currently, when a player (AI or human) takes an action, the system broadcasts the new game state... |
 | ISS-019 | [ISS-019_20260316_battleui_api_todo_list.md](ISS-019_20260316_battleui_api_todo_list.md) | Medium | Open | Consolidate and track BattleUI API TODOs and gaps. |
 | ISS-018 | [20260312_match_participant_access_control.md](20260312_match_participant_access_control.md) | Critical | Open | Lack of authorization checks on battle match interactions. |
 | ISS-017 | [20260312_action_player_id_usurpation.md](20260312_action_player_id_usurpation.md) | Critical | Open | Security risk: player_id in actions can be usurped by any auth user. |

@@ -4,7 +4,7 @@ human_name: "Architectural API ID Masking Gateway"
 type: SERVICE
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [security, api, masking, uuid]
 parents:
@@ -35,6 +35,5 @@ To provide a secure translation layer between internal database identifiers (UUI
 ## EXPECTATION (For Testing)
 - `GET /api/v1/leaderboard` -> No `id` field present; `is_self` correctly identifies the caller.
 - `GET /api/v1/game/{id}` -> `current_player_is_self` and `game_finished` provide state without UUID exposure.
-- `winner_is_self` is provided only upon match conclusion.
 - `winner_team_id` is exposed for team-level match resolution in logs (Unified from `winning_team_id`).
 - `POST /api/v1/game/{id}/action` with an `entity_id` not owned by the user -> `403 Forbidden`.

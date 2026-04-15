@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewBoardStateWinnerID(t *testing.T) {
+func TestNewBoardStateWinnerTeamID(t *testing.T) {
 	matchID := uuid.New()
 	g := grid.NewGrid(10, 10, 1)
 	entities := []entity.Entity{}
@@ -19,15 +19,15 @@ func TestNewBoardStateWinnerID(t *testing.T) {
 	ts := turner.TurnState{}
 	startTime := time.Now()
 	timeout := time.Now().Add(30 * time.Second)
-	winnerID := uuid.New()
+	winnerTeamID := 2
 
 	// Test with a winner
-	bs := NewBoardState(matchID, g, entities, players, ts, startTime, timeout, winnerID)
-	assert.Equal(t, winnerID.String(), bs.WinnerID, "WinnerID should be populated in BoardState")
+	bs := NewBoardState(matchID, g, entities, players, ts, startTime, timeout, winnerTeamID, 0, nil)
+	assert.Equal(t, winnerTeamID, *bs.WinnerTeamID, "WinnerTeamID should be populated in BoardState")
 
-	// Test without a winner (uuid.Nil)
-	bs = NewBoardState(matchID, g, entities, players, ts, startTime, timeout, uuid.Nil)
-	assert.Equal(t, "", bs.WinnerID, "WinnerID should be empty when uuid.Nil is passed")
+	// Test without a winner (0)
+	bs = NewBoardState(matchID, g, entities, players, ts, startTime, timeout, 0, 0, nil)
+	assert.Nil(t, bs.WinnerTeamID, "WinnerTeamID should be nil when 0 is passed")
 }
 
 func TestNewBoardStateDeadEntityHP(t *testing.T) {
@@ -52,7 +52,7 @@ func TestNewBoardStateDeadEntityHP(t *testing.T) {
 	startTime := time.Now()
 	timeout := time.Now().Add(30 * time.Second)
 
-	bs := NewBoardState(matchID, g, entities, players, ts, startTime, timeout, uuid.Nil)
+	bs := NewBoardState(matchID, g, entities, players, ts, startTime, timeout, 0, 0, nil)
 	
 	assert.Equal(t, 0, bs.Players[0].Entities[0].HP, "Entity not in live map should have HP set to 0")
 }

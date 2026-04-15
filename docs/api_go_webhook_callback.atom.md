@@ -27,6 +27,7 @@ To asynchronously notify the Laravel Gateway of state changes, turn start/end, a
 - `player_id`: `string (UUID)` (if applicable)
 - `entity_id`: `string (UUID)` (if applicable)
 - `data`: `BoardState` (See [[api_go_battle_engine]]) - **Note:** Now includes the full `players` roster for identity synchronization.
+- `action`: `ActionFeedback` (See [[api_go_action_feedback]]) - **Optional:** The specific tactical result that triggered this update.
 - `version`: `int64` - Monotonic sequence number synced with `data.sequence`.
 - `timeout`: `string (ISO8601)` - End of the current turn clock.
 

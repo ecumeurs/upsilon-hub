@@ -58,9 +58,9 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Request Traceability Non-Compliance and Gaps](issues/ISS-042_20260415_request_traceability_gaps.md) | 2026-04-15 | Open | Medium | This issue documents the systematic non-compliance with `rule_tracing_logging... |
 | [Upgradable Pawn Appearance & Model System](issues/ISS-040_20260415_pawn_appearance_system.md) | 2026-04-15 | Open | Medium | Implement an upgradable "Pawn Appearance System" that allows players to custo... |
 | [Holo-Emote Procedural Reaction System](issues/ISS-039_20260415_holo_emote_system.md) | 2026-04-15 | Open | Medium | Implement a "Holo-Emote System" that triggers procedural reactions (emojis/te... |
-| [Lack of Standardized Action Feedback in Protocol](issues/ISS-038_20260415_action_feedback_protocol.md) | 2026-04-15 | Open | Medium | Currently, when a player (AI or human) takes an action, the system broadcasts... |
 | [Standardize Win Condition: winner_team over winner_is_self](issues/ISS-037_20260414_standardize_win_condition_team.md) | 2026-04-14 | Open | Medium | The current win condition detection in the frontend and CLI relies on a serve... |
 | [Standardize Board State Naming: entities -> characters](issues/ISS-036_20260414_front_board_state_entity_naming.md) | 2026-04-14 | Open | Medium | The board state structure currently uses the term "entities" for game units. ... |
 | [WebSocket BoardState Privacy Leak](issues/ISS-035_20260413_websocket_boardstate_privacy_leak.md) | 2026-04-13 | Open | High | The `board.updated` WebSocket event currently broadcasts the same state paylo... |

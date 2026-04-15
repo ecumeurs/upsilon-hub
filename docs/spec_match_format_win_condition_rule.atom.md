@@ -3,10 +3,10 @@ id: spec_match_format_win_condition_rule
 human_name: Win Condition Rule
 type: SPECIFICATION
 layer: CUSTOMER
-version: 1.0
+version: 1.1
 status: STABLE
 priority: 5
-tags: []
+tags: [combat, victory, team]
 parents:
   - [[spec_match_format]]
 dependents: []
@@ -17,7 +17,9 @@ dependents: []
 Defines the win condition for a match
 
 ## THE RULE / LOGIC
-Victory is assigned to a team when the opposing team's characters have all been overcome (HP reduced to 0)
+- Victory is assigned to a Team via `WinnerTeamID` when all entities of all other teams have been defeated (HP <= 0) or have forfeited.
+- Individual winners (`WinnerID`) are deprecated and must not be used to ensure player privacy and support team-based scoring.
+- The `BattleEnd` message must explicitly carry the `WinnerTeamID`.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[spec_match_format_win_condition_rule]]`

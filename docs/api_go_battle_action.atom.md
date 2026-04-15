@@ -11,6 +11,7 @@ parents:
   - [[api_go_battle_engine]]
   - [[api_standard_envelope]]
 dependents:
+  - [[api_go_action_feedback]]
   - [[battleui_api_dtos]]
 ---
 # UpsilonBattle Arena Action API
@@ -29,6 +30,10 @@ To allow players to perform actions (Move, Attack, Skill) within an active battl
 - `target_coords`: `Array<Position>`
   - `x`: `int`, `y`: `int`
 
+### Feedback Mechanism
+The engine broadcasts enriched events back to all players via `board.updated`. 
+See [[api_go_action_feedback]] for details on the `action` payload (damage, path, etc).
+
 ### Response (Wrapped in [[api_standard_envelope]])
 - `status`: `string` ("accepted" | "rejected")
 
@@ -45,4 +50,5 @@ To allow players to perform actions (Move, Attack, Skill) within an active battl
 ## EXPECTATION (For Testing)
 - Valid `ArenaActionRequest` -> Ruler processes action -> Returns `200 OK`.
 - Action target out of range -> Returns `400 Bad Request`.
+- Forfeit action `{"type": "forfeit"}` -> Ruler triggers `winner_team_id` broadcast to all participants.
 - Arena ID not found -> Returns `400 Bad Request`.

@@ -45,6 +45,17 @@ type Turn struct {
 	Team     int    `json:"team"`
 }
 
+// ActionFeedback provides explicit data about the last tactical action.
+type ActionFeedback struct {
+	Type     string     `json:"type"` // "move", "attack", "pass"
+	ActorID  string     `json:"actor_id"`
+	TargetID string     `json:"target_id,omitempty"`
+	Path     []Position `json:"path,omitempty"`
+	Damage   int        `json:"damage,omitempty"`
+	PrevHP   int        `json:"prev_hp,omitempty"`
+	NewHP    int        `json:"new_hp,omitempty"`
+}
+
 // Player represents a participant in the match and their entities.
 type Player struct {
 	Nickname string   `json:"nickname"`
@@ -65,8 +76,9 @@ type BoardState struct {
 	Timeout             time.Time `json:"timeout"`
 	StartTime           time.Time `json:"start_time"`
 	WinnerIsSelf        bool      `json:"winner_is_self"`
-	WinnerTeamID        *int      `json:"winner_team_id"`
-	GameFinished        bool      `json:"game_finished"`
+	WinnerTeamID        *int            `json:"winner_team_id"`
+	Action              *ActionFeedback `json:"action,omitempty"`
+	GameFinished        bool            `json:"game_finished"`
 }
 
 // GameResponse is the expanded response from GET /api/v1/game/{id}

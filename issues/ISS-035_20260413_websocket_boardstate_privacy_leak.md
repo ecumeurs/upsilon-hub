@@ -4,7 +4,7 @@
 **Ref:** `ISS-035`
 **Date:** 2026-04-13
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `battleui/app/Events/BoardUpdated.php`
 **Affects:** `battleui/resources/js/services/game.js`, `upsiloncli/internal/ws/listener.go`
 
