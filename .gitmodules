@@ -1,24 +1,24 @@
 [submodule "battleui"]
 	path = battleui
-	url = git@github.com:ecumeurs/battleui.git
+	url = ../battleui.git
 [submodule "upsilonbattle"]
 	path = upsilonbattle
-	url = git@github.com:ecumeurs/upsilonbattle.git
+	url = ../upsilonbattle.git
 [submodule "upsilonmapdata"]
 	path = upsilonmapdata
-	url = git@github.com:ecumeurs/upsilonmapdata.git
+	url = ../upsilonmapdata.git
 [submodule "upsilonmapmaker"]
 	path = upsilonmapmaker
-	url = git@github.com:ecumeurs/upsilonmapmaker.git
+	url = ../upsilonmapmaker.git
 [submodule "upsilonserializer"]
 	path = upsilonserializer
-	url = git@github.com:ecumeurs/upsilonserializer.git
+	url = ../upsilonserializer.git
 [submodule "upsilontools"]
 	path = upsilontools
-	url = git@github.com:ecumeurs/upsilontools.git
+	url = ../upsilontools.git
 [submodule "upsiloncli"]
 	path = upsiloncli
-	url = git@github.com:ecumeurs/upsiloncli.git
+	url = ../upsiloncli.git
 [submodule "upsilonapi"]
 	path = upsilonapi
-	url = git@github.com:ecumeurs/upsilonapi.git
+	url = ../upsilonapi.git
