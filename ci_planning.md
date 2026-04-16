@@ -1,6 +1,33 @@
+Here is extracts of a discussion I've had with Gemini about how to setup the CI pipeline.
+
+Take examples code/script with a grain of salt, they are here to give you an idea of what I'm talking about.
+
+Note also that at the time of this discussion, the project was named "exoback", the git enviroment has changed a lot inbetween, i'll let you get acquainted with the current state of the project.
+
+What I expect from this CI pipeline is first:
+
+* Validate all points from the BRD and Compliance Matrix. (probably using CLI and specific bots)
+* Validate through CLI that the game engine works correctly across all game mode. 
+* Any service crashes should be logged and considered as an error. 
+* In all cases, 4xx/5xx are considered as errors, while they may not halt the pipeline, they should be logged and reported. 
+  * This said, we should probably have a way to "whitelist" some errors that are acceptable in some contexts (when specifically checking for their appearance for example). This might require some rework of our toolkit. 
+* I expect a proper markdown file to be generated at the end of the pipeline, summarizing the results of the tests. This file should be human-readable and easy to understand.
+* The pipeline should be triggered on every push to the `main` branch.
+* I want to have a clear view of the CI tests. they need to be properly documented and have links to customer layer ATD (see customer layer atd in docs folder). (there is a CI.md file at root that stand for example, that may or may not be sufficient.)
+
+
+I would have liked to integrate ATD (doc) in the CI pipeline, but it's not a must have for now. Beside it wouldn't work appropriately since it relies on a ollama server with specific models running. Maybe I'll setup a proper link toward one of my servers if it's something allowed by github actions. 
+
+I expect our tools to be needing some update to be better used by CI. 
+
+While it would have been great to run the stress test, i'm not sure github actions is the right place to do it. 
+
+---
+---
+
 Setting up a robust Continuous Integration (CI) pipeline for a multi-service architecture like Upsilon Battle is a massive milestone. It is completely normal to feel like you are staring at a jungle right now—especially when dealing with real-time WebSockets, Go engines, and Laravel gateways. 
 
-The good news is that your team has already built a remarkably strong foundation. You have the `upsiloncli`, the Goja JS engine, and even a log parser. You correctly identified a gap, though, which is actually documented in your open issues as **ISS-044: Unified Scripting Lifecycle and CI Testing Framework**.
+The good news is that your team has already built a remarkably strong foundation. You have the `upsiloncli`, the Goja JS engine, and even a log parser. You correctly identified a gap, though, which is actually documented in your open issues as **ISS-044: Unified Scripting Lifecycle and CI Testing Framework** (Note: scripting tools have been updated, the CI part remains).
 
 Here is a comprehensive, structured plan to formalize your testing, wrangle your Docker containers, and keep your GitHub Actions clean.
 
@@ -41,8 +68,7 @@ sanction:
   # How we measure success/failure
   require_exit_code: 0
   post_run_checks:
-    - command: "python3 upsiloncli/upsilon_log_parser.py ci_logs/2v2_pvp/ --filter"
-      must_not_contain: "ERROR"
+    - command: "python3 upsiloncli/upsilon_log_parser.py ci_logs/2v2_pvp --sanction"
 ```
 
 ---
@@ -239,3 +265,74 @@ With those health checks in place, your GitHub Action syntax becomes incredibly 
 
 This ensures we aren't relying on arbitrary `sleep 10` commands in our CI pipeline—it only moves forward when the Go engine, Reverb websocket server, and Laravel gateway are truly ready.
 
+---
+---
+
+Moving everything under the same GitHub account is a smart move for long-term organization. 
+
+However, I need to point out a minor technical reality about how GitHub Actions works: **even if the submodules are private repositories owned by the exact same account, the default `GITHUB_TOKEN` is still strictly scoped only to the repository running the action.** If those submodules are set to **Public**, the YAML below will work flawlessly as-is. If they are still **Private**, you will still need to add a PAT to the `token` parameter of the checkout step, just like we discussed previously.
+
+Here is the complete, updated CI workflow (`.github/workflows/e2e-battles.yml`) incorporating the recursive submodule checkout, the ephemeral environment setup, and the test execution steps using your existing tools:
+
+```yaml
+name: E2E Battle Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-suite:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout main repo and all submodules
+      - name: Checkout Code with Submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          # token: ${{ secrets.EXTERNAL_REPO_PAT }} # Uncomment if submodules are private!
+
+      # 2. Setup the CI Environment File
+      - name: Prepare Environment Variables
+        run: cp .env.ci .env
+
+      # 3. Boot the ephemeral Docker infrastructure
+      - name: Boot Upsilon Services
+        # --wait ensures the healthchecks pass before moving to the next step
+        run: docker compose -f docker-compose.ci.yaml up -d --wait
+
+      # 4. Prepare the database
+      - name: Run Laravel Migrations & Seeders
+        # The -T flag disables pseudo-TTY allocation, which is required for CI runners
+        run: docker compose -f docker-compose.ci.yaml exec -T app php artisan migrate:fresh --seed
+
+      # 5. Setup Go environment
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25' # Required per dependencies
+
+      # 6. Build the Upsilon CLI
+      - name: Build Upsilon CLI
+        run: go build -o bin/upsiloncli ./cmd/upsiloncli
+
+      # 7. Execute the Automated Test Suite
+      - name: Run All Battles (Test Suite)
+        # This runs your existing full battery of tactical engine tests
+        run: ./tests/run_all_battles.sh
+        
+      # 8. (Optional) Archive logs if the test fails for easier debugging
+      - name: Archive CI Logs on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bot-farm-logs
+          # Assuming run_all_battles outputs to a specific directory like ci_logs
+          path: ./logs/ 
+```
+
+---
+---
