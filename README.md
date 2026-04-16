@@ -20,36 +20,51 @@
 - **Action Economy:** During a turn, a character may perform a maximum of **1 Move** (`+20/tile`), **1 Attack** (`+100`), or safely **Pass** (`+300`). Performing actions accumulates a numerical "Delay Cost," mathematically extending the wait time until that character's next sequence.
 - **The Shot Clock:** Active combat turns mandate a strict **30-second limit** per character. Failing to confirm an action manually results in an auto-pass forced by the server, accompanied by a penalty of `+100` (Total `+400` delay).
 
-## Technical Architecture Overview
-The system relies on a strictly separated logic implementation:
+## Modular Architecture
+The UpsilonBattle ecosystem is built as a modular multi-repo system. Each core component is maintained in its own repository and integrated into this main project as a formal **Git Submodule**.
 
-1. **Frontend (`BattleUI` - Laravel / Vue.js / Tailwind):**
-   - Operates as the user-facing client.
-   - Manages Player Sessions natively, distributing and securing gameplay boundaries via stateless **JWT Authentication**.
-   - Orchestrates Player Queuing (`1v1 PVE, 1v1 PVP, 2V2 PVE, 2V2 PVP`) and matches clients cleanly before instantiating the combat sequence.
-   - Renders the Global Leaderboard tracking Win/Loss volumes and derived ratio metrics.
+### Repository Structure
+1. **Frontend (`battleui`)**:
+   - Built with Laravel, Vue.js, and Tailwind CSS.
+   - Manages user sessions, JWT authentication, and player matchmaking.
+   - Provides the visual interface for combat and the global leaderboard.
 
-2. **Backend (`UpsilonBattle` - Go JSON API):**
-   - The isolated, calculating brain behind active skirmishes.
-   - Fully governs the math of active battles (HP reduction, board coordinate generation, initiative delay math, and step validation).
-   - Entirely ignores matchmaking queues, interacting strictly through validated combat payloads.
+2. **Backend API (`upsilonapi`)**:
+   - A high-performance Go JSON API.
+   - Handles account management, character statistics, and match state persistence.
 
-3. **Journey Explorer CLI ([UpsilonCLI](file:///workspace/upsiloncli) - Go):**
-   - An interactive terminal tool for rapid API exploration and verification.
-   - Provides full transparency by logging the equivalent `curl` command and pretty-printed JSON response for every action.
-   - Includes an **Autopilot mode** (`--auto`) to simulate and verify the complete developer journey from registration to combat cleanup.
-   - Integrates real-time WebSocket monitoring for in-terminal tactical board visualization.
+3. **Battle Engine (`upsilonbattle`)**:
+   - The "calculating brain" that governs active combat sequences.
+   - Mathematically simulates initiative, movement validation, and damage systems.
 
-4. **Database (PostgreSQL):**
-   - Persistent, serialized memory holding Player access credentials, individual Character state logs, match resolutions, and leaderboard calculations.
+4. **Journey Explorer CLI (`upsiloncli`)**:
+   - An interactive terminal tool for API exploration and verification.
+   - Supports "Autopilot" sessions to simulate full player journeys.
 
-## Development & Monitoring
-The project includes a suite of scripts at the root to manage and monitor the service stack during development:
+5. **Shared Assets & Utilities**:
+   - `upsilonmapdata`: Geometric board data and obstacle definitions.
+   - `upsilonmapmaker`: Procedural generation tools for game boards.
+   - `upsilonserializer` & `upsilontools`: Shared logic for binary/JSON serialization and common TRPG utilities.
 
-- **[start_services.sh](start_services.sh)**: Launches the Laravel API, Reverb Server, Vue Frontend, and Upsilon Engine in the background. Tracks PIDs and log file mappings.
+## Getting Started
+
+### Cloning the Project
+Since the project relies on submodules, you must clone recursively to fetch all components:
+```bash
+git clone --recursive git@github.com:kluthen/exoback.git
+```
+If you have already cloned the repository, initialize the submodules with:
+```bash
+git submodule update --init --recursive
+```
+
+### Development & Monitoring
+All services are standardization on the `main` branch. The project includes a suite of root-level scripts for service management:
+
+- **[start_services.sh](start_services.sh)**: Launches the Laravel API, Reverb Server, Vue Frontend, and Upsilon Engine in the background. 
 - **[stop_services.sh](stop_services.sh)**: Gracefully stops all tracked services.
-- **[watch_services.go](watch_services.go)**: Real-time TUI dashboard for monitoring CPU/Mem and log errors. Run with `go run watch_services.go`.
-- **[check_services.sh](check_services.sh)**: Lightweight status utility for quick health checks (useful for agents and CI).
+- **[watch_services.go](watch_services.go)**: Real-time TUI dashboard for monitoring CPU/Mem and error logs.
+- **[check_services.sh](check_services.sh)**: Lightweight status utility for quick health checks.
 
 ## Specification (ATD) Maps
 All fundamental mechanics, structural constraints, entities, and network rules that form the game are housed individually in `/workspace/docs/`. These Atoms serve as the uncompromising basis for evaluating developer implementation logic.
