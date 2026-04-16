@@ -3,6 +3,7 @@ package script
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"os"
 	"time"
 	"github.com/dop251/goja"
@@ -46,6 +47,14 @@ func (a *Agent) bindJSAPI() {
 		"myFoes":              a.jsMyFoes,
 		"myFoesCharacters":    a.jsMyFoesCharacters,
 		"cellContentAt":       a.jsCellContentAt,
+
+		// High-level Lifecycle Helpers
+		"bootstrapBot":      a.jsBootstrapBot,
+		"joinWaitMatch":     a.jsJoinWaitMatch,
+		"humanDelay":        a.jsHumanDelay,
+		"registrationDelay": a.jsRegistrationDelay,
+		"waitNextTurn":      a.jsWaitNextTurn,
+		"syncGroup":         a.jsSyncGroup,
 	}
 	a.VM.Set("upsilon", upsilonObj)
 }
@@ -357,3 +366,162 @@ func (a *Agent) jsCellContentAt(x, y int) interface{} {
 		"entity":   foundEntity,
 	}
 }
+
+// --- New High-level Lifecycle Helpers ---
+
+func (a *Agent) jsRegistrationDelay() {
+	ms := 500 + rand.Intn(2500)
+	a.jsLog(fmt.Sprintf("Anti-spam registration delay: %vms", ms))
+	a.jsSleep(ms)
+}
+
+func (a *Agent) jsHumanDelay() {
+	ms := 1000 + rand.Intn(14000)
+	a.jsLog(fmt.Sprintf("Simulating human delay: %vms", ms))
+	a.jsSleep(ms)
+}
+
+func (a *Agent) jsBootstrapBot(call goja.FunctionCall) goja.Value {
+	if len(call.Arguments) < 2 {
+		panic(a.VM.ToValue("bootstrapBot requires at least (accountName, password)"))
+	}
+
+	accountName := call.Arguments[0].String()
+	password := call.Arguments[1].String()
+
+	// 1. Setup automatic teardown BEFORE registration to ensure cleanup if registration fails halfway
+	a.GoTeardownHook = func() {
+		a.jsLog("Running Automated Teardown...")
+
+		// Leave queue
+		a.jsCall("matchmaking_leave", nil)
+
+		// Forfeit match if ID exists
+		matchID := a.jsGetContext("match_id")
+		if matchID != "" {
+			a.jsLog("Forfeiting match " + matchID)
+			a.jsCall("game_action", map[string]interface{}{"id": matchID, "type": "forfeit"})
+		}
+
+		// Delete account
+		a.jsLog("Deleting temporary account: " + accountName)
+		a.jsCall("auth_delete", nil)
+	}
+
+	// 2. Registration Delay
+	a.jsRegistrationDelay()
+
+	// 3. Register
+	params := map[string]interface{}{
+		"account_name":          accountName,
+		"email":                 accountName + "@example.com",
+		"nickname":              "Bot_" + accountName,
+		"password":              password,
+		"password_confirmation": password,
+		"full_address":          "Bot Street, Virtual Arena",
+		"birth_date":            "1990-01-01T00:00:00Z",
+	}
+
+	// Allow overriding defaults if a 3rd argument is provided
+	if len(call.Arguments) > 2 {
+		if extra, ok := call.Arguments[2].Export().(map[string]interface{}); ok {
+			for k, v := range extra {
+				params[k] = v
+			}
+		}
+	}
+
+	resp, err := a.jsCall("auth_register", params)
+	if err != nil {
+		panic(a.VM.ToValue("Registration failed: " + err.Error()))
+	}
+
+	a.jsLog("Bot bootstrapped successfully.")
+	return a.VM.ToValue(resp)
+}
+
+func (a *Agent) jsJoinWaitMatch(gameMode string) interface{} {
+	a.jsLog("Joining queue: " + gameMode)
+	_, err := a.jsCall("matchmaking_join", map[string]interface{}{"game_mode": gameMode})
+	if err != nil {
+		panic(a.VM.ToValue("Failed to join queue: " + err.Error()))
+	}
+
+	a.jsLog("Waiting for match.found...")
+	matchEnvelope, err := a.jsWaitForEvent("match.found", 60000)
+	if err != nil {
+		panic(a.VM.ToValue("Matchmaking timed out or failed: " + err.Error()))
+	}
+
+	// Safely extract match_id
+	env, ok := matchEnvelope.(map[string]interface{})
+	if !ok { panic(a.VM.ToValue("Invalid match envelope structure")) }
+	
+	data, ok := env["data"].(map[string]interface{})
+	if !ok { panic(a.VM.ToValue("Invalid match event data structure")) }
+
+	matchID, _ := data["match_id"].(string)
+	if matchID != "" {
+		a.jsSetContext("match_id", matchID)
+		a.jsLog("Match Found! ID: " + matchID)
+	}
+
+	return data
+}
+
+func (a *Agent) jsWaitNextTurn() interface{} {
+	for {
+		eventData, err := a.jsWaitForEvent("board.updated", 60000)
+		if err != nil {
+			panic(a.VM.ToValue("Turn wait timed out or failed: " + err.Error()))
+		}
+
+		env, ok := eventData.(map[string]interface{})
+		if !ok { continue }
+		board, ok := env["data"].(map[string]interface{})
+		if !ok { continue }
+
+		if finished, _ := board["game_finished"].(bool); finished {
+			winner, _ := board["winner_is_self"].(bool)
+			if winner {
+				a.jsLog("VICTORY IS MINE!")
+			} else {
+				a.jsLog("Defeated... perishing with honor.")
+			}
+			a.jsSetContext("match_id", "") // Clear to prevent teardown forfeit
+			return nil
+		}
+
+		if active, _ := board["current_player_is_self"].(bool); active {
+			a.jsLog(fmt.Sprintf("--- My Turn! Acting with entity: %v ---", board["current_entity_id"]))
+			return board
+		}
+	}
+}
+
+func (a *Agent) jsSyncGroup(key string, count int) {
+	readyKey := key + "_ready"
+	
+	// Increment our presence
+	val, _ := a.Shared.Get(readyKey)
+	current := 0
+	if val != nil {
+		if c, ok := val.(int); ok { current = c }
+	}
+	a.Shared.Set(readyKey, current+1)
+
+	a.jsLog(fmt.Sprintf("Waiting for syncing group '%s' (%v/%v)...", key, current+1, count))
+
+	// Poll until everyone is ready
+	for {
+		val, _ := a.Shared.Get(readyKey)
+		if val != nil {
+			if c, ok := val.(int); ok && c >= count {
+				break
+			}
+		}
+		a.jsSleep(500)
+	}
+	a.jsLog(fmt.Sprintf("Group '%s' synchronized. Proceeding.", key))
+}
+

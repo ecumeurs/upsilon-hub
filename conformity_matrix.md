@@ -12,12 +12,16 @@ This document tracks the alignment between the Business Requirements (BRD), the 
 | **BRD 2.4** | Action Economy | [[mech_action_economy]] | `turner.go` | ✅ | `EntityTurn` Delay |
 | **BRD 2.4** | Turn Clock | [[rule_turn_clock]] | `ruler.go` | ✅ | `startShotClock` |
 | **BRD 2.4** | Auto-Pass Penalty | [[mech_action_economy_timeout_penalty_rules]] | `ruler.go` | ✅ | +400 total delay |
+| **BRD 2.4** | Action Feedback | [[requirement_customer_action_reporting]] | `handler.go` | ⚠️ | Missing Move Path |
 | **BRD 2.4** | Friendly Fire | [[rule_friendly_fire]] | N/A | ❌ | **Blocked by [ISS-043]** |
 | **BRD 2.5** | Character Progression | [[rule_progression]] | `ProfileController::updateCharacter` | ✅ | `10+wins` cap |
 | **BRD 2.5** | Move Gating | [[rule_progression]] | `ProfileController::updateCharacter` | ✅ | `1 every 5 wins` |
 | **BRD 3.1** | Password Policy | [[rule_password_policy]] | `RegisterRequest.php` | ✅ | 15 chars, U/N/S |
 | **BRD 3.2** | GDPR Compliance | [[rule_gdpr_compliance]] | `AuthController::deleteAccount` | ✅ | Soft delete & Anonymize |
+| **BRD 3.2** | ID Masking | [[requirement_customer_user_id_privacy]] | `UserResource.php` | ⚠️ | Check `id` exclusion |
 | **BRD 3.2** | Data Portability | [[api_profile_export]] | `AuthController::exportAccount` | ✅ | JSON export |
+| **BRD 3.4** | API-First | [[requirement_customer_api_first]] | `HelpController.php` | ✅ | `/help` endpoint |
+| **BRD 3.4** | Session Timeout | [[requirement_req_ui_session_timeout]] | `SessionExpiredModal.vue` | ✅ | Interceptor |
 
 ## Legend
 - ✅ **Implemented:** Code follows the ATD specification.

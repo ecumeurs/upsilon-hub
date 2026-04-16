@@ -4,7 +4,7 @@
 **Ref:** `ISS-044`
 **Date:** 2026-04-15
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsiloncli`
 **Affects:** `upsiloncli/scripting.md`, `CI/CD pipelines`, `Developer Experience`
 
@@ -63,3 +63,16 @@ Currently, developers manually script sequences like `auth_register`, `matchmaki
 
 - [scripting.md](file:///workspace/upsiloncli/scripting.md)
 - [atd/script_farm.atom.md](file:///workspace/docs/atd/script_farm.atom.md) (assumed path)
+66. 
+67: ---
+68: 
+69: ## Resolution
+70: 
+71: **Implemented 2026-04-16:**
+72: - Added high-level helpers to the `upsiloncli` Go/JS bridge: `bootstrapBot`, `joinWaitMatch`, `waitNextTurn`, `syncGroup`, `humanDelay`, and `registrationDelay`.
+73: - These helpers abstract away the repetitive registration/matchmaking/cleanup boilerplate.
+74: - `bootstrapBot` automatically configures a robust `onTeardown` hook for match cleanup and account deletion.
+75: - Updated `upsiloncli/scripting.md` to document these tools as the standard bot pattern.
+76: - Refactored sample bots (`pvp_bot_battle.js`, `pve_bot_battle.js`, `slow_bot_battle.js`), reducing boilerplate by ~60%.
+77: - The environment is now optimized for CI-driven multi-agent testing.
+

@@ -89,12 +89,18 @@ func RunFarm(baseURL string, reg *endpoint.Registry, scriptPaths []string, logDi
 			
 			// GUARANTEED TEARDOWN BLOCK
 			defer func() {
+				// 1. Run Go-side automated teardown first
+				if agent.GoTeardownHook != nil {
+					agent.GoTeardownHook()
+				}
+
+				// 2. Run JS-side teardown hook
 				if agent.TeardownHook != nil {
 					// Execute the JS teardown function safely
 					_, err := agent.TeardownHook(goja.Undefined())
 					if err != nil {
 						ts := time.Now().UTC().Format(time.RFC3339)
-						fmt.Fprintf(logger, "[{%s}] [%s] Teardown hook failed: %v\n", ts, agentID, err)
+						fmt.Fprintf(logger, "[{%s}] [%s] JS Teardown hook failed: %v\n", ts, agentID, err)
 					}
 				}
 				// Ensure WebSocket is closed cleanly

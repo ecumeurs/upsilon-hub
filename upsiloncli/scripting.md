@@ -29,6 +29,14 @@ Before writing a script, you need to know the tools available in your JavaScript
 * **`upsilon.myAllies()` / `upsilon.myAlliesCharacters()`**: Returns allies (excluding self) or their entities.
 * **`upsilon.myFoes()` / `upsilon.myFoesCharacters()`**: Returns opponents or their entities.
 * **`upsilon.cellContentAt(x, y)`**: Returns `{ obstacle: bool, entity: Entity|null }` for a specific grid coordinate.
+12. 
+13: #### **Lifecycle & CI Helpers (Streamlined)**
+14: * **`upsilon.bootstrapBot(name, password, [overrides])`**: The recommended way to start a bot. It handles registration delay, account creation, and registers an automatic teardown that leaves the queue, forfeits matches, and deletes the account on exit.
+15: * **`upsilon.joinWaitMatch(game_mode)`**: Joins matchmaking and blocks until a match is found. Returns match data.
+16: * **`upsilon.waitNextTurn()`**: Blocks until it is the bot's turn or the game ends. Returns the `board` state or `null` if the game finished.
+17: * **`upsilon.syncGroup(key, count)`**: Blocks until `count` agents have called this with the same `key`. Essential for multi-bot synchronization in CI.
+18: * **`upsilon.humanDelay()`**: Random sleep (1-15s) to simulate human pacing.
+19: * **`upsilon.registrationDelay()`**: Random sleep (0.5-3s) to prevent registration rate-limiting.
 
 ---
 
@@ -36,114 +44,43 @@ Before writing a script, you need to know the tools available in your JavaScript
 
 Let’s build a robust test script. We will create an agent that creates an account, joins a PVE match, tries to make a move, and ensures the account is deleted afterward.
 
-#### Step 2.1: Register the Teardown
-Always start by defining your cleanup sequence. This ensures you don't litter your test database with ghost accounts.
-
-```javascript
-// my_scenario.js
-
-upsilon.log("Starting PVE Scenario Test");
-
-upsilon.onTeardown(() => {
-    upsilon.log("Running Teardown: Deleting temporary account.");
-    try {
-        // auth_delete removes the account from the database
-        upsilon.call("auth_delete", {}); 
-    } catch (e) {
-        upsilon.log("Failed to clean up account: " + e.message);
-    }
-});
-
-
-
-// Register teardown for robust cleanup
-upsilon.onTeardown(() => {
-    upsilon.log("Running Teardown: Cleanup sequence triggered.");
-    
-    // 1. Ensure we leave matchmaking queue if still waiting
-    try {
-        upsilon.call("matchmaking_leave", {});
-    } catch (e) {
-        // Expected if not in queue
-    }
-
-    // 2. Forfeit if currently in a match
-    if (matchId) {
-        try {
-            upsilon.log("Forfeiting match " + matchId);
-            upsilon.call("game_action", { id: matchId, type: "forfeit" });
-        } catch (e) {
-            // Expected if game already ended or not our turn
-        }
-    }
-
-    // 3. Always delete the temporary account
-    try {
-        upsilon.log("Deleting temporary account: " + accountName);
-        upsilon.call("auth_delete", {});
-    } catch (e) {
-        upsilon.log("Failed to clean up account: " + e.message);
-    }
-});
-```
-
-#### Step 2.2: Setup & Authentication
-Next, authenticate the agent. If the call fails, the script will crash safely and run the teardown.
-
-```javascript
-// Create or login to the account
-upsilon.call("auth_register", { 
-    account_name: "qa_bot_01", 
-    password: "secure_password_123" 
-});
-
-upsilon.log("Authentication successful.");
-```
-
-#### Step 2.3: Trigger Contextual Flow
-Use the registered endpoints to flow through the application logic.
-
-```javascript
-// Join the PVE matchmaking queue
-upsilon.call("matchmaking_join", { game_mode: "1v1_PVE" });
-
-// Wait for the Reverb WebSocket to push the match data
-let matchEvent = upsilon.waitForEvent("match.found", 20000);
-
-// Ensure the event actually fired before the 20s timeout
-upsilon.assert(matchEvent != null, "Matchmaking timed out!");
-
-// Store the match ID in the session for subsequent calls
-upsilon.setContext("match_id", matchEvent.match_id);
-```
-
-#### Step 2.4: Execution and Assertions
-Fetch the complex state, interact with it natively in JS, and assert the results.
-
-```javascript
-// Fetch the full tactical board
-let board = upsilon.call("game_state", { id: matchEvent.match_id }).game_state;
-
-// Identify self and foes easily
-let me = upsilon.myPlayer();
-let foes = upsilon.myFoesCharacters();
-
-upsilon.log("I am " + me.nickname + ". Engaging " + foes.length + " enemies.");
-
-// Execute a move action using my first character
-let myUnits = upsilon.myCharacters();
-if (myUnits.length > 0) {
-    upsilon.call("game_action", {
-        id: matchEvent.match_id,
-        entity_id: myUnits[0].id,
-        type: "move",
-        target_coords: "3,3"
-    });
-}
-
-upsilon.log("Move executed successfully. Reaching end of script.");
-// The script naturally ends here, which automatically triggers the onTeardown block.
-```
+#### **The CI-Friendly Bot Pattern**
+21. 
+22: Using the high-level helpers, a complete bot script for a 1v1 PVP match becomes extremely concise:
+23: 
+24: ```javascript
+25: // bot_battle.js
+26: const botId = Math.floor(Math.random() * 10000);
+27: 
+28: // 1. Start the bot (Handles registration + automatic cleanup)
+29: upsilon.bootstrapBot("bot_" + botId, "Pass123!Secure");
+30: 
+31: // 2. Sync with an opponent if running in a farm
+32: upsilon.syncGroup("pvp_test", 2);
+33: 
+34: // 3. Join Matchmaking
+35: upsilon.joinWaitMatch("1v1_PVP");
+36: 
+37: // 4. Main Battle Loop
+38: while (true) {
+39:     let board = upsilon.waitNextTurn();
+40:     if (!board) break; // Game ended (logs victory/defeat automatically)
+41: 
+42:     // Execute tactical logic
+43:     let target = upsilon.myFoesCharacters()[0];
+44:     if (target) {
+45:         upsilon.log("Attacking " + target.name);
+46:         upsilon.call("game_action", {
+47:             id: board.match_id, 
+48:             type: "attack", 
+49:             target_coords: target.position.x + "," + target.position.y
+50:         });
+51:     }
+52:     
+53:     // Always end turn with pass
+54:     upsilon.call("game_action", { id: board.match_id, type: "pass" });
+55: }
+56: ```
 
 ---
 

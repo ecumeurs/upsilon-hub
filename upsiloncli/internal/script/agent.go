@@ -23,6 +23,7 @@ type Agent struct {
 	VM           *goja.Runtime
 	Logger       io.Writer
 	TeardownHook goja.Callable
+	GoTeardownHook func()
 	Shared       *SharedStore
 	Ctx          context.Context
 }
