@@ -246,10 +246,21 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 
 | Verb | URI | Intent | Specification |
 | :--- | :--- | :--- | :--- |
+| `GET` | `/health` | Engine Health Check | [[api_go_health_check]] |
 | `POST` | `/arena/start` | Initialize Arena Instance | [[api_go_battle_start]] |
 | `POST` | `/arena/{id}/action` | Execute Combat Action | [[api_go_battle_action]] |
 
-### 3.1 Arena Life Cycle
+### 3.1 Health Check
+
+#### `GET /health`
+- **Specification:** [[api_go_health_check]]
+- **Intent:** Provide a lightweight readiness probe for Docker healthchecks and CI tooling.
+- **Authentication:** None (public endpoint).
+- **Output:**
+  - `status`: `string` ("ok")
+  - `revision`: `string` (Git commit hash of the running binary)
+
+### 3.2 Arena Life Cycle
 
 #### `POST /arena/start`
 - **Specification:** [[api_go_battle_start]]
@@ -257,7 +268,7 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 - **Input:** `ArenaStartRequest` (See [[#4.3-arenastartrequest]])
 - **Output:** `ArenaStartResponse` (See [[#4.1-arenastartresponse]])
 
-### 3.2 Battle Actions
+### 3.3 Battle Actions
 
 #### `POST /arena/{id}/action`
 - **Specification:** [[api_go_battle_action]]
@@ -267,7 +278,7 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
   - `payload`: `ArenaActionRequest` (See [[#4.2-arenaactionrequest]])
 - **Output:** `ArenaActionResponse` (See [[#4.1-arenaactionresponse]])
 
-### 3.3 Asynchronous Webhook (Callback)
+### 3.4 Asynchronous Webhook (Callback)
 **Destination:** `POST /api/webhook/upsilon` (in [[api_battle_proxy]]) — Must be reachable internally from the Go Engine (e.g. `http://127.0.0.1:8000`).
 
 #### Webhook Event Payload

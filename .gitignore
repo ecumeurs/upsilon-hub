@@ -12,3 +12,7 @@ core*
 .services.running
 .services.stopped
 logs/*
+ci_report.md
+ci_logs/
+go-test-results.json
+php-test-results.txt

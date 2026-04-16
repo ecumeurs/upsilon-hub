@@ -1,0 +1,73 @@
+# docker-compose.ci.yaml — Ephemeral CI Stack
+# Optimized for speed (tmpfs), reliability (healthchecks), and determinism.
+# Usage: docker compose -f docker-compose.ci.yaml up -d --wait
+
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: upsilon_test
+    ports:
+      - "5432:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d upsilon_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: ./battleui
+    ports:
+      - "8000:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/up"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  ws:
+    build:
+      context: ./battleui
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  engine:
+    build:
+      context: .
+      dockerfile: ./upsilonapi/Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+      start_period: 5s

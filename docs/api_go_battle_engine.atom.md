@@ -12,6 +12,7 @@ parents:
 dependents:
   - [[api_go_battle_action]]
   - [[api_go_battle_start]]
+  - [[api_go_health_check]]
   - [[api_go_webhook_callback]]
   - [[battleui_upsilon_api_service]]
   - [[module_upsilonapi]]

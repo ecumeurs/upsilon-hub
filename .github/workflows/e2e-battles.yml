@@ -1,0 +1,118 @@
+name: E2E Battle Tests
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  e2e-battles:
+    name: End-to-End Battle Suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # 1. Checkout main repo and all submodules
+      - name: Checkout Code with Submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # 2. Setup CI Environment
+      - name: Prepare Environment Variables
+        run: cp .env.ci .env
+
+      # 3. Boot the ephemeral Docker infrastructure
+      - name: Boot Upsilon Services
+        run: docker compose -f docker-compose.ci.yaml up -d --wait --wait-timeout 120
+
+      - name: Show Service Status
+        if: always()
+        run: docker compose -f docker-compose.ci.yaml ps
+
+      # 4. Prepare the database
+      - name: Run Laravel Migrations & Seeders
+        run: docker compose -f docker-compose.ci.yaml exec -T app php artisan migrate:fresh --seed --force
+
+      # 5. Setup Go environment
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+
+      # 6. Build the Upsilon CLI
+      - name: Build Upsilon CLI
+        working-directory: ./upsiloncli
+        run: go build -o ../bin/upsiloncli ./cmd/upsiloncli
+
+      # 7. BRD Compliance: Password Policy (BRD 3.1)
+      - name: "BRD 3.1: Password Policy Check"
+        working-directory: ./upsiloncli
+        env:
+          UPSILON_BASE_URL: http://localhost:8000
+          REVERB_HOST: 127.0.0.1:8080
+          REVERB_APP_KEY: ci_app_key
+        run: |
+          ../bin/upsiloncli --farm samples/auth_security_check.js --timeout 60
+
+      # 8. BRD Compliance: Character Progression (BRD 2.5)
+      - name: "BRD 2.5: Progression Check"
+        working-directory: ./upsiloncli
+        env:
+          UPSILON_BASE_URL: http://localhost:8000
+          REVERB_HOST: 127.0.0.1:8080
+          REVERB_APP_KEY: ci_app_key
+        run: |
+          ../bin/upsiloncli --farm samples/progression_check.js samples/progression_check.js --timeout 120
+
+      # 9. Battle Engine: Full Mode Battery
+      - name: "Engine: Run All Battle Modes"
+        working-directory: ./upsiloncli
+        env:
+          UPSILON_BASE_URL: http://localhost:8000
+          REVERB_HOST: 127.0.0.1:8080
+          REVERB_APP_KEY: ci_app_key
+        run: |
+          ./tests/run_all_battles.sh
+
+      # 10. Generate CI Report
+      - name: Generate CI Report
+        if: always()
+        run: |
+          ./tests/ci_report.sh > ci_report.md 2>&1 || true
+          cat ci_report.md >> $GITHUB_STEP_SUMMARY
+
+      # 11. Collect Docker Logs on Failure
+      - name: Collect Docker Logs
+        if: failure()
+        run: |
+          mkdir -p ci_logs
+          docker compose -f docker-compose.ci.yaml logs app > ci_logs/laravel.log 2>&1
+          docker compose -f docker-compose.ci.yaml logs ws > ci_logs/reverb.log 2>&1
+          docker compose -f docker-compose.ci.yaml logs engine > ci_logs/engine.log 2>&1
+          docker compose -f docker-compose.ci.yaml logs db > ci_logs/db.log 2>&1
+
+      # 12. Archive CI Artifacts
+      - name: Upload CI Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-report
+          path: ci_report.md
+          retention-days: 14
+
+      - name: Upload Battle Logs on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-logs
+          path: |
+            ci_logs/
+            upsiloncli/tests/logs/
+          retention-days: 14
+
+      # 13. Teardown
+      - name: Teardown Docker Stack
+        if: always()
+        run: docker compose -f docker-compose.ci.yaml down -v
