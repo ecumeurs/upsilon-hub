@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: ["main"]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   e2e-battles:
     name: End-to-End Battle Suite
@@ -15,7 +18,7 @@ jobs:
     steps:
       # 1. Checkout main repo and all submodules
       - name: Checkout Code with Submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -37,7 +40,7 @@ jobs:
 
       # 5. Setup Go environment
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.24"
           cache-dependency-path: go.work
@@ -100,7 +103,7 @@ jobs:
       # 12. Archive CI Artifacts
       - name: Upload CI Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ci-report
           path: ci_report.md
@@ -108,7 +111,7 @@ jobs:
 
       - name: Upload Battle Logs on Failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ci-logs
           path: |

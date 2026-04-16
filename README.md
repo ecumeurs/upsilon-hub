@@ -66,6 +66,19 @@ All services are standardization on the `main` branch. The project includes a su
 - **[watch_services.go](watch_services.go)**: Real-time TUI dashboard for monitoring CPU/Mem and error logs.
 - **[check_services.sh](check_services.sh)**: Lightweight status utility for quick health checks.
 
+## Continuous Integration & Quality control
+
+UpsilonBattle employs a robust CI/CD pipeline via GitHub Actions to ensure code quality, architectural integrity, and business rule compliance.
+
+### Automated Workflows (`.github/workflows/`)
+- **[Unit Tests](.github/workflows/unit-tests.yml)**: Runs Go unit tests for all backend modules and PHP unit tests for the Laravel frontend.
+- **[Lint & Build](.github/workflows/lint-and-build.yml)**: Performs static analysis (Go vet) and verifies that all core components and Docker images build successfully.
+- **[E2E Battle Tests](.github/workflows/e2e-battles.yml)**: Orchestrates a full ephemeral Docker stack to run integration tests. It uses specialized CLI bots to simulate real player journeys and verify complex game mechanics.
+
+### Compliance & Reporting
+- **BRD Compliance**: Automated scripts (located in `upsiloncli/samples/`) verify critical Business Requirements such as **Password Policy** (`[[rule_password_policy]]`) and **Character Progression** (`[[rule_progression]]`).
+- **CI Reports**: Each run generates a summary report ([ci_report.sh](tests/ci_report.sh)) that is attached to the job summary, providing immediate visibility into test outcomes and compliance status.
+
 ## Specification (ATD) Maps
 All fundamental mechanics, structural constraints, entities, and network rules that form the game are housed individually in `/workspace/docs/`. These Atoms serve as the uncompromising basis for evaluating developer implementation logic.
 
@@ -73,6 +86,7 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Turner Hands Next Turn to Recently Deceased Entity](issues/ISS-046_20260416_turner_dead_entity_next_turn.md) | 2026-04-16 | Open | High | When a character kills another character and then ends their turn, the `Turne... |
 | [BRD Compliance CI Test Suite Blockers](issues/ISS-045_20260416_brd_compliance_ci_blockers.md) | 2026-04-16 | Open | High | The implementation of automated BRD compliance tests via specialized CLI bot ... |
 | [Request Traceability Non-Compliance and Gaps](issues/ISS-042_20260415_request_traceability_gaps.md) | 2026-04-15 | Open | Medium | This issue documents the systematic non-compliance with `rule_tracing_logging... |
 | [Upgradable Pawn Appearance & Model System](issues/ISS-040_20260415_pawn_appearance_system.md) | 2026-04-15 | Open | Medium | Implement an upgradable "Pawn Appearance System" that allows players to custo... |

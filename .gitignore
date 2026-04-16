@@ -1,4 +1,5 @@
 pipeline_output
+.claude/
 stress_test_logs
 stress_test_report.*
 .agent
