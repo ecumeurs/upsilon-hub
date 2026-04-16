@@ -8,7 +8,8 @@ priority: 3
 tags: [profile, game-metadata, characters]
 parents: []
 version: 1.0
-dependents: []
+dependents:
+  - [[rule_progression]]
 ---
 
 # New Atom

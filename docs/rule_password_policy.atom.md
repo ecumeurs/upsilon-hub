@@ -9,6 +9,7 @@ priority: 5
 tags: [security, password]
 parents:
   - [[req_security]]
+  - [[requirement_customer_user_account]]
 dependents: []
 ---
 # Password Strength Policy Rule

@@ -8,6 +8,8 @@ priority: 3
 tags: [auth, identity, account]
 dependents:
   - [[api_auth_user]]
+  - [[rule_gdpr_compliance]]
+  - [[rule_password_policy]]
   - [[ui_modal_box]]
 type: REQUIREMENT
 layer: CUSTOMER
