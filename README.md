@@ -51,7 +51,7 @@ The UpsilonBattle ecosystem is built as a modular multi-repo system. Each core c
 ### Cloning the Project
 Since the project relies on submodules, you must clone recursively to fetch all components:
 ```bash
-git clone --recursive git@github.com:kluthen/exoback.git
+git clone --recursive git@github.com:ecumeurs/upsilon-hub.git
 ```
 If you have already cloned the repository, initialize the submodules with:
 ```bash
