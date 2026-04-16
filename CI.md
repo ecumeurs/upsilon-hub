@@ -81,10 +81,26 @@ Executed via `upsiloncli/tests/run_all_battles.sh`:
 
 | Mode | Agents | Script | Verification |
 |---|---|---|---|
-| `1v1_PVE` | 1 | `pvp_bot_battle.js` | Natural conclusion + log parser |
-| `2v2_PVE` | 2 | `pvp_bot_battle.js` | Natural conclusion + log parser |
-| `1v1_PVP` | 2 | `pvp_bot_battle.js` | Natural conclusion + log parser |
-| `2v2_PVP` | 4 | `pvp_bot_battle.js` | Natural conclusion + log parser |
+| `1v1_PVE` | 1 | `pve_1v1_battle.js` | Natural conclusion + log parser |
+| `2v2_PVE` | 2 | `pve_2v2_battle.js` | Natural conclusion + log parser |
+| `1v1_PVP` | 2 | `pvp_1v1_battle.js` | Natural conclusion + log parser |
+| `2v2_PVP` | 4 | `pvp_2v2_battle.js` | Natural conclusion + log parser |
+
+Each battle script includes:
+- **Multi-agent synchronization**: Ensures all bots are ready before matchmaking
+- **Match verification**: Confirms all agents joined the same match (critical for PVP modes)
+- **Action economy compliance**: Proper turn management with attack/move/pass logic
+- **Failure assertions**: Tests abort immediately if agents end up in different matches
+
+### Stress Testing
+
+The `slow_bot_battle.js` script provides stress testing capabilities:
+- **Human simulation**: Adds random delays (1-15s) between actions to simulate human pacing
+- **Universal mode support**: Reads `UPSILON_GAME_MODE` environment variable for any game mode
+- **Proper action economy**: Updated to match current battle logic with correct turn management
+- **Multi-agent sync**: Includes proper synchronization for multi-agent scenarios
+
+Usage: `UPSILON_GAME_MODE=1v1_PVP ./bin/upsiloncli --farm samples/slow_bot_battle.js samples/slow_bot_battle.js`
 
 ---
 

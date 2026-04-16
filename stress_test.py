@@ -7,9 +7,10 @@ import sys
 import json
 from datetime import datetime
 import threading
+import re
 
 # Configuration
-TEST_DURATION_SECS = 3600  # 1 hour
+TEST_DURATION_SECS = 600  # 10 minutes
 METRICS_INTERVAL = 10     # 10 seconds
 LOG_DIR = "/workspace/stress_test_logs"
 REPORT_PREFIX = "stress_test_report"
@@ -29,11 +30,76 @@ class MatchManager:
     def __init__(self):
         self.matches = [] # List of {process, mode, start_time, log_file}
         self.metrics = []
+        self.service_pids = {} # {service_name: pid}
+        self.service_history = {} # {service_name: [mem_samples]}
         self.running = True
         self.start_time = time.time()
         
         if not os.path.exists(LOG_DIR):
             os.makedirs(LOG_DIR)
+        
+        self.discover_services()
+
+    def discover_services(self):
+        # 1. Try .services.pids
+        pid_file = "/workspace/.services.pids"
+        if os.path.exists(pid_file):
+            try:
+                with open(pid_file, "r") as f:
+                    for line in f:
+                        if "|" in line:
+                            name, pid, _, _ = line.strip().split("|")
+                            self.service_pids[name] = int(pid)
+                            self.service_history[name] = []
+            except Exception as e:
+                print(f"Warning: Failed to parse {pid_file}: {e}")
+
+        # 2. Fallback scan for missing services
+        scan_map = {
+            "Laravel API": "artisan serve",
+            "Reverb Server": "artisan reverb",
+            "Upsilon Engine": "upsilonapi",
+            "Vue Frontend": "vite"
+        }
+        
+        for name, pattern in scan_map.items():
+            if name not in self.service_pids or not self.is_pid_alive(self.service_pids[name]):
+                pid = self.find_pid_by_cmd(pattern)
+                if pid:
+                    self.service_pids[name] = pid
+                    self.service_history[name] = []
+                    print(f"[{datetime.now().isoformat()}] Discovered {name} at PID {pid}")
+
+    def is_pid_alive(self, pid):
+        try:
+            os.kill(pid, 0)
+            return True
+        except OSError:
+            return False
+
+    def find_pid_by_cmd(self, pattern):
+        try:
+            for pid in os.listdir('/proc'):
+                if pid.isdigit():
+                    try:
+                        with open(f"/proc/{pid}/cmdline", "rb") as f:
+                            cmdline = f.read().replace(b'\0', b' ').decode('utf-8')
+                            if pattern in cmdline and "stress_test.py" not in cmdline:
+                                return int(pid)
+                    except: pass
+        except: pass
+        return None
+
+    def get_process_memory(self, pid):
+        """Returns RSS memory in MB for a PID."""
+        try:
+            # /proc/[pid]/statm: size resident shared text lib data dirty
+            # Second field is resident set size (RSS) in pages
+            with open(f"/proc/{pid}/statm", "r") as f:
+                pages = int(f.read().split()[1])
+                return (pages * 4096) / (1024 * 1024) # Assuming 4KB page size
+        except:
+            return 0
 
     def start_match(self, mode):
         num_bots = MODES[mode]
@@ -125,8 +191,30 @@ class MatchManager:
                 "mem_mb": mem,
                 "open_fds": fds,
                 "active_matches": len(self.matches),
-                "active_bots": sum(MODES[m["mode"]] for m in self.matches)
+                "active_bots": sum(MODES[m["mode"]] for m in self.matches),
+                "service_memory": {}
             }
+
+            # Collect service breakdown
+            total_bots_mem = 0
+            # Track bots (upsiloncli processes we started)
+            for m in self.matches:
+                if m["process"].poll() is None:
+                    mem = self.get_process_memory(m["process"].pid)
+                    total_bots_mem += mem
+            
+            metric["service_memory"]["Bots (Combined)"] = total_bots_mem
+            self.service_history.setdefault("Bots (Combined)", []).append(total_bots_mem)
+
+            # Track discovered services
+            for name, pid in self.service_pids.items():
+                if self.is_pid_alive(pid):
+                    mem = self.get_process_memory(pid)
+                    metric["service_memory"][name] = mem
+                    self.service_history[name].append(mem)
+                else:
+                    metric["service_memory"][name] = 0
+
             self.metrics.append(metric)
             time.sleep(max(0, METRICS_INTERVAL - 1)) # Adjust for CPU sample sleep
 
@@ -211,6 +299,22 @@ class MatchManager:
             except Exception as e:
                 print(f"Failed to parse {log}: {e}")
 
+        # Calculate memory trends
+        memory_breakdown = {}
+        for name, history in self.service_history.items():
+            if history:
+                start_mem = history[0]
+                peak_mem = max(history)
+                end_mem = history[-1]
+                delta = end_mem - start_mem
+                memory_breakdown[name] = {
+                    "start_mb": start_mem,
+                    "peak_mb": peak_mem,
+                    "end_mb": end_mem,
+                    "delta_mb": delta,
+                    "leak_risk": "HIGH" if delta > 10 and end_mem > start_mem * 1.2 else "LOW"
+                }
+
         # Write JSON report
         report_data = {
             "test_duration_secs": TEST_DURATION_SECS,
@@ -220,6 +324,7 @@ class MatchManager:
             "total_errors": total_errors,
             "error_distribution": error_types,
             "match_outcomes": match_outcomes,
+            "memory_breakdown": memory_breakdown,
             "metrics": self.metrics
         }
         
@@ -255,6 +360,13 @@ class MatchManager:
                     f.write(f"| {err} | {count} |\n")
             else:
                 f.write("No errors detected.\n")
+
+            f.write(f"\n## Service Memory Breakdown\n")
+            f.write("| Service | Start (MB) | Peak (MB) | End (MB) | Delta (MB) | Leak Risk |\n")
+            f.write("|---|---|---|---|---|---|\n")
+            for name, stats in memory_breakdown.items():
+                risk_emoji = "⚠️" if stats["leak_risk"] == "HIGH" else "✅"
+                f.write(f"| {name} | {stats['start_mb']:.1f} | {stats['peak_mb']:.1f} | {stats['end_mb']:.1f} | {stats['delta_mb']:+.1f} | {risk_emoji} {stats['leak_risk']} |\n")
 
         print(f"Final reports generated: {REPORT_PREFIX}.json, {REPORT_PREFIX}.md")
 

@@ -4,7 +4,7 @@
 **Ref:** `ISS-046`
 **Date:** 2026-04-16
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonbattle/battlearena/ruler/turner`
 **Affects:** `upsilonbattle/battlearena/ruler/ruler.go`, `upsilonbattle/battlearena/ruler/rules/endofturn.go`, `upsilonbattle/battlearena/ruler/rules/attack.go`
 
