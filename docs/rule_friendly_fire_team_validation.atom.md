@@ -21,3 +21,4 @@ Target Validation: Characters identified as belonging to the same team cannot ap
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[rule_friendly_fire_team_validation]]`
+- **Implementation:** `upsilonbattle/battlearena/ruler/rules/attack.go`, `upsilonbattle/battlearena/ruler/rules/skill.go`

@@ -73,8 +73,6 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [Unified Scripting Lifecycle and CI Testing Framework](issues/ISS-044_20260415_scripting_unified_lifecycle_and_ci.md) | 2026-04-15 | Open | High | The current scripting environment in `upsiloncli` requires boilerplate code f... |
-| [Friendly Fire Rule Enforcement Missing](issues/ISS-043_20260415_rule_friendly_fire_not_enforced.md) | 2026-04-15 | Open | High | The `Friendly Immunity Rule` (`rule_friendly_fire`) defined in the architectu... |
 | [Request Traceability Non-Compliance and Gaps](issues/ISS-042_20260415_request_traceability_gaps.md) | 2026-04-15 | Open | Medium | This issue documents the systematic non-compliance with `rule_tracing_logging... |
 | [Upgradable Pawn Appearance & Model System](issues/ISS-040_20260415_pawn_appearance_system.md) | 2026-04-15 | Open | Medium | Implement an upgradable "Pawn Appearance System" that allows players to custo... |
 | [Holo-Emote Procedural Reaction System](issues/ISS-039_20260415_holo_emote_system.md) | 2026-04-15 | Open | Medium | Implement a "Holo-Emote System" that triggers procedural reactions (emojis/te... |

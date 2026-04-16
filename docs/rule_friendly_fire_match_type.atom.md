@@ -21,3 +21,4 @@ This applies to characters controlled by the identical player and characters con
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[rule_friendly_fire_match_type]]`
+- **Implementation:** `upsilonbattle/battlearena/ruler/rules/skill.go`

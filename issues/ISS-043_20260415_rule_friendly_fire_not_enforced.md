@@ -4,7 +4,7 @@
 **Ref:** `ISS-043`
 **Date:** 2026-04-15
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `docs/rule_friendly_fire.atom.md`
 **Affects:** Battle engine combat logic.
 

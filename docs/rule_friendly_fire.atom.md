@@ -22,3 +22,4 @@ Prohibits self-inflicted harm between players and characters on the same side.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[rule_friendly_fire]]`
+- **Implementation:** `upsilonbattle/battlearena/ruler/rules/attack.go`, `upsilonbattle/battlearena/ruler/rules/skill.go`
