@@ -20,7 +20,11 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.25"
+          go-version: "1.24"
+          cache-dependency-path: go.work
+
+      - name: Sync Workspace
+        run: go work sync
 
       - name: Run Go Tests (All Modules)
         run: go test -count=1 -timeout 120s -json ./... > go-test-results.json 2>&1 || true

@@ -20,10 +20,14 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.25"
+          go-version: "1.24"
+          cache-dependency-path: go.work
 
-      - name: Go Vet (All Modules)
-        run: go vet ./...
+      - name: Sync Workspace
+        run: go work sync
+
+      - name: Go Vet (Explicit Modules)
+        run: go vet ./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilonserializer/... ./upsilontools/...
 
       - name: Build Upsilon API
         run: go build -o /dev/null ./upsilonapi
