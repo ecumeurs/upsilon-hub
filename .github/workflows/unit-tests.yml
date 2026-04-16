@@ -26,8 +26,8 @@ jobs:
       - name: Sync Workspace
         run: go work sync
 
-      - name: Run Go Tests (All Modules)
-        run: go test -count=1 -timeout 120s -json ./... > go-test-results.json 2>&1 || true
+      - name: Run Go Tests (Explicit Modules)
+        run: go test -count=1 -timeout 120s -json ./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilonserializer/... ./upsilontools/... > go-test-results.json 2>&1 || true
 
       - name: Display Test Results
         if: always()
