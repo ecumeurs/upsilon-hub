@@ -107,10 +107,9 @@ class MatchManager:
         log_file = os.path.join(LOG_DIR, f"{match_id}.log")
         
         # Build command
-        cmd = [CLI_BIN, "--farm"]
+        cmd = [CLI_BIN, "--farm", "--timeout", "600"]
         for _ in range(num_bots):
             cmd.append(BOT_SCRIPT)
-        cmd.extend(["--timeout", "600"]) # 10 min timeout per individual game effort
         
         env = os.environ.copy()
         env["UPSILON_GAME_MODE"] = mode
