@@ -28,7 +28,7 @@ jobs:
 
       # 3. Boot the ephemeral Docker infrastructure
       - name: Boot Upsilon Services
-        run: docker compose -f docker-compose.ci.yaml up -d --wait --wait-timeout 120
+        run: docker compose -f docker-compose.ci.yaml up -d --wait --wait-timeout 300
 
       - name: Show Service Status
         if: always()

@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: upsilon_test
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 15
@@ -28,7 +28,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/up"]
+      test: [ "CMD", "curl", "-f", "http://localhost/up" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -46,7 +46,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: ["CMD", "curl", "http://localhost:8080"]
+      test: [ "CMD", "curl", "http://localhost:8080" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -62,7 +62,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/health" ]
       interval: 3s
       timeout: 5s
       retries: 10
