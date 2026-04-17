@@ -11,11 +11,6 @@ services:
       POSTGRES_DB: upsilon_test
     ports:
       - "5435:5432"
-    volumes:
-      - type: tmpfs
-        target: /var/lib/postgresql/data
-        tmpfs:
-          size: 512M
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
