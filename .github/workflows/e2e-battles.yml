@@ -34,9 +34,6 @@ jobs:
         if: always()
         run: docker compose -f docker-compose.ci.yaml ps
 
-      # 4. Prepare the database
-      - name: Run Laravel Migrations & Seeders
-        run: docker compose -f docker-compose.ci.yaml exec -T app php artisan migrate:fresh --seed --force
 
       # 5. BRD Compliance: Password Policy (BRD 3.1)
       - name: "BRD 3.1: Password Policy Check"
