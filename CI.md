@@ -23,7 +23,8 @@ The CI pipeline is split into three GitHub Actions workflows with increasing sco
 The ephemeral Docker stack uses:
 - **PostgreSQL** with `tmpfs` (RAM disk) for fast I/O
 - **Docker healthchecks** on all services (`--wait` flag)
-- **`GET /health`** endpoint on the Go engine for readiness probing
+- **`GET /health`** endpoint on the Go engine for readiness probing.
+- **`GET /up`** endpoint on the Laravel app for readiness probing. See `[[api_laravel_health_check]]`.
 
 ---
 
@@ -160,9 +161,12 @@ docker run --rm -e APP_ENV=testing -e DB_CONNECTION=sqlite -e DB_DATABASE=:memor
 Check Docker logs: `docker compose -f docker-compose.ci.yaml logs <service>`
 
 ### Health Check Timeout
-- **app:** Laravel may need longer `start_period` (migrations, composer autoload).
+- **app:** Laravel may need longer `start_period`. Ensure the `@spec-link [[mech_web_catchall_router]]` in `web.php` excludes `/up` to prevent 500 errors.
 - **engine:** Verify `GET /health` responds: `curl http://localhost:8081/health`
 - **ws:** Reverb may fail if Reverb keys are missing from `.env`.
+
+### Missing Logs in CI
+If the app fails to boot or returns 500 errors but the logs are empty, ensure `LOG_CHANNEL=stderr` is set in `.env.ci`. This forces Laravel to output directly to the Docker logging stream.
 
 ### Bot Script Timeout
 - Increase `--timeout` value in the workflow step.
