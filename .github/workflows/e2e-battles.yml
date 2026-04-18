@@ -75,7 +75,7 @@ jobs:
         with:
           name: ci-report
           path: ci_report.md
-          retention-days: 14
+          retention-days: 3
 
       - name: Upload Battle Logs on Failure
         if: failure()
@@ -85,7 +85,7 @@ jobs:
           path: |
             ci_logs/
             upsiloncli/tests/logs/
-          retention-days: 14
+          retention-days: 3
 
       # 13. Teardown
       - name: Teardown Docker Stack
