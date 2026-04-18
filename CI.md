@@ -81,7 +81,8 @@ Adding a new verification scenario is a **zero-touch process** (no GitHub Action
     - `upsilon.assert(condition, msg)`
     - `upsilon.assertEquals(actual, expected, msg)`
 3.  **Tag with ATD**: Include `@spec-link [[atom_id]]` in the header for traceability.
-4.  **Save & Push**: The CI runner will automatically find your script and include it in the next run.
+4.  **Update the Report Generator**: Add the new requirement to the `check_brd` mapping in `tests/ci_report.sh` to ensure it appears in the final CI summary.
+5.  **Save & Push**: The CI runner will automatically find your script and include it in the next run.
 
 ---
 

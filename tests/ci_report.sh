@@ -103,21 +103,41 @@ echo ""
 # --- BRD Compliance ---
 echo "## BRD Compliance Checks"
 echo ""
-echo "| Requirement | ATD Atom | Script | Status |"
+echo "| ID | Requirement | ATD Atom | Status |"
 echo "|---|---|---|---|"
 
-# Check if the scripts ran successfully (centralized name mapping)
-if [ -f "$BATTLE_LOG_DIR/e2e_password_policy.log" ] && grep -q "\[SCENARIO_RESULT: PASSED\]" "$BATTLE_LOG_DIR/e2e_password_policy.log"; then
-    echo "| Password Policy (BRD 3.1) | \`[[rule_password_policy]]\` | \`e2e_password_policy.js\` | ✅ |"
-else
-    echo "| Password Policy (BRD 3.1) | \`[[rule_password_policy]]\` | \`e2e_password_policy.js\` | ❌ |"
-fi
+# Helper function to check and report BRD compliance
+check_brd() {
+    local cr_id=$1
+    local name=$2
+    local atom=$3
+    local log="e2e_${4}.log"
+    
+    if [ -f "$BATTLE_LOG_DIR/$log" ] && grep -q "\[SCENARIO_RESULT: PASSED\]" "$BATTLE_LOG_DIR/$log"; then
+        echo "| **$cr_id** | $name | \`$atom\` | ✅ |"
+    else
+        echo "| **$cr_id** | $name | \`$atom\` | ❌ |"
+    fi
+}
 
-if [ -f "$BATTLE_LOG_DIR/e2e_progression_constraints.log" ] && grep -q "\[SCENARIO_RESULT: PASSED\]" "$BATTLE_LOG_DIR/e2e_progression_constraints.log"; then
-    echo "| Progression (BRD 2.5) | \`[[rule_progression]]\` | \`e2e_progression_constraints.js\` | ✅ |"
-else
-    echo "| Progression (BRD 2.5) | \`[[rule_progression]]\` | \`e2e_progression_constraints.js\` | ❌ |"
-fi
+# Mapping all 17 scenarios
+check_brd "CR-01" "New Player Onboarding" "[[uc_player_registration]]" "customer_onboarding"
+check_brd "CR-02" "Player Login & Session" "[[uc_player_login]]" "customer_login"
+check_brd "CR-03" "Character Reroll Mechanics" "[[us_character_reroll]]" "character_reroll"
+check_brd "CR-04" "Matchmaking PvE (Instant)" "[[uc_matchmaking]]" "matchmaking_pve_instant"
+check_brd "CR-05" "Matchmaking PvP (Queue)" "[[uc_matchmaking]]" "matchmaking_pvp_queue"
+check_brd "CR-06" "Combat Turn Management" "[[uc_combat_turn]]" "combat_turn_management"
+check_brd "CR-07" "Friendly Fire Prevention" "[[rule_friendly_fire]]" "friendly_fire_prevention"
+check_brd "CR-08" "Match Resolution (Standard)" "[[uc_match_resolution]]" "match_resolution_standard"
+check_brd "CR-09" "Match Resolution (Forfeit)" "[[uc_match_resolution]]" "match_resolution_forfeit"
+check_brd "CR-10" "Progression (Post-Win)" "[[uc_progression_stat_allocation]]" "progression_post_win"
+check_brd "CR-11" "Progression Constraints" "[[rule_progression]]" "progression_constraints"
+check_brd "CR-12" "Leaderboard Viewing" "[[us_leaderboard_view]]" "leaderboard_viewing"
+check_brd "CR-13" "Password Policy" "[[rule_password_policy]]" "password_policy"
+check_brd "CR-14" "GDPR Data Portability" "[[api_profile_export]]" "gdpr_portability"
+check_brd "CR-15" "Admin User Management" "[[uc_admin_user_management]]" "admin_user_management"
+check_brd "CR-16" "Session Timeout Handling" "[[requirement_req_ui_session_timeout]]" "session_timeout"
+check_brd "CR-17" "API Self-Discovery" "[[requirement_customer_api_first]]" "api_discovery"
 
 echo ""
 echo "---"
