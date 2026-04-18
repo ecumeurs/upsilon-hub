@@ -23,6 +23,32 @@ The CI pipeline is split into three GitHub Actions workflows with increasing sco
 
 ---
 
+## Customer Requirement Mapping
+
+The following scenarios map directly to the **Conformity Matrix** and validate specific customer-facing requirements. All scripts are located in `upsiloncli/tests/scenarios/`.
+
+| ID | Scenario Name | Primary ATOM | Script |
+|---|---|---|---|
+| **CR-01** | Complete New Player Onboarding | `[[uc_player_registration]]` | `e2e_customer_onboarding.js` |
+| **CR-02** | Player Login & Session Management | `[[uc_player_login]]` | `e2e_customer_login.js` |
+| **CR-03** | Character Reroll Mechanics | `[[us_character_reroll]]` | `e2e_character_reroll.js` |
+| **CR-04** | Matchmaking Flow (PvE Instant) | `[[uc_matchmaking]]` | `e2e_matchmaking_pve_instant.js` |
+| **CR-05** | Matchmaking Flow (PvP Queue) | `[[uc_matchmaking]]` | `e2e_matchmaking_pvp_queue.js` |
+| **CR-06** | Combat Turn Management | `[[uc_combat_turn]]` | `e2e_combat_turn_management.js` |
+| **CR-07** | Friendly Fire Prevention | `[[rule_friendly_fire]]` | `e2e_friendly_fire_prevention.js` |
+| **CR-08** | Match Resolution (Standard) | `[[uc_match_resolution]]` | `e2e_match_resolution_standard.js` |
+| **CR-09** | Match Resolution (Forfeit) | `[[uc_match_resolution]]` | `e2e_match_resolution_forfeit.js` |
+| **CR-10** | Character Progression (Post-Win) | `[[uc_progression_stat_allocation]]` | `e2e_progression_post_win.js` |
+| **CR-11** | Progression Constraints | `[[rule_progression]]` | `e2e_progression_constraints.js` |
+| **CR-12** | Leaderboard Viewing | `[[us_leaderboard_view]]` | `e2e_leaderboard_viewing.js` |
+| **CR-13** | Password Policy Enforcement | `[[rule_password_policy]]` | `e2e_password_policy.js` |
+| **CR-14** | GDPR Data Portability | `[[api_profile_export]]` | `e2e_gdpr_portability.js` |
+| **CR-15** | Admin User Management | `[[uc_admin_user_management]]` | `e2e_admin_user_management.js` |
+| **CR-16** | Session Timeout Handling | `[[requirement_req_ui_session_timeout]]` | `e2e_session_timeout.js` |
+| **CR-17** | API Self-Discovery | `[[requirement_customer_api_first]]` | `e2e_api_discovery.js` |
+
+---
+
 ## E2E Testing Strategy (`e2e-battles.yml`)
 
 Instead of individual workflow steps, all end-to-end verifications are centralized in the `upsiloncli/tests/scenarios/` directory.
