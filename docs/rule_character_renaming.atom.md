@@ -5,8 +5,7 @@ layer: CUSTOMER
 priority: 3
 tags: profile,character,safety
 parents: []
-dependents:
-  - [[api_profile_character]]
+dependents: []
 human_name: Character Renaming Rule
 version: 1.0
 type: RULE

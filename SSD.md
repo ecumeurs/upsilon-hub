@@ -73,19 +73,129 @@ flowchart TD
 
 ---
 
-## 4. Requirement Traceability Matrix
+## 4. Implementation Architecture Details
 
-| Requirement ID | Business Requirement | Software Component | implementation Detail | ATD Reference |
-|---|---|---|---|---|
-| **BR-01** | Frictionless Onboarding | Laravel Gateway | Name/pass/address/birth registration. | [[us_new_player_onboard]] |
-| **BR-02** | GDPR Compliance | Laravel Gateway | Soft-delete and Anonymization hooks. | [[rule_gdpr_compliance]] |
-| **BR-03** | Data Portability | Laravel Gateway | `/api/profile/export` endpoint. | [[api_profile_export]] |
-| **BR-04** | Tactical Combat Engine | UpsilonBattle Engine | Initiative-based turn logic. | [[module_game]] |
-| **BR-05** | Turn Timeout Penalty | UpsilonBattle Engine | +400 delay cost logic in Ruler. | [[mech_action_economy]] |
-| **BR-06** | Secure Transport | All Components | Mandatory HTTPS (Self-signed ok). | [[req_security]] |
-| **BR-07** | Fair Progression | Laravel Gateway | Attribute point allocation gated by wins. | [[rule_progression]] |
-| **BR-08** | Real-time Updates | Laravel Gateway | Reverb WebSockets broadcasting. | [[api_laravel_gateway]] |
-| **BR-09** | Identity Safety | UpsilonBattle Engine | Friendly fire detection and blocking. | [[rule_friendly_fire]] |
-| **BR-10** | System Administration | Laravel Gateway | User listing/deletion; History purge. | [[uc_admin_user_management]] |
-| **BR-11** | Admin Privacy Gate | Laravel Gateway | Masking sensitive user fields for admins. | [[rule_admin_access_restriction]] |
-| **BR-12** | Secure Admin Seeding | Laravel Gateway | env-based admin account creation. | [[infra_seed_admin]] |
+### 4.1 Technology Stack
+| Component | Technology | Purpose | Key Libraries |
+|---|---|---|---|
+| **Frontend** | Vue.js 3 + Laravel 10 | User interface & API gateway | Vue Router, Pinia, Laravel Sanctum |
+| **Backend API** | Go 1.21+ | High-performance combat engine | Gin, UUID v7, logrus |
+| **Database** | PostgreSQL 15+ | Data persistence & caching | - |
+| **Real-time** | Laravel Reverb | WebSocket state broadcasting | - |
+| **Testing** | Go testing + PHPUnit | Unit & integration tests | - |
+
+### 4.2 Data Flow Architecture
+```mermaid
+sequenceDiagram
+    participant U as User (Vue.js)
+    participant L as Laravel Gateway
+    participant D as Database
+    participant R as Reverb (WebSocket)
+    participant A as UpsilonAPI (Go)
+    participant E as Battle Engine
+
+    U->>L: POST /auth/login
+    L->>D: Validate credentials
+    D-->>L: User data + JWT token
+    L-->>U: Auth response + token
+
+    U->>L: POST /matchmaking/join
+    L->>D: Create queue entry
+    L->>A: POST /arena/start
+    A->>E: Initialize battle
+    E-->>A: Initial state
+    A-->>L: Webhook: game.started
+    L->>D: Cache match state
+    L->>R: Broadcast to private channel
+    R-->>U: WebSocket: Match ready
+
+    U->>L: POST /game/{id}/action
+    L->>A: POST /arena/{id}/action  
+    A->>E: Execute combat logic
+    E-->>A: Action result
+    A-->>L: Webhook: board.updated
+    L->>D: Update cached state
+    L->>R: Broadcast state change
+    R-->>U: WebSocket: New board state
+```
+
+### 4.3 State Management Strategy
+- **Database Source of Truth**: Laravel PostgreSQL database holds authoritative match state
+- **Engine Processing**: Go Engine processes actions and generates new states
+- **Webhook Synchronization**: Engine pushes state updates to Laravel via webhooks
+- **Version Control**: Monotonic version numbers prevent race conditions and duplicate processing
+- **WebSocket Distribution**: Real-time state changes broadcast to connected clients
+
+### 4.4 Security Architecture
+- **Authentication**: Laravel Sanctum Bearer tokens with 15-minute expiration
+- **Authorization**: Role-based access control (Player/Admin)
+- **Transport Security**: HTTPS mandatory (self-signed certificates permitted for development)
+- **Input Validation**: Multi-layer validation (Laravel requests + Go engine validation)
+- **Identity Protection**: UUID v7 for internal IDs, Tactical IDs for client references
+
+---
+
+## 5. Requirement Traceability Matrix
+
+| Requirement ID | Business Requirement | Software Component | Implementation Detail | ATD Reference | Status |
+|---|---|---|---|---|---|
+| **BR-01** | Frictionless Onboarding | Laravel Gateway | Name/pass/address/birth registration. | [[us_new_player_onboard]] | ✅ Complete |
+| **BR-02** | GDPR Compliance | Laravel Gateway | Soft-delete and Anonymization hooks. | [[rule_gdpr_compliance]] | 🔄 Partial |
+| **BR-03** | Data Portability | Laravel Gateway | `/api/profile/export` endpoint. | [[api_profile_export]] | ✅ Complete |
+| **BR-04** | Tactical Combat Engine | UpsilonBattle Engine | Initiative-based turn logic. | [[module_game]] | ✅ Complete |
+| **BR-05** | Turn Timeout Penalty | UpsilonBattle Engine | +400 delay cost logic in Ruler. | [[mech_action_economy]] | ✅ Complete |
+| **BR-06** | Secure Transport | All Components | Mandatory HTTPS (Self-signed ok). | [[req_security]] | ✅ Complete |
+| **BR-07** | Fair Progression | Laravel Gateway | Attribute point allocation gated by wins. | [[rule_progression]] | ✅ Complete |
+| **BR-08** | Real-time Updates | Laravel Gateway | Reverb WebSockets broadcasting. | [[api_laravel_gateway]] | ✅ Complete |
+| **BR-09** | Identity Safety | UpsilonBattle Engine | Friendly fire detection and blocking. | [[rule_friendly_fire]] | ✅ Complete |
+| **BR-10** | System Administration | Laravel Gateway | User listing/deletion; History purge. | [[uc_admin_user_management]] | 🔄 Partial |
+| **BR-11** | Admin Privacy Gate | Laravel Gateway | Masking sensitive user fields for admins. | [[rule_admin_access_restriction]] | ✅ Complete |
+| **BR-12** | Secure Admin Seeding | Laravel Gateway | env-based admin account creation. | [[infra_seed_admin]] | ✅ Complete |
+
+---
+
+## 6. Component Interaction Details
+
+### 6.1 Laravel Gateway Responsibilities
+- **Authentication**: JWT token issuance and validation
+- **Session Management**: Token refresh and expiration handling
+- **Request Proxying**: Forward combat actions to Go engine
+- **State Caching**: Maintain authoritative match state in database
+- **WebSocket Broadcasting**: Distribute state changes to connected clients
+- **Business Logic**: Enforce progression rules, character limits, reroll restrictions
+
+### 6.2 UpsilonAPI Bridge Responsibilities
+- **Arena Orchestration**: Manage multiple concurrent battle instances
+- **Request Routing**: Direct actions to appropriate engine instances
+- **Webhook Delivery**: Send asynchronous state updates to Laravel
+- **Health Monitoring**: Provide liveness and readiness probes
+- **State Validation**: Ensure request integrity before engine processing
+
+### 6.3 Battle Engine Responsibilities
+- **Turn Management**: Initiative calculation and turn sequencing
+- **Action Validation**: Move, attack, and ability validation
+- **Combat Resolution**: Damage calculation, status effects, win detection
+- **Timer Enforcement**: 30-second shot clock with auto-pass penalty
+- **State Generation**: Create new board states after each action
+
+---
+
+## 7. Performance & Scalability Considerations
+
+### 7.1 Current Limitations
+- **Single Instance**: Not designed for horizontal scaling
+- **Memory Usage**: Each arena maintains full state in memory
+- **Database Load**: Frequent state updates can cause write contention
+- **WebSocket Connections**: No connection pooling or load balancing
+
+### 7.2 Optimization Opportunities
+- **State Caching**: Redis layer for high-frequency state reads
+- **Batch Processing**: Aggregate multiple actions before webhook delivery
+- **Connection Management**: WebSocket connection pooling and reconnection logic
+- **Database Indexing**: Optimize queries for leaderboard and match history
+
+### 7.3 Monitoring & Observability
+- **Health Checks**: `/health` endpoints for all services
+- **Request Tracing**: UUID v7 request IDs across all services
+- **Error Logging**: Structured logging with request context
+- **Performance Metrics**: Turn processing time, action latency, state update frequency

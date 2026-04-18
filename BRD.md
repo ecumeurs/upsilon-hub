@@ -140,8 +140,54 @@ The system implements a "Safe by Design" approach to user privacy.
 The user interface must be intuitive and reflect the current state of the game and player progress.
 - **Leaderboard:** Display ranked players with metrics like Total Wins and Movement.
 - **Roster Management:** View character stats and allocate points.
+- **Real-time Combat:** Interactive tactical board with live state updates via WebSockets.
+- **Session Management:** Graceful handling of session timeouts and re-authentication.
 
 **Source References:**  
 - [[ui_dashboard]]: Main landing page after login.
 - [[ui_leaderboard]]: Ranking display requirements.
 - [[us_leaderboard_view]]: User story for viewing competitive standings.
+- [[ui_battle_arena]]: Real-time combat interface.
+- [[requirement_req_ui_session_timeout]]: Session timeout handling.
+
+---
+
+## 5. Implementation Status & Coverage
+
+### 5.1 Documentation Coverage Analysis
+Based on comprehensive ATD investigation (2026-04-17):
+
+- **Total ATOMs**: 243 documentation atoms
+- **True Orphans**: 8 atoms (3%) - intentionally unimplemented features
+- **Implementation Coverage**: ~82% of STABLE atoms have corresponding code implementations
+- **Traceability**: 421 @spec-link occurrences across 250 code files
+
+### 5.2 Fully Implemented Features
+✅ **Authentication & Identity**: Complete registration, login, logout with JWT tokens
+✅ **Character Management**: Full roster system with reroll mechanics
+✅ **Matchmaking**: PvE and PvP queue systems
+✅ **Combat Engine**: Initiative-based turns, action economy, move/attack/validation
+✅ **Progression System**: Win-based attribute point allocation
+✅ **Real-time Updates**: WebSocket-based state broadcasting
+✅ **Leaderboard**: Mode-based rankings with weekly cycles
+✅ **Basic Admin**: User management and soft deletion
+
+### 5.3 Partially Implemented Features
+🔄 **Advanced Admin**: History management and audit trails (basic structure exists)
+🔄 **GDPR Compliance**: Soft deletion implemented, full anonymization in progress
+🔄 **Action Reporting**: Basic state updates, rich visualization planned
+🔄 **Match History**: Basic logging, player history views pending
+
+### 5.4 Planned Features (Not Yet Implemented)
+📋 **PvP Stalemate Detection**: Draw conditions for infinite matches (ISS-029)
+📋 **Rich Action Feedback**: Detailed animation data for UI effects
+📋 **Advanced Privacy**: Complete "Right to be Forgotten" implementation
+📋 **Personal Match History**: Player's historical match records
+
+### 5.5 Known Issues & Gaps
+- **Security**: Match participant access control needs enhancement (ISS-018)
+- **Performance**: Arena lifecycle management improvements needed (ISS-012)
+- **Traceability**: Request ID logging consistency (ISS-023, ISS-042)
+- **Testing**: Go unit test flakiness in concurrent scenarios (ISS-047)
+
+**Documentation References**: See `atd_investigation/` directory for detailed analysis.

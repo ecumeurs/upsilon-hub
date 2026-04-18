@@ -3,7 +3,7 @@ id: api_ruler_methods
 human_name: Ruler Message Methods API
 type: API
 layer: ARCHITECTURE
-version: 1.1
+version: 1.2
 status: STABLE
 priority: 5
 tags: [api, messaging, queue]
@@ -32,6 +32,9 @@ Interaction with the backend engine is strictly channeled through `messagequeue`
 - `ControllerUseSkill`: Issues a complex skill against a target node. Replies `ControllerUseSkillReply`.
 - `EndOfTurn`: Manually completes an entity's turn segment.
 - `ControllerQuit`: Disconnects the controller from the session loop.
+
+**Internal Engine Notifications:**
+- `Timeout`: Internal notification triggered by the ShotClock to force end-of-turn processing. Must include `TurnIndex` for version validation.
 
 **Broadcast Events (Engine to Clients):**
 - `BattleStart`: Indicates the initial transition from setup to combat.

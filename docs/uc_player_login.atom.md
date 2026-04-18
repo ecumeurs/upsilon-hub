@@ -12,6 +12,7 @@ parents:
   - [[req_player_experience]]
   - [[ui_dashboard]]
 dependents:
+  - [[api_auth_login]]
   - [[ui_dashboard]]
   - [[ui_login]]
 ---

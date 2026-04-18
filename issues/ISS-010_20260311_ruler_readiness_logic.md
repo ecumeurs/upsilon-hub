@@ -4,7 +4,7 @@
 **Ref:** `ISS-010`
 **Date:** 2026-03-11
 **Severity:** Low
-**Status:** Open
+**Status:** Resolved
 **Component:** `github.com/ecumeurs/upsilonbattle/battlearena/ruler`
 **Affects:** `github.com/ecumeurs/upsilonapi/bridge`
 

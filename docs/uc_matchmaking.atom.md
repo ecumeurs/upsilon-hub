@@ -10,6 +10,7 @@ tags: []
 parents:
   - [[req_player_experience]]
 dependents:
+  - [[api_matchmaking]]
   - [[rule_matchmaking_single_queue]]
   - [[usecase_api_flow_matchmaking]]
 ---

@@ -8,8 +8,7 @@ status: STABLE
 priority: 5
 tags: [auth, login, api]
 parents:
-  - [[api_laravel_gateway]]
-  - [[api_standard_envelope]]
+  - [[uc_player_login]]
 dependents:
   - [[mechanic_mech_cli_sensitive_data_masking]]
   - [[uc_player_login]]

@@ -8,8 +8,7 @@ status: STABLE
 priority: 5
 tags: [matchmaking, queue, api]
 parents:
-  - [[api_laravel_gateway]]
-  - [[api_standard_envelope]]
+  - [[uc_matchmaking]]
 dependents:
   - [[api_websocket_user_notifications]]
 ---

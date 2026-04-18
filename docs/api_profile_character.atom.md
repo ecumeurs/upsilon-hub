@@ -8,9 +8,7 @@ status: STABLE
 priority: 5
 tags: [profile, character, api]
 parents:
-  - [[api_laravel_gateway]]
-  - [[api_standard_envelope]]
-  - [[rule_character_renaming]]
+  - [[us_character_reroll]]
 dependents: []
 ---
 # Character Management API
