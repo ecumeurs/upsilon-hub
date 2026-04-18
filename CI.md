@@ -4,13 +4,13 @@ This document outlines the automated verification strategy for Upsilon Battle, e
 
 ## Architecture
 
-The CI pipeline is split into three GitHub Actions workflows with increasing scope and cost:
+The CI pipeline is split into three GitHub Actions workflows with increasing scope:
 
-| Workflow | Trigger | Duration | Purpose |
-|---|---|---|---|
-| **Lint & Build** | Push to `main` + PRs | ~2 min | Go syntax checks, compilation |
-| **Unit Tests** | Push to `main` + PRs | ~5 min | Go + PHP isolated tests |
-| **E2E Battles** | Push to `main` + PRs | ~15 min | Full stack integration |
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| **Lint & Build** | Push + PR | Go syntax checks, compilation |
+| **Unit Tests** | Push + PR | Go + PHP isolated tests |
+| **E2E Battles** | Push + PR | Full stack integration & Customer Scenarios |
 
 ### Infrastructure
 
@@ -18,90 +18,44 @@ The CI pipeline is split into three GitHub Actions workflows with increasing sco
 |---|---|---|
 | `.env.ci` | CI environment variables | Deterministic config for ephemeral stack |
 | `docker-compose.ci.yaml` | CI Docker Compose | Ephemeral stack with healthchecks |
+| `tests/run_all_scenarios.sh` | Scenario Runner | **Centralized discovery & execution** |
 | `tests/ci_report.sh` | Report generator | Markdown summary of CI results |
 
-The ephemeral Docker stack uses:
-- **PostgreSQL** with `tmpfs` (RAM disk) for fast I/O
-- **Docker healthchecks** on all services (`--wait` flag)
-- **`GET /health`** endpoint on the Go engine for readiness probing.
-- **`GET /up`** endpoint on the Laravel app for readiness probing. See `[[api_laravel_health_check]]`.
+---
+
+## E2E Testing Strategy (`e2e-battles.yml`)
+
+Instead of individual workflow steps, all end-to-end verifications are centralized in the `upsiloncli/tests/scenarios/` directory.
+
+### 1. Centralized Runner (`run_all_scenarios.sh`)
+The runner automatically discovers all `e2e_*.js` scripts. It handles:
+- **Agent Coordination**: Determines required agent count based on filename (e.g., `pvp` or `combat` triggers 2 agents).
+- **Execution**: Runs the `upsiloncli --farm` command.
+- **Reporting Contract**: Appends `[SCENARIO_RESULT: PASSED]` to the log file upon successful exit (code 0).
+
+### 2. Scenario Library
+All customer-facing scenarios from the **Conformity Matrix** are implemented here:
+- `e2e_customer_onboarding.js` (CR-01)
+- `e2e_customer_login.js` (CR-02)
+- `e2e_character_reroll.js` (CR-03)
+- ... (Total of 17 scenarios)
+
+### 3. CI Report Generation
+The `tests/ci_report.sh` script parses the logs in `upsiloncli/tests/logs/`. It uses a **unified detection method**: it only marks a test as `✅ PASS` if the success marker `[SCENARIO_RESULT: PASSED]` is present in the log.
 
 ---
 
-## CI Strategy
+## Adding a New CI Test
 
-### Tier 1: Lint & Build (`lint-and-build.yml`)
+Adding a new verification scenario is a **zero-touch process** (no GitHub Actions YAML edits required):
 
-Runs `go vet ./...` and builds both `upsilonapi` and `upsiloncli` to ensure compilation succeeds.
-
-### Tier 2: Unit Tests (`unit-tests.yml`)
-
-**Go Tests:** Runs `go test -json ./...` across all workspace modules. Results are uploaded as artifacts.
-
-**PHP Tests:** Builds the `battleui` Docker image, then runs PHPUnit inside the container using SQLite in-memory. Tests requiring the Go engine are excluded (group `engine-required`) and deferred to E2E.
-
-### Tier 3: E2E Battles (`e2e-battles.yml`)
-
-Boots the full Docker stack, seeds the database, builds the CLI, then executes:
-
-1. **BRD Compliance Scenarios** (bot scripts with assertions)
-2. **Battle Mode Battery** (4 game modes via `run_all_battles.sh`)
-3. **CI Report Generation** (markdown summary)
-
----
-
-## Verification Scenarios
-
-### BRD Compliance Scripts
-
-Each scenario targets a specific BRD requirement and its linked ATD atom.
-
-#### 1. Character Progression Lifecycle
-*   **BRD:** 2.5 — Character Progression
-*   **Target:** [[rule_progression]]
-*   **Path:** `upsiloncli/samples/progression_check.js`
-*   **Description:** Simulates a player journey from registration through a match win and attempts to upgrade character stats.
-*   **Assertions:**
-    *   Stat gain is allowed after a win.
-    *   Stat gain is rejected if it exceeds `10 + wins`.
-    *   Movement gain is rejected if not on a 5-win milestone.
-
-#### 2. Authentication & Security Policy
-*   **BRD:** 3.1 — Password Policy
-*   **Target:** [[rule_password_policy]]
-*   **Path:** `upsiloncli/samples/auth_security_check.js`
-*   **Description:** Attempts various registration payloads to verify server-side validation.
-*   **Assertions:**
-    *   Reject passwords < 15 characters.
-    *   Reject passwords without numbers/symbols.
-    *   Accept compliant passwords.
-
-### Battle Engine Battery
-
-Executed via `upsiloncli/tests/run_all_battles.sh`:
-
-| Mode | Agents | Script | Verification |
-|---|---|---|---|
-| `1v1_PVE` | 1 | `pve_1v1_battle.js` | Natural conclusion + log parser |
-| `2v2_PVE` | 2 | `pve_2v2_battle.js` | Natural conclusion + log parser |
-| `1v1_PVP` | 2 | `pvp_1v1_battle.js` | Natural conclusion + log parser |
-| `2v2_PVP` | 4 | `pvp_2v2_battle.js` | Natural conclusion + log parser |
-
-Each battle script includes:
-- **Multi-agent synchronization**: Ensures all bots are ready before matchmaking
-- **Match verification**: Confirms all agents joined the same match (critical for PVP modes)
-- **Action economy compliance**: Proper turn management with attack/move/pass logic
-- **Failure assertions**: Tests abort immediately if agents end up in different matches
-
-### Stress Testing
-
-The `slow_bot_battle.js` script provides stress testing capabilities:
-- **Human simulation**: Adds random delays (1-15s) between actions to simulate human pacing
-- **Universal mode support**: Reads `UPSILON_GAME_MODE` environment variable for any game mode
-- **Proper action economy**: Updated to match current battle logic with correct turn management
-- **Multi-agent sync**: Includes proper synchronization for multi-agent scenarios
-
-Usage: `UPSILON_GAME_MODE=1v1_PVP ./bin/upsiloncli --farm samples/slow_bot_battle.js samples/slow_bot_battle.js`
+1.  **Create the Script**: Add a new JavaScript file in `upsiloncli/tests/scenarios/`.
+    - **Naming**: Use the `e2e_` prefix. If it requires 2 agents (PVP/Combat), include `pvp` or `combat` in the name.
+2.  **Add Assertions**: Use the `upsilon` JS API helpers:
+    - `upsilon.assert(condition, msg)`
+    - `upsilon.assertEquals(actual, expected, msg)`
+3.  **Tag with ATD**: Include `@spec-link [[atom_id]]` in the header for traceability.
+4.  **Save & Push**: The CI runner will automatically find your script and include it in the next run.
 
 ---
 
@@ -109,69 +63,23 @@ Usage: `UPSILON_GAME_MODE=1v1_PVP ./bin/upsiloncli --farm samples/slow_bot_battl
 
 ### Full E2E Stack
 ```bash
-# Prepare environment
-cp .env.ci .env
-
-# Boot Docker stack (waits for health checks)
+# 1. Boot Docker stack
 docker compose -f docker-compose.ci.yaml up -d --wait
 
-# Seed database
-docker compose -f docker-compose.ci.yaml exec -T app php artisan migrate:fresh --seed --force
+# 2. Build CLI
+cd upsiloncli && go build -o bin/upsiloncli cmd/upsiloncli/main.go && cd ..
 
-# Build CLI
-cd upsiloncli && go build -o ../bin/upsiloncli ./cmd/upsiloncli && cd ..
+# 3. Run the Suite
+docker compose -f docker-compose.ci.yaml exec tester /bin/sh ./tests/run_all_scenarios.sh
 
-# Run scenarios
-cd upsiloncli
-UPSILON_BASE_URL=http://localhost:8000 REVERB_HOST=127.0.0.1:8080 REVERB_APP_KEY=ci_app_key \
-  ../bin/upsiloncli --farm samples/auth_security_check.js --timeout 60
-
-# Run all battles
-./tests/run_all_battles.sh
-
-# Teardown
-cd .. && docker compose -f docker-compose.ci.yaml down -v
-```
-
-### Unit Tests Only
-```bash
-# Go tests
-go test ./... -count=1 -timeout 120s
-
-# PHP tests (requires Docker)
-docker build -t battleui-ci ./battleui
-docker run --rm -e APP_ENV=testing -e DB_CONNECTION=sqlite -e DB_DATABASE=:memory: \
-  battleui-ci sh -c "php artisan key:generate --force && php artisan test"
+# 4. Generate Report
+./tests/ci_report.sh > ci_report.md
 ```
 
 ---
 
-## Adding a New CI Test
+## Troubleshooting
 
-1. **Create a bot script** in `upsiloncli/samples/` following the `bootstrapBot` pattern (see `scripting.md`).
-2. **Add `@spec-link` tags** to the script header linking to the target ATD atom.
-3. **Add a step** to `.github/workflows/e2e-battles.yml` with descriptive BRD reference.
-4. **Update this document** and `CI_INTEGRATION.md` with the new scenario.
-
----
-
-## Troubleshooting CI Failures
-
-### Service Won't Start
-Check Docker logs: `docker compose -f docker-compose.ci.yaml logs <service>`
-
-### Health Check Timeout
-- **app:** Laravel may need longer `start_period`. Ensure the `@spec-link [[mech_web_catchall_router]]` in `web.php` excludes `/up` to prevent 500 errors.
-- **engine:** Verify `GET /health` responds: `curl http://localhost:8081/health`
-- **ws:** Reverb may fail if Reverb keys are missing from `.env`.
-
-### Missing Logs in CI
-If the app fails to boot or returns 500 errors but the logs are empty, ensure `LOG_CHANNEL=stderr` is set in `.env.ci`. This forces Laravel to output directly to the Docker logging stream.
-
-### Bot Script Timeout
-- Increase `--timeout` value in the workflow step.
-- Check if the game mode requires more agents than specified.
-- Verify WebSocket connectivity: bots need `REVERB_HOST` and `REVERB_APP_KEY`.
-
-> [!IMPORTANT]
-> **Exit Codes:** The CLI exit code reflects the success or failure of the farm. Any assertion failure in a script results in a non-zero exit code, blocking the CI pipeline.
+- **Mismatch between Runner and Report**: If the runner says `[PASSED]` but the report says `❌ FAIL`, check if the script is exiting with code 0 but missing the log output. The reporter relies strictly on the `[SCENARIO_RESULT: PASSED]` marker written by the runner.
+- **Service Timeouts**: If healthchecks fail, check `docker compose logs`. Laravel often requires more time to boot in resource-constrained environments.
+- **Ghost Tests**: Ensure your script filename starts with `e2e_`, otherwise the runner will skip it.

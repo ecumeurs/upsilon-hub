@@ -77,25 +77,26 @@ else
 fi
 echo ""
 
-# --- E2E Battle Results ---
-echo "## E2E Battle Scenarios"
+# --- E2E Scenario Results ---
+echo "## E2E Customer Scenarios"
 echo ""
 BATTLE_LOG_DIR="upsiloncli/tests/logs"
 if [ -d "$BATTLE_LOG_DIR" ]; then
-    echo "| Scenario | Mode | Result |"
-    echo "|---|---|---|"
+    echo "| Scenario | Result |"
+    echo "|---|---|"
     for logfile in "$BATTLE_LOG_DIR"/*.log; do
         if [ ! -f "$logfile" ]; then continue; fi
-        MODE=$(basename "$logfile" .log)
-        if grep -q "Game Over! Winner:" "$logfile" || grep -q "STALEMATE" "$logfile"; then
-            echo "| Bot Battle | \`$MODE\` | ✅ PASS |"
+        NAME=$(basename "$logfile" .log)
+        # Unified success method: check for the marker appended by the runner
+        if grep -q "\[SCENARIO_RESULT: PASSED\]" "$logfile"; then
+            echo "| \`$NAME\` | ✅ PASS |"
         else
-            echo "| Bot Battle | \`$MODE\` | ❌ FAIL |"
+            echo "| \`$NAME\` | ❌ FAIL |"
         fi
     done
 else
     echo "> [!NOTE]"
-    echo "> Battle log directory not found. E2E tests may not have run."
+    echo "> Scenario log directory not found. E2E tests may not have run."
 fi
 echo ""
 
@@ -105,17 +106,17 @@ echo ""
 echo "| Requirement | ATD Atom | Script | Status |"
 echo "|---|---|---|---|"
 
-# Check if the scripts ran successfully (look for exit code or specific markers)
-if [ -f "$BATTLE_LOG_DIR/auth_security.log" ] 2>/dev/null; then
-    echo "| Password Policy (BRD 3.1) | \`[[rule_password_policy]]\` | \`auth_security_check.js\` | ✅ |"
+# Check if the scripts ran successfully (centralized name mapping)
+if [ -f "$BATTLE_LOG_DIR/e2e_password_policy.log" ] && grep -q "\[SCENARIO_RESULT: PASSED\]" "$BATTLE_LOG_DIR/e2e_password_policy.log"; then
+    echo "| Password Policy (BRD 3.1) | \`[[rule_password_policy]]\` | \`e2e_password_policy.js\` | ✅ |"
 else
-    echo "| Password Policy (BRD 3.1) | \`[[rule_password_policy]]\` | \`auth_security_check.js\` | ⚠️ No log |"
+    echo "| Password Policy (BRD 3.1) | \`[[rule_password_policy]]\` | \`e2e_password_policy.js\` | ❌ |"
 fi
 
-if [ -f "$BATTLE_LOG_DIR/progression.log" ] 2>/dev/null; then
-    echo "| Progression (BRD 2.5) | \`[[rule_progression]]\` | \`progression_check.js\` | ✅ |"
+if [ -f "$BATTLE_LOG_DIR/e2e_progression_constraints.log" ] && grep -q "\[SCENARIO_RESULT: PASSED\]" "$BATTLE_LOG_DIR/e2e_progression_constraints.log"; then
+    echo "| Progression (BRD 2.5) | \`[[rule_progression]]\` | \`e2e_progression_constraints.js\` | ✅ |"
 else
-    echo "| Progression (BRD 2.5) | \`[[rule_progression]]\` | \`progression_check.js\` | ⚠️ No log |"
+    echo "| Progression (BRD 2.5) | \`[[rule_progression]]\` | \`e2e_progression_constraints.js\` | ❌ |"
 fi
 
 echo ""
