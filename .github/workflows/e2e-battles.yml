@@ -24,7 +24,9 @@ jobs:
 
       # 2. Setup CI Environment
       - name: Prepare Environment Variables
-        run: cp .env.ci .env
+        run: |
+          cp .env.ci .env
+          mkdir -p upsiloncli/tests/logs
 
       # 3. Boot the ephemeral Docker infrastructure
       - name: Boot Upsilon Services
