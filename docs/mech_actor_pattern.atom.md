@@ -22,17 +22,21 @@ Encapsulate internal state and behavioral logic behind a message-driven communic
 
 ## THE RULE / LOGIC
 - **Atomic Operations**: All logic within an Actor is strictly sequential, driven by a FIFO `MessageQueue`.
-- **Componentized Design**: The pattern is composed of several mandatory sub-mechanics:
-  1. **Behavioral Contexts**: Gated access to protocol-safe methods ([[[mech_actor_handler_context]]]).
-  2. **Event Dispatching**: Central selection of messages and callbacks ([[[mech_actor_dispatch_loop]]]).
-  3. **Managed Lifecycle**: Controlled startup and graceful termination ([[[mech_actor_lifecycle]]]).
+- **Communication Modes**:
+  1. **Notification (Async)**: Fire-and-forget message between actors.
+  2. **Call (Sync/Request-Reply)**: Blocking or non-blocking request expecting a correlated response.
+  3. **Reply (Callback)**: Handling of a response from a previous `Call` via `AddReplyHandler`.
+  4. **Self-Notification**: Safe internal work scheduling that maintains FIFO ordering with external messages.
 - **Isolation Sovereignty**: No Actor may directly access the internal state of another; all data flow must occur via `Communication` interfaces.
 
 ## TECHNICAL INTERFACE (The Bridge)
-- **Code Tag**: `@spec-link [[mech_actor_pattern]]` (Targeting the primary Actor struct and interface)
+- **Code Tag**: `@spec-link [[mech_actor_pattern]]`
 - **Primary Interfaces**:
-  - `Communication`: `NotifyActor`, `SendActor`.
+  - `Communication`: `NotifyActor` (Async), `SendActor` (Request/Reply).
   - `Manageable`: `Start`, `Stop`, `PrepareToStop`.
+- **New Patterns**:
+  - `SelfNotify`: Loop-back notification to own queue.
+  - `SelfNotifyDelayed`: Scheduled loop-back with configurable delay.
 
 ## EXPECTATION (For Testing)
 - **Concurrency Safety**: The system survives a high volume of interleaved messages without deadlocks or state corruption.

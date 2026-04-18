@@ -25,9 +25,7 @@ Centrally orchestrate the processing of incoming messages and callbacks, ensurin
   1. **Typed Handlers**: Modern `callHandlers` or `notificationHandlers` maps.
   2. **Internal Signals**: Special handling for `ActorStarted`, `ActorStop`.
   3. **Legacy Handlers**: The `methods` map for backward compatibility.
-- **Protocol Enforcement**:
-  - `Call` messages must be processed via `CallContext` and checked for replies.
-  - `Notification` messages must be acknowledged to the queue after handler execution.
+- **Loop-Back Integration**: `SelfNotify` messages are injected into the back of the `MessageQueue`. The dispatcher processes them in precisely the order they were queued, interleaved with external messages, ensuring state consistency across complex multi-stage tasks.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag**: `@spec-link [[mech_actor_dispatch_loop]]`
