@@ -37,20 +37,10 @@ jobs:
         run: docker compose -f docker-compose.ci.yaml ps
 
 
-      # 5. BRD Compliance: Password Policy (BRD 3.1)
-      - name: "BRD 3.1: Password Policy Check"
+      # 5. Run Centralized E2E Customer Scenarios (CR-01 to CR-17)
+      - name: "E2E: Run Centralized Customer Scenarios"
         run: |
-          docker compose -f docker-compose.ci.yaml exec -T tester upsiloncli --timeout 60 --farm samples/auth_security_check.js > upsiloncli/tests/logs/auth_security.log 2>&1
-
-      # 6. BRD Compliance: Character Progression (BRD 2.5)
-      - name: "BRD 2.5: Progression Check"
-        run: |
-          docker compose -f docker-compose.ci.yaml exec -T tester upsiloncli --timeout 120 --farm samples/progression_check.js samples/progression_check.js > upsiloncli/tests/logs/progression.log 2>&1
-
-      # 7. Battle Engine: Full Mode Battery
-      - name: "Engine: Run All Battle Modes"
-        run: |
-          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh ./tests/run_all_battles.sh
+          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh ./tests/run_all_scenarios.sh
 
       # 10. Generate CI Report
       - name: Generate CI Report
