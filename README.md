@@ -86,7 +86,6 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [Ruler Synchronization Race and Seeding Fragility](issues/ISS-050_20260419_ruler_synchronization_and_seeding.md) | 2026-04-19 | Open | High | The `Ruler` component currently suffers from two interlinked stability issues... |
 | [Modernize Actor Library with Go Generics (Templates)](issues/ISS-049_20260418_actor_generics_modernization.md) | 2026-04-18 | Open | Low (Architectural Improvement) | The current Actor implementation was designed before Go 1.18 (Generics). It r... |
 | [Turn Start Webhook Missing When AI Goes First](issues/ISS-048_20260418_turn_start_webhook_unicast.md) | 2026-04-18 | Open | High | The `turn.started` webhook event is intermittently missing from CI test resul... |
 | [BRD Compliance CI Test Suite Blockers](issues/ISS-045_20260416_brd_compliance_ci_blockers.md) | 2026-04-16 | Open | High | The implementation of automated BRD compliance tests via specialized CLI bot ... |
