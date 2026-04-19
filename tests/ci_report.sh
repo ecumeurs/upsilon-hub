@@ -18,65 +18,6 @@ echo "| **Commit** | \`$COMMIT_SHA\` |"
 echo "| **Branch** | \`$BRANCH\` |"
 echo ""
 
-# --- Go Test Results ---
-echo "## Go Unit Tests"
-echo ""
-GO_RESULTS="go-test-results.json"
-if [ -f "$GO_RESULTS" ]; then
-    PASS_COUNT=$(grep -c '"Action":"pass"' "$GO_RESULTS" 2>/dev/null || echo "0")
-    FAIL_COUNT=$(grep -c '"Action":"fail"' "$GO_RESULTS" 2>/dev/null || echo "0")
-    SKIP_COUNT=$(grep -c '"Action":"skip"' "$GO_RESULTS" 2>/dev/null || echo "0")
-
-    if [ "$FAIL_COUNT" -gt 0 ]; then
-        echo "| Suite | Passed | Failed | Skipped | Result |"
-        echo "|---|---|---|---|---|"
-        echo "| Go (all modules) | $PASS_COUNT | $FAIL_COUNT | $SKIP_COUNT | ❌ FAIL |"
-        echo ""
-        echo "<details><summary>Failed Tests</summary>"
-        echo ""
-        echo '```'
-        grep '"Action":"fail"' "$GO_RESULTS" | head -20
-        echo '```'
-        echo "</details>"
-    else
-        echo "| Suite | Passed | Skipped | Result |"
-        echo "|---|---|---|---|"
-        echo "| Go (all modules) | $PASS_COUNT | $SKIP_COUNT | ✅ PASS |"
-    fi
-else
-    echo "> [!NOTE]"
-    echo "> Go test results file not found. Skipped."
-fi
-echo ""
-
-# --- PHP Test Results ---
-echo "## PHP Unit Tests"
-echo ""
-PHP_RESULTS="php-test-results.txt"
-if [ -f "$PHP_RESULTS" ]; then
-    if grep -q "FAILED" "$PHP_RESULTS"; then
-        echo "| Suite | Result |"
-        echo "|---|---|"
-        echo "| PHPUnit (battleui) | ❌ FAIL |"
-        echo ""
-        echo "<details><summary>Output</summary>"
-        echo ""
-        echo '```'
-        tail -20 "$PHP_RESULTS"
-        echo '```'
-        echo "</details>"
-    else
-        TESTS_LINE=$(grep -oE "Tests:.*" "$PHP_RESULTS" | tail -1 || echo "Unknown")
-        echo "| Suite | Result | Summary |"
-        echo "|---|---|---|"
-        echo "| PHPUnit (battleui) | ✅ PASS | $TESTS_LINE |"
-    fi
-else
-    echo "> [!NOTE]"
-    echo "> PHP test results file not found. Skipped."
-fi
-echo ""
-
 # --- E2E Scenario Results ---
 echo "## E2E Customer Scenarios"
 echo ""

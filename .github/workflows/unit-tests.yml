@@ -99,3 +99,30 @@ jobs:
           name: php-test-results
           path: php-test-results.txt
           retention-days: 3
+
+  summary:
+    name: Unit Test Summary
+    needs: [go-tests, php-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Download Go Results
+        uses: actions/download-artifact@v5
+        with:
+          name: go-test-results
+          path: .
+
+      - name: Download PHP Results
+        uses: actions/download-artifact@v5
+        with:
+          name: php-test-results
+          path: .
+
+      - name: Generate Unit Report
+        run: |
+          chmod +x ./tests/unit_report.sh
+          ./tests/unit_report.sh > summary.md
+          cat summary.md >> $GITHUB_STEP_SUMMARY

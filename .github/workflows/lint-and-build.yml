@@ -44,3 +44,10 @@ jobs:
           docker build --check -f battleui/Dockerfile battleui/ 2>/dev/null || echo "Docker --check not supported, skipping syntax validation"
           echo "Checking upsilonapi Dockerfile..."
           docker build --check -f upsilonapi/Dockerfile . 2>/dev/null || echo "Docker --check not supported, skipping syntax validation"
+
+      - name: Generate Build Report
+        if: always()
+        run: |
+          chmod +x ./tests/lint_report.sh
+          ./tests/lint_report.sh > build_report.md
+          cat build_report.md >> $GITHUB_STEP_SUMMARY
