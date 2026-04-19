@@ -118,8 +118,9 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [Implement E2E Tests for Admin Match History Management](issues/ISS-052_20260419_admin_history_management_testing.md) | 2026-04-19 | Open | Medium | The Administrative Match History Management feature lacks any E2E test covera... |
-| [Implement Administrative Match History Management Logic](issues/ISS-051_20260419_admin_history_management_impl.md) | 2026-04-19 | Open | Medium | The Administrative Match History Management use case (`uc_admin_history_manag... |
+| [Refactor Admin User Management for Scalable Pagination and Search](issues/ISS-053_20260419_admin_user_management_scalability.md) | 2026-04-19 | Open | Medium | The current Administrative User Management implementation is not scalable. It... |
+| [Implement Full E2E Admin Test Suite](issues/ISS-052_20260419_admin_history_management_testing.md) | 2026-04-19 | Open | Medium | The Administrative suite currently lacks comprehensive E2E validation. While ... |
+| [Implement Administrative Match History Management (Backend & Frontend)](issues/ISS-051_20260419_admin_history_management_impl.md) | 2026-04-19 | Open | Medium | The Administrative Match History Management use case (`uc_admin_history_manag... |
 | [Modernize Actor Library with Go Generics (Templates)](issues/ISS-049_20260418_actor_generics_modernization.md) | 2026-04-18 | Open | Low (Architectural Improvement) | The current Actor implementation was designed before Go 1.18 (Generics). It r... |
 | [Turn Start Webhook Missing When AI Goes First](issues/ISS-048_20260418_turn_start_webhook_unicast.md) | 2026-04-18 | Open | High | The `turn.started` webhook event is intermittently missing from CI test resul... |
 | [BRD Compliance CI Test Suite Blockers](issues/ISS-045_20260416_brd_compliance_ci_blockers.md) | 2026-04-16 | Open | High | The implementation of automated BRD compliance tests via specialized CLI bot ... |

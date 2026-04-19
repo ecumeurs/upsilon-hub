@@ -14,7 +14,11 @@
 
 The Administrative Match History Management use case (`uc_admin_history_management`) is documented in ATD but has no implementation in the backend or frontend. Administrators currently lack the tools (API and UI) to review match outcomes or purge old history.
 
-This issue also covers the verification and potential refinement of the **Admin Dashboard** and **Admin User Management** frontend pages to ensure they are fully operational and correctly linked to the new history management views.
+**Key Requirements:**
+1. **Search & Pagination:** Must implement server-side pagination and keyword searching (Match ID, Player Name) to ensure scalability.
+2. **UI Theme Compliance:** All views must strictly follow `[[ui_theme]]` specifications for color tokens and typography.
+3. **Pattern Consistency:** Establish a shared "Admin Registry" pattern that should be backported to User Management for a unified experience.
+4. **CLI Accessibility:** All administrative endpoints must be reachable and consumable through CLI tools (e.g., `upsiloncli`). This requires stable JSON output and documentation of authentication headers for non-browser clients.
 
 ---
 
@@ -50,8 +54,9 @@ The system is required to provide administrators with a unified management inter
 ## Recommended Fix
 
 **Short term:** 
-- Implement `GET /api/admin/history` and `POST /api/admin/history/purge` in `AdminController.php`.
-- Create `battleui/resources/js/Pages/Admin/History.vue` to display the match list and provide the purge button.
+- Implement `GET /api/admin/history` (paginated) and `POST /api/admin/history/purge` in `AdminController.php`.
+- Create `battleui/resources/js/Pages/Admin/History.vue` following `[[ui_theme]]`.
+- Add Search/Pagination to `UserManagement.vue` to match this new standard.
 
 **Medium term:** 
 - Update `Admin/Dashboard.vue` with a navigation link to the History page.

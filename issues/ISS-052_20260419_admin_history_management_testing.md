@@ -50,6 +50,7 @@ A developer might break the Admin Login redirect or the Dashboard security middl
    - **Login Verification:** Assert successful login with seeded `admin` credentials.
    - **Dashboard Access:** Verify authorized access to `/admin/dashboard`.
    - **Access Denial:** Verify non-admin users/guests are blocked from admin routes (using `edge_auth_non_admin_access.js`).
+   - **CLI Connectivity:** Verify that a CLI client (authenticated via a service token) can successfully interact with history and user management endpoints.
 2. Implement `e2e_admin_history_management.js` once history endpoints are ready.
 
 **Medium term:** Update `tests/ci_report.sh` to include CR-mappings for these new tests.

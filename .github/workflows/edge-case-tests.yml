@@ -72,12 +72,18 @@ jobs:
       #   run: |
       #     docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh ./tests/run_all_scenarios.sh
 
-      # 8. Generate Edge Case Report
+      # 8. Generate Edge Case Report (only if tests ran)
       - name: Generate Edge Case Report
         if: always()
         run: |
-          ./tests/edge_case_report.sh > edge_case_report.md 2>&1 || true
-          cat edge_case_report.md >> $GITHUB_STEP_SUMMARY
+          # Only generate report if tests actually executed
+          if [ -d "upsiloncli/tests/logs/edge_*.log" ]; then
+            ./tests/edge_case_report.sh > edge_case_report.md 2>&1 || true
+            cat edge_case_report.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No edge case test logs found - tests may have failed early"
+            echo "Check Docker logs for test execution errors"
+          fi
 
       # 9. Collect Docker Logs on Failure
       - name: Collect Docker Logs
