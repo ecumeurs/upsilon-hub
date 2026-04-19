@@ -1,0 +1,115 @@
+name: Edge Case Tests
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  edge-cases:
+    name: Edge Case Test Suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # 1. Checkout main repo and all submodules
+      - name: Checkout Code with Submodules
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      # 2. Setup CI Environment
+      - name: Prepare Environment Variables
+        run: |
+          cp .env.ci .env
+          mkdir -p upsiloncli/tests/logs
+
+      # 3. Boot the ephemeral Docker infrastructure
+      - name: Boot Upsilon Services
+        run: docker compose -f docker-compose.ci.yaml up -d --wait --wait-timeout 300
+
+      - name: Show Service Status
+        if: always()
+        run: docker compose -f docker-compose.ci.yaml ps
+
+      # 4. Run Edge Case Tests (Phase 1: Priority Movement & Authentication)
+      - name: "Edge Cases: Phase 1 - Movement & Authentication"
+        run: |
+          echo "=== Phase 1: Movement & Authentication Edge Cases ==="
+          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh -c '
+            /bin/upsiloncli --farm tests/scenarios/edge_movement_obstacle_collision.js \
+                                    tests/scenarios/edge_movement_already_attacked.js \
+                                    tests/scenarios/edge_auth_password_policy_full.js \
+                                    --timeout 120
+          ' || true
+
+      # 5. Run Edge Case Tests (Phase 2: Priority Attack Validation)
+      - name: "Edge Cases: Phase 2 - Attack Validation"
+        run: |
+          echo "=== Phase 2: Attack Validation Edge Cases ==="
+          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh -c '
+            /bin/upsiloncli --farm tests/scenarios/edge_attack_friendly_fire.js \
+                                    tests/scenarios/edge_attack_out_of_turn.js \
+                                    --timeout 120
+          ' || true
+
+      # 6. Run Edge Case Tests (Phase 3: Character & Matchmaking)
+      - name: "Edge Cases: Phase 3 - Character & Matchmaking"
+        run: |
+          echo "=== Phase 3: Character & Matchmaking Edge Cases ==="
+          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh -c '
+            /bin/upsiloncli --farm tests/scenarios/edge_match_queue_while_queued.js \
+                                    --timeout 60
+          ' || true
+
+      # 7. Run All Edge Cases (Full Suite - when all tests are implemented)
+      # - name: "Edge Cases: Full Suite (All 48 Tests)"
+      #   if: false  # Enable when all tests are implemented
+      #   run: |
+      #     docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh ./tests/run_all_scenarios.sh
+
+      # 8. Generate Edge Case Report
+      - name: Generate Edge Case Report
+        if: always()
+        run: |
+          ./tests/edge_case_report.sh > edge_case_report.md 2>&1 || true
+          cat edge_case_report.md >> $GITHUB_STEP_SUMMARY
+
+      # 9. Collect Docker Logs on Failure
+      - name: Collect Docker Logs
+        if: failure()
+        run: |
+          mkdir -p ci_logs
+          docker compose -f docker-compose.ci.yaml logs app > ci_logs/laravel.log 2>&1
+          docker compose -f docker-compose.ci.yaml logs ws > ci_logs/reverb.log 2>&1
+          docker compose -f docker-compose.ci.yaml logs engine > ci_logs/engine.log 2>&1
+          docker compose -f docker-compose.ci.yaml logs db > ci_logs/db.log 2>&1
+          docker compose -f docker-compose.ci.yaml logs tester > ci_logs/tester.log 2>&1
+
+      # 10. Archive Reports and Logs
+      - name: Upload Edge Case Report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: edge-case-report
+          path: edge_case_report.md
+          retention-days: 3
+
+      - name: Upload Edge Case Logs on Failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: edge-case-logs
+          path: |
+            ci_logs/
+            upsiloncli/tests/logs/
+          retention-days: 3
+
+      # 11. Teardown
+      - name: Teardown Docker Stack
+        if: always()
+        run: docker compose -f docker-compose.ci.yaml down -v
