@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout Code with Submodules
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
@@ -32,15 +32,6 @@ jobs:
       - name: Run Go Tests (Explicit Modules)
         run: go test -count=1 -timeout 120s -json ./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilonserializer/... ./upsilontools/... > go-test-results.json 2>&1 || true
 
-      - name: Display Test Results
-        if: always()
-        run: |
-          echo "## Go Test Summary" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          # Parse JSON test output for final results
-          grep -E '"Test":' go-test-results.json | grep '"Action":"pass"' | wc -l | xargs -I{} echo "Passed: {}" >> $GITHUB_STEP_SUMMARY
-          grep -E '"Test":' go-test-results.json | grep '"Action":"fail"' | wc -l | xargs -I{} echo "Failed: {}" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Check for Failures
         run: |
@@ -52,7 +43,7 @@ jobs:
 
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: go-test-results
           path: go-test-results.json
@@ -64,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout Code with Submodules
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
@@ -94,7 +85,7 @@ jobs:
 
       - name: Upload PHP Test Results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: php-test-results
           path: php-test-results.txt
@@ -107,16 +98,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Download Go Results
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: go-test-results
           path: .
 
       - name: Download PHP Results
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: php-test-results
           path: .

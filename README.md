@@ -46,6 +46,10 @@ The UpsilonBattle ecosystem is built as a modular multi-repo system. Each core c
    - `upsilonmapmaker`: Procedural generation tools for game boards.
    - `upsilonserializer` & `upsilontools`: Shared logic for binary/JSON serialization and common TRPG utilities.
 
+## Setup
+
+The Upsilon project is a complex ecosystem. For a detailed guide on how to prepare your environment, install dependencies, and configure the system, please refer to the **[Setup Documentation](Setup.md)**.
+
 ## Getting Started
 
 ### Cloning the Project
@@ -59,7 +63,20 @@ git submodule update --init --recursive
 ```
 
 ### Development & Monitoring
-All services are standardization on the `main` branch. The project includes a suite of root-level scripts for service management:
+
+#### DevContainer Environment
+The project provides a pre-configured development environment via **[.devcontainer/](.devcontainer/)**. This is the recommended way to develop for Upsilon, ensuring a consistent environment across all platforms.
+
+- **Stack:** PHP 8.4, Go, Node.js 20.
+- **Tools:** Includes Composer, Postgres client, and ATD integration tools.
+- **Port Forwarding:**
+  - `8000`: Laravel App
+  - `8080`: Reverb (WebSockets)
+  - `8081`: Upsilon Engine (Go API)
+  - `5173`: Vue Frontend (HMR)
+
+#### Service Management
+All services are standardized on the `main` branch. The project includes a suite of root-level scripts for service management:
 
 - **[start_services.sh](start_services.sh)**: Launches the Laravel API, Reverb Server, Vue Frontend, and Upsilon Engine in the background. 
 - **[stop_services.sh](stop_services.sh)**: Gracefully stops all tracked services.
@@ -74,6 +91,21 @@ UpsilonBattle employs a robust CI/CD pipeline via GitHub Actions to ensure code 
 - **[Unit Tests](.github/workflows/unit-tests.yml)**: Runs Go unit tests for all backend modules and PHP unit tests for the Laravel frontend.
 - **[Lint & Build](.github/workflows/lint-and-build.yml)**: Performs static analysis (Go vet) and verifies that all core components and Docker images build successfully.
 - **[E2E Battle Tests](.github/workflows/e2e-battles.yml)**: Orchestrates a full ephemeral Docker stack to run integration tests. It uses specialized CLI bots to simulate real player journeys and verify complex game mechanics.
+
+### CI Infrastructure (Docker Stack)
+The project utilizes a dedicated **[docker-compose.ci.yaml](docker-compose.ci.yaml)** to spin up an ephemeral testing environment. This stack is optimized for speed and reliability.
+
+- **Components:**
+  - `db`: Postgres 18-alpine database.
+  - `db-init`: Migration and seeding service.
+  - `app`: The Laravel application.
+  - `ws`: Reverb WebSocket server.
+  - `engine`: The Upsilon Battle Engine (Go).
+  - `tester`: The Upsilon CLI running in integration mode.
+- **Usage:**
+  ```bash
+  docker compose -f docker-compose.ci.yaml up -d --wait
+  ```
 
 ### Compliance & Reporting
 - **BRD Compliance**: Automated scripts (located in `upsiloncli/samples/`) verify critical Business Requirements such as **Password Policy** (`[[rule_password_policy]]`) and **Character Progression** (`[[rule_progression]]`).

@@ -21,9 +21,9 @@ echo "## Go Unit Tests"
 echo ""
 GO_RESULTS="go-test-results.json"
 if [ -f "$GO_RESULTS" ]; then
-    PASS_COUNT=$(grep '"Action":"pass"' "$GO_RESULTS" | wc -l)
-    FAIL_COUNT=$(grep '"Action":"fail"' "$GO_RESULTS" | wc -l)
-    SKIP_COUNT=$(grep '"Action":"skip"' "$GO_RESULTS" | wc -l)
+    PASS_COUNT=$(grep -c '"Action":"pass"' "$GO_RESULTS" || true)
+    FAIL_COUNT=$(grep -c '"Action":"fail"' "$GO_RESULTS" || true)
+    SKIP_COUNT=$(grep -c '"Action":"skip"' "$GO_RESULTS" || true)
 
     if [ "$FAIL_COUNT" -gt 0 ]; then
         echo "| Suite | Passed | Failed | Skipped | Result |"
