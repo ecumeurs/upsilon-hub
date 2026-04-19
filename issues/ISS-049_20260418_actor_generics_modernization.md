@@ -30,10 +30,10 @@ Currently, every actor handler follows this pattern:
 Example:
 ```go
 // Registration
-ctrl.AddNotificationHandler(controllermethods.SetQueue{}, ctrl.setQueue, nil)
+ctrl.AddCallHandler(controllermethods.SetQueue{}, ctrl.setQueue, nil)
 
 // Handler
-func (c *Controller) setQueue(ctx actor.NotificationContext) {
+func (c *Controller) setQueue(ctx actor.CallContext) {
     // RUNTIME RISK: If TargetMethod is not SetQueue, this panics or fails.
     method := ctx.Msg.TargetMethod.(controllermethods.SetQueue)
     c.Ruler = method.Ruler

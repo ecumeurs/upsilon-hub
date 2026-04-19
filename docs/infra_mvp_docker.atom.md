@@ -19,28 +19,23 @@ Provide a lightweight, development-friendly Docker orchestration for the Upsilon
 
 ## THE RULE / LOGIC
 - **Base Images**:
-  - BattleUI: `php:8.4-apache`
-  - WebSocket: `php:8.4-apache` (Twin of BattleUI)
-  - Go Engine: `golang:1.25-alpine`
+  - BattleUI: `php:8.4-apache` (Custom Dockerfile in ./battleui)
+  - WebSocket: same as BattleUI, different command.
+  - Go Engine: `golang:1.25-alpine` (Custom Dockerfile in ./upsilonapi)
   - Database: `postgres:18-alpine`
 - **Service Orchestration**:
   - `app`: Laravel/Vue via Apache. Port `8000:80`.
   - `ws`: Reverb WebSocket server. Port `8080:8080`.
-  - `engine`: Go battle engine. Port `8081`. Internal/External communication.
-  - `db`: PostgreSQL. Port `5432:5432`.
+  - `engine`: Go battle engine. Port `8081:8081`.
+  - `db`: PostgreSQL. Port `5434:5432` (Host:Container).
+  - `cli`: On-stack maintenance/tester container.
 - **Data Persistence**:
-  - Named volume `db_data` for PostgreSQL `/var/lib/postgresql/data`.
-  - Dev volume binds for `battleui` and `upsilonbattle` to allow live-reload (if needed in prod-like dev).
+  - Named volume `db_data` for PostgreSQL `/var/lib/postgresql/data`. Ensures data survives restarts and shutdowns.
 - **Environment**:
-  - `DB_CONNECTION=pgsql`
-  - `SESSION_DRIVER=database`
-  - `QUEUE_CONNECTION=database`
-  - `CACHE_STORE=database`
-  - Hardcoded `DATABASE_URL` in `docker-compose.prod.yaml`.
-- **Simplifications**:
-  - No Nginx/PHP-FPM split.
-  - No Redis.
-  - No Opcache or complex multi-stage builds.
+  - Managed via root `.env` file generated from `env.example`.
+  - Secrets (APP_KEY, REVERB_*) are generated automatically.
+- **Initialization**:
+  - `db-init` service automates `php artisan migrate --force` on every stack startup.
 
 ## BUILD AND EXECUTION PROCEDURE
 - **Build strategy**:
@@ -53,13 +48,14 @@ Provide a lightweight, development-friendly Docker orchestration for the Upsilon
 
 ## TECHNICAL INTERFACE
 - **Files**:
-  - `battleui/Dockerfile`
-  - `upsilonapi/Dockerfile`
   - `docker-compose.prod.yaml` (root)
+  - `env.example` (root)
+  - `scripts/setup_prod.sh`
+  - `setup.md`
 - **Code Tag**: `@spec-link [[infra_mvp_docker]]`
 
 ## EXPECTATION
-- `docker compose up` starts all 4 services.
+- `docker compose up` starts all 6 services (including db-init and cli).
 - `app` is reachable at `http://localhost:8000`.
-- `ws` is reachable at `http://localhost:8080`.
-- Laravel can connect to `db` using the provided environment variables.
+- Data persists across stack restarts.
+- Secrets are unique and consistent across services.

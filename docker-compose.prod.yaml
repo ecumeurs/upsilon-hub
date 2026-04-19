@@ -1,81 +1,109 @@
+# docker-compose.prod.yaml — Production Stack
+# Built for persistence, reliability, and automated orchestration.
+# Usage: ./scripts/setup_prod.sh && docker compose -f docker-compose.prod.yaml up -d --wait
+
+name: upsilon-prod
+
 services:
-  app:
-    build:
-      context: ./battleui
-    ports:
-      - "8000:80"
-    depends_on:
-      - db
-    environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
-      - APP_KEY=base64:$(php -r 'echo base64_encode(random_bytes(32));') # Placeholder, should be set in env
-      - DB_CONNECTION=pgsql
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_DATABASE=upsilon
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
-      - SESSION_DRIVER=database
-      - QUEUE_CONNECTION=database
-      - CACHE_STORE=database
-      - REVERB_SERVER_HOST=0.0.0.0
-      - REVERB_SERVER_PORT=8080
-      - REVERB_HOST=localhost
-      - REVERB_PORT=8080
-      - REVERB_SCHEME=http
-      - UPSILON_API_URL=http://engine:8081/internal
-
-  ws:
-    build:
-      context: ./battleui
-    command: php artisan reverb:start --host=0.0.0.0 --port=8080
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-    environment:
-      - APP_ENV=production
-      - DB_CONNECTION=pgsql
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_DATABASE=upsilon
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
-      - REVERB_SERVER_HOST=0.0.0.0
-      - REVERB_SERVER_PORT=8080
-      - UPSILON_API_URL=http://engine:8081/internal
-
-  engine:
-    build:
-      context: .
-      dockerfile: ./upsilonapi/Dockerfile
-    depends_on:
-      - db
-
-  cli:
-    build:
-      context: .
-      dockerfile: ./upsiloncli/Dockerfile
-    depends_on:
-      - app
-      - ws
-      - engine
-    environment:
-      - UPSILON_BASE_URL=http://app
-      - REVERB_HOST=ws:8080
-      - REVERB_APP_KEY=${REVERB_APP_KEY}
-
   db:
     image: postgres:18-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: upsilon
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
     ports:
-      - "5432:5432"
+      - "5434:5432" # Changed to 5434 to avoid conflict with host postgres
     volumes:
       - db_data:/var/lib/postgresql/data
+
+  db-init:
+    build:
+      context: ./battleui
+    user: "33:33" # Run as www-data to ensure log permissions
+    command: php artisan migrate --force
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  app:
+    build:
+      context: ./battleui
+    depends_on:
+      db:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+    ports:
+      - "8000:80"
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost/up" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  ws:
+    build:
+      context: ./battleui
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    depends_on:
+      db:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:8080" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  engine:
+    build:
+      context: .
+      dockerfile: ./upsilonapi/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/health" ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  cli:
+    build:
+      context: .
+      dockerfile: ./upsiloncli/Dockerfile
+    depends_on:
+      app:
+        condition: service_healthy
+      ws:
+        condition: service_healthy
+      engine:
+        condition: service_healthy
+    env_file:
+      - .env
+    command: tail -f /dev/null
 
 volumes:
   db_data:
