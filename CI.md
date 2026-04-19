@@ -4,13 +4,14 @@ This document outlines the automated verification strategy for Upsilon Battle, e
 
 ## Architecture
 
-The CI pipeline is split into three GitHub Actions workflows with increasing scope:
+The CI pipeline is split into four GitHub Actions workflows with increasing scope:
 
 | Workflow | Trigger | Purpose |
 |---|---|---|
 | **Lint & Build** | Push + PR | Go syntax checks, compilation |
 | **Unit Tests** | Push + PR | Go + PHP isolated tests |
 | **E2E Battles** | Push + PR | Full stack integration & Customer Scenarios |
+| **Edge Case Tests** | Push + PR | API boundary validation & error handling |
 
 ### Infrastructure
 
@@ -19,7 +20,109 @@ The CI pipeline is split into three GitHub Actions workflows with increasing sco
 | `.env.ci` | CI environment variables | Deterministic config for ephemeral stack |
 | `docker-compose.ci.yaml` | CI Docker Compose | Ephemeral stack with healthchecks |
 | `tests/run_all_scenarios.sh` | Scenario Runner | **Centralized discovery & execution** |
-| `tests/ci_report.sh` | Report generator | Markdown summary of CI results |
+| `tests/ci_report.sh` | E2E report generator | Markdown summary of customer scenarios |
+| `tests/edge_case_report.sh` | Edge case report generator | Markdown summary of edge case tests |
+| `tests/lint_report.sh` | Lint report generator | Markdown summary of linting results |
+| `tests/unit_report.sh` | Unit test report generator | Markdown summary of unit tests |
+
+---
+
+## Edge Case Testing
+
+The edge case testing suite validates API boundaries, validation rules, and error handling. All scripts use the `edge_` prefix and are organized by category.
+
+### Test Categories
+
+| Category | Test Count | Priority | Focus |
+|---|---|---|---|
+| **Movement Validation** | 9 | P0 | Obstacle collision, entity collision, turn/controller mismatch, path validation |
+| **Attack Validation** | 10 | P0 | Out of turn, wrong controller, friendly fire, range limits, targeting rules |
+| **Authentication** | 5 | P0 | Password policy, invalid credentials, session timeout, missing token |
+| **Character & Progression** | 6 | P1 | Reroll limits, stat allocation constraints, movement gate |
+| **Matchmaking** | 4 | P1 | Queue restrictions, game mode validation |
+| **Match Resolution** | 2 | P2 | Forfeit rules, post-match action prevention |
+| **API & Communication** | 4 | P2 | Request validation, error handling |
+| **Leaderboard** | 2 | P2 | Mode validation, pagination |
+| **Admin** | 3 | P3 | Access control, GDPR compliance |
+| **WebSocket** | 3 | P3 | Authentication, channel validation, timeout handling |
+
+**Total Edge Cases**: 48 tests
+
+### Implementation Status
+
+As of 2026-04-19, all 48 edge case tests are implemented:
+
+| EC ID | Test Name | Status |
+|---|---|---|
+| EC-01 | Movement on Obstacle Tiles | ✅ Implemented |
+| EC-02 | Movement on Entity Collision | ✅ Implemented |
+| EC-03 | Movement Already Attacked | ✅ Implemented |
+| EC-04 | Movement Path Too Long | ✅ Implemented |
+| EC-05 | Movement Path Not Adjacent | ✅ Implemented |
+| EC-06 | Movement Out of Turn | ✅ Implemented |
+| EC-07 | Movement Wrong Controller | ✅ Implemented |
+| EC-08 | Movement Grid Boundaries | ✅ Implemented |
+| EC-09 | Movement Jump Limitations | ✅ Implemented |
+| EC-10 | Attack Out of Turn | ✅ Implemented |
+| EC-11 | Attack Wrong Controller | ✅ Implemented |
+| EC-12 | Attack Friendly Fire | ✅ Implemented |
+| EC-13 | Attack Target Not in Range | ✅ Implemented |
+| EC-14 | Attack Target Out of Grid | ✅ Implemented |
+| EC-15 | Attack Invalid Cell Type | ✅ Implemented |
+| EC-16 | Attack No Entity | ✅ Implemented |
+| EC-17 | Attack Already Acted | ✅ Implemented |
+| EC-18 | Attack Skill Cooldown | ✅ Implemented |
+| EC-19 | Attack Targeting Rules | ✅ Implemented |
+| EC-20 | Password Policy Full Coverage | ✅ Implemented |
+| EC-21 | Invalid Credentials | ✅ Implemented |
+| EC-22 | Session Timeout | ✅ Implemented |
+| EC-23 | Missing Token | ✅ Implemented |
+| EC-24 | Admin Non-Admin Access | ✅ Implemented |
+| EC-25 | Character Reroll Limit | ✅ Implemented |
+| EC-26 | Reroll After Match | ✅ Implemented |
+| EC-27 | Progression Without Wins | ✅ Implemented |
+| EC-28 | Progression Attribute Cap | ✅ Implemented |
+| EC-29 | Progression Movement Gate | ✅ Implemented |
+| EC-30 | Progression Negative Value | ✅ Implemented |
+| EC-31 | Queue While Already Queued | ✅ Implemented |
+| EC-32 | Queue While in Match | ✅ Implemented |
+| EC-33 | Invalid Game Mode | ✅ Implemented |
+| EC-34 | Leave Queue Not Queued | ✅ Implemented |
+| EC-35 | Forfeit Out of Turn | ✅ Implemented |
+| EC-36 | Action After Match End | ✅ Implemented |
+| EC-37 | Missing Request ID | ✅ Implemented |
+| EC-38 | Invalid UUID Format | ✅ Implemented |
+| EC-39 | Malformed JSON | ✅ Implemented |
+| EC-40 | 5xx Error Handling | ✅ Implemented |
+| EC-41 | Leaderboard Invalid Mode | ✅ Implemented |
+| EC-42 | Leaderboard Over Pagination | ✅ Implemented |
+| EC-43 | Admin View Private Data | ✅ Implemented |
+| EC-44 | Anonymize Non-Existent | ✅ Implemented |
+| EC-45 | Soft Delete Non-Existent | ✅ Implemented |
+| EC-46 | WebSocket Connection Without Token | ✅ Implemented |
+| EC-47 | WebSocket Wrong Channel | ✅ Implemented |
+| EC-48 | WebSocket Ping/Pong Timeout | ✅ Implemented |
+
+**Implementation Progress**: 48/48 tests (100%) ✅ All tests implemented
+
+### Running Edge Case Tests
+
+```bash
+# Run specific edge case test
+cd upsiloncli
+./bin/upsiloncli --farm tests/scenarios/edge_movement_obstacle_collision.js --timeout 60
+
+# Run all edge cases (via CI or runner)
+docker compose -f docker-compose.ci.yaml exec tester /bin/sh ./tests/run_all_scenarios.sh
+```
+
+### Edge Case Report
+
+The `tests/edge_case_report.sh` script generates a comprehensive markdown report including:
+- Individual test results (EC-01 to EC-48)
+- Summary statistics (total, passed, failed, skipped, pass rate)
+- Coverage by category
+- ATD atom references
 
 ---
 
@@ -70,6 +173,21 @@ All customer-facing scenarios from the **Conformity Matrix** are implemented her
 The `tests/ci_report.sh` script parses the logs in `upsiloncli/tests/logs/`. It uses a **unified detection method**: it only marks a test as `✅ PASS` if the success marker `[SCENARIO_RESULT: PASSED]` is present in the log.
 
 ---
+
+## Adding a New Edge Case Test
+
+Adding a new edge case test follows the same zero-touch process as customer scenarios:
+
+1.  **Create the Script**: Add a new JavaScript file in `upsiloncli/tests/scenarios/`.
+    - **Naming**: Use the `edge_` prefix with descriptive name (e.g., `edge_movement_obstacle_collision.js`)
+    - **Pattern**: All edge case tests should follow the try-catch pattern for expected failures
+2.  **Add Assertions**: Use the `upsilon` JS API helpers:
+    - `upsilon.assert(condition, msg)`
+    - `upsilon.assertEquals(actual, expected, msg)`
+3.  **Tag with ATD**: Include `@spec-link [[atom_id]]` in the header for traceability
+4.  **Update the Report Generator**: Add the new test to `tests/edge_case_report.sh` to ensure it appears in the final CI summary
+5.  **Update CI.md**: Add the new test to the implementation status table
+6.  **Save & Push**: The CI runner will automatically find your script and include it in the next run
 
 ## Adding a New CI Test
 
