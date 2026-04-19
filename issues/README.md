@@ -9,3 +9,6 @@
 | ISS-048 | [ISS-048_20260418_turn_start_webhook_unicast.md](ISS-048_20260418_turn_start_webhook_unicast.md) | High | Open | Turn start webhook intermittently missing |
 | ISS-049 | [ISS-049_20260418_actor_generics_modernization.md](ISS-049_20260418_actor_generics_modernization.md) | Low | Open | Modernize actor library with Go generics |
 | ISS-050 | [ISS-050_20260419_ruler_synchronization_and_seeding.md](ISS-050_20260419_ruler_synchronization_and_seeding.md) | High | Resolved | Ruler synchronization race and seeding fragility |
+| ISS-051 | [ISS-051_20260419_admin_history_management_impl.md](ISS-051_20260419_admin_history_management_impl.md) | Medium | Resolved | Administrative Match History Implementation (API & UI) |
+| ISS-052 | [ISS-052_20260419_admin_history_management_testing.md](ISS-052_20260419_admin_history_management_testing.md) | Medium | Resolved | Full E2E Admin Test Suite implementation |
+| ISS-053 | [ISS-053_20260419_admin_performance_pagination.md](ISS-053_20260419_admin_performance_pagination.md) | Medium | Resolved | Optimized manual cursor pagination for admin registries |

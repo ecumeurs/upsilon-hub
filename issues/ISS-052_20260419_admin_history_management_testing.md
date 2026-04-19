@@ -4,7 +4,7 @@
 **Ref:** `ISS-052`
 **Date:** 2026-04-19
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsiloncli/tests/scenarios/`
 **Affects:** CI Coverage, Feature Stability, Admin Security
 

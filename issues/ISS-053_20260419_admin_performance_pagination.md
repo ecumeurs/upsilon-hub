@@ -4,7 +4,7 @@
 **Ref:** `ISS-053`
 **Date:** 2026-04-19
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `battleui/app/Http/Controllers/API/AdminController.php`, `battleui/database/migrations/`
 **Affects:** Admin UI, API Performance, Database Scalability
 

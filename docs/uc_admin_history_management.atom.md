@@ -24,8 +24,10 @@ Provides administrators with the tools to review match results and purge old his
   - This operation is destructive and must be confirmed.
 
 ## TECHNICAL INTERFACE (The Bridge)
+- **API Endpoint:** `GET /api/v1/admin/history` (paginated), `POST /api/v1/admin/history/purge`
 - **Code Tag:** `@spec-link [[uc_admin_history_management]]`
-- **Test Names:** `TestAdminListMatches`, `TestAdminPurgeHistory`
+- **Related Issue:** `#ISS-051`
+- **Test Names:** `e2e_admin_history_management.js`
 
 ## EXPECTATION (For Testing)
 - Admin requests match list -> results shown.

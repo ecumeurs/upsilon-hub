@@ -4,7 +4,7 @@
 **Ref:** `ISS-051`
 **Date:** 2026-04-19
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `battleui/app/Http/Controllers/API/AdminController.php`, `battleui/resources/js/Pages/Admin/`
 **Affects:** Admin Dashboard, Database Performance, Admin UI
 
