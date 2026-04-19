@@ -23,3 +23,4 @@ Defines the win condition for a match
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[spec_match_format_win_condition_rule]]`
+- **Test Names:** `TestVictoryStandardizationForfeit`

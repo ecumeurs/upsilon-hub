@@ -28,7 +28,7 @@ To ensure combat maintains a brisk pace and prevents AFK/abandoned matches from 
 - **API Endpoint:** N/A (Internal Engine Logic)
 - **Code Tag:** `@spec-link [[rule_turn_clock]]`
 - **Related Issue:** `#12` (Assume issue filed for the missing clock mechanic)
-- **Test Names:** `TestTurnClockExpiresForcesEndOfTurn`, `TestTurnClockCancelledOnManualEnd`
+- **Test Names:** `TestShotClockExpiry`, `TestShotClockCancellation`
 
 ## EXPECTATION (For Testing)
 - Engine announces `ControllerNextTurn`.
