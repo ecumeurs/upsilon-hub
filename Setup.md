@@ -120,3 +120,12 @@ docker compose -f docker-compose.prod.yaml exec cli upsiloncli --farm test_pve.j
 ... (rest of the content)
 - If services fail to start, check logs: `docker compose -f docker-compose.prod.yaml logs -f`
 - To reset everything (destructive): `docker compose -f docker-compose.prod.yaml down -v`
+
+
+## 6. Administrative Setup (Seeding)
+To establish the initial system administrator, you must define a password and run the database seeder.
+
+```bash
+docker compose -f docker-compose.prod.yaml exec -e ADMIN_INITIAL_PASSWORD="your_secure_password" app php artisan db:seed
+```
+This will create a default administrator at `admin@admin.com` with the `Admin` role.
