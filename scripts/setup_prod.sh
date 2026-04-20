@@ -11,14 +11,30 @@ echo "---------------------------------------"
 echo "Initializing Production Environment..."
 echo "---------------------------------------"
 
+FORCE=false
+
+# Simple argument parsing
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -f|--force) FORCE=true ;;
+        *) echo "[!] Unknown parameter passed: $1"; exit 1 ;;
+    esac
+    shift
+done
+
 if [ ! -f "$TEMPLATE_FILE" ]; then
     echo "[!] Error: env.example not found at root."
     exit 1
 fi
 
-if [ -f "$ENV_FILE" ]; then
+if [ -f "$ENV_FILE" ] && [ "$FORCE" = false ]; then
     echo "[!] .env already exists. Skipping recreation to avoid overriding secrets."
+    echo "[TIP] Use --force or -f to overwrite the existing .env file."
     exit 0
+fi
+
+if [ "$FORCE" = true ]; then
+    echo "[!] Overwriting existing .env as requested..."
 fi
 
 echo "[+] Copying template to .env..."

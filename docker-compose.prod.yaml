@@ -25,6 +25,7 @@ services:
   db-init:
     build:
       context: ./battleui
+      dockerfile: Dockerfile.prod
     user: "33:33" # Run as www-data to ensure log permissions
     command: php artisan migrate --force
     depends_on:
@@ -36,6 +37,7 @@ services:
   app:
     build:
       context: ./battleui
+      dockerfile: Dockerfile.prod
     depends_on:
       db:
         condition: service_healthy
@@ -55,6 +57,7 @@ services:
   ws:
     build:
       context: ./battleui
+      dockerfile: Dockerfile.prod
     command: php artisan reverb:start --host=0.0.0.0 --port=8080
     depends_on:
       db:
