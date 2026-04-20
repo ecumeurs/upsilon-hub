@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "4f2a7b8c-5d9e-4a3b-9c1d-6f2e8a7d5c9b",
 		"name": "Upsilon Battle API",
-		"description": "Comprehensive collection for the Upsilon Battle ecosystem, including the Laravel Gateway (BattleUI) and the Upsilon (Go) Internal Engine.",
+		"description": "Comprehensive collection for the Upsilon Battle ecosystem. Includes Laravel Gateway (BattleUI), Upsilon (Go) Engine, and WebSocket handshake/authorization bridge based on the Pusher/Reverb protocol.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -1021,6 +1021,70 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "09. WebSocket Bridge",
+			"item": [
+				{
+					"name": "Broadcasting Auth",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "socket_id",
+									"value": "{{socket_id}}",
+									"description": "Captured from pusher:connection_established event",
+									"type": "text"
+								},
+								{
+									"key": "channel_name",
+									"value": "private-user.{{ws_channel_key}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/broadcasting/auth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"broadcasting",
+								"auth"
+							]
+						},
+						"description": "Obtain an authorization signature for private WebSocket channels. Required for Pusher `pusher:subscribe` events."
+					},
+					"response": []
+				},
+				{
+					"name": "WebSocket Handshake (Grep SocketID)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{wsUrl}}",
+							"host": [
+								"{{wsUrl}}"
+							]
+						},
+						"description": "Handshake URL for WebSocket connection. In Postman, create a new 'WebSocket Request' using this URL. Capture the socket_id from the first message."
+					},
+					"response": []
+				}
+			],
+			"description": "Tools for establishing and authenticating real-time WebSocket connections via Reverb."
 		}
 	],
 	"event": [
@@ -1062,6 +1126,26 @@
 		{
 			"key": "webhookUrl",
 			"value": "http://localhost:8000/api/webhook/upsilon",
+			"type": "string"
+		},
+		{
+			"key": "reverbKey",
+			"value": "qtjp54myattne9euwedu",
+			"type": "string"
+		},
+		{
+			"key": "wsUrl",
+			"value": "ws://127.0.0.1:8080/app/{{reverbKey}}?protocol=7&client=js&version=8.4.0-rc2&flash=false",
+			"type": "string"
+		},
+		{
+			"key": "socket_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ws_channel_key",
+			"value": "",
 			"type": "string"
 		}
 	]

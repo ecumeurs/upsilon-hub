@@ -92,8 +92,10 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 | `DELETE` | `/admin/users/{account_name}` | Administrative Soft Delete | [[uc_admin_user_management]] |
 | `GET` | `/admin/history` | List All Match History (Cursor Based) | [[uc_admin_history_management]] |
 | `DELETE` | `/admin/history/purge` | Clean up match history older than 90 days | [[uc_admin_history_management]] |
+| `POST` | `/broadcasting/auth` | WebSocket Channel Authorization | [[api_websocket]] |
 | `POST` | `/api/webhook/upsilon` | Ingest Engine State Update (Internal) | [[api_go_webhook_callback]] |
 | `GET` | `/leaderboard` | Global Rankings (Mode-based) | [[api_leaderboard]] |
+
 
 
 ### 2.1 Authentication
@@ -362,6 +364,33 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 - **Output:** 
   - `purged_count`: `int`
   - Standard Success Envelope
+
+
+### 2.7 WebSocket Protocol
+
+The Upsilon Battle ecosystem uses **Laravel Reverb** (Pusher-compatible) for real-time updates.
+
+#### Handshake
+- **URL:** `ws://127.0.0.1:8080/app/{REVERB_APP_KEY}?protocol=7&client=js&version=8.4.0-rc2&flash=false`
+- **Initial Event:** `pusher:connection_established` returns the `socket_id`.
+
+#### `POST /broadcasting/auth`
+- **Specification:** [[api_websocket]]
+- **Intent:** Obtain authorization signature for private channels.
+- **Input:**
+  - `socket_id`: `string`
+  - `channel_name`: `string` (e.g., `private-user.{ws_channel_key}`)
+- **Output:** `{ "auth": "key:signature" }`
+
+#### Subscription Channels
+- `private-user.{ws_channel_key}`: User-specific notifications (MatchFound, Inventory updates).
+- `private-arena.{match_id}`: Real-time tactical state updates for an active match.
+
+#### Key Events
+- `match.found`: Matchmaking success.
+- `board.updated`: Tactical board state refresh.
+
+
 
 
 ### 2.7 Advanced Identity Management
