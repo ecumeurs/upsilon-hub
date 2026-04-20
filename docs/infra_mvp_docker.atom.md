@@ -35,7 +35,8 @@ Provide a lightweight, development-friendly Docker orchestration for the Upsilon
   - Managed via root `.env` file generated from `env.example`.
   - Secrets (APP_KEY, REVERB_*) are generated automatically.
 - **Initialization**:
-  - `db-init` service automates `php artisan migrate --force` on every stack startup.
+  - `db-init` service automates `php artisan migrate --force` on every stack startup using `www-data` permissions.
+  - **Rebuild strategy**: Any change to `battleui/Dockerfile` dependencies (like permissions) requires rebuilding `app`, `ws`, and `db-init` to maintain synchronization.
 
 ## BUILD AND EXECUTION PROCEDURE
 - **Build strategy**:
@@ -59,3 +60,4 @@ Provide a lightweight, development-friendly Docker orchestration for the Upsilon
 - `app` is reachable at `http://localhost:8000`.
 - Data persists across stack restarts.
 - Secrets are unique and consistent across services.
+- Dashboard can retrieve active match stats from the Go engine via the synchronized internal network.

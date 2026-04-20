@@ -129,3 +129,14 @@ To establish the initial system administrator, you must define a password and ru
 docker compose -f docker-compose.prod.yaml exec -e ADMIN_INITIAL_PASSWORD="your_secure_password" app php artisan db:seed
 ```
 This will create a default administrator at `admin@admin.com` with the `Admin` role.
+## 7. Troubleshooting
+
+### Clearing Stuck Matches
+If you find yourself stuck in a match that no longer exists or if the system state becomes inconsistent, you can clear all active matches and participants without resetting the entire database:
+
+```bash
+docker compose -f docker-compose.prod.yaml exec app php artisan tinker --execute="DB::statement('TRUNCATE table game_matches CASCADE'); DB::statement('TRUNCATE table match_participants CASCADE');"
+```
+
+> [!WARNING]
+> This command will globally terminate all active battles for all players. Use it only when necessary.
