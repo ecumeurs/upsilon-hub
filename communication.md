@@ -66,24 +66,35 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 | :--- | :--- | :--- | :--- |
 | `POST` | `/auth/register` | User Registration & Roster Creation | [[api_auth_register]] |
 | `POST` | `/auth/login` | User Authentication | [[api_auth_login]] |
+| `POST` | `/auth/admin/login` | Administrative Authentication (CLI/API) | [[uc_admin_login]] |
 | `POST` | `/auth/logout` | Session Termination | [[api_auth_logout]] |
+| `POST` | `/auth/update` | Update Security Identity (Address, Email) | [[api_auth_user]] |
+| `POST` | `/auth/password` | Rotate Credentials | [[api_auth_user]] |
+| `GET` | `/auth/export` | Complete User Data Portability Dump | [[api_profile_export]] |
+| `DELETE` | `/auth/delete` | GDPR Right to be Forgotten (Account Deletion) | [[api_auth_user]] |
+| `GET` | `/profile` | Get Player Bio & Roster Overview | [[customer_player_profile]] |
 | `GET` | `/profile/characters` | List Player Roster | [[api_profile_character]] |
 | `GET` | `/profile/character/{id}` | Get Character Details | [[api_profile_character]] |
 | `POST` | `/profile/character/{id}/reroll` | Reset Stats (New Accounts) | [[api_profile_character]] |
 | `POST` | `/profile/character/{id}/upgrade` | Attribute Point Allocation | [[api_profile_character]] |
+| `POST` | `/profile/character/{id}/rename` | Character Cosmetic Identity Rename | [[rule_character_renaming]] |
+| `DELETE` | `/profile/character/{id}` | Remove Character from Roster | [[api_profile_character]] |
 | `POST` | `/matchmaking/join` | Enter Battle Queue | [[api_matchmaking]] |
 | `GET` | `/matchmaking/status` | Poll Match Status | [[api_matchmaking]] |
 | `DELETE` | `/matchmaking/leave` | Exit Battle Queue | [[api_matchmaking]] |
+| `GET` | `/match/stats/waiting` | Get Queue Density Metrics | [[ui_dashboard_match_statistics]] |
+| `GET` | `/match/stats/active` | Get Live Match Count | [[ui_dashboard_match_statistics]] |
 | `GET` | `/game/{id}` | Get Cached Board State | [[api_battle_proxy]] |
 | `POST` | `/game/{id}/action` | Proxy Tactical Action to Engine | [[api_battle_proxy]] |
 | `POST` | `/game/{id}/forfeit` | Standalone Forfeit Route | [[rule_forfeit_battle]] |
-| `POST` | `/auth/admin/login` | Administrative Authentication (CLI/API) | [[uc_admin_login]] |
-| `GET` | `/admin/dashboard` | Administrative Landing Hub | [[ui_admin_dashboard]] |
-| `GET` | `/admin/users` | List Users for Auditing | [[uc_admin_user_management]] |
-| `POST` | `/admin/users/{account_name}/anonymize` | GDPR Right to be Forgotten | [[uc_admin_user_management]] |
+| `GET` | `/admin/users` | List Users for Auditing (Cursor Based) | [[uc_admin_user_management]] |
+| `POST` | `/admin/users/{account_name}/anonymize` | GDPR Anonymization | [[uc_admin_user_management]] |
 | `DELETE` | `/admin/users/{account_name}` | Administrative Soft Delete | [[uc_admin_user_management]] |
-| `POST` | `/api/webhook/upsilon` | Ingest Engine State Update | [[api_go_webhook_callback]] |
+| `GET` | `/admin/history` | List All Match History (Cursor Based) | [[uc_admin_history_management]] |
+| `DELETE` | `/admin/history/purge` | Clean up match history older than 90 days | [[uc_admin_history_management]] |
+| `POST` | `/api/webhook/upsilon` | Ingest Engine State Update (Internal) | [[api_go_webhook_callback]] |
 | `GET` | `/leaderboard` | Global Rankings (Mode-based) | [[api_leaderboard]] |
+
 
 ### 2.1 Authentication
 
@@ -128,7 +139,42 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 - **Security:** Requires `auth:sanctum` middleware.
 - **Output:** `null` (successful status code 200 with standard success envelope).
 
+#### `POST /auth/update`
+- **Specification:** [[api_auth_user]]
+- **Intent:** Update security identity information for the logged-in user.
+- **Input:**
+  - `account_name`: `string` (unique)
+  - `email`: `string` (unique email format)
+  - `birth_date`: `string (DATE)`
+  - `full_address`: `string`
+- **Output:** Updated `UserResource`.
+
+#### `POST /auth/password`
+- **Specification:** [[api_auth_user]]
+- **Intent:** Update account password.
+- **Input:**
+  - `current_password`: `string`
+  - `password`: `string` (min 15 chars)
+  - `password_confirmation`: `string`
+- **Output:** Standard success envelope.
+
+#### `GET /auth/export`
+- **Specification:** [[api_profile_export]]
+- **Intent:** Provide complete user data dump for GDPR data portability.
+- **Output:** JSON file containing `account`, `characters`, and `meta`.
+
+#### `DELETE /auth/delete`
+- **Specification:** [[api_auth_user]]
+- **Intent:** Terminate account and anonymize sensitive data.
+- **Output:** Standard success envelope.
+
+
 ### 2.2 Profile & Character Management
+
+#### `GET /profile`
+- **Specification:** [[customer_player_profile]]
+- **Intent:** Retrieve global player statistics, win/loss ratio, and basic roster overview.
+- **Output:** `UserResource` (loaded with characters).
 
 #### `GET /profile/characters`
 - **Specification:** [[api_profile_character]]
@@ -139,7 +185,7 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 - **Specification:** [[api_profile_character]]
 - **Intent:** Retrieve detailed statistics and status for a specific character.
 - **Input:**
-  - `characterId`: `string (UUID)` (URL Parameter)
+  - `characterId`: `string (UUID)` (URL Parameter - Match ID)
 - **Output:** `CharacterResource` (See [[#4.5-characterresource]])
 
 #### `POST /profile/character/{characterId}/reroll`
@@ -164,6 +210,22 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
     - `movement`: `int` (increment amount, optional)
 - **Validation:** Must adhere to [[rule_progression]] (Attribute Cap: `10 + wins`).
 - **Output:** `CharacterResource` (The updated character)
+
+#### `POST /profile/character/{characterId}/rename`
+- **Specification:** [[rule_character_renaming]]
+- **Intent:** Update the cosmic display name of a character.
+- **Input:**
+  - `characterId`: `string (UUID)` (URL Parameter)
+  - `name`: `string`
+- **Output:** `CharacterResource` (The updated character)
+
+#### `DELETE /profile/character/{characterId}`
+- **Specification:** [[api_profile_character]]
+- **Intent:** Remove a character from the roster.
+- **Input:**
+  - `characterId`: `string (UUID)` (URL Parameter)
+- **Output:** Standard success envelope.
+
 
 ### 2.3 Matchmaking & Queue
 
@@ -253,11 +315,12 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 - **Intent:** List all user accounts for auditing purposes (excluding private data).
 - **Authentication:** Requires `Admin` role.
 - **Input:**
-  - `page`: `int` (Default: 1)
+  - `cursor`: `string (ISO8601)` (Optional: for sequential pagination)
   - `search`: `string` (Optional: filter by account name)
 - **Output:**
-  - `results`: `Array<AdminUserResource>` (Account Name, Email, Role, Wins, Losses, Created At)
-  - `meta`: `PaginationMeta`
+  - `items`: `Array<AdminUserResource>`
+  - `next_cursor`: `string|null`
+  - `has_more`: `boolean`
 - **Privacy Note:** Private fields (full_address, birth_date) are excluded per [[rule_admin_access_restriction]].
 
 #### `DELETE /admin/users/{account_name}`
@@ -284,23 +347,22 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 - **Intent:** Retrieve match history for administrative audit and maintenance.
 - **Authentication:** Requires `Admin` role.
 - **Input:**
-  - `page`: `int` (Default: 1)
-  - `date_from`: `string` (ISO8601, Optional)
-  - `date_to`: `string` (ISO8601, Optional)
+  - `cursor`: `string (ISO8601)` (Optional)
+  - `search`: `string` (Optional)
 - **Output:**
-  - `results`: `Array<MatchHistoryResource>`
-  - `meta`: `PaginationMeta`
+  - `items`: `Array<MatchHistoryResource>`
+  - `next_cursor`: `string|null`
+  - `has_more`: `boolean`
 
-#### `DELETE /admin/history/before/{date}`
+#### `DELETE /admin/history/purge`
 - **Specification:** [[uc_admin_history_management]]
-- **Intent:** Clean up match history older than specified date (maintenance).
+- **Intent:** Clean up match history older than 90 days (maintenance).
 - **Authentication:** Requires `Admin` role.
-- **Input:**
-  - `date`: `string` (ISO8601) - Delete history before this date
 - **Logic:** Soft delete match records older than 90 days per GDPR retention policies.
 - **Output:** 
-  - `deleted_count`: `int`
+  - `purged_count`: `int`
   - Standard Success Envelope
+
 
 ### 2.7 Advanced Identity Management
 

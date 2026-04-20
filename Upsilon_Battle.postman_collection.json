@@ -1,0 +1,1068 @@
+{
+	"info": {
+		"_postman_id": "4f2a7b8c-5d9e-4a3b-9c1d-6f2e8a7d5c9b",
+		"name": "Upsilon Battle API",
+		"description": "Comprehensive collection for the Upsilon Battle ecosystem, including the Laravel Gateway (BattleUI) and the Upsilon (Go) Internal Engine.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01. Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"account_name\": \"survivor_{{$randomInt}}\",\n    \"email\": \"survivor_{{$randomInt}}@example.com\",\n    \"password\": \"VeryStrongPassword123!\",\n    \"password_confirmation\": \"VeryStrongPassword123!\",\n    \"full_address\": \"123 Cyberpunk St, Neo-Shibuya\",\n    \"birth_date\": \"1995-10-24\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"account_name\": \"admin\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticate and receive a Bearer token."
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"account_name\": \"admin\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/admin/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"new_email@example.com\",\n    \"full_address\": \"Updated sector 7G\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/update",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"update"
+							]
+						},
+						"description": "Update identity-related information (GDPR compliant)."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"current_password\": \"VeryStrongPassword123!\",\n    \"password\": \"EvenStrongerPassword456!\",\n    \"password_confirmation\": \"EvenStrongerPassword456!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Export Data (GDPR)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/export",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"export"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/delete",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "02. Profile & Characters",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Roster",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/profile/characters",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profile",
+								"characters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Character Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/profile/character/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profile",
+								"character",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "char-uuid-here"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reroll Stats",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/profile/character/:id/reroll",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profile",
+								"character",
+								":id",
+								"reroll"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "char-uuid-here"
+								}
+							]
+						},
+						"description": "Only available for new accounts before they join a match."
+					},
+					"response": []
+				},
+				{
+					"name": "Upgrade Stats",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"stats\": {\n        \"hp\": 1,\n        \"attack\": 2\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/profile/character/:id/upgrade",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profile",
+								"character",
+								":id",
+								"upgrade"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "char-uuid-here"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rename Character",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Cosmic Name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/profile/character/:id/rename",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profile",
+								"character",
+								":id",
+								"rename"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "char-uuid-here"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Character",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/profile/character/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profile",
+								"character",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "char-uuid-here"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "03. Matchmaking",
+			"item": [
+				{
+					"name": "Join Queue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"game_mode\": \"1v1_PVP\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/matchmaking/join",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"matchmaking",
+								"join"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Poll Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/matchmaking/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"matchmaking",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leave Queue",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/matchmaking/leave",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"matchmaking",
+								"leave"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Waiting Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/match/stats/waiting",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"match",
+								"stats",
+								"waiting"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Active Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/match/stats/active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"match",
+								"stats",
+								"active"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "04. Game / Battle",
+			"item": [
+				{
+					"name": "Get State",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/game/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"game",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "match-uuid-here"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Perform Action",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.body.raw = pm.request.body.raw.replace('UUID_V7_PLACEHOLDER', pm.variables.replace('{{$guid}}'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"request_id\": \"UUID_V7_PLACEHOLDER\",\n    \"entity_id\": \"entity-uuid-here\",\n    \"type\": \"move\",\n    \"target_coords\": { \"x\": 5, \"y\": 3 }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/game/:id/action",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"game",
+								":id",
+								"action"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "match-uuid-here"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forfeit Match",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/game/:id/forfeit",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"game",
+								":id",
+								"forfeit"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "match-uuid-here"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "05. Social & Leaderboard",
+			"item": [
+				{
+					"name": "Global Rankings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/leaderboard?mode=1v1_PVP",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"leaderboard"
+							],
+							"query": [
+								{
+									"key": "mode",
+									"value": "1v1_PVP"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "06. Administrative",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/admin/users?cursor=&search=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							],
+							"query": [
+								{
+									"key": "cursor",
+									"value": ""
+								},
+								{
+									"key": "search",
+									"value": ""
+								}
+							]
+						},
+						"description": "Requires Admin role."
+					},
+					"response": []
+				},
+				{
+					"name": "Match History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/admin/history?cursor=&search=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"history"
+							],
+							"query": [
+								{
+									"key": "cursor",
+									"value": ""
+								},
+								{
+									"key": "search",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Anonymize User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/admin/users/:account_name/anonymize",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								":account_name",
+								"anonymize"
+							],
+							"variable": [
+								{
+									"key": "account_name",
+									"value": "target_user_name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/admin/users/:account_name",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								":account_name"
+							],
+							"variable": [
+								{
+									"key": "account_name",
+									"value": "target_user_name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Purge History",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/admin/history/purge",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"history",
+								"purge"
+							]
+						},
+						"description": "Clean up records older than 90 days. Preserved as DELETE for design intent."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "07. Internal Engine",
+			"item": [
+				{
+					"name": "Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{engineUrl}}/health",
+							"host": [
+								"{{engineUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Arena",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"match_id\": \"match-uuid-here\",\n    \"callback_url\": \"{{webhookUrl}}\",\n    \"players\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{engineUrl}}/arena/start",
+							"host": [
+								"{{engineUrl}}"
+							],
+							"path": [
+								"arena",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Arena Action",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"entity_id\": \"entity-uuid-here\",\n    \"type\": \"move\",\n    \"target_coords\": { \"x\": 0, \"y\": 0 }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{engineUrl}}/arena/:id/action",
+							"host": [
+								"{{engineUrl}}"
+							],
+							"path": [
+								"arena",
+								":id",
+								"action"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "arena-uuid-here"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "08. Meta / Discovery",
+			"item": [
+				{
+					"name": "Live Help (Discovery)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/help",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"help"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "your-bearer-token-here",
+			"type": "string"
+		},
+		{
+			"key": "engineUrl",
+			"value": "http://localhost:8081/internal",
+			"type": "string"
+		},
+		{
+			"key": "webhookUrl",
+			"value": "http://localhost:8000/api/webhook/upsilon",
+			"type": "string"
+		}
+	]
+}
