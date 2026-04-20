@@ -4,7 +4,7 @@ human_name: PostgreSQL Database Persistence
 type: DATA
 layer: IMPLEMENTATION
 version: 1.0
-status: REVIEW
+status: STABLE
 priority: 5
 tags: [database, postgresql, state]
 parents: []
@@ -19,9 +19,10 @@ Serve as the centralized, persistent source of truth for accounts, characters, a
 ## THE RULE / LOGIC
 - Technology Stack: Must be strictly deployed on PostgreSQL.
 - Primary Entities Supported:
-  - Players (credentials, wins, losses, ratio calculation material).
-  - Characters (HP, Movement, Attack, Defense stats linked to a Player).
-  - Active Games (state serialization, if asynchronous or recoverable).
+  - Users (authentication credentials, win/loss metrics, ratio calculation material).
+  - Characters (HP, Movement, Attack, Defense stats linked to a User via player_id).
+  - Game Matches (matches historical state, board_state caching, turn tracking).
+  - Matchmaking Queues (active queues with JSON-based character selection).
 - Integration Note: Since Laravel orchestrates authentication and Go orchestrates active combat, both services may require explicit interface schemas or distinct responsibility bounded contexts inside this PostgreSQL instance.
 
 ## TECHNICAL INTERFACE (The Bridge)

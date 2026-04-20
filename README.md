@@ -119,6 +119,8 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Database Schema and Documentation Drift](issues/ISS-060_20260420_db_schema_doc_drift.md) | 2026-04-20 | Open | Medium | There is a significant delta between the centralized database documentation (... |
+| [Dead Entities Considered Obstacles](issues/ISS-059_20260420_dead_entities_obstacle_risk.md) | 2026-04-20 | Open | High | Dead entities (HP <= 0) are incorrectly treated as obstacles on both the fron... |
 | [Entity Spawning Overlap](issues/ISS-058_20260420_entity_spawn_overlap.md) | 2026-04-20 | Open | Medium | In some cases, multiple entities are spawned on the same tile at the start of... |
 | [forwardToWebhook Missing Default Handler](issues/ISS-057_20260420_webhook_missing_default.md) | 2026-04-20 | In Progress | Low | The `forwardToWebhook` function in `HTTPController` uses a switch statement o... |
 | [ArenaBridge Concurrency Crash in GetBoardState](issues/ISS-056_20260420_arenabridge_concurrency_crash.md) | 2026-04-20 | In Progress | Critical | `ArenaBridge.GetBoardState` crashes with a `concurrent map iteration and map ... |
