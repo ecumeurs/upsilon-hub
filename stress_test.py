@@ -2,6 +2,7 @@
 import subprocess
 import time
 import os
+import random
 import signal
 import sys
 import json
@@ -16,7 +17,7 @@ LOG_DIR = "/workspace/stress_test_logs"
 REPORT_PREFIX = "stress_test_report"
 NUM_MATCHES_PER_MODE = 3
 CLI_BIN = "/workspace/upsiloncli/bin/upsiloncli"
-BOT_SCRIPT = "/workspace/upsiloncli/samples/slow_bot_battle.js"
+BOT_SCRIPT = "/workspace/upsiloncli/samples/fast_bot_battle.js"
 PARSER_BIN = "/workspace/upsiloncli/upsilon_log_parser.py"
 
 MODES = {
@@ -103,11 +104,11 @@ class MatchManager:
 
     def start_match(self, mode):
         num_bots = MODES[mode]
-        match_id = f"{mode}_{int(time.time() * 1000)}"
+        match_id = f"{mode}_{int(time.time() * 1000)}_{random.randint(100, 999)}"
         log_file = os.path.join(LOG_DIR, f"{match_id}.log")
         
         # Build command
-        cmd = [CLI_BIN, "--farm", "--timeout", "600"]
+        cmd = [CLI_BIN, "--local", "--farm", "--timeout", "600"]
         for _ in range(num_bots):
             cmd.append(BOT_SCRIPT)
         
@@ -268,6 +269,7 @@ class MatchManager:
         
         for log in all_logs:
             # Run the parser in tactical mode to get actions
+            log_has_errors = False
             try:
                 # Use the parser's filter mode but capture output
                 res = subprocess.run([sys.executable, PARSER_BIN, log, "--tactical"], capture_output=True, text=True)
@@ -286,6 +288,7 @@ class MatchManager:
                         total_deaths += 1
                     if "ERROR:" in line:
                         total_errors += 1
+                        log_has_errors = True
                         err_msg = line.split("ERROR:", 1)[1].strip()
                         error_types[err_msg] = error_types.get(err_msg, 0) + 1
                     if "RESULT: VICTORY" in line: match_outcomes["VICTORY"] += 1
@@ -294,6 +297,13 @@ class MatchManager:
                     
                     if "[" in line and "]" in line:
                          consolidated_tactical.append(line)
+
+                # Cleanup clean logs
+                if not log_has_errors:
+                    try:
+                        os.remove(log)
+                    except:
+                        pass
 
             except Exception as e:
                 print(f"Failed to parse {log}: {e}")
