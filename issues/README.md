@@ -4,6 +4,7 @@
 
 | Ref | File | Severity | Status | Summary |
 |---|---|---|---|---|
+| ISS-059 | [ISS-059_20260420_dead_entities_obstacle_risk.md](ISS-059_20260420_dead_entities_obstacle_risk.md) | High | Open | Dead entities considered obstacles on frontend and backend |
 | ISS-046 | [ISS-046_20260416_turner_dead_entity_next_turn.md](ISS-046_20260416_turner_dead_entity_next_turn.md) | High | Open | Turner hands next turn to recently killed entity, permanently hanging the battle |
 | ISS-047 | [ISS-047_20260417_go_test_flakiness_synchronization_races.md](ISS-047_20260417_go_test_flakiness_synchronization_races.md) | High | Resolved | Intermittent race conditions in Ruler tests |
 | ISS-048 | [ISS-048_20260418_turn_start_webhook_unicast.md](ISS-048_20260418_turn_start_webhook_unicast.md) | High | Open | Turn start webhook intermittently missing |
