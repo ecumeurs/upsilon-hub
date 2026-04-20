@@ -82,6 +82,7 @@ All services are standardized on the `main` branch. The project includes a suite
 - **[stop_services.sh](stop_services.sh)**: Gracefully stops all tracked services.
 - **[watch_services.go](watch_services.go)**: Real-time TUI dashboard for monitoring CPU/Mem and error logs.
 - **[check_services.sh](check_services.sh)**: Lightweight status utility for quick health checks.
+- **[trigger_all_tests.sh](trigger_all_tests.sh)**: Executes the full local test suite (E2E + Edge Cases) against the running local stack using the `--local` flag.
 
 ## Continuous Integration & Quality control
 
@@ -118,9 +119,11 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [Implement High-Performance Manual Pagination and Search for Admin Tools](issues/ISS-053_20260419_admin_performance_pagination.md) | 2026-04-19 | Resolved | Medium | Optimized manual cursor pagination for admin registries |
-| [Implement Full E2E Admin Test Suite](issues/ISS-052_20260419_admin_history_management_testing.md) | 2026-04-19 | Resolved | Medium | Full E2E Admin Test Suite implementation |
-| [Implement Administrative Match History Management (Backend & Frontend)](issues/ISS-051_20260419_admin_history_management_impl.md) | 2026-04-19 | Resolved | Medium | Administrative Match History Implementation (API & UI) |
+| [Entity Spawning Overlap](issues/ISS-058_20260420_entity_spawn_overlap.md) | 2026-04-20 | Open | Medium | In some cases, multiple entities are spawned on the same tile at the start of... |
+| [forwardToWebhook Missing Default Handler](issues/ISS-057_20260420_webhook_missing_default.md) | 2026-04-20 | In Progress | Low | The `forwardToWebhook` function in `HTTPController` uses a switch statement o... |
+| [ArenaBridge Concurrency Crash in GetBoardState](issues/ISS-056_20260420_arenabridge_concurrency_crash.md) | 2026-04-20 | In Progress | Critical | `ArenaBridge.GetBoardState` crashes with a `concurrent map iteration and map ... |
+| [Actor Message Type Validation](issues/ISS-055_20260420_actor_message_validation.md) | 2026-04-20 | Open | Low | The `Actor` implementation should validate if the target message is of the co... |
+| [Game Resurrection from Board State](issues/ISS-054_20260420_game_resurrection_board_state.md) | 2026-04-20 | Open | Medium | The frontend needs a mechanism to attempt "game resurrection" from a persiste... |
 | [Modernize Actor Library with Go Generics (Templates)](issues/ISS-049_20260418_actor_generics_modernization.md) | 2026-04-18 | Open | Low (Architectural Improvement) | The current Actor implementation was designed before Go 1.18 (Generics). It r... |
 | [Turn Start Webhook Missing When AI Goes First](issues/ISS-048_20260418_turn_start_webhook_unicast.md) | 2026-04-18 | Open | High | The `turn.started` webhook event is intermittently missing from CI test resul... |
 | [BRD Compliance CI Test Suite Blockers](issues/ISS-045_20260416_brd_compliance_ci_blockers.md) | 2026-04-16 | Open | High | The implementation of automated BRD compliance tests via specialized CLI bot ... |
