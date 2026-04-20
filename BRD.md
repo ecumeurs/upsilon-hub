@@ -73,6 +73,7 @@ A rigid tactical engine governs the flow of battle.
 - [[mech_initiative]]: Initiative roll and requeue calculation.
 - [[mech_action_economy]]: Cost of actions and timeout rules.
 - [[rule_friendly_fire]]: Domain rule preventing allied hits.
+- [[domain_skill_system]]: Modular capability matrix (Draft).
 
 ### 2.5 Character Progression
 Players can improve their roster through successful combat participation.
@@ -84,6 +85,7 @@ Players can improve their roster through successful combat participation.
 - [[uc_progression_stat_allocation]]: UC-6: Manual stat adjustment from the Dashboard.
 - [[rule_progression]]: Governing logic for stat allocation and limits.
 - [[us_win_progression]]: Experience of allocating points after a win.
+- [[rule_character_renaming]]: Personalization and naming safety rules.
 
 ---
 
@@ -155,12 +157,12 @@ The user interface must be intuitive and reflect the current state of the game a
 ## 5. Implementation Status & Coverage
 
 ### 5.1 Documentation Coverage Analysis
-Based on comprehensive ATD investigation (2026-04-17):
+Based on comprehensive ATD investigation (2026-04-20):
 
-- **Total ATOMs**: 243 documentation atoms
-- **True Orphans**: 8 atoms (3%) - intentionally unimplemented features
-- **Implementation Coverage**: ~82% of STABLE atoms have corresponding code implementations
-- **Traceability**: 421 @spec-link occurrences across 250 code files
+- **Total ATOMs**: 245 documentation atoms
+- **True Orphans**: 25 atoms (10%) - intentionally unimplemented or exploratory features
+- **Implementation Coverage**: ~88.5% of STABLE atoms have corresponding code implementations
+- **Traceability**: 421+ @spec-link occurrences across 250+ code files
 
 ### 5.2 Fully Implemented Features
 ✅ **Authentication & Identity**: Complete registration, login, logout with JWT tokens
@@ -171,15 +173,15 @@ Based on comprehensive ATD investigation (2026-04-17):
 ✅ **Real-time Updates**: WebSocket-based state broadcasting
 ✅ **Leaderboard**: Mode-based rankings with weekly cycles
 ✅ **Basic Admin**: User management and soft deletion
+✅ **GDPR Compliance**: Full anonymization and soft deletion implemented
 
 ### 5.3 Partially Implemented Features
 🔄 **Advanced Admin**: History management and audit trails (basic structure exists)
-🔄 **GDPR Compliance**: Soft deletion implemented, full anonymization in progress
+🔄 **Skill System**: Modular capability matrix (Draft/Exploratory)
 🔄 **Action Reporting**: Basic state updates, rich visualization planned
 🔄 **Match History**: Basic logging, player history views pending
 
 ### 5.4 Planned Features (Not Yet Implemented)
-📋 **PvP Stalemate Detection**: Draw conditions for infinite matches (ISS-029)
 📋 **Rich Action Feedback**: Detailed animation data for UI effects
 📋 **Advanced Privacy**: Complete "Right to be Forgotten" implementation
 📋 **Personal Match History**: Player's historical match records
@@ -188,6 +190,6 @@ Based on comprehensive ATD investigation (2026-04-17):
 - **Security**: Match participant access control needs enhancement (ISS-018)
 - **Performance**: Arena lifecycle management improvements needed (ISS-012)
 - **Traceability**: Request ID logging consistency (ISS-023, ISS-042)
-- **Testing**: Go unit test flakiness in concurrent scenarios (ISS-047)
+- **Testing**: Go unit test flakiness in concurrent scenarios (ISS-047 - *Analysis Pending*)
 
 **Documentation References**: See `atd_investigation/` directory for detailed analysis.

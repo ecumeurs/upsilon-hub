@@ -151,6 +151,8 @@ sequenceDiagram
 | **BR-10** | System Administration | Laravel Gateway | User listing/deletion; History purge. | [[uc_admin_user_management]] | 🔄 Partial |
 | **BR-11** | Admin Privacy Gate | Laravel Gateway | Masking sensitive user fields for admins. | [[rule_admin_access_restriction]] | ✅ Complete |
 | **BR-12** | Secure Admin Seeding | Laravel Gateway | env-based admin account creation. | [[infra_seed_admin]] | ✅ Complete |
+| **BR-13** | Tactical Action Reporting | UpsilonBattle Engine | Rich state mutation describing combat events. | [[requirement_customer_action_reporting]] | 🔄 Partial |
+| **BR-14** | API-First Integration | All Components | Self-documenting registry and 1:1 API parity. | [[requirement_customer_api_first]] | 🔄 Partial |
 
 ---
 

@@ -4,7 +4,7 @@ human_name: "PvP Stalemate Protocol"
 type: RULE
 layer: CUSTOMER
 version: 1.0
-status: DRAFT
+status: REVIEW
 priority: 3
 tags: [pvp, ruling, stalemate]
 parents:
@@ -31,4 +31,4 @@ To prevent infinite, "soft-locked" matches where no remaining combatant has enou
 - **Issue Reference:** `ISS-029`
 
 ## EXPECTATION (For Testing)
-- If Team 1 has 1 unit (5 Attack) and Team 2 has 1 unit (10 Defense), the match should end as a Draw after the turn concludes.
+This rule is superseded by the 'Minimum 1 Damage' logic implemented in [[mech_combat_attack_computation]], ensuring that combat eventually concludes. No stalemate detection is required.

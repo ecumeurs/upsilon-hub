@@ -30,6 +30,16 @@ To provide a centralized specification for colors, typography, and styling token
 - **Headings**: `Orbitron` (Variable: `--font-scifi`)
 - **Body**: `Inter` (Variable: `--font-sans`)
 - **Technical/Logs**: `JetBrains Mono` (Variable: `--font-mono`)
+- **Standard Styling**: Titles must use `uppercase` and `tracking-[0.3em]` to evoke high-tech readouts.
+
+### Component Styling (Neon in the Dust)
+- **Panels / Containers**: 
+    - Background: `bg-upsilon-gunmetal/30` or `/90` with `backdrop-blur-md/xl`.
+    - Border: 1px solid `upsilon-cyan/30` or `upsilon-magenta/30`.
+- **Corner Accents**: Panels should include 2px solid corner accents (e.g. `border-t-2 border-l-2`) to reinforce a "HUD" geometry.
+- **Interactive States**:
+    - **Hover**: Increase border-opacity and add a subtle glow (`shadow-glow-cyan/magenta`).
+    - **Active**: Use pulsing indicators (`animate-pulse`) for strategic links.
 
 ### Utility Classes (Tailwind)
 - Colors prefixed with `upsilon-*`.

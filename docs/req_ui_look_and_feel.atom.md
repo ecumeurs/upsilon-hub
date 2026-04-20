@@ -33,7 +33,7 @@ To define the core visual identity and aesthetic philosophy of the Upsilon Battl
 
 ## TECHNICAL INTERFACE
 - **Code Tag:** `@spec-link [[req_ui_look_and_feel]]`
-- **Design Doc:** [ui.md](file:///workspace/ui.md)
+- **Theme Definition:** [[ui_theme]]
 
 ## EXPECTATION
 - All UI elements must strictly follow the "Neon in the Dust" aesthetic.
