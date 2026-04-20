@@ -26,6 +26,11 @@ services:
     build:
       context: ./battleui
       dockerfile: Dockerfile.prod
+      args:
+        - VITE_REVERB_APP_KEY=${VITE_REVERB_APP_KEY}
+        - VITE_REVERB_HOST=${VITE_REVERB_HOST}
+        - VITE_REVERB_PORT=${VITE_REVERB_PORT}
+        - VITE_REVERB_SCHEME=${VITE_REVERB_SCHEME}
     user: "33:33" # Run as www-data to ensure log permissions
     command: php artisan migrate --force
     depends_on:
@@ -38,6 +43,11 @@ services:
     build:
       context: ./battleui
       dockerfile: Dockerfile.prod
+      args:
+        - VITE_REVERB_APP_KEY=${VITE_REVERB_APP_KEY}
+        - VITE_REVERB_HOST=${VITE_REVERB_HOST}
+        - VITE_REVERB_PORT=${VITE_REVERB_PORT}
+        - VITE_REVERB_SCHEME=${VITE_REVERB_SCHEME}
     depends_on:
       db:
         condition: service_healthy
@@ -58,6 +68,11 @@ services:
     build:
       context: ./battleui
       dockerfile: Dockerfile.prod
+      args:
+        - VITE_REVERB_APP_KEY=${VITE_REVERB_APP_KEY}
+        - VITE_REVERB_HOST=${VITE_REVERB_HOST}
+        - VITE_REVERB_PORT=${VITE_REVERB_PORT}
+        - VITE_REVERB_SCHEME=${VITE_REVERB_SCHEME}
     command: php artisan reverb:start --host=0.0.0.0 --port=8080
     depends_on:
       db:
