@@ -21,6 +21,7 @@ Dead entities (HP <= 0) are incorrectly treated as obstacles on both the fronten
 ### Background
 
 In a tactical battle, once an entity's HP reaches zero, it should be removed from the active grid occupancy map to allow other entities to pass through or stop on that cell. While the `Attack` rule correctly handles this, other logic paths (like skills) appear to leave the entity in a "zombie" state on the grid.
+Note though that `Attack` is the only method used right now, so while `Skill` does it wrongly it doesn't matter much for now.
 
 ### The Problem Scenario
 
