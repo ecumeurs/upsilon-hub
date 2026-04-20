@@ -47,7 +47,6 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 | :--- | :--- | :--- | :--- |
 | **Laravel API** | `8000` | HTTP | External Gateway & Orchestration |
 | **Reverb Server** | `8080` | WS/WSS | Tactical WebSocket Bridge |
-| **Upsilon Engine** | `8081` | HTTP | Stateless Combat Engine (Internal) |
 | **Vue.js (Vite)** | `5173` | HTTP | "Neon in the Dust" Frontend (Dev Only) |
 
 > [!TIP]
@@ -387,13 +386,13 @@ The Upsilon Battle ecosystem uses **Laravel Reverb** (Pusher-compatible) for rea
 - `private-arena.{match_id}`: Real-time tactical state updates for an active match.
 
 #### Key Events
-- `match.found`: Matchmaking success.
-- `board.updated`: Tactical board state refresh.
+- `match.found`: Matchmaking success (emitted on user channel).
+- `game.started`: Arena initialization complete.
+- `turn.started`: New entity initiative active (starts 30s clock).
+- `board.updated`: Position change, stat change, or successful tactical action (Move, Attack, Pass).
+- `game.ended`: Win condition met or match terminated.
 
-
-
-
-### 2.7 Advanced Identity Management
+### 2.8 Advanced Identity Management
 
 #### `GET /profile/export`
 - **Specification:** [[api_profile_export]]
@@ -429,57 +428,36 @@ The Upsilon Battle ecosystem uses **Laravel Reverb** (Pusher-compatible) for rea
 
 ---
 
-## 3. Upsilon API (Go Internal Engine)
+## 3. Internal Infrastructure (Appendix)
+
+This section documents internal-facing interfaces that are **NOT** reachable from outside the secure cluster. These are intended for engine development and cluster orchestration.
+
+### 3.1 Upsilon API (Go Combat Engine)
 **Source Module:** [[api_go_battle_engine]]  
-**Base URL:** `http://localhost:8081/internal`
-
-### 3.0 API Summary
-
-| Verb | URI | Intent | Specification |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/health` | Engine Health Check | [[api_go_health_check]] |
-| `POST` | `/arena/start` | Initialize Arena Instance | [[api_go_battle_start]] |
-| `POST` | `/arena/{id}/action` | Execute Combat Action | [[api_go_battle_action]] |
-
-### 3.1 Health Check
+**Base URL:** `http://localhost:8081/internal` (Internal Only)
 
 #### `GET /health`
 - **Specification:** [[api_go_health_check]]
-- **Intent:** Provide a lightweight readiness probe for Docker healthchecks and CI tooling.
-- **Authentication:** None (public endpoint).
-- **Output:**
-  - `status`: `string` ("ok")
-  - `revision`: `string` (Git commit hash of the running binary)
-
-### 3.2 Arena Life Cycle
+- **Intent:** Lightweight readiness probe for engine status.
+- **Output:** `{ "status": "ok", "revision": "string" }`
 
 #### `POST /arena/start`
 - **Specification:** [[api_go_battle_start]]
 - **Intent:** Initialize a tactical arena instance.
-- **Input:** `ArenaStartRequest` (See [[#4.3-arenastartrequest]])
-- **Output:** `ArenaStartResponse` (See [[#4.1-arenastartresponse]])
-
-### 3.3 Battle Actions
+- **Input:** `ArenaStartRequest` (JSON)
 
 #### `POST /arena/{id}/action`
 - **Specification:** [[api_go_battle_action]]
-- **Intent:** [[uc_combat_turn]]: Validate and execute tactical moves or attacks within a battle.
-- **Input:** 
-  - `id`: `string (UUID)` (URL Parameter - Arena ID)
-  - `payload`: `ArenaActionRequest` (See [[#4.2-arenaactionrequest]])
-- **Output:** `ArenaActionResponse` (See [[#4.1-arenaactionresponse]])
+- **Intent:** [[uc_combat_turn]]: Validate and execute tactical actions.
+- **Input:** `ArenaActionRequest` (JSON)
 
-### 3.4 Asynchronous Webhook (Callback)
-**Destination:** `POST /api/webhook/upsilon` (in [[api_battle_proxy]]) — Must be reachable internally from the Go Engine (e.g. `http://127.0.0.1:8000`).
+### 3.2 Asynchronous Webhook (Callback)
+**Destination:** `POST /api/webhook/upsilon` (on Laravel Gateway) — Must be reachable internally from the Go Engine.
 
 #### Webhook Event Payload
 - **Specification:** [[api_go_webhook_callback]]
-- **Event Type (`event_type`):**
-  - `game.started`: Arena initialization complete.
-  - `turn.started`: New entity initiative active (starts 30s clock).
-  - `board.updated`: Position or stat change (Damage/Heal/Move).
-  - `game.ended`: Win condition met.
-- **Data Payload:** `ArenaEvent` (See [[#4.7-arenaevent]]) which contains a `BoardState`.
+- **Event Types:** `game.started`, `turn.started`, `board.updated`, `game.ended`.
+- **Data Payload:** `ArenaEvent` which contains a `BoardState`.
 
 ---
 
@@ -641,9 +619,8 @@ Payload for the asynchronous engine callback.
 | `POST /profile/character/{id}/upgrade` | [[api_profile_character]] | [[uc_progression_stat_allocation]] | 2.5 Character Progression |
 | `POST /matchmaking/join` | [[api_matchmaking]] | [[uc_matchmaking]] | 2.3 Matchmaking Ecosystem |
 | `POST /game/{id}/action` | [[api_battle_proxy]] | [[uc_combat_turn]] | 2.4 Combat Engine & Action Economy |
-| `POST /api/webhook/upsilon` | [[api_go_webhook_callback]] | [[uc_combat_turn]] / [[uc_match_resolution]] | 2.4 Combat Engine (State Evaluation) |
-| `GET /api/profile/export` | [[api_profile_export]] | Data Portability | 3.2 GDPR & Data Privacy |
-| `POST /auth/logout` | [[api_auth_logout]] | [[uc_auth_logout]] | [[req_security]] |
-| `Universal Envelope` | [[api_standard_envelope]] | All Interactions | 3.3 Traceability & Request ID |
-| `GET /leaderboard` | [[api_leaderboard]] | [[us_leaderboard_view]] | 4 Social & Competitive |
-| `POST /internal/arena/start` | [[api_go_battle_start]] | Queue to Battle transition | 2.3 PvP/PvE Matchmaking |
+| `POST /api/webhook/upsilon` | [[api_go_webhook_callback]] | [[uc_combat_turn]] / [[uc_match_resolution]] | Internal Callback |
+| `GET /api/profile/export` | [[api_profile_export]] | Data Portability | GDPR |
+| `POST /auth/logout` | [[api_auth_logout]] | [[uc_auth_logout]] | Security |
+| `Universal Envelope` | [[api_standard_envelope]] | All Interactions | Traceability |
+| `GET /leaderboard` | [[api_leaderboard]] | Rankings | Social |

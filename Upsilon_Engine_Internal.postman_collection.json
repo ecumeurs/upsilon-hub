@@ -1,0 +1,102 @@
+{
+	"info": {
+		"_postman_id": "9f8e7d6c-5b4a-4d3c-2b1a-0f9e8d7c6b5a",
+		"name": "Upsilon Engine (Internal)",
+		"description": "Internal testing collection for the Upsilon (Go) Combat Engine. Requires direct access to the engine's internal port (typically 8081). Not for external use.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{engineUrl}}/health",
+					"host": [
+						"{{engineUrl}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start Arena",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"match_id\": \"match-uuid-here\",\n    \"callback_url\": \"{{webhookUrl}}\",\n    \"players\": []\n}",
+					"options": {
+						"raw": {
+							"raw": {
+								"language": "json"
+							}
+						}
+					}
+				},
+				"url": {
+					"raw": "{{engineUrl}}/arena/start",
+					"host": [
+						"{{engineUrl}}"
+					],
+					"path": [
+						"arena",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Arena Action",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"entity_id\": \"entity-uuid-here\",\n    \"type\": \"move\",\n    \"target_coords\": { \"x\": 0, \"y\": 0 }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{engineUrl}}/arena/:id/action",
+					"host": [
+						"{{engineUrl}}"
+					],
+					"path": [
+						"arena",
+						":id",
+						"action"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "arena-uuid-here"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "engineUrl",
+			"value": "http://localhost:8081/internal",
+			"type": "string"
+		},
+		{
+			"key": "webhookUrl",
+			"value": "http://localhost:8000/api/webhook/upsilon",
+			"type": "string"
+		}
+	]
+}

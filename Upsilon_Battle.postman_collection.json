@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "4f2a7b8c-5d9e-4a3b-9c1d-6f2e8a7d5c9b",
 		"name": "Upsilon Battle API",
-		"description": "Comprehensive collection for the Upsilon Battle ecosystem. Includes Laravel Gateway (BattleUI), Upsilon (Go) Engine, and WebSocket handshake/authorization bridge based on the Pusher/Reverb protocol.",
+		"description": "Comprehensive collection for the Upsilon Battle ecosystem. Includes Laravel Gateway (BattleUI) and WebSocket handshake/authorization bridge. Internal engine endpoints are moved to a separate internal collection.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -918,89 +918,6 @@
 			]
 		},
 		{
-			"name": "07. Internal Engine",
-			"item": [
-				{
-					"name": "Health",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{engineUrl}}/health",
-							"host": [
-								"{{engineUrl}}"
-							],
-							"path": [
-								"health"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Start Arena",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"match_id\": \"match-uuid-here\",\n    \"callback_url\": \"{{webhookUrl}}\",\n    \"players\": []\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{engineUrl}}/arena/start",
-							"host": [
-								"{{engineUrl}}"
-							],
-							"path": [
-								"arena",
-								"start"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Arena Action",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"entity_id\": \"entity-uuid-here\",\n    \"type\": \"move\",\n    \"target_coords\": { \"x\": 0, \"y\": 0 }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{engineUrl}}/arena/:id/action",
-							"host": [
-								"{{engineUrl}}"
-							],
-							"path": [
-								"arena",
-								":id",
-								"action"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "arena-uuid-here"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "08. Meta / Discovery",
 			"item": [
 				{
@@ -1116,16 +1033,6 @@
 		{
 			"key": "token",
 			"value": "your-bearer-token-here",
-			"type": "string"
-		},
-		{
-			"key": "engineUrl",
-			"value": "http://localhost:8081/internal",
-			"type": "string"
-		},
-		{
-			"key": "webhookUrl",
-			"value": "http://localhost:8000/api/webhook/upsilon",
 			"type": "string"
 		},
 		{
