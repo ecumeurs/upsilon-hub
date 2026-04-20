@@ -70,6 +70,22 @@ From the project root on the host, you can interact with the containerized CLI:
     docker compose -f docker-compose.prod.yaml exec cli upsiloncli --help
     ```
 
+### Available Sample Bots
+The CLI container comes pre-loaded with tactical scripts located in `./samples/`. You can execute them directly to test different scenarios:
+
+*   **PvP Battles**: `pvp_1v1_battle.js`, `pvp_2v2_battle.js`, `pvp_1v1_battle_loner.js`, `pvp_2v2_battle_loner.js`
+*   **PvE Battles**: `pve_1v1_battle.js`, `pve_2v2_battle.js`, `pve_1v1_battle_loner.js`, `pve_2v2_battle_loner.js`
+*   **Stress Testing**: `fast_bot_battle.js`, `slow_bot_battle.js`
+*   **Onboarding**: `onboard_and_match.js` (Handles full account registration)
+
+**Example execution:**
+```bash
+docker compose -f docker-compose.prod.yaml exec cli upsiloncli --script ./samples/pvp_1v1_battle.js ./samples/pvp_1v1_battle.js
+```
+
+Note: PvP 1v1 requires 2 bots, PvP 2v2 requires 4 bots, PvE 1v1 requires 1 bot, PvE 2v2 requires 2 bots started, as they wait for each other in the queue.
+Loner scripts are for testing purposes and do not require other bots to be started.
+
 ### Introduction to Scripting
 The CLI includes a "Farm" coordination engine that executes JavaScript scenarios. Each agent identifies itself via the `upsilon` global object.
 
