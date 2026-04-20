@@ -36,54 +36,24 @@ jobs:
         if: always()
         run: docker compose -f docker-compose.ci.yaml ps
 
-      # 4. Run Edge Case Tests (Phase 1: Priority Movement & Authentication)
-      - name: "Edge Cases: Phase 1 - Movement & Authentication"
+      # 4. Run All Edge Case Tests
+      - name: Run Edge Case Suite
         run: |
-          echo "=== Phase 1: Movement & Authentication Edge Cases ==="
-          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh -c '
-            /bin/upsiloncli --farm tests/scenarios/edge_movement_obstacle_collision.js \
-                                    tests/scenarios/edge_movement_already_attacked.js \
-                                    tests/scenarios/edge_auth_password_policy_full.js \
-                                    --timeout 120
-          ' || true
-
-      # 5. Run Edge Case Tests (Phase 2: Priority Attack Validation)
-      - name: "Edge Cases: Phase 2 - Attack Validation"
-        run: |
-          echo "=== Phase 2: Attack Validation Edge Cases ==="
-          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh -c '
-            /bin/upsiloncli --farm tests/scenarios/edge_attack_friendly_fire.js \
-                                    tests/scenarios/edge_attack_out_of_turn.js \
-                                    --timeout 120
-          ' || true
-
-      # 6. Run Edge Case Tests (Phase 3: Character & Matchmaking)
-      - name: "Edge Cases: Phase 3 - Character & Matchmaking"
-        run: |
-          echo "=== Phase 3: Character & Matchmaking Edge Cases ==="
-          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh -c '
-            /bin/upsiloncli --farm tests/scenarios/edge_match_queue_while_queued.js \
-                                    --timeout 60
-          ' || true
-
-      # 7. Run All Edge Cases (Full Suite - when all tests are implemented)
-      # - name: "Edge Cases: Full Suite (All 48 Tests)"
-      #   if: false  # Enable when all tests are implemented
-      #   run: |
-      #     docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh ./tests/run_all_scenarios.sh
+          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh ./tests/run_all_edge_cases.sh
 
       # 8. Generate Edge Case Report (only if tests ran)
       - name: Generate Edge Case Report
         if: always()
         run: |
           # Only generate report if tests actually executed
-          if [ -d "upsiloncli/tests/logs/edge_*.log" ]; then
+          if ls upsiloncli/tests/logs/edge_*.log >/dev/null 2>&1; then
             ./tests/edge_case_report.sh > edge_case_report.md 2>&1 || true
             cat edge_case_report.md >> $GITHUB_STEP_SUMMARY
           else
             echo "No edge case test logs found - tests may have failed early"
             echo "Check Docker logs for test execution errors"
           fi
+
 
       # 9. Collect Docker Logs on Failure
       - name: Collect Docker Logs
