@@ -80,7 +80,7 @@ The CLI container comes pre-loaded with tactical scripts located in `./samples/`
 
 **Example execution:**
 ```bash
-docker compose -f docker-compose.prod.yaml exec cli upsiloncli --script ./samples/pvp_1v1_battle.js ./samples/pvp_1v1_battle.js
+docker compose -f docker-compose.prod.yaml exec cli upsiloncli --farm ./samples/pvp_1v1_battle.js ./samples/pvp_1v1_battle.js
 ```
 
 Note: PvP 1v1 requires 2 bots, PvP 2v2 requires 4 bots, PvE 1v1 requires 1 bot, PvE 2v2 requires 2 bots started, as they wait for each other in the queue.
