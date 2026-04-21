@@ -12,6 +12,8 @@ parents:
 dependents:
   - [[api_controller_methods]]
   - [[mech_controller_communication_sequence]]
+  - [[rule_battle_readiness]]
+  - [[rule_ruler_test_robustness]]
 ---
 # Ruler Message Methods API
 
