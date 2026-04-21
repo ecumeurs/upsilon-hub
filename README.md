@@ -134,8 +134,5 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 | [Upgradable Pawn Appearance & Model System](issues/ISS-040_20260415_pawn_appearance_system.md) | 2026-04-15 | Open | Medium | Implement an upgradable "Pawn Appearance System" that allows players to custo... |
 | [Holo-Emote Procedural Reaction System](issues/ISS-039_20260415_holo_emote_system.md) | 2026-04-15 | Open | Medium | Implement a "Holo-Emote System" that triggers procedural reactions (emojis/te... |
 | [Standardize Board State Naming: entities -> characters](issues/ISS-036_20260414_front_board_state_entity_naming.md) | 2026-04-14 | Open | Medium | The board state structure currently uses the term "entities" for game units. ... |
-| [Internal ID Exposure in Public APIs](issues/ISS-034_20260413_id_exposure.md) | 2026-04-13 | Open | Medium | Internal database UUIDs are currently being emitted directly to front-end and... |
 | [Ensure all logs are tagged with Request ID](issues/ISS-023_20260316_logging_tag_traceability.md) | 2026-03-16 | Open | High | The system currently lacks a strictly enforced requirement to tag every log e... |
-| [Security Risk: Lack of Match Participant Access Control](issues/ISS-018_20260312_match_participant_access_control.md) | 2026-03-12 | Open | Critical | Currently, any authenticated user can attempt to act or view the state of ANY... |
-| [Arena not destroyed on battle end](issues/ISS-012_20260311_arena_destruction_leak.md) | 2026-03-11 | Open | Medium | Arenas are added to the `ArenaBridge.arenas` map during startup but are never... |
 
