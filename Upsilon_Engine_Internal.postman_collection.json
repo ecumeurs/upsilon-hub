@@ -30,7 +30,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"match_id\": \"match-uuid-here\",\n    \"callback_url\": \"{{webhookUrl}}\",\n    \"players\": []\n}",
+					"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Postman Arena Start\",\n    \"success\": true,\n    \"data\": {\n        \"match_id\": \"match-uuid-here\",\n        \"callback_url\": \"{{webhookUrl}}\",\n        \"players\": []\n    },\n    \"meta\": {}\n}",
 					"options": {
 						"raw": {
 							"raw": {
@@ -59,7 +59,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"entity_id\": \"entity-uuid-here\",\n    \"type\": \"move\",\n    \"target_coords\": { \"x\": 0, \"y\": 0 }\n}",
+					"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Postman Arena Action\",\n    \"success\": true,\n    \"data\": {\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"move\",\n        \"target_coords\": { \"x\": 0, \"y\": 0 }\n    },\n    \"meta\": {}\n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"account_name\": \"survivor_{{$randomInt}}\",\n    \"email\": \"survivor_{{$randomInt}}@example.com\",\n    \"password\": \"VeryStrongPassword123!\",\n    \"password_confirmation\": \"VeryStrongPassword123!\",\n    \"full_address\": \"123 Cyberpunk St, Neo-Shibuya\",\n    \"birth_date\": \"1995-10-24\"\n}",
+							"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"User Registration\",\n    \"success\": true,\n    \"data\": {\n        \"account_name\": \"survivor_{{$randomInt}}\",\n        \"email\": \"survivor_{{$randomInt}}@example.com\",\n        \"password\": \"VeryStrongPassword123!\",\n        \"password_confirmation\": \"VeryStrongPassword123!\",\n        \"full_address\": \"123 Cyberpunk St, Neo-Shibuya\",\n        \"birth_date\": \"1995-10-24\"\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -43,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"account_name\": \"admin\",\n    \"password\": \"password\"\n}",
+							"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"User Login\",\n    \"success\": true,\n    \"data\": {\n        \"account_name\": \"admin\",\n        \"password\": \"password\"\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -71,7 +71,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"account_name\": \"admin\",\n    \"password\": \"password\"\n}",
+							"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Admin Login\",\n    \"success\": true,\n    \"data\": {\n        \"account_name\": \"admin\",\n        \"password\": \"password\"\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -129,7 +129,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"new_email@example.com\",\n    \"full_address\": \"Updated sector 7G\"\n}",
+							"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Update Account\",\n    \"success\": true,\n    \"data\": {\n        \"email\": \"new_email@example.com\",\n        \"full_address\": \"Updated sector 7G\"\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -163,7 +163,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"current_password\": \"VeryStrongPassword123!\",\n    \"password\": \"EvenStrongerPassword456!\",\n    \"password_confirmation\": \"EvenStrongerPassword456!\"\n}",
+							"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Change Password\",\n    \"success\": true,\n    \"data\": {\n        \"current_password\": \"VeryStrongPassword123!\",\n        \"password\": \"EvenStrongerPassword456!\",\n        \"password_confirmation\": \"EvenStrongerPassword456!\"\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -360,7 +360,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"stats\": {\n        \"hp\": 1,\n        \"attack\": 2\n    }\n}",
+							"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Upgrade Stats\",\n    \"success\": true,\n    \"data\": {\n        \"stats\": {\n            \"hp\": 1,\n            \"attack\": 2\n        }\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -401,7 +401,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"New Cosmic Name\"\n}",
+							"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Rename Character\",\n    \"success\": true,\n    \"data\": {\n        \"name\": \"New Cosmic Name\"\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -478,7 +478,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"game_mode\": \"1v1_PVP\"\n}",
+							"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Join Matchmaking\",\n    \"success\": true,\n    \"data\": {\n        \"game_mode\": \"1v1_PVP\"\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -655,7 +655,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"request_id\": \"UUID_V7_PLACEHOLDER\",\n    \"entity_id\": \"entity-uuid-here\",\n    \"type\": \"move\",\n    \"target_coords\": { \"x\": 5, \"y\": 3 }\n}",
+							"raw": "{\n    \"request_id\": \"UUID_V7_PLACEHOLDER\",\n    \"message\": \"Perform Tactical Action\",\n    \"success\": true,\n    \"data\": {\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"move\",\n        \"target_coords\": { \"x\": 5, \"y\": 3 }\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
