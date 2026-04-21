@@ -129,7 +129,7 @@ while (true) {
 
 2. Execute the script in the production stack:
 ```bash
-docker compose -f docker-compose.prod.yaml exec cli upsiloncli --farm test_pve.js
+docker compose -f docker-compose.prod.yaml exec cli upsiloncli --farm samples/pve_1v1_battle.js
 ```
 
 ## 5. Verification
