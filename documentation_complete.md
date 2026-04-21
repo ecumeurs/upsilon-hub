@@ -424,13 +424,11 @@ flowchart TD
     - Relaye (Proxy) les actions de combat vers le bridge Go.
     - Écoute les webhooks de Go pour mettre à jour le cache d'état JSON `game_matches` et diffuser via WebSockets.
 - **Contraintes :** Ne doit pas effectuer de calculs de combat complexes ; doit seulement enregistrer les résultats et autoriser les requêtes.
-- **Références :** [[api_laravel_gateway]], [[req_security]].
 
 ### 10.2 UpsilonAPI (Le Bridge)
 - **Responsabilité :** Fournit une interface HTTP pour le moteur Go stateful. Orchestre plusieurs arènes concurrentes.
 - **Fonctionnement Interne :** Maintient un registre des instances `Ruler` actives et les mappe aux `arena_ids`.
 - **Contraintes :** Doit être sans état (stateless) concernant l'identité des joueurs (délègue à Laravel).
-- **Références :** [[module_upsilonapi]], [[api_go_battle_engine]]
 
 ### 10.3 UpsilonBattle Engine
 - **Responsabilité :** Le processeur central de la logique TRPG.
@@ -438,7 +436,6 @@ flowchart TD
     - **Ruler :** Agit comme le Maître du Jeu, imposant les règles (initiative, timer, collision).
     - **Controller :** Agit comme l'interface joueur/IA pour l'émission des commandes move/attack.
 - **Contraintes :** Impose la shot clock de 30 secondes et la pénalité de +400 délai pour les timeouts.
-- **Références :** [[module_game]], [[mech_controller_communication_sequence]], [[mech_action_economy]].
 
 ---
 
@@ -673,7 +670,6 @@ Ce document fournit une référence complète pour les interfaces de communicati
 ### 13.1 Infrastructure Partagée
 
 #### Enveloppe de Message JSON Standard
-**Source :** [[api_standard_envelope]]
 
 Pour garantir la traçabilité et une gestion cohérente des erreurs, chaque échange JSON entre les unités du système (Vue, Laravel, Go) DOIT être conforme à la structure racine suivante :
 
@@ -692,12 +688,10 @@ Pour garantir la traçabilité et une gestion cohérente des erreurs, chaque éc
 ```
 
 #### Identification de Requête
-**Source :** [[api_request_id]]
 
 Le `request_id` doit être une **chaîne (UUIDv7)**. Il appartient à l'émetteur (généralement le frontend Vue pour les actions utilisateur) de générer cet ID. Il doit être propagé à travers tous les appels distribués couvrant Laravel et Go pour maintenir la trace définie dans [[rule_tracing_logging]].
 
 #### Versioning d'État & Déduplication
-**Source :** [[mech_game_state_versioning]]
 
 Pour assurer la cohérence et optimiser les performances lors de combats à haute fréquence, Upsilon utilise un système de versioning monotonique. 
 
@@ -727,39 +721,39 @@ Pour assurer la cohérence et optimiser les performances lors de combats à haut
 
 #### Résumé de l'API
 
-| Verbe | URI | Intention | Spécification |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/auth/register` | Inscription Utilisateur & Création de Roster | [[api_auth_register]] |
-| `POST` | `/auth/login` | Authentification Utilisateur | [[api_auth_login]] |
-| `POST` | `/auth/admin/login` | Authentification Administrative (CLI/API) | [[uc_admin_login]] |
-| `POST` | `/auth/logout` | Terminaison de Session | [[api_auth_logout]] |
-| `POST` | `/auth/update` | Mise à jour de l'Identité de Sécurité (Adresse, Email) | [[api_auth_user]] |
-| `POST` | `/auth/password` | Rotation des Identifiants | [[api_auth_user]] |
-| `GET` | `/auth/export` | Export complet pour la portabilité des données | [[api_profile_export]] |
-| `DELETE` | `/auth/delete` | Droit au RGPD (Suppression de Compte) | [[api_auth_user]] |
-| `GET` | `/profile` | Obtenir le Bio Joueur & Vue d'ensemble du Roster | [[customer_player_profile]] |
-| `GET` | `/profile/characters` | Lister le Roster du Joueur | [[api_profile_character]] |
-| `GET` | `/profile/character/{id}` | Obtenir les détails d'un personnage | [[api_profile_character]] |
-| `POST` | `/profile/character/{id}/reroll` | Reset des Stats (Nouveaux Comptes) | [[api_profile_character]] |
-| `POST` | `/profile/character/{id}/upgrade` | Allocation de Points d'Attribut | [[api_profile_character]] |
-| `POST` | `/profile/character/{id}/rename` | Renommage Cosmétique du Personnage | [[rule_character_renaming]] |
-| `DELETE` | `/profile/character/{id}` | Retirer un personnage du Roster | [[api_profile_character]] |
-| `POST` | `/matchmaking/join` | Entrer dans la file d'attente | [[api_matchmaking]] |
-| `GET` | `/matchmaking/status` | Polling du statut du match | [[api_matchmaking]] |
-| `DELETE` | `/matchmaking/leave` | Quitter la file d'attente | [[api_matchmaking]] |
-| `GET` | `/match/stats/waiting` | Obtenir les metrics de densité de la file | [[ui_dashboard_match_statistics]] |
-| `GET` | `/match/stats/active` | Obtenir le nombre de matchs en cours | [[ui_dashboard_match_statistics]] |
-| `GET` | `/game/{id}` | Obtenir l'état du plateau en cache | [[api_battle_proxy]] |
-| `POST` | `/game/{id}/action` | Relayer une action tactique au moteur | [[api_battle_proxy]] |
-| `POST` | `/game/{id}/forfeit` | Route d'abandon autonome | [[rule_forfeit_battle]] |
-| `GET` | `/admin/users` | Lister les utilisateurs pour audit (basé sur curseur) | [[uc_admin_user_management]] |
-| `POST` | `/admin/users/{account_name}/anonymize` | Anonymisation RGPD | [[uc_admin_user_management]] |
-| `DELETE` | `/admin/users/{account_name}` | Suppression administrative logique | [[uc_admin_user_management]] |
-| `GET` | `/admin/history` | Liste de l'historique de tous les matchs | [[uc_admin_history_management]] |
-| `DELETE` | `/admin/history/purge` | Purge de l'historique des matchs > 90 jours | [[uc_admin_history_management]] |
-| `POST` | `/broadcasting/auth` | Autorisation de canal WebSocket | [[api_websocket]] |
-| `POST` | `/api/webhook/upsilon` | Ingestion des mises à jour d'état (Interne) | [[api_go_webhook_callback]] |
-| `GET` | `/leaderboard` | Classements globaux (basé sur le mode) | [[api_leaderboard]] |
+| Verbe | URI | Intention |
+| :--- | :--- | :--- |
+| `POST` | `/auth/register` | Inscription Utilisateur & Création de Roster |
+| `POST` | `/auth/login` | Authentification Utilisateur |
+| `POST` | `/auth/admin/login` | Authentification Administrative (CLI/API) |
+| `POST` | `/auth/logout` | Terminaison de Session |
+| `POST` | `/auth/update` | Mise à jour de l'Identité de Sécurité (Adresse, Email) |
+| `POST` | `/auth/password` | Rotation des Identifiants |
+| `GET` | `/auth/export` | Export complet pour la portabilité des données |
+| `DELETE` | `/auth/delete` | Droit au RGPD (Suppression de Compte) |
+| `GET` | `/profile` | Obtenir le Bio Joueur & Vue d'ensemble du Roster |
+| `GET` | `/profile/characters` | Lister le Roster du Joueur |
+| `GET` | `/profile/character/{id}` | Obtenir les détails d'un personnage |
+| `POST` | `/profile/character/{id}/reroll` | Reset des Stats (Nouveaux Comptes) |
+| `POST` | `/profile/character/{id}/upgrade` | Allocation de Points d'Attribut |
+| `POST` | `/profile/character/{id}/rename` | Renommage Cosmétique du Personnage |
+| `DELETE` | `/profile/character/{id}` | Retirer un personnage du Roster |
+| `POST` | `/matchmaking/join` | Entrer dans la file d'attente |
+| `GET` | `/matchmaking/status` | Polling du statut du match |
+| `DELETE` | `/matchmaking/leave` | Quitter la file d'attente |
+| `GET` | `/match/stats/waiting` | Obtenir les metrics de densité de la file |
+| `GET` | `/match/stats/active` | Obtenir le nombre de matchs en cours |
+| `GET` | `/game/{id}` | Obtenir l'état du plateau en cache |
+| `POST` | `/game/{id}/action` | Relayer une action tactique au moteur |
+| `POST` | `/game/{id}/forfeit` | Route d'abandon autonome |
+| `GET` | `/admin/users` | Lister les utilisateurs pour audit (basé sur curseur) |
+| `POST` | `/admin/users/{account_name}/anonymize` | Anonymisation RGPD |
+| `DELETE` | `/admin/users/{account_name}` | Suppression administrative logique |
+| `GET` | `/admin/history` | Liste de l'historique de tous les matchs |
+| `DELETE` | `/admin/history/purge` | Purge de l'historique des matchs > 90 jours |
+| `POST` | `/broadcasting/auth` | Autorisation de canal WebSocket |
+| `POST` | `/api/webhook/upsilon` | Ingestion des mises à jour d'état (Interne) |
+| `GET` | `/leaderboard` | Classements globaux (basé sur le mode) |
 
 
 ### 14.2 Webhook Asynchrone (Callback)
@@ -817,7 +811,8 @@ Le pipeline CI est divisé en quatre workflows GitHub Actions avec une portée c
 |---|---|---|
 | `.env.ci` | Variables d'env CI | Configuration déterministe pour la stack éphémère |
 | `docker-compose.ci.yaml` | Docker Compose CI | Stack éphémère avec healthchecks |
-| `tests/run_all_scenarios.sh` | Scenario Runner | **Découverte & exécution centralisées** |
+| `tests/run_all_scenarios.sh` | Scenario Runner | Découverte & exécution centralisées des scénarios E2E positifs |
+| `tests/run_all_edge_cases.sh` | Edge Case Runner | Découverte & exécution centralisées des scénarios E2E négatifs |
 | `tests/ci_report.sh` | Générateur rapport E2E | Résumé Markdown des scénarios clients |
 | `tests/edge_case_report.sh` | Générateur rapport Edge Case | Résumé Markdown des tests de cas limites |
 | `tests/lint_report.sh` | Générateur rapport Lint | Résumé Markdown des résultats de linting |
