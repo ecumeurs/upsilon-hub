@@ -50,6 +50,8 @@ Le projet est vaste et j'ai parfois un peu "débordé des clous", mais l'occasio
 * **CI / CD / Tests** : 100 % Gemini. C'est une partie nécessaire, mais avouons-le : c'est extrêmement rébarbatif.
 * **Documentation** : C’est plus nuancé. Je dirais entre 60 % et 80 %. J'ai passé un temps infini sur l'aspect documentaire, et c'est un point qui me tient à cœur.
 
+Mon objectif personnel est d'apprendre à maîtriser cette technologie. 
+
 ### À propos de la documentation (ATD)
 
 Je travaille sur mon temps libre sur un outil destiné à faciliter la documentation, tâche que j'ai toujours considérée comme ingrate. En 12 ans de carrière, j'ai passé un temps fou à rédiger des documents que seules 0,2 personne ont dû lire.
