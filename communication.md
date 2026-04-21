@@ -1,8 +1,5 @@
 # Upsilon Battle: API Communication Reference
 
-> [!TIP]
-> **Live Documentation:** For the most accurate and up-to-date technical reference, including experimental endpoints and current validation rules, use the [Live API Help Endpoint](http://localhost:8000/api/v1/help).
-
 This document provides a comprehensive reference for the communication interfaces between the Vue.js frontend, the Laravel API Gateway, and the Upsilon (Go) Battle Engine.
 
 ## 1. Shared Infrastructure

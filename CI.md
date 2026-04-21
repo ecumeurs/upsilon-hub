@@ -220,11 +220,3 @@ docker compose -f docker-compose.ci.yaml exec tester /bin/sh ./tests/run_all_sce
 # 4. Generate Report
 ./tests/ci_report.sh > ci_report.md
 ```
-
----
-
-## Troubleshooting
-
-- **Mismatch between Runner and Report**: If the runner says `[PASSED]` but the report says `❌ FAIL`, check if the script is exiting with code 0 but missing the log output. The reporter relies strictly on the `[SCENARIO_RESULT: PASSED]` marker written by the runner.
-- **Service Timeouts**: If healthchecks fail, check `docker compose logs`. Laravel often requires more time to boot in resource-constrained environments.
-- **Ghost Tests**: Ensure your script filename starts with `e2e_`, otherwise the runner will skip it.
