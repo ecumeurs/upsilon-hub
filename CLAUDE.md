@@ -1,5 +1,14 @@
 # UpsilonBattle Development Guide
 
+## Forewords
+
+Get a read on [issues management](.agent/rules/issues.md)
+
+Never forget [[api_standard_envelope]] ATD; Altering communication layer must trigger a warning for the user to approve.
+
+Defaulting hides critical errors. Use them with caution. Crashing early is best (we are not in production mode)
+
+
 ## What is ATD?
 
 **ATD (Atomic Traceable Documentation)** is a development governance system that ensures your code, documentation, and tests stay perfectly synchronized. It's the single source of truth for "what should this system do?" and "does this implementation match the requirements?"
@@ -115,6 +124,15 @@ Every layer validates the one below it:
 **Decision Point**: Architecture design complete and ready for implementation?
 
 ### Phase 3: Implementation 💻
+
+**Question**: "We are going to modify this code, but what was the original intent ?"
+
+1. **Explore available trace**
+   - Find @spec-link tags attached to your to be edited section
+   - Run mcp__atd__atd_trace on it (via MCP)
+   - Is the new code clashing with previous intent ?
+     - Yes. Ask the user for clarification
+
 **Question**: "Did we build it correctly?"
 
 1. **Write Code with Traceability**
