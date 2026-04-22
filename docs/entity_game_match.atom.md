@@ -10,6 +10,7 @@ tags: []
 parents:
   - [[data_persistence]]
 dependents:
+  - [[entity_match_participants]]
   - [[uc_admin_history_management]]
 ---
 # Game Match Entity
