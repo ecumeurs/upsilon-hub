@@ -4,7 +4,7 @@ human_name: "Actor Dispatch Loop"
 type: MECHANIC
 layer: IMPLEMENTATION
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [actor, dispatch, loop, logic]
 parents:
@@ -18,14 +18,15 @@ dependents: []
 Centrally orchestrate the processing of incoming messages and callbacks, ensuring that the Actor remains responsive to both internal and external stimuli.
 
 ## THE RULE / LOGIC
-- **Dual-Channel Selection**: The dispatcher must concurrently listen to:
-  1. The `MessageQueue` executor channel (incoming requests).
-  2. The `CallbackChan` (replies from other actors).
-- **Hierarchical Handler Lookup**: For any incoming message, the dispatcher must search in order:
-  1. **Typed Handlers**: Modern `callHandlers` or `notificationHandlers` maps.
-  2. **Internal Signals**: Special handling for `ActorStarted`, `ActorStop`.
-  3. **Legacy Handlers**: The `methods` map for backward compatibility.
-- **Loop-Back Integration**: `SelfNotify` messages are injected into the back of the `MessageQueue`. The dispatcher processes them in precisely the order they were queued, interleaved with external messages, ensuring state consistency across complex multi-stage tasks.
+- **Unified Queue Dispatch**: The dispatcher listens exclusively to the `MessageQueue` executor channel. 
+- **Stimuli Redirector**: Replies arriving on `CallbackChan` must be redirected into the `MessageQueue` to ensure they are handled as ordered, non-blocking stimuli.
+- **Sequential Execution**: All processing (Messages and Replies) must be gated by the `MessageQueue` to ensure exactly one stimulus is processed at a time.
+- **Hierarchical Handler Lookup**: For any incoming stimulus, the dispatcher must search in order:
+  1. **Reply Types**: If `msg.Type == Reply`, dispatch to `replyHandlers`.
+  2. **Typed Handlers**: Modern `callHandlers` or `notificationHandlers` maps.
+  3. **Internal Signals**: Special handling for `ActorStarted`, `ActorStop`.
+  4. **Legacy Handlers**: The `methods` map for backward compatibility.
+- **Acknowledge Stimulus**: Every stimulus processed from the queue (including replies) MUST send an acknowledgment back to the queue to unblock the next item.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag**: `@spec-link [[mech_actor_dispatch_loop]]`

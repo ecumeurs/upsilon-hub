@@ -8,7 +8,7 @@ status: STABLE
 priority: 5
 tags: [actor, encapsulation, messaging, concurrency]
 parents:
-  - [[mech_message_queue]]
+  - [[module_actor_concurrency]]
 dependents:
   - [[mech_actor_dispatch_loop]]
   - [[mech_actor_handler_context]]
