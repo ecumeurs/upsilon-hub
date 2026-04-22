@@ -48,5 +48,6 @@ Every JSON payload transmitted over HTTP or WebSocket between system units MUST 
 *   **Test Names:** `TestJsonEnvelopeValidation`, `TestProxyMaintainsRequestId`
 
 ## EXPECTATION (For Testing)
-*   A request received lacking a `request_id` should either automatically generate one in middleware or immediately return a `success: false` HTTP 400 bad request, depending on strictness.
-*   The literal key names `request_id`, `message`, `success`, `data`, and `meta` must always exist in a response, even if null/empty.
+- A request lacking a `request_id` or with invalid UUID format MUST return `success: false` with HTTP 400.
+- Malformed JSON or missing mandatory fields in wrapped payloads MUST return `success: false` with HTTP 400.
+- The literal key names `request_id`, `message`, `success`, `data`, and `meta` must always exist in a response, even if null/empty.

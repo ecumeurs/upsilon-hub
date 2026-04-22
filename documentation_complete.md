@@ -681,13 +681,19 @@ Pour garantir la traçabilité et une gestion cohérente des erreurs, chaque éc
 
 ```json
 {
-  "request_id": "018f5a...", // string (UUIDv7): Pour le tri chronologique. Règles dans [[api_request_id]].
+  "request_id": "018f5a...", // string (UUIDv7): MANDATORY. Chronological sortability. Rules in [[api_request_id]].
   "message": "...",         // string: Résumé de l'intention, message de statut, ou description d'erreur.
   "success": true,          // boolean: Indique le succès opérationnel.
   "data": {},               // object|array|null: Payload principal (ex: Ressource, Collection, ou DTO de succès).
   "meta": {}                // object: Informations additionnelles pour le debug ou le test (optionnel).
 }
 ```
+
+> [!IMPORTANT]
+> **Crash Early Enforcement:** 
+> - Une requête sans `request_id` ou avec un format invalide retournera immédiatement un `400 Bad Request`.
+> - Toute erreur de communication ou absence de champ obligatoire dans les échanges internes déclenche une exception `EngineConnectionException`.
+
 
 #### Identification de Requête
 

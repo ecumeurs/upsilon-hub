@@ -119,6 +119,7 @@ All fundamental mechanics, structural constraints, entities, and network rules t
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Cyclic Deadlock Risk in Actor Request-Reply](issues/ISS-064_20260422_actor_cyclic_deadlock.md) | 2026-04-22 | Open | High | The current Actor implementation is prone to deadlocks when two actors perfor... |
 | [Remove Silent Failure Default Values](issues/ISS-062_20260420_remove_silent_failure_defaults.md) | 2026-04-20 | Open | Medium | The codebase contains multiple instances where missing configuration or faile... |
 | [Database Schema and Documentation Drift](issues/ISS-060_20260420_db_schema_doc_drift.md) | 2026-04-20 | Open | Medium | There is a significant delta between the centralized database documentation (... |
 | [Dead Entities Considered Obstacles](issues/ISS-059_20260420_dead_entities_obstacle_risk.md) | 2026-04-20 | Open | High | Dead entities (HP <= 0) are incorrectly treated as obstacles on both the fron... |

@@ -21,7 +21,8 @@ To centralize and manage all communication between the Laravel-based `battleui` 
 - **Ownership:** The `UpsilonApiService` is the sole owner of the HTTP client configuration and endpoint resolution for the `upsilonapi`.
 - **Envelope Adherence:** All communications must be wrapped/unwrapped using the [[api_standard_envelope]].
 - **DTO Mapping:** The service must use [[battleui_api_dtos]] for all request payloads and response unpacking.
-- **Error Handling:** Any non-standard response or `success: false` from the Go engine must be translated into meaningful Laravel exceptions or logged with sufficient context.
+- **Crash Early:** Silent failures (returning empty arrays or fake envelopes) are FORBIDDEN.
+- **Error Handling:** Connection failures or `success: false` responses from the Go engine MUST throw an `EngineConnectionException` (or similar), which is handled globally to return a `503 Service Unavailable` with tactical error context.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Class:** `App\Services\UpsilonApiService`

@@ -40,8 +40,7 @@ The top-level Battle Arena page layout orchestrating the combat header, team ros
 - **Route:** `/battle-arena?match_id=:id`
 
 ## EXPECTATION
-- Page renders a complete battle arena with all sub-components visible.
-- Left panel shows current player's team with detailed stats.
-- Right panel shows adversary team(s) in compact format.
-- Board renders with character pawns at correct positions.
-- All elements follow the "Neon in the Dust" aesthetic.
+- Arena renders characters and grid upon successful data fetch.
+- If the Game Engine connection fails (503 Service Unavailable), a "TACTICAL LINK FAILURE" modal is displayed.
+- Action panel updates in real-time based on selected character stats.
+- Ghosting (renders with default 10x10) is FORBIDDEN; the UI must wait for valid engine data.

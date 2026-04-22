@@ -15,13 +15,19 @@ To guarantee traceability and consistent error handling, every JSON exchange bet
 
 ```json
 {
-  "request_id": "018f5a...", // string (UUIDv7): For chronological sortability. Rules in [[api_request_id]].
+  "request_id": "018f5a...", // string (UUIDv7): MANDATORY. Chronological sortability. Rules in [[api_request_id]].
   "message": "...",         // string: Intent summary, status message, or error description.
   "success": true,          // boolean: Indicates operational success.
   "data": {},               // object|array|null: Primary payload (e.g., Resource, Collection, or Success DTO).
   "meta": {}                // object: Side information for debugging or testing (optional).
 }
 ```
+
+> [!IMPORTANT]
+> **Crash Early Enforcement:** 
+> - A request lacking a `request_id` or using an invalid format will immediately return `success: false` with HTTP 400.
+> - Any malformed JSON or missing mandatory fields in internal communication will return `success: false` to the gateway.
+
 
 ### 1.2 Request Identification
 **Source:** [[api_request_id]]
@@ -470,14 +476,16 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 - **`initial_state`**: `BoardState`
 
 #### ArenaActionRequest
-- **`entity_id`**: `string (UUID)`
-- **`type`**: `string` ("move", "attack", "pass", "forfeit")
-- **`target_coords`**: `Array<Position>`
+- **`player_id`**: `string (UUID)` [MANDATORY] (Injected by Gateway for external calls)
+- **`entity_id`**: `string (UUID)` [MANDATORY]
+- **`type`**: `string` [MANDATORY] ("move", "attack", "pass", "forfeit")
+- **`target_coords`**: `Array<Position>` [MANDATORY for 'move' and 'attack']
 
 #### ArenaStartRequest
-- **`match_id`**: `string (UUID)`
-- **`callback_url`**: `string` (Webhook URL - Must be reachable internally by the Go Engine)
-- **`players`**: `Array<Player>`
+- **`match_id`**: `string (UUID)` [MANDATORY]
+- **`callback_url`**: `string` [MANDATORY] (Webhook URL - Must be reachable internally by the Go Engine)
+- **`players`**: `Array<Player>` [MANDATORY] (At least one player required)
+
 
 ### 4.2 Arena Components
 

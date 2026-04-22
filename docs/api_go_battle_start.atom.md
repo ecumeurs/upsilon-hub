@@ -22,14 +22,15 @@ To initialize a new battle arena instance with players, entities, and map data.
 **Endpoint:** `POST /internal/arena/start`
 
 ### Request (Wrapped in [[api_standard_envelope]])
-- `match_id`: `string (UUID)` - Unique identifier for the match.
-- `callback_url`: `string` - Internal URL for webhook events (must be reachable by the Go Engine).
-- `players`: `Array<Player>`
-  - `id`: `string (UUID)`
+- `match_id`: `string (UUID)` [MANDATORY] - Unique identifier for the match.
+- `callback_url`: `string` [MANDATORY] - Internal URL for webhook events.
+- `players`: `Array<Player>` [MANDATORY] - At least one player required.
+  - `id`: `string (UUID)` [MANDATORY]
   - `nickname`: `string` - Player display name.
   - `team`: `int`
   - `ia`: `boolean`
-  - `entities`: `Array<Entity>` (See [[entity_character]])
+  - `entities`: `Array<Entity>` (See [[entity_character]]) [MANDATORY]
+    - `max_hp`: `int` [MANDATORY] - Must be > 0.
 
 ### Response (Wrapped in [[api_standard_envelope]])
 - `arena_id`: `string (UUID)` - The internally generated Arena ID.

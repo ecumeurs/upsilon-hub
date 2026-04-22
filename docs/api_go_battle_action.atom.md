@@ -23,19 +23,13 @@ To allow players to perform actions (Move, Attack, Skill) within an active battl
 **Endpoint:** `POST /internal/arena/{id}/action`
 
 ### Request (Wrapped in [[api_standard_envelope]])
-- `id`: `string (UUID)` (URL Parameter)
-- `player_id`: `string (UUID)`
-- `entity_id`: `string (UUID)`
-- `type`: `string` ("move", "attack", "pass", "forfeit")
-- `target_coords`: `Array<Position>`
-  - `x`: `int`, `y`: `int`
-
-### Feedback Mechanism
-The engine broadcasts enriched events back to all players via `board.updated`. 
-See [[api_go_action_feedback]] for details on the `action` payload (damage, path, etc).
+- `player_id`: `string (UUID)` [MANDATORY]
+- `entity_id`: `string (UUID)` [MANDATORY]
+- `type`: `string` [MANDATORY] - 'move', 'attack', 'pass', or 'forfeit'.
+- `target_coords`: `Array<Position>` [MANDATORY for 'move' and 'attack']
 
 ### Response (Wrapped in [[api_standard_envelope]])
-- `status`: `string` ("accepted" | "rejected")
+Standard response with updated entity state or result.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **API Endpoint:** `POST /internal/arena/:id/action`
