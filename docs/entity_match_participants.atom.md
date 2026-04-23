@@ -10,9 +10,7 @@ tags: []
 parents:
   - [[entity_game_match]]
   - [[entity_users]]
-dependents:
-  - [[uc_admin_history_management]]
-  - [[rule_progression]]
+dependents: []
 ---
 # Match Participants Database Entity
 

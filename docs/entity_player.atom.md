@@ -14,6 +14,7 @@ dependents:
   - [[entity_player_entity_player_initial_setup]]
   - [[entity_player_entity_player_registration]]
   - [[entity_player_entity_player_stats_tracking]]
+  - [[entity_users]]
   - [[infra_seed_admin]]
   - [[rule_admin_access_restriction]]
   - [[uc_admin_user_management]]

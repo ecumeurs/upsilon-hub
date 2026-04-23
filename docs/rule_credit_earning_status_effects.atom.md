@@ -4,7 +4,7 @@ human_name: Status Effect Credit Earning Rule
 type: RULE
 layer: ARCHITECTURE
 version: 2.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [economy, credits, status-effects]
 parents:

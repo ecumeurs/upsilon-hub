@@ -8,8 +8,8 @@ status: DRAFT
 priority: 5
 tags: [api, skills, grading, computation]
 parents:
-  - [[rule_skill_grading_system]]
   - [[mech_skill_weight_calculator]]
+  - [[rule_skill_grading_system]]
 dependents: []
 ---
 

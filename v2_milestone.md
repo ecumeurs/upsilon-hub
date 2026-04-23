@@ -101,6 +101,7 @@ UpsilonBattle V2 represents a comprehensive evolution from the basic tactical RP
 - **150% Damage:** Backstab multiplier for rear attacks
 - **50% Armor Penetration:** Ignores half armor rating
 - **Shield Application:** Shield still applies fully (not penetrated)
+- **Pass Orientation (ISS-072):** Strategic facing choice during "Pass" to prevent backstabs
 - **Weapon Scope:** All weapons support backstabbing (skills excluded for now)
 
 **Player Experience:** Positioning matters immensely. "Get behind that enemy for massive damage!"
@@ -121,6 +122,22 @@ UpsilonBattle V2 represents a comprehensive evolution from the basic tactical RP
 **Player Experience:** Characters become meaningfully different. "I'll build a tank with high HP and Defense" vs. "I'll build a glass cannon with high Attack and Crit."
 
 **Skill Viability:** Percentage modifiers now work meaningfully. 120% of 10 Attack = 12 damage (vs. useless 120% of 1 Attack = 1 damage).
+
+---
+
+### **8. Roguelike Skill System** ⭐⭐⭐⭐⭐
+**Impact:** Transforms skill acquisition into strategic inventory management and preparation
+
+**Key Components:**
+- **Skill Inventory:** Unlimited storage for all acquired skills
+- **Skill Slots:** Progressive cap - 1 base slot + 1 per 10 levels
+- **Skill Equipment:** Select which skills from inventory are active in battle
+- **CLI Integration:** View, inspect, equip, unequip skills via command line
+- **Skill Review:** Detailed skill properties and statistics in UI and CLI
+
+**Player Experience:** "I have 5 skills but only 3 slots - which ones do I bring to battle?" Strategic equipment decisions become part of character progression.
+
+**Technical Innovation:** Three-layer system (Inventory → Equipment → Battle) enables infinite skill variety with slot-based tactical choices.
 
 ---
 
@@ -196,9 +213,10 @@ UpsilonBattle V2 represents a comprehensive evolution from the basic tactical RP
 - Add channeling interruption mechanics
 - Implement effect expiration and cleanup
 
-**Week 7: Backstabbing System**
-- Implement back detection algorithm using orientation system
-- Add 150% damage multiplier and 50% armor penetration
+**Week 7: Backstabbing & Facing (ISS-070, ISS-072)**
+- Implement back detection algorithm using orientation system [DONE]
+- Add 150% damage multiplier and 50% armor penetration [DONE]
+- Implement strategic orientation choice for Pass action
 - Update weapon attack logic and AI backstab awareness
 - Create visual feedback for backstabs
 
@@ -208,7 +226,34 @@ UpsilonBattle V2 represents a comprehensive evolution from the basic tactical RP
 - Add status effect credit earning (SW/10 per application)
 - Build credit tracking UI and match summary
 
-### **Phase 3: Equipment & Economy (Weeks 9-12)**
+**Week 9: Roguelike Skill System (ISS-073)**
+- Implement skill inventory system with unlimited capacity
+- Create skill slot progression (1 base + 1 per 10 levels)
+- Build skill equipment/unequipment system
+- Integrate equipment loadout into battle entity creation
+- Add skill review UI with properties and effects
+- Implement CLI commands (skill list, equip, unequip, inspect)
+- Add skill statistics tracking (usage, damage, credits per skill)
+
+**Week 10: Simple Shop Inventory (ISS-074)**
+- Implement basic shop catalog with 3 fixed items
+- Create shop_items and player_inventory tables
+- Add purchase endpoint with credit deduction
+- Create inventory view API
+
+**Week 11: Player Inventory System (ISS-075)**
+- Create normalized inventory tables with foreign keys
+- Implement inventory operations (purchase, equip, unequip)
+- Add quantity management and purchase history
+- Create usage statistics tracking
+
+**Week 12: Character Data Transfer (ISS-076)**
+- Update ArenaStartRequest to include skills and items
+- Create EquippedItem struct for Go engine
+- Implement item property application to entities
+- Ensure both V2 skill and item systems work together
+
+### **Phase 3: Equipment & Economy (Weeks 13-15)**
 **Focus:** Equipment system and shop
 
 **Week 9: Equipment System**

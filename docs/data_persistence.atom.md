@@ -9,10 +9,8 @@ priority: 5
 tags: [database, postgresql, state]
 parents: []
 dependents:
-  - [[entity_users]]
   - [[entity_game_match]]
-  - [[entity_character]]
-  - [[entity_match_participants]]
+  - [[entity_users]]
 ---
 # PostgreSQL Database Persistence
 

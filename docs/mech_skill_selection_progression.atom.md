@@ -8,7 +8,8 @@ status: DRAFT
 priority: 5
 tags: [skills, progression, selection]
 parents: []
-dependents: []
+dependents:
+  - [[mech_skill_reforging_mechanic]]
 ---
 
 # Skill Selection Progression Mechanic

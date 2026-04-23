@@ -1,12 +1,14 @@
 ---
 id: mechanic_backstab_detection_algorithm
-status: DRAFT
-dependents: []
+status: STABLE
+dependents:
+  - [[mec_backstabbing_mechanic]]
 type: MECHANIC
 layer: IMPLEMENTATION
 priority: 5
 version: 2.0
-parents: []
+parents:
+  - [[domain_upsilon_engine]]
 ---
 
 # New Atom

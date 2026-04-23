@@ -8,11 +8,10 @@ status: STABLE
 priority: 5
 tags: []
 parents:
-  - [[entity_player]]
   - [[data_persistence]]
+  - [[entity_player]]
 dependents:
-  - [[entity_character]]
-  - [[entity_game_match]]
+  - [[entity_match_participants]]
 ---
 # Users Database Entity
 

@@ -4,10 +4,11 @@ human_name: Backstabbing Mechanic
 type: MECHANIC
 layer: IMPLEMENTATION
 version: 2.0
-status: DRAFT
+status: STABLE
 priority: 5
 tags: [combat, positioning, damage]
-parents: []
+parents:
+  - [[mechanic_backstab_detection_algorithm]]
 dependents: []
 ---
 

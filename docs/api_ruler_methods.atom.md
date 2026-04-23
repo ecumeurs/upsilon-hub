@@ -42,7 +42,7 @@ Interaction with the backend engine is strictly channeled through `messagequeue`
 - `BattleStart`: Indicates the initial transition from setup to combat.
 - `ControllerNextTurn`: Informs clients who just became the active entity.
 - `EntitiesStateChanged`: Emits updated states after movement, damage, or healing.
-- `ControllerSkillUsed` / `ControllerAttacked`: Specialized action notification for UX logging.
+- `ControllerSkillUsed` / `ControllerAttacked`: Specialized action notification for UX logging. **Must include `CreditAwards`** to notify participants of earned economy points.
 - `BattleEnd`: Fires upon victory condition met; defines the winning `WinnerTeamID` and the legacy `WinnerControllerID`.
 
 ## TECHNICAL INTERFACE (The Bridge)

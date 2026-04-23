@@ -9,7 +9,8 @@ priority: 5
 tags: [economy, shop, progression]
 parents:
   - [[domain_credit_economy]]
-dependents: []
+dependents:
+  - [[mec_shop_inventory_system]]
 ---
 
 # Credit Spending Shop Mechanic

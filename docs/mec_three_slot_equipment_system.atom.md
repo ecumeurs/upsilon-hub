@@ -9,7 +9,8 @@ priority: 5
 tags: [equipment, slots, inventory]
 parents:
   - [[entity_equipment_system]]
-dependents: []
+dependents:
+  - [[api_equipment_management]]
 ---
 
 # Three-Slot Equipment System Mechanic

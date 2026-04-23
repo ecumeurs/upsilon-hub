@@ -10,9 +10,11 @@ tags: [economy, credits, progression]
 parents:
   - [[domain_upsilon_engine]]
 dependents:
-  - [[rule_credit_earning_damage]]
-  - [[rule_credit_earning_support]]
+  - [[entity_player_credits]]
   - [[mec_credit_spending_shop]]
+  - [[rule_credit_earning_damage]]
+  - [[rule_credit_earning_status_effects]]
+  - [[rule_credit_earning_support]]
 ---
 
 # Credit Economy Domain

@@ -21,13 +21,14 @@ To provide a standardized structure for technical reporting of tactical results 
 The `ActionFeedback` object represents the outcome of exactly ONE tactical action.
 
 ### Fields
-- `type`: `string` - The logical action category (`move`, `attack`, `pass`).
+- `type`: `string` - The logical action category (`move`, `attack`, `skill`, `pass`).
 - `actor_id`: `string (UUID)` - The ID of the entity that performed the action.
 - `target_id`: `string (UUID)` - (Optional) The ID of the entity targeted by the action.
-- `damage`: `int` - (Optional) The raw damage value dealt during an `attack`.
+- `damage`: `int` - (Optional) The raw damage value dealt during an `attack` or damaging `skill`.
 - `prev_hp`: `int` - (Optional) The target's HP before the action.
 - `new_hp`: `int` - (Optional) The target's HP after the action.
 - `path`: `Array<Position>` - (Optional) The exact sequence of coordinates traversed during a `move`.
+- `credits`: `Array<CreditAward>` - (Optional) Credits earned from this action. Each award contains `player_id`, `amount`, and `source`.
   - `x`: `int`, `y`: `int`
 
 ## TECHNICAL INTERFACE (The Bridge)

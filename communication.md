@@ -77,6 +77,7 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 | `GET` | `/profile` | Get Player Bio & Roster Overview | [[customer_player_profile]] |
 | `GET` | `/profile/characters` | List Player Roster | [[api_profile_character]] |
 | `GET` | `/profile/character/{id}` | Get Character Details | [[api_profile_character]] |
+| `GET` | `/profile/credits` | Get Lightweight Credit Balance | [[api_profile_character]] |
 | `POST` | `/profile/character/{id}/reroll` | Reset Stats (New Accounts) | [[api_profile_character]] |
 | `POST` | `/profile/character/{id}/upgrade` | Attribute Point Allocation | [[api_profile_character]] |
 | `POST` | `/profile/character/{id}/rename` | Character Cosmetic Identity Rename | [[rule_character_renaming]] |
@@ -471,6 +472,11 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 #### ArenaActionResponse
 - **`status`**: `string`
 
+#### CreditAward
+- **`player_id`**: `string (UUID)`
+- **`amount`**: `int`
+- **`source`**: `string` ("damage", "healing", "status")
+
 #### ArenaStartResponse
 - **`arena_id`**: `string (UUID)`
 - **`initial_state`**: `BoardState`
@@ -480,6 +486,15 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 - **`entity_id`**: `string (UUID)` [MANDATORY]
 - **`type`**: `string` [MANDATORY] ("move", "attack", "pass", "forfeit")
 - **`target_coords`**: `Array<Position>` [MANDATORY for 'move' and 'attack']
+
+#### ActionFeedback
+- **`type`**: `string` ("move", "attack", "skill", "pass")
+- **`actor_id`**: `string (UUID)`
+- **`target_id`**: `string (UUID)`
+- **`damage`**: `int`
+- **`prev_hp`**: `int`
+- **`new_hp`**: `int`
+- **`credits`**: `Array<CreditAward>` (Optional)
 
 #### ArenaStartRequest
 - **`match_id`**: `string (UUID)` [MANDATORY]
@@ -571,6 +586,7 @@ Detailed state of a single actor.
 | `total_losses` | `int` | Total career losses. |
 | `ratio` | `float` | Win/Loss ratio. |
 | `reroll_count` | `int` | Number of times starter stats were rerolled. |
+| `credits` | `int` | Current credit balance. |
 | `characters` | `Array<CharacterResource>` | Optional: Loaded character list. |
 
 ### 4.5 CharacterResource

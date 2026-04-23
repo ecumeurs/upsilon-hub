@@ -9,6 +9,7 @@ priority: 5
 tags: []
 parents: []
 dependents:
+  - [[domain_credit_economy]]
   - [[domain_skill_system]]
   - [[domain_upsilon_engine_domain_upsilon_engine_api_orchestration]]
   - [[domain_upsilon_engine_domain_upsilon_engine_combat_isolation]]
@@ -16,6 +17,7 @@ dependents:
   - [[domain_upsilon_engine_domain_upsilon_engine_expectation]]
   - [[domain_upsilon_engine_domain_upsilon_engine_resolution]]
   - [[domain_upsilon_engine_domain_upsilon_engine_technical_interface]]
+  - [[mechanic_backstab_detection_algorithm]]
   - [[module_actor_concurrency]]
 ---
 # UpsilonBattle Core Engine Domain

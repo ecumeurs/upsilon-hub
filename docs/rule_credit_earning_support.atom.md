@@ -9,7 +9,8 @@ priority: 5
 tags: [economy, credits, support]
 parents:
   - [[domain_credit_economy]]
-dependents: []
+dependents:
+  - [[rule_credit_earning_status_effects]]
 ---
 
 # Support Credit Earning Rule

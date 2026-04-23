@@ -163,6 +163,10 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 - [ISS-069](issues/ISS-069_20260422_ai_archetype_enhancement.md) - AI Archetype Enhancement
 - [ISS-070](issues/ISS-070_20260422_backstabbing_mechanics.md) - Backstabbing Mechanics
 - [ISS-071](issues/ISS-071_20260422_starting_stats_progression.md) - Starting Stats & Character Progression Redesign
+- [ISS-073](issues/ISS-073_20260423_roguelike_skill_system.md) - Roguelike Skill System: Inventory, Slots & Equipment
+- [ISS-074](issues/ISS-074_20260423_simple_shop_inventory.md) - Simple Shop Inventory
+- [ISS-075](issues/ISS-075_20260423_player_inventory.md) - Player Inventory System
+- [ISS-076](issues/ISS-076_20260423_character_data_transfer.md) - Character Data Transfer for Battle Engine
 
 **Comprehensive V2 Documentation:** See [v2_milestone.md](v2_milestone.md) for complete feature specifications, implementation details, and technical architecture.
 
@@ -170,6 +174,14 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Shielding Credit Attribution System](issues/ISS-079_20260423_shielding_credit_attribution.md) | 2026-04-23 | Open | Medium | The current Credit Economy system (ISS-067) rewards damage and healing based ... |
+| [Shielding Credit Attribution System](issues/ISS-078_20260423_shielding_credit_attribution.md) | 2026-04-23 | Open | Medium | Design and implement a robust system for attributing credits earned through d... |
+| [Skill Inspection Command](issues/ISS-077_20260423_skill_inspection.md) | 2026-04-23 | Open | Medium | Implement skill inspection functionality allowing players to view detailed sk... |
+| [Character Data Transfer for Battle Engine](issues/ISS-076_20260423_character_data_transfer.md) | 2026-04-23 | Open | High | Define the communication schema for transferring character data from Laravel ... |
+| [Player Inventory System](issues/ISS-075_20260423_player_inventory.md) | 2026-04-23 | Open | Medium | Implement a proper relational inventory system for players to track all owned... |
+| [Simple Shop Inventory](issues/ISS-074_20260423_simple_shop_inventory.md) | 2026-04-23 | Open | High | Implement minimal shop system with fixed item catalog for V2 testing: one arm... |
+| [Roguelike Skill System - Inventory, Slots & Equipment](issues/ISS-073_20260423_roguelike_skill_system.md) | 2026-04-23 | Open | High | Implement comprehensive roguelike-style skill system with character skill inv... |
+| [Player Choosing Facing Direction on Pass](issues/ISS-072_20260423_pass_choose_facing.md) | 2026-04-23 | Open | Medium | When a player chooses to "Pass" their turn, they must be given the option to ... |
 | [Backstabbing Mechanics & Armor Penetration](issues/ISS-070_20260422_backstabbing_mechanics.md) | 2026-04-22 | Open | Medium | Implement backstabbing combat mechanic with 150% damage multiplier and 50% ar... |
 | [AI Archetype Enhancement & Progression](issues/ISS-069_20260422_ai_archetype_enhancement.md) | 2026-04-22 | Open | Medium | Enhance AI system with four distinct archetypes (Fighter, Ranger, Support, Sn... |
 | [Equipment System & Weapon-as-Skill](issues/ISS-068_20260422_equipment_system.md) | 2026-04-22 | Open | Medium | Implement 3-slot equipment system (1 armor, 1 utility, 1 weapon) with weapon-... |
