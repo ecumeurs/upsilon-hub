@@ -4,7 +4,7 @@
 **Ref:** `ISS-071`
 **Date:** 2026-04-22
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonapi/api`, `battleui`
 **Affects**: Character creation, progression system, skill system balance
 

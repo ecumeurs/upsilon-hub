@@ -4,7 +4,7 @@
 **Ref:** `ISS-065`
 **Date:** 2026-04-22
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonbattle/battlearena/entity/skill`
 **Affects:** `battleui`, `upsilonapi`, `upsiloncli`
 

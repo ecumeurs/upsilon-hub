@@ -170,13 +170,11 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [Starting Stats & Character Progression Redesign](issues/ISS-071_20260422_starting_stats_progression.md) | 2026-04-22 | Open | High | Redesign character starting stats and progression system from V1 (4 random po... |
 | [Backstabbing Mechanics & Armor Penetration](issues/ISS-070_20260422_backstabbing_mechanics.md) | 2026-04-22 | Open | Medium | Implement backstabbing combat mechanic with 150% damage multiplier and 50% ar... |
 | [AI Archetype Enhancement & Progression](issues/ISS-069_20260422_ai_archetype_enhancement.md) | 2026-04-22 | Open | Medium | Enhance AI system with four distinct archetypes (Fighter, Ranger, Support, Sn... |
 | [Equipment System & Weapon-as-Skill](issues/ISS-068_20260422_equipment_system.md) | 2026-04-22 | Open | Medium | Implement 3-slot equipment system (1 armor, 1 utility, 1 weapon) with weapon-... |
 | [Credit Economy & Shop System](issues/ISS-067_20260422_credit_economy_shop.md) | 2026-04-22 | Open | High | Implement comprehensive credit economy with multiple earning mechanisms (dama... |
 | [Time-Based Mechanics & Temporary Entity System](issues/ISS-066_20260422_time_based_mechanics.md) | 2026-04-22 | Open | High | Implement time-based mechanics including channeling (pre-execution delay), te... |
-| [Skill Weight & Grading System Implementation](issues/ISS-065_20260422_skill_weight_grading_system.md) | 2026-04-22 | Open | High | Implement a mathematical Skill Weight (SW) system for balanced skill design, ... |
 | [Remove Silent Failure Default Values](issues/ISS-062_20260420_remove_silent_failure_defaults.md) | 2026-04-20 | Open | Medium | The codebase contains multiple instances where missing configuration or faile... |
 | [Dead Entities Considered Obstacles](issues/ISS-059_20260420_dead_entities_obstacle_risk.md) | 2026-04-20 | Open | High | Dead entities (HP <= 0) are incorrectly treated as obstacles on both the fron... |
 | [Entity Spawning Overlap](issues/ISS-058_20260420_entity_spawn_overlap.md) | 2026-04-20 | Open | Medium | In some cases, multiple entities are spawned on the same tile at the start of... |
