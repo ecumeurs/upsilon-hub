@@ -115,13 +115,69 @@ The project utilizes a dedicated **[docker-compose.ci.yaml](docker-compose.ci.ya
 ## Specification (ATD) Maps
 All fundamental mechanics, structural constraints, entities, and network rules that form the game are housed individually in `/workspace/docs/`. These Atoms serve as the uncompromising basis for evaluating developer implementation logic.
 
+## V2 Development: Tactical RPG Evolution
+
+**Status:** In Development - Target Q3 2026
+
+UpsilonBattle V2 represents a comprehensive evolution transforming the tactical RPG foundation with skill systems, time-based mechanics, credit economy, equipment progression, and enhanced AI.
+
+### 🎯 Major V2 Features
+
+**Skill System Overhaul:** Mathematical Skill Weight (SW) system with I-V grading, skill selection at creation and every 10 levels, and skill reforging mechanics.
+
+**Time-Based Mechanics:** Channeling (pre-execution delay), temporary entities for traps/area effects, and multi-entity cell support enabling complex temporal strategies.
+
+**Credit Economy:** 1 HP = 1 credit earning system with support credits for damage mitigation and status effects, plus shop system for skills and equipment.
+
+**Equipment System:** 3-slot inventory (armor, utility, weapon) with weapon-as-skills transforming basic attacks into property-rich combat actions.
+
+**AI Enhancement:** Four archetypes (Fighter, Ranger, Support, Sneak) following player progression with team composition constraints.
+
+**Backstabbing:** 150% damage multiplier with 50% armor penetration for attacks from behind, rewarding positional tactics.
+
+**Stat System Redesign:** x10 baseline stats (HP 30-50, Attack 10, Defense 5, Movement 3) with 100 CP point-buy system enabling meaningful percentage modifiers.
+
+### 📋 Implementation Roadmap
+
+- **Phase 1 (Weeks 1-4):** Foundation Systems - Skill Weight, Time-Based Mechanics, Grid Updates, Database/API
+- **Phase 2 (Weeks 5-8):** Core Gameplay - Skill Selection, Channeling, Backstabbing, Credit Earning
+- **Phase 3 (Weeks 9-12):** Equipment & Economy - Equipment System, Shop System, Extended Character Sheet
+- **Phase 4 (Weeks 13-16):** AI Enhancement - Archetype Implementation, Progression Integration, Balancing
+- **Phase 5 (Weeks 17-20):** Polish & Testing - UI Integration, Visual Feedback, Comprehensive Testing, Documentation
+
+### 🏗️ Architectural Breakthroughs
+
+**Unified Temporary Entity System:** All time-based mechanics (channeling, traps, area effects) represented as temporary entities with controllers.
+
+**Skill Weight Mathematical Framework:** Net SW = 0 balance principle with precise benefit/cost calculations enabling automatic grading and pricing.
+
+**x10 Stat Scaling:** Critical fix making percentage modifiers meaningful and character progression strategically diverse.
+
+### 📊 Current Status
+
+**Active Development Issues:**
+- [ISS-065](issues/ISS-065_20260422_skill_weight_grading_system.md) - Skill Weight & Grading System
+- [ISS-066](issues/ISS-066_20260422_time_based_mechanics.md) - Time-Based Mechanics & Temporary Entity System
+- [ISS-067](issues/ISS-067_20260422_credit_economy_shop.md) - Credit Economy & Shop System
+- [ISS-068](issues/ISS-068_20260422_equipment_system.md) - Equipment System & Weapon-as-Skill
+- [ISS-069](issues/ISS-069_20260422_ai_archetype_enhancement.md) - AI Archetype Enhancement
+- [ISS-070](issues/ISS-070_20260422_backstabbing_mechanics.md) - Backstabbing Mechanics
+- [ISS-071](issues/ISS-071_20260422_starting_stats_progression.md) - Starting Stats & Character Progression Redesign
+
+**Comprehensive V2 Documentation:** See [v2_milestone.md](v2_milestone.md) for complete feature specifications, implementation details, and technical architecture.
+
 ## Open Issues
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [Cyclic Deadlock Risk in Actor Request-Reply](issues/ISS-064_20260422_actor_cyclic_deadlock.md) | 2026-04-22 | Open | High | The current Actor implementation is prone to deadlocks when two actors perfor... |
+| [Starting Stats & Character Progression Redesign](issues/ISS-071_20260422_starting_stats_progression.md) | 2026-04-22 | Open | High | Redesign character starting stats and progression system from V1 (4 random po... |
+| [Backstabbing Mechanics & Armor Penetration](issues/ISS-070_20260422_backstabbing_mechanics.md) | 2026-04-22 | Open | Medium | Implement backstabbing combat mechanic with 150% damage multiplier and 50% ar... |
+| [AI Archetype Enhancement & Progression](issues/ISS-069_20260422_ai_archetype_enhancement.md) | 2026-04-22 | Open | Medium | Enhance AI system with four distinct archetypes (Fighter, Ranger, Support, Sn... |
+| [Equipment System & Weapon-as-Skill](issues/ISS-068_20260422_equipment_system.md) | 2026-04-22 | Open | Medium | Implement 3-slot equipment system (1 armor, 1 utility, 1 weapon) with weapon-... |
+| [Credit Economy & Shop System](issues/ISS-067_20260422_credit_economy_shop.md) | 2026-04-22 | Open | High | Implement comprehensive credit economy with multiple earning mechanisms (dama... |
+| [Time-Based Mechanics & Temporary Entity System](issues/ISS-066_20260422_time_based_mechanics.md) | 2026-04-22 | Open | High | Implement time-based mechanics including channeling (pre-execution delay), te... |
+| [Skill Weight & Grading System Implementation](issues/ISS-065_20260422_skill_weight_grading_system.md) | 2026-04-22 | Open | High | Implement a mathematical Skill Weight (SW) system for balanced skill design, ... |
 | [Remove Silent Failure Default Values](issues/ISS-062_20260420_remove_silent_failure_defaults.md) | 2026-04-20 | Open | Medium | The codebase contains multiple instances where missing configuration or faile... |
-| [Database Schema and Documentation Drift](issues/ISS-060_20260420_db_schema_doc_drift.md) | 2026-04-20 | Open | Medium | There is a significant delta between the centralized database documentation (... |
 | [Dead Entities Considered Obstacles](issues/ISS-059_20260420_dead_entities_obstacle_risk.md) | 2026-04-20 | Open | High | Dead entities (HP <= 0) are incorrectly treated as obstacles on both the fron... |
 | [Entity Spawning Overlap](issues/ISS-058_20260420_entity_spawn_overlap.md) | 2026-04-20 | Open | Medium | In some cases, multiple entities are spawned on the same tile at the start of... |
 | [Actor Message Type Validation](issues/ISS-055_20260420_actor_message_validation.md) | 2026-04-20 | Open | Low | The `Actor` implementation should validate if the target message is of the co... |
