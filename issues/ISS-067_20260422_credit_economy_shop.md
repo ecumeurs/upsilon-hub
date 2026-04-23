@@ -102,20 +102,21 @@ type Effect struct {
 
 ### Shop System
 
-**V2.0 Simple Shop (ISS-074, ISS-075):**
+**V2.0 Simple Shop (ISS-074 - Comprehensive Item System):**
 - **Fixed Catalog:** 3 items (Armor +5 def, Weapon +5 dmg, Movement +1 move)
 - **Pricing:** Armor 200 credits, Weapon 300 credits, Movement 150 credits
 - **Reference:** `docs/rule_item_pricing_simple.atom.md`
+- **Full System:** Shop → Inventory → Equipment (3-slot) → Battle (buff-based)
 
 **V2.1 Full Shop (Future):**
 - **Skills:** Available based on player level/grade
 - **Equipment:** Armor, Utility, Weapon categories
 - **Reference:** `docs/rule_skill_grading_system.atom.md`
 
-**Player Inventory (ISS-075):**
-- **Proper Table:** Normalized inventory with foreign keys
-- **Ownership Tracking:** quantity, purchase history, usage stats
-- **Equipment Management:** equip/unequip to characters
+**Player Inventory (ISS-074):**
+- **Proper Tables:** Normalized inventory, transactions, usage stats
+- **Ownership Tracking:** quantity, purchase history, equipment slots
+- **Equipment Management:** equip/unequip to characters (3-slot system)
 
 **Pricing Formula (Reference):**
 - Skills: Credit Cost = Total Positive SW × 2
@@ -158,8 +159,7 @@ type Effect struct {
 - `docs/rule_progression.atom.md` - Current progression rules
 - `docs/entity_player_credits.atom.md` - Credit system entity
 - `docs/rule_credit_action_communication_layer.atom.md` - Action message protocol (NEW)
-- `ISS-074` (Simple Shop) - V2.0 minimal shop (NEW)
-- `ISS-075` (Player Inventory) - Normalized inventory tables (NEW)
+- `ISS-074` (Comprehensive Item System) - Shop, inventory, equipment, battle integration (NEW)
 - `docs/rule_item_pricing_simple.atom.md` - Item pricing model (NEW)
 
 ---

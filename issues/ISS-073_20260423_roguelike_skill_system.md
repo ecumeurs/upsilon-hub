@@ -195,6 +195,7 @@ func NewEntityFromCharacter(char Character) Entity {
 - **ISS-066** (Time-Based Mechanics) - Equipped skills can have channeling
 - **ISS-067** (Credit Economy) - Shop purchases add to inventory
 - **ISS-071** (Starting Stats & Progression) - Level determines slot count
+- **ISS-074** (Comprehensive Item System) - Items use similar equipment system pattern
 
 **New ATD Atoms Created:**
 - `rule_character_skill_slots` - Slot progression formula
