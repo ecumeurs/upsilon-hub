@@ -59,12 +59,13 @@ run_test() {
     done
 
     # Run the farm with --local flag
-    if timeout 180 "$CLI" --local --farm $paths > "$log_file" 2>&1; then
+    if timeout 180 "$CLI" --local --farm $paths -L "$LOG_DIR" > /dev/null 2>&1; then
         echo -e "\033[32m[PASSED]\033[0m"
         echo "[SCENARIO_RESULT: PASSED]" >> "$log_file"
         PASSED_COUNT=$((PASSED_COUNT + 1))
     else
         echo -e "\033[31m[FAILED]\033[0m"
+        echo "[SCENARIO_RESULT: FAILED]" >> "$log_file"
         FAILED_COUNT=$((FAILED_COUNT + 1))
         FAILED_TESTS="$FAILED_TESTS $name"
         # Don't exit on failure, continue to other tests

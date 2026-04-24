@@ -452,8 +452,13 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 
 #### `POST /arena/{id}/action`
 - **Specification:** [[api_go_battle_action]]
-- **Intent:** [[uc_combat_turn]]: Validate and execute tactical actions.
+- **Intent:** [[uc_combat_turn]]: Validate and execute tactical actions (Move, Attack, Pass).
 - **Input:** `ArenaActionRequest` (JSON)
+
+#### `POST /arena/{id}/forfeit`
+- **Specification:** [[api_go_battle_forfeit]]
+- **Intent:** Allow a player to concede the match without an entity context.
+- **Input:** `ArenaForfeitRequest` (JSON)
 
 ### 3.2 Asynchronous Webhook (Callback)
 **Destination:** `POST /api/webhook/upsilon` (on Laravel Gateway) — Must be reachable internally from the Go Engine.
@@ -484,8 +489,11 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 #### ArenaActionRequest
 - **`player_id`**: `string (UUID)` [MANDATORY] (Injected by Gateway for external calls)
 - **`entity_id`**: `string (UUID)` [MANDATORY]
-- **`type`**: `string` [MANDATORY] ("move", "attack", "pass", "forfeit")
+- **`type`**: `string` [MANDATORY] ("move", "attack", "pass")
 - **`target_coords`**: `Array<Position>` [MANDATORY for 'move' and 'attack']
+
+#### ArenaForfeitRequest
+- **`player_id`**: `string (UUID)` [MANDATORY]
 
 #### ActionFeedback
 - **`type`**: `string` ("move", "attack", "skill", "pass")
