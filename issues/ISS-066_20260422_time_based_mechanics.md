@@ -4,7 +4,7 @@
 **Ref:** `ISS-066`
 **Date:** 2026-04-22
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonbattle/battlearena/ruler`
 **Affects:** `upsilonbattle/battlearena/entity`, `upsilonmapdata/grid`
 
