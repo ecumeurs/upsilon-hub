@@ -1,0 +1,22 @@
+{
+  "workspace_name": "upsilon-hub",
+  "workspace_root": ".",
+  "projects": [
+    {
+      "name": "upsilonapi",
+      "path": "upsilonapi"
+    },
+    {
+      "name": "upsilonbattle",
+      "path": "upsilonbattle"
+    },
+    {
+      "name": "battleui",
+      "path": "battleui"
+    },
+    {
+      "name": "upsiloncli",
+      "path": "upsiloncli"
+    }
+  ]
+}

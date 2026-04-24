@@ -46,8 +46,8 @@ Every layer validates the one below it:
 ## ATD Structure for UpsilonBattle
 
 ### Project Configuration
-- **Docs Path**: `docs/`
-- **Code Paths**: `upsilonapi/`, `upsilonbattle/`, `battleui/`, `upsiloncli/`
+- **Workspace Structure**: Multi-project ATD Workspace
+- **Docs Path**: Each component (`upsilonapi`, `upsilonbattle`, `battleui`, `upsiloncli`) has its own local `docs/` folder
 - **ATD Tools**: Located at `/home/bastien/work/skill/` (accessed via MCP)
 
 ### Type System (Simplified for UpsilonBattle)
@@ -379,12 +379,13 @@ docs/
 
 ### First Time Setup
 ```bash
-# 1. Initialize ATD in your project
-cd /home/bastien/work/upsilon/projbackend
-atd init
+# 1. The workspace is already initialized in the repository root.
+# Projects are added via `atd workspace add` (already configured).
+# View workspace projects:
+atd workspace list
 
 # 2. Verify configuration
-cat .atd
+cat .atd.workspace
 ```
 
 ### Daily Development Workflow
