@@ -174,6 +174,8 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Extract Properties and Skill Weight to Shared Library](issues/ISS-085_20260425_extract_properties_shared_library.md) | 2026-04-25 | Open | Medium | Extract the core property system and skill weight mathematical framework from... |
+| [Refactor BattleArena into components and restore visual effects](issues/ISS-084_20260425_component_split_effects_plan.md) | 2026-04-25 | Open | Medium | Refactor the arena UI by splitting `ThreeGrid.vue` into dedicated components ... |
 | [Automate API Help Endpoints using Postman and Validation Tools](issues/ISS-083_20260425_automate_api_help_endpoints.md) | 2026-04-25 | Open | Medium | The current API help endpoints in the Laravel `battleui` component rely on a ... |
 | [Front-end Playwright suite + component-isolation visual regression](issues/ISS-082_20260425_frontend_playwright_test_seams.md) | 2026-04-25 | Open | Medium | The `battleui` front-end was rewritten around `@tresjs/core` (Vue + three.js ... |
 | [Cross-stack error handling harmonization](issues/ISS-081_20260425_cross_stack_error_handling.md) | 2026-04-25 | Open | Medium | `error_key` is currently propagated only on the engine action paths (`POST /g... |
