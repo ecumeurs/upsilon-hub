@@ -174,20 +174,17 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [Shielding Credit Attribution System](issues/ISS-079_20260423_shielding_credit_attribution.md) | 2026-04-23 | Open | Medium | The current Credit Economy system (ISS-067) rewards damage and healing based ... |
+| [Cross-stack error handling harmonization](issues/ISS-081_20260425_cross_stack_error_handling.md) | 2026-04-25 | Open | Medium | `error_key` is currently propagated only on the engine action paths (`POST /g... |
+| [ATD for `error_key` taxonomy and possible envelope promotion](issues/ISS-080_20260425_error_key_atd_and_envelope.md) | 2026-04-25 | Open | Medium | `error_key` is now plumbed end-to-end (engine ruler → upsilonapi handler → La... |
+| [Standardize cell access on Y-major layout](issues/ISS-079_20260424_cell_access_y_major_standard.md) | 2026-04-24 | Open | Medium | The tactical grid is currently serialized width-major (`cells[x][y]`) by the ... |
 | [Shielding Credit Attribution System](issues/ISS-078_20260423_shielding_credit_attribution.md) | 2026-04-23 | Open | Medium | Design and implement a robust system for attributing credits earned through d... |
 | [Skill Inspection Command](issues/ISS-077_20260423_skill_inspection.md) | 2026-04-23 | Open | Medium | Implement skill inspection functionality allowing players to view detailed sk... |
-| [Character Data Transfer for Battle Engine](issues/ISS-076_20260423_character_data_transfer.md) | 2026-04-23 | Open | High | Define the communication schema for transferring character data from Laravel ... |
-| [Player Inventory System](issues/ISS-075_20260423_player_inventory.md) | 2026-04-23 | Open | Medium | Implement a proper relational inventory system for players to track all owned... |
-| [Simple Shop Inventory](issues/ISS-074_20260423_simple_shop_inventory.md) | 2026-04-23 | Open | High | Implement minimal shop system with fixed item catalog for V2 testing: one arm... |
+| [Comprehensive Item System - Shop, Inventory, Equipment & Battle Integration](issues/ISS-074_20260423_comprehensive_item_system.md) | 2026-04-23 | Open | High | Implement end-to-end item system for V2: fixed shop catalog, normalized playe... |
 | [Roguelike Skill System - Inventory, Slots & Equipment](issues/ISS-073_20260423_roguelike_skill_system.md) | 2026-04-23 | Open | High | Implement comprehensive roguelike-style skill system with character skill inv... |
 | [Player Choosing Facing Direction on Pass](issues/ISS-072_20260423_pass_choose_facing.md) | 2026-04-23 | Open | Medium | When a player chooses to "Pass" their turn, they must be given the option to ... |
 | [Backstabbing Mechanics & Armor Penetration](issues/ISS-070_20260422_backstabbing_mechanics.md) | 2026-04-22 | Open | Medium | Implement backstabbing combat mechanic with 150% damage multiplier and 50% ar... |
 | [AI Archetype Enhancement & Progression](issues/ISS-069_20260422_ai_archetype_enhancement.md) | 2026-04-22 | Open | Medium | Enhance AI system with four distinct archetypes (Fighter, Ranger, Support, Sn... |
-| [Equipment System & Weapon-as-Skill](issues/ISS-068_20260422_equipment_system.md) | 2026-04-22 | Open | Medium | Implement 3-slot equipment system (1 armor, 1 utility, 1 weapon) with weapon-... |
 | [Credit Economy & Shop System](issues/ISS-067_20260422_credit_economy_shop.md) | 2026-04-22 | Open | High | Implement comprehensive credit economy with multiple earning mechanisms (dama... |
-| [Time-Based Mechanics & Temporary Entity System](issues/ISS-066_20260422_time_based_mechanics.md) | 2026-04-22 | Open | High | Implement time-based mechanics including channeling (pre-execution delay), te... |
-| [Remove Silent Failure Default Values](issues/ISS-062_20260420_remove_silent_failure_defaults.md) | 2026-04-20 | Open | Medium | The codebase contains multiple instances where missing configuration or faile... |
 | [Dead Entities Considered Obstacles](issues/ISS-059_20260420_dead_entities_obstacle_risk.md) | 2026-04-20 | Open | High | Dead entities (HP <= 0) are incorrectly treated as obstacles on both the fron... |
 | [Entity Spawning Overlap](issues/ISS-058_20260420_entity_spawn_overlap.md) | 2026-04-20 | Open | Medium | In some cases, multiple entities are spawned on the same tile at the start of... |
 | [Actor Message Type Validation](issues/ISS-055_20260420_actor_message_validation.md) | 2026-04-20 | Open | Low | The `Actor` implementation should validate if the target message is of the co... |

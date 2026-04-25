@@ -36,7 +36,7 @@ The edge case testing suite validates API boundaries, validation rules, and erro
 | Category | Test Count | Priority | Focus |
 |---|---|---|---|
 | **Movement Validation** | 9 | P0 | Obstacle collision, entity collision, turn/controller mismatch, path validation |
-| **Attack Validation** | 10 | P0 | Out of turn, wrong controller, friendly fire, range limits, targeting rules |
+| **Attack Validation** | 9 | P0 | Out of turn, wrong controller, friendly fire, range limits, targeting rules |
 | **Authentication** | 5 | P0 | Password policy, invalid credentials, session timeout, missing token |
 | **Character & Progression** | 6 | P1 | Reroll limits, stat allocation constraints, movement gate |
 | **Matchmaking** | 4 | P1 | Queue restrictions, game mode validation |
@@ -46,11 +46,11 @@ The edge case testing suite validates API boundaries, validation rules, and erro
 | **Admin** | 3 | P3 | Access control, GDPR compliance |
 | **WebSocket** | 3 | P3 | Authentication, channel validation, timeout handling |
 
-**Total Edge Cases**: 48 tests
+**Total Edge Cases**: 47 tests
 
 ### Implementation Status
 
-As of 2026-04-19, all 48 edge case tests are implemented:
+As of 2026-04-25, 47 edge case tests are active (EC-15 retired — see note below):
 
 | EC ID | Test Name | Status |
 |---|---|---|
@@ -68,7 +68,7 @@ As of 2026-04-19, all 48 edge case tests are implemented:
 | EC-12 | Attack Friendly Fire | ✅ Implemented |
 | EC-13 | Attack Target Not in Range | ✅ Implemented |
 | EC-14 | Attack Target Out of Grid | ✅ Implemented |
-| EC-15 | Attack Invalid Cell Type | ✅ Implemented |
+| EC-15 | Attack Invalid Cell Type | ⚠️ Retired (see below) |
 | EC-16 | Attack No Entity | ✅ Implemented |
 | EC-17 | Attack Already Acted | ✅ Implemented |
 | EC-18 | Attack Skill Cooldown | ✅ Implemented |
@@ -103,7 +103,13 @@ As of 2026-04-19, all 48 edge case tests are implemented:
 | EC-47 | WebSocket Wrong Channel | ✅ Implemented |
 | EC-48 | WebSocket Ping/Pong Timeout | ✅ Implemented |
 
-**Implementation Progress**: 48/48 tests (100%) ✅ All tests implemented
+**Implementation Progress**: 47/47 active tests ✅
+
+> EC-15 ("Attack Invalid Cell Type") was retired on 2026-04-25. The Cell DTO
+> exposed externally only carries `obstacle` + `height` after the API trim;
+> "invalid cell type" no longer maps onto a distinct concept and the test
+> overlapped with EC-01 (obstacle collision). The slot is intentionally left
+> unfilled to keep the EC-NN numbering stable across reports and logs.
 
 ### Running Edge Case Tests
 

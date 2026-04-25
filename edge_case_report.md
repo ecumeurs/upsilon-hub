@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| **Date** | 2026-04-24 11:29 UTC |
-| **Commit** | `1ef8de8` |
+| **Date** | 2026-04-24 18:20 UTC |
+| **Commit** | `5607cdd` |
 | **Branch** | `main` |
 
 ## Edge Case Test Results
@@ -13,15 +13,15 @@
 ### Phase 1: Movement & Authentication
 
 | **EC-01** | Movement on Obstacle Tiles | ✅ PASS | `[[mech_move_validation_move_validation_obstacle_collision]]` |
-| **EC-02** | Movement on Entity Collision | ✅ PASS | `[[mech_move_validation_move_validation_entity_collision]]` |
-| **EC-03** | Movement Already Attacked | ✅ PASS | `[[mech_move_validation_move_validation_already_moved]]` |
-| **EC-04** | Movement Path Too Long | ✅ PASS | `[[mech_move_validation_move_validation_path_length_credits]]` |
-| **EC-05** | Movement Path Not Adjacent | ✅ PASS | `[[mech_move_validation_move_validation_path_adjacency]]` |
+| **EC-02** | Movement on Entity Collision | ❌ FAIL | `[[mech_move_validation_move_validation_entity_collision]]` |
+| **EC-03** | Movement Already Attacked | ❌ FAIL | `[[mech_move_validation_move_validation_already_moved]]` |
+| **EC-04** | Movement Path Too Long | ❌ FAIL | `[[mech_move_validation_move_validation_path_length_credits]]` |
+| **EC-05** | Movement Path Not Adjacent | ❌ FAIL | `[[mech_move_validation_move_validation_path_adjacency]]` |
 | **EC-06** | Movement Out of Turn | ✅ PASS | `[[mech_move_validation_move_validation_turn_mismatch]]` |
-| **EC-07** | Movement Wrong Controller | ✅ PASS | `[[mech_move_validation_move_validation_controller_mismatch]]` |
+| **EC-07** | Movement Wrong Controller | ❌ FAIL | `[[mech_move_validation_move_validation_controller_mismatch]]` |
 | **EC-08** | Movement Grid Boundaries | ✅ PASS | `[[mech_skill_validation_grid_boundaries_verification]]` |
 | **EC-09** | Movement Jump Limitations | ✅ PASS | `[[mech_move_validation_move_validation_jump_limitations]]` |
-| **EC-20** | Password Policy Full Coverage | ✅ PASS | `[[rule_password_policy]]` |
+| **EC-20** | Password Policy Full Coverage | ❌ FAIL | `[[rule_password_policy]]` |
 | **EC-21** | Invalid Credentials | ✅ PASS | `[[api_auth_login]]` |
 | **EC-22** | Session Timeout / Expired Token | ✅ PASS | `[[requirement_req_ui_session_timeout]]` |
 | **EC-23** | Missing Token | ✅ PASS | `[[req_security_authorization]]` |
@@ -30,33 +30,33 @@
 ### Phase 2: Attack Validation
 
 | **EC-10** | Attack Out of Turn | ✅ PASS | `[[mech_skill_validation_turn_controller_identity_verification]]` |
-| **EC-11** | Attack Wrong Controller | ✅ PASS | `[[mech_skill_validation_turn_controller_identity_verification]]` |
-| **EC-12** | Attack Friendly Fire | ✅ PASS | `[[rule_friendly_fire]]` |
+| **EC-11** | Attack Wrong Controller | ❌ FAIL | `[[mech_skill_validation_turn_controller_identity_verification]]` |
+| **EC-12** | Attack Friendly Fire | ❌ FAIL | `[[rule_friendly_fire]]` |
 | **EC-13** | Attack Target Not in Range | ✅ PASS | `[[mech_skill_validation_range_limit_verification]]` |
 | **EC-14** | Attack Target Out of Grid | ✅ PASS | `[[mech_skill_validation_grid_boundaries_verification]]` |
 | **EC-15** | Attack Invalid Cell Type | ✅ PASS | `[[mech_combat_attack_computation]]` |
 | **EC-16** | Attack No Entity | ✅ PASS | `[[mech_combat_attack_computation]]` |
-| **EC-17** | Attack Already Acted | ✅ PASS | `[[mech_skill_validation_action_state_verification]]` |
+| **EC-17** | Attack Already Acted | ❌ FAIL | `[[mech_skill_validation_action_state_verification]]` |
 | **EC-18** | Attack Skill Cooldown | ✅ PASS | `[[mech_skill_validation_economic_cost_verification_cooldown_check]]` |
-| **EC-19** | Attack Targeting Rules | ✅ PASS | `[[mech_skill_validation_entity_targeting_rules_verification]]` |
+| **EC-19** | Attack Targeting Rules | ❌ FAIL | `[[mech_skill_validation_entity_targeting_rules_verification]]` |
 
 ### Phase 3: Character & Matchmaking
 
-| **EC-25** | Character Reroll Limit | ✅ PASS | `[[mech_character_reroll_limit]]` |
+| **EC-25** | Character Reroll Limit | ❌ FAIL | `[[mech_character_reroll_limit]]` |
 | **EC-26** | Reroll After Match | ✅ PASS | `[[mech_character_reroll_limit]]` |
-| **EC-27** | Progression Without Wins | ✅ PASS | `[[rule_progression]]` |
+| **EC-27** | Progression Without Wins | ❌ FAIL | `[[rule_progression]]` |
 | **EC-28** | Progression Attribute Cap | ✅ PASS | `[[rule_progression]]` |
 | **EC-29** | Progression Movement Gate | ✅ PASS | `[[rule_progression]]` |
 | **EC-30** | Progression Negative Value | ✅ PASS | `[[rule_progression]]` |
 | **EC-31** | Queue While Already Queued | ✅ PASS | `[[rule_matchmaking_single_queue]]` |
-| **EC-32** | Queue While in Match | ✅ PASS | `[[rule_matchmaking_single_queue]]` |
+| **EC-32** | Queue While in Match | ❌ FAIL | `[[rule_matchmaking_single_queue]]` |
 | **EC-33** | Invalid Game Mode | ✅ PASS | `[[api_matchmaking]]` |
 | **EC-34** | Leave Queue Not Queued | ✅ PASS | `[[api_matchmaking]]` |
 
 ### Phase 4: Match Resolution
 
-| **EC-35** | Forfeit Out of Turn | ✅ PASS | `[[rule_forfeit_battle]]` |
-| **EC-36** | Action After Match End | ✅ PASS | `[[uc_match_resolution]]` |
+| **EC-35** | Forfeit Out of Turn | ❌ FAIL | `[[rule_forfeit_battle]]` |
+| **EC-36** | Action After Match End | ❌ FAIL | `[[uc_match_resolution]]` |
 
 ### Phase 5: API & Communication
 

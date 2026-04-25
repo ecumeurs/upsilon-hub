@@ -71,7 +71,9 @@ check_edge "EC-11" "Attack Wrong Controller" "[[mech_skill_validation_turn_contr
 check_edge "EC-12" "Attack Friendly Fire" "[[rule_friendly_fire]]" "attack_friendly_fire"
 check_edge "EC-13" "Attack Target Not in Range" "[[mech_skill_validation_range_limit_verification]]" "attack_target_not_in_range"
 check_edge "EC-14" "Attack Target Out of Grid" "[[mech_skill_validation_grid_boundaries_verification]]" "attack_target_out_of_grid"
-check_edge "EC-15" "Attack Invalid Cell Type" "[[mech_combat_attack_computation]]" "attack_target_invalid_cell"
+# EC-15 retired 2026-04-25: the "invalid cell type" notion no longer maps onto
+# the trimmed Cell DTO (only `obstacle` + `height` exposed). Per maintainer
+# decision the test was deleted rather than weakened.
 check_edge "EC-16" "Attack No Entity" "[[mech_combat_attack_computation]]" "attack_target_no_entity"
 check_edge "EC-17" "Attack Already Acted" "[[mech_skill_validation_action_state_verification]]" "attack_already_acted"
 check_edge "EC-18" "Attack Skill Cooldown" "[[mech_skill_validation_economic_cost_verification_cooldown_check]]" "attack_skill_cooldown"

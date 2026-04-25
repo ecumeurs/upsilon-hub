@@ -69,7 +69,7 @@ done
 
 # Run the farm with --local flag
 # No timeout here to allow debugging, but follow same structure as CI
-if "$CLI" --local --farm $PATHS -L "$LOG_DIR" ; then
+if "$CLI" --local --farm -L "$LOG_DIR" $PATHS ; then
     echo -e "\033[32m[PASSED]\033[0m"
     echo "[SCENARIO_RESULT: PASSED]" >> "$LOG_FILE"
     exit 0

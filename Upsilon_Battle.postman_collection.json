@@ -655,7 +655,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"request_id\": \"UUID_V7_PLACEHOLDER\",\n    \"message\": \"Perform Tactical Action\",\n    \"success\": true,\n    \"data\": {\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"move\",\n        \"target_coords\": { \"x\": 5, \"y\": 3 }\n    },\n    \"meta\": {}\n}",
+							"raw": "{\n    \"request_id\": \"UUID_V7_PLACEHOLDER\",\n    \"message\": \"Perform Tactical Action\",\n    \"success\": true,\n    \"data\": {\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"move\",\n        \"target_coords\": [{ \"x\": 5, \"y\": 3 }]\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"

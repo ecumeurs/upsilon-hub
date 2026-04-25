@@ -4,6 +4,9 @@
 
 | Ref | File | Severity | Status | Summary |
 |---|---|---|---|---|
+| ISS-081 | [ISS-081_20260425_cross_stack_error_handling.md](ISS-081_20260425_cross_stack_error_handling.md) | Medium | Open | Cross-stack `error_key` harmonization (auth, matchmaking, validation) |
+| ISS-080 | [ISS-080_20260425_error_key_atd_and_envelope.md](ISS-080_20260425_error_key_atd_and_envelope.md) | Medium | Open | ATD for `error_key` taxonomy and possible promotion to envelope root |
+| ISS-079 | [ISS-079_20260424_cell_access_y_major_standard.md](ISS-079_20260424_cell_access_y_major_standard.md) | Medium | Open | Standardize cell access on Y-major layout via a shared helper |
 | ISS-059 | [ISS-059_20260420_dead_entities_obstacle_risk.md](ISS-059_20260420_dead_entities_obstacle_risk.md) | High | Open | Dead entities considered obstacles on frontend and backend |
 | ISS-046 | [ISS-046_20260416_turner_dead_entity_next_turn.md](ISS-046_20260416_turner_dead_entity_next_turn.md) | High | Open | Turner hands next turn to recently killed entity, permanently hanging the battle |
 | ISS-047 | [ISS-047_20260417_go_test_flakiness_synchronization_races.md](ISS-047_20260417_go_test_flakiness_synchronization_races.md) | High | Resolved | Intermittent race conditions in Ruler tests |

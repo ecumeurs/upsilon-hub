@@ -532,13 +532,19 @@ Defines the complete state of a tactical arena at a specific moment in time.
 | `version` | `int64` | State version (Bit-packed: turn << 32 \| action). |
 
 #### Grid
-- **`width`**: `int`
-- **`height`**: `int`
-- **`cells`**: `Array<Array<Cell>>` (2D matrix)
+The engine is a true 3D grid. The API exposes a 2D projection of **the topmost cell at each `(x, y)` column** — i.e. the walkable surface. Caves and underground are not exposed in this iteration.
+
+- **`width`**: `int` — columns along X.
+- **`height`**: `int` — rows along Y (grid depth; not elevation).
+- **`max_height`**: `int` — engine Z ceiling (exclusive upper bound). Clients rendering elevation should scale vertical features against this value.
+- **`cells`**: `Array<Array<Cell>>` (width-major 2D matrix: `cells[x][y]`).
 
 #### Cell
+A cell represents the topmost (surface) cell at its `(x, y)` column.
+
 - **`entity_id`**: `string (UUID)|null`
 - **`obstacle`**: `boolean`
+- **`height`**: `int` — Z index of this topmost cell. Used by 3D clients for terrain elevation; 2D clients (CLI ASCII) may shade glyphs or ignore it entirely.
 
 #### Turn
 - **`player_id`**: `string (UUID)`

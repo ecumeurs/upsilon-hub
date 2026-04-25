@@ -31,6 +31,10 @@ echo "=================================================="
 echo "      UPSILON LOCAL TEST TRIGGER (E2E + EDGE)"
 echo "=================================================="
 
+# 0. Purge stale data
+echo "Purging stale match data..."
+"$CLI" --local --quiet upsiloncli/tests/scenarios/util_purge_all.js > /dev/null 2>&1 || true
+
 FAILED_TESTS=""
 PASSED_COUNT=0
 FAILED_COUNT=0
@@ -42,11 +46,11 @@ run_test() {
     
     # Determine agent count (following CI logic)
     local agents=1
-    if [[ "$name" == *"pvp"* ]] || [[ "$name" == *"coordination"* ]] || [[ "$name" == *"combat"* ]] || [[ "$name" == *"friendly_fire"* ]] || [[ "$name" == *"resolution_standard"* ]] || [[ "$name" == *"progression_constraints"* ]]; then
+    if [[ "$name" == *"pvp"* ]] || [[ "$name" == *"coordination"* ]] || [[ "$name" == *"combat"* ]] || [[ "$name" == *"resolution_standard"* ]] || [[ "$name" == *"progression_constraints"* ]] || [[ "$name" == *"progression_post_win"* ]] || [[ "$name" == *"out_of_turn"* ]]; then
         agents=2
     fi
     
-    if [[ "$name" == *"2v2"* ]]; then
+    if [[ "$name" == *"2v2"* ]] || [[ "$name" == *"targeting_rules"* ]] || [[ "$name" == *"friendly_fire"* ]]; then
         agents=4
     fi
 
@@ -59,7 +63,7 @@ run_test() {
     done
 
     # Run the farm with --local flag
-    if timeout 180 "$CLI" --local --farm $paths -L "$LOG_DIR" > /dev/null 2>&1; then
+    if timeout 180 "$CLI" --local --farm -L "$LOG_DIR" $paths > /dev/null 2>&1; then
         echo -e "\033[32m[PASSED]\033[0m"
         echo "[SCENARIO_RESULT: PASSED]" >> "$log_file"
         PASSED_COUNT=$((PASSED_COUNT + 1))

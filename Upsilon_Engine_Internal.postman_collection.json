@@ -59,7 +59,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Postman Arena Action\",\n    \"success\": true,\n    \"data\": {\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"move\",\n        \"target_coords\": { \"x\": 0, \"y\": 0 }\n    },\n    \"meta\": {}\n}",
+					"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Postman Arena Action\",\n    \"success\": true,\n    \"data\": {\n        \"player_id\": \"player-uuid-here\",\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"move\",\n        \"target_coords\": [{ \"x\": 0, \"y\": 0 }]\n    },\n    \"meta\": {}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -75,6 +75,40 @@
 						"arena",
 						":id",
 						"action"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "arena-uuid-here"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Arena Forfeit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Postman Arena Forfeit\",\n    \"success\": true,\n    \"data\": {\n        \"player_id\": \"player-uuid-here\"\n    },\n    \"meta\": {}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{engineUrl}}/arena/:id/forfeit",
+					"host": [
+						"{{engineUrl}}"
+					],
+					"path": [
+						"arena",
+						":id",
+						"forfeit"
 					],
 					"variable": [
 						{

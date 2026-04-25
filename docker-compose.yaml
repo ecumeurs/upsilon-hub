@@ -9,16 +9,21 @@ services:
     volumes:
       - .:/workspace
       - $HOME/.ssh:/home/vscode/.ssh:cached
-      - $HOME/.local/bin:/home/vscode/.local/bin:cached
+      - $HOME/.local:/home/vscode/.local:cached
       - $HOME/.antigravity/extensions/local-dev.atd-linker:/home/vscode/extensions/local-dev.atd-linker:cached
-      - $HOME/.gemini/antigravity:/home/vscode/.gemini/antigravity:cached
+      - $HOME/.gemini:/home/vscode/.gemini:cached
+      - $HOME/.claude:/home/vscode/.claude
+      - $HOME/.claude.json:/home/vscode/.claude.json:cached
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - CLAUDE_CODE_OAUTH_TOKEN=${CLAUDE_CODE_OAUTH_TOKEN}
     ports:
       - "8000:8000"
       - "8080:8080"
       - "5173:5173"
       - "8081:8081"
+    env_file:
+      - .env
 
   db:
     image: postgres:18
