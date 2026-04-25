@@ -81,6 +81,7 @@ check_brd "CR-16" "Session Timeout Handling" "[[requirement_req_ui_session_timeo
 check_brd "CR-17" "API Self-Discovery" "[[requirement_customer_api_first]]" "api_discovery"
 check_brd "CR-18" "Admin Full Lifecycle" "[[uc_admin_login]]" "admin_full_lifecycle"
 check_brd "CR-19" "Admin History Management" "[[uc_admin_history_management]]" "admin_history_management"
+check_brd "CR-20" "Credit Economy (damage)" "[[rule_credit_earning_damage]]" "credit_economy"
 
 echo ""
 echo "---"

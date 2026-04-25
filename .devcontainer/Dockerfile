@@ -36,6 +36,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install gd pdo pdo_pgsql zip bcmath intl pcntl \
     && rm -rf /var/lib/apt/lists/*
 
+RUN npx playwright install --with-deps chromium
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

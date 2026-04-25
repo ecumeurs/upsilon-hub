@@ -46,7 +46,7 @@ run_test() {
     
     # Determine agent count (following CI logic)
     local agents=1
-    if [[ "$name" == *"pvp"* ]] || [[ "$name" == *"coordination"* ]] || [[ "$name" == *"combat"* ]] || [[ "$name" == *"resolution_standard"* ]] || [[ "$name" == *"progression_constraints"* ]] || [[ "$name" == *"progression_post_win"* ]] || [[ "$name" == *"out_of_turn"* ]]; then
+    if [[ "$name" == *"pvp"* ]] || [[ "$name" == *"coordination"* ]] || [[ "$name" == *"combat"* ]] || [[ "$name" == *"resolution_standard"* ]] || [[ "$name" == *"progression_constraints"* ]] || [[ "$name" == *"progression_post_win"* ]] || [[ "$name" == *"out_of_turn"* ]] || [[ "$name" == *"credit_economy"* ]]; then
         agents=2
     fi
     

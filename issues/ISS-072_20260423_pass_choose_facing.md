@@ -47,9 +47,39 @@ Currently, passing a turn ends the actor's activation immediately, leaving them 
 
 ## Recommended Fix
 
-**Short term:** Update the `Pass` API to accept orientation and update the engine logic.
+**Short term:** Update the `Pass` API to accept orientation and update the engine logic. (will need a dedicated endpoint and atd atom, and communication and postman collection update.)
 **Medium term:** Implement the UI selection overlay in the `battleui`.
-**Long term:** Add "Auto-Facing" options for defensive stances.
+Ensure the CLI is up to date as well. 
+Create a proper E2E scenario for this 
+---
+
+---
+
+## Implementation Progress
+
+### Facing Indicator (2026-04-25) — `battleui` ✅
+
+A facing direction indicator has been added to `ThreeGrid.vue` (the 3D board component).
+
+**How it works:**
+- Each entity may carry an optional `facing` field in the wire format with values `"Up"` | `"Right"` | `"Down"` | `"Left"`.
+  - `"Up"` = grid Y+1 (Three.js +Z)
+  - `"Right"` = grid X+1 (Three.js +X)
+  - `"Down"` = grid Y-1 (Three.js −Z)
+  - `"Left"` = grid X-1 (Three.js −X)
+- When `facing` is present and non-null, `ThreeGrid.vue` renders a small dark-green triangle (`#1a5c1a`) flat on the cell surface, tip pointing toward the facing edge.
+- When `facing` is absent or null the indicator is silently omitted — fully backward-compatible.
+
+**Wire format change needed (upsilonapi / upsilonbattle):**
+Add `facing` to the entity payload returned by the turn/state endpoint (same shape as `EntityOrientation` already used internally: `"Up"` / `"Right"` / `"Down"` / `"Left"`). No breaking change — absence of the field is safe.
+
+**Test fixture:** `/__test/component/grid-facing` — four pawns each facing a different cardinal direction, with the dark-green triangle visible. Playwright snapshot baseline committed at `tests/playwright/__snapshots__/components.spec.ts-snapshots/component-grid-facing-chromium.png`.
+
+**Still to do:**
+- Backend: expose `facing` in entity wire format (`upsilonapi`)
+- Engine: honour `orientation` parameter on the `Pass` command (`upsilonbattle`)
+- UI: facing picker overlay in ActionPanel (separate task — the indicator above is the display half)
+- CLI: update to send `orientation` with pass command
 
 ---
 

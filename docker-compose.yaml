@@ -16,14 +16,11 @@ services:
       - $HOME/.claude.json:/home/vscode/.claude.json:cached
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
-      - CLAUDE_CODE_OAUTH_TOKEN=${CLAUDE_CODE_OAUTH_TOKEN}
     ports:
       - "8000:8000"
       - "8080:8080"
       - "5173:5173"
       - "8081:8081"
-    env_file:
-      - .env
 
   db:
     image: postgres:18

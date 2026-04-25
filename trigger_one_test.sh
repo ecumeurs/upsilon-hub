@@ -49,7 +49,7 @@ mkdir -p "$LOG_DIR"
 
 # 4. Determine agent count (following CI logic)
 AGENTS=1
-if [[ "$NAME" == *"pvp"* ]] || [[ "$NAME" == *"coordination"* ]] || [[ "$NAME" == *"combat"* ]] || [[ "$NAME" == *"friendly_fire"* ]] || [[ "$NAME" == *"resolution_standard"* ]] || [[ "$NAME" == *"progression_constraints"* ]]; then
+if [[ "$NAME" == *"pvp"* ]] || [[ "$NAME" == *"coordination"* ]] || [[ "$NAME" == *"combat"* ]] || [[ "$NAME" == *"friendly_fire"* ]] || [[ "$NAME" == *"resolution_standard"* ]] || [[ "$NAME" == *"progression_constraints"* ]] || [[ "$NAME" == *"credit_economy"* ]]; then
     AGENTS=2
 fi
 if [[ "$NAME" == *"2v2"* ]]; then

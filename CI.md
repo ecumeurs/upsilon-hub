@@ -157,6 +157,7 @@ The following scenarios map directly to the **Conformity Matrix** and validate s
 | **CR-17** | API Self-Discovery | `[[requirement_customer_api_first]]` | `e2e_api_discovery.js` |
 | **CR-18** | Admin Full Lifecycle | `[[uc_admin_login]]` | `e2e_admin_full_lifecycle.js` |
 | **CR-19** | Admin History Management | `[[uc_admin_history_management]]` | `e2e_admin_history_management.js` |
+| **CR-20** | Credit Economy (Damage) | `[[rule_credit_earning_damage]]` | `e2e_credit_economy.js` |
 
 ---
 
