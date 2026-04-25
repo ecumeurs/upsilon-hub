@@ -27,19 +27,25 @@ Think of ATD as your **project's constitution**—it defines the rules that ever
 ### The Power Model
 
 ```
-Customer Need
+Business Contract (with the exterior)
      ↓
 Design Solution (Architecture)
-     ↓  
+     ↓
 Code Implementation
      ↓
 Test Verification
 ```
 
 Every layer validates the one below it:
-- **Customer**: "Does this meet the user need?"
-- **Architecture**: "Is this the right technical approach?"  
+- **Business**: "Does this meet the contract with stakeholders / other projects?"
+- **Architecture**: "Is this the right technical approach?"
 - **Implementation**: "Did we build it correctly?"
+
+> **Naming note (2026-04-25):** The previous CUSTOMER layer was renamed to
+> BUSINESS to better reflect its role as a contract with the exterior. This
+> applies cleanly to subprojects whose "exterior" is another subproject in the
+> workspace (e.g. `upsilonapi`'s business layer is its API contract). The
+> ARCHITECTURE → DESIGN rename proposed in ISS-076 is **not yet applied**.
 
 ---
 
@@ -48,25 +54,32 @@ Every layer validates the one below it:
 ### Project Configuration
 - **Workspace Structure**: Multi-project ATD Workspace
 - **Docs Path**: Each component (`upsilonapi`, `upsilonbattle`, `battleui`, `upsiloncli`) has its own local `docs/` folder
+- **Shared library**: `upsilon-hub/docs/` is auto-indexed as the `shared` namespace. Cross-cutting business atoms (transversal requirements, rules, user stories, use cases) live there. Reference them as `[[shared:atom_id]]` from any subproject.
+- **Cross-project references**: Use `[[<project>:atom_id]]` (e.g. `[[upsilonapi:api_auth_login]]`). Bare `[[atom_id]]` means "in the same project as the host atom".
 - **ATD Tools**: Located at `/home/bastien/work/skill/` (accessed via MCP)
 
-### Type System (Simplified for UpsilonBattle)
+### Type System (post ISS-075 consolidation, 2026-04-25)
+
+Consolidated from 13 → 9 types. USECASE merged into USER_STORY; SERVICE → MODULE; BUILD → MECHANIC; DATA → ENTITY; SPECIFICATION → REQUIREMENT.
 
 | Type | Purpose | Examples |
 |---|---|---|
-| **REQUIREMENT** | Customer business requirements | `req_matchmaking`, `req_security` |
+| **REQUIREMENT** | Business requirements / external contracts | `req_matchmaking`, `req_security` |
 | **RULE** | Single business rules | `rule_password_policy`, `rule_progression` |
-| **MECHANIC** | Implementation algorithms | `mech_initiative`, `mech_action_economy` |
+| **USER_STORY** | User-facing workflows (formerly USECASE+USER_STORY) | `uc_player_login`, `us_character_reroll` |
 | **API** | Interface contracts | `api_auth_login`, `api_matchmaking` |
+| **UI** | UI surfaces and components | `ui_battle_arena`, `ui_login` |
 | **ENTITY** | Data models | `entity_player`, `entity_character` |
+| **MECHANIC** | Implementation algorithms | `mech_initiative`, `mech_action_economy` |
 | **MODULE** | Architectural grouping | `module_frontend`, `module_backend` |
+| **DOMAIN** | Cross-cutting domain concepts | `domain_upsilon_engine` |
 
-### Layer System (3 Tiers)
+### Layer System (3 Tiers — CUSTOMER renamed to BUSINESS, 2026-04-25)
 
 | Layer | Responsibility | Examples | Link Expectations |
 |---|---|---|---|
-| **CUSTOMER** | Business requirements | User stories, rules | **No code links** (children link down) |
-| **ARCHITECTURE** | System design & APIs | API contracts, UI components | **Links both ways** (to code + from customers) |
+| **BUSINESS** | Contract with the exterior (stakeholders, peer subprojects) | Requirements, rules, user stories | **No code links** (children link down) |
+| **ARCHITECTURE** | System design & APIs | API contracts, UI components | **Links both ways** (to code + from business) |
 | **IMPLEMENTATION** | Algorithms & logic | Mechanics, validation | **Only code links** (links up to architecture) |
 
 ---
