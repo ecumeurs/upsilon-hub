@@ -4,7 +4,7 @@ human_name: "PVE Winnability Balance"
 type: RULE
 layer: BUSINESS
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 4
 tags: [pve, balance, gameplay]
 parents:

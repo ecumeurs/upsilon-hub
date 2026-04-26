@@ -1,6 +1,6 @@
 ---
 id: rule_skill_grading_system
-status: DRAFT
+status: STABLE
 human_name: Skill Grading System Rule
 type: RULE
 layer: ARCHITECTURE

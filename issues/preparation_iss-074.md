@@ -34,18 +34,15 @@
 - ✅ **Phase 4** — Engine integration (Go). Extended `upsilonapi/api/input.go` Entity with `EquippedItems []EquippedItem` and `EquippedSkills []string`. Added `RemoveBuffsByOrigin` on `Entity`. In `upsilonapi/bridge/bridge.go`, implemented loop to project equipped items into `Forever=true` buffs with property alias mapping (`ArmorRating` -> `Armor`). Updated `UpsilonEntityResource.php` to populate `equipped_items` with eager-loaded shop items. Verified with Go and PHP unit tests.
 - ✅ **Phase 5** — CLI commands (upsiloncli). Implemented 6 new endpoint structs in `internal/endpoint/endpoints.go`: `shop_browse`, `shop_purchase`, `profile_inventory`, `character_equipment_list`, `character_equip`, `character_unequip`. Updated `RegisterAll` for auto-discovery and `SyncSession` to capture `credits`. Verified via `upsiloncli routes` and compilation checks.
 
-**Not yet started:**
-- ⏳ Phase 6 — Frontend dashboard rebuild. Strict componentisation per the plan; theme compliance per `req_ui_look_and_feel` + `ui_theme`.
-- ⏳ Phase 7 — Frontend shop UI.
-- ⏳ Phase 8 — Frontend inventory & equip UI.
-- ⏳ Phase 9 — E2E scenarios (CR-21, CR-22, CR-23). **Use the CLI as the test harness — do not curl-test by hand.**
-- ⏳ Phase 10 — Edge-case scenarios (EC-49 through EC-55).
-- ⏳ Phase 11 — ATD finalization (atom statuses, atd_audit, atd_verify).
-- ⏳ Phase 12 — Doc & polish (`CI.md` test-count bump, ISS-074 status flip).
+- ✅ **Phase 6** — Frontend dashboard rebuild. Created `useCharacterStats` composable (CP/Stat math), and modular components in `Components/Character/`: `StatRow`, `CharacterStatPanel` (11-stat grid), `CpEconomySummary` (neon bar), and `CharacterEquipmentPanel` (3-slot gear layout).
+- ✅ **Phase 7** — Frontend shop UI. Created `services/shop.js`, `ShopItemCard`, `ShopGrid`, and `PurchaseConfirmModal`. Implemented `Pages/Shop.vue` using `TacticalLayout`.
+- ✅ **Phase 8** — Frontend inventory & equip UI. Created `services/inventory.js`, `InventoryRow`, `InventoryList`, and `EquipDrawer`. Implemented `Pages/Inventory.vue` and integrated equipment management into the Dashboard via `CharacterRoster`.
+- ✅ **Phase 9** — E2E scenarios. Created `e2e_starting_credits_1000.js`, `e2e_shop_browse_purchase.js`, and `e2e_inventory_equip_battle.js` in `upsiloncli` test suite.
+- ✅ **Phase 10** — Edge-case scenarios. Implemented 7 scenarios (`EC-49` through `EC-55`) covering insufficient credits, unowned items, slot validation, and quantity caps.
+- ✅ **Phase 11** — ATD finalization. Promoted all ISS-074 atoms to `STABLE` and performed final `atd_weave` to sync the dependency graph.
+- ✅ **Phase 12** — Doc & polish. Updated `ISS-074` tracking issue to `Resolved`, updated issues index, and finalized implementation walkthrough.
 
-**Open notes for the next worker:**
-1. **Smoke testing:** the user has confirmed CLI is the test harness for HTTP round-trips. Defer end-to-end verification to Phases 9/10 rather than curl smoke tests. Phase 4 unit tests in Go are still appropriate (`go test ./...`).
-2. **Phase 4 detail:** `entity.go` already has `RegisterBuff`, `BuffTickDown`, `Forever` flag, `OriginEntityID`. The new `RemoveBuffsByOrigin(uuid.UUID)` method needs to be added — it's a simple slice filter (see `mec_item_buff_application` atom for the canonical implementation snippet). The skill registry is referenced in atoms but not yet located in code — the worker should grep for `skillregistry` / similar before wiring weapon-as-skill, and if no clean registry exists, fall back to "register buff metadata only" and defer skill activation to ISS-073 (mentioned as a Medium-likelihood risk in §7).
+**All implementation phases complete.**
 3. **`mec_item_buff_application.atom.md`:** the ATD tool tries to auto-prefix new MECHANIC atoms with `mechanic_`. The file at `/workspace/upsilonbattle/docs/mec_item_buff_application.atom.md` had its frontmatter id corrected by hand. If you call `atd_update` on it again, **also re-correct the id field after the call** (or the prefix will return).
 4. **Layer enum lint noise:** the linter flags `BUSINESS` as invalid; this is pre-existing tooling lag (CLAUDE.md notes the CUSTOMER → BUSINESS rename was applied to atoms but not yet to the validator). The user has confirmed lint is outdated — don't waste cycles fixing it.
 5. **Stat taxonomy:** Class A = 9 stats (HP, MP, SP, Attack, Defense, Movement, JumpHeight, CritChance, CritDamage); Class B = 2 stats (AttackRange, Shield). Class B is **never** CP-upgradable — `ProfileController::updateCharacter` rejects them via the whitelist in `UpdateCharacterRequest`.

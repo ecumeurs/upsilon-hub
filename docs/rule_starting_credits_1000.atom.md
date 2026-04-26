@@ -1,6 +1,6 @@
 ---
 id: rule_starting_credits_1000
-status: DRAFT
+status: STABLE
 priority: 5
 parents:
   - [[upsilonapi:domain_credit_economy]]

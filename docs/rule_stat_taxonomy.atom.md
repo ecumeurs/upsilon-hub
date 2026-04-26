@@ -1,6 +1,6 @@
 ---
 id: rule_stat_taxonomy
-status: DRAFT
+status: STABLE
 version: 2.0
 priority: 5
 human_name: Character Stat Taxonomy (Class A vs Class B)

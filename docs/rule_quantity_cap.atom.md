@@ -1,6 +1,6 @@
 ---
 id: rule_quantity_cap
-status: DRAFT
+status: STABLE
 version: 2.0
 priority: 5
 human_name: Inventory Quantity Cap Rule

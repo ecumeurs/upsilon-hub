@@ -8,6 +8,7 @@
 | ISS-082 | [ISS-082_20260425_frontend_playwright_test_seams.md](ISS-082_20260425_frontend_playwright_test_seams.md) | Medium | Open | Front-end Playwright suite + component-isolation visual regression |
 | ISS-081 | [ISS-081_20260425_cross_stack_error_handling.md](ISS-081_20260425_cross_stack_error_handling.md) | Medium | Open | Cross-stack `error_key` harmonization (auth, matchmaking, validation) |
 | ISS-080 | [ISS-080_20260425_error_key_atd_and_envelope.md](ISS-080_20260425_error_key_atd_and_envelope.md) | Medium | Open | ATD for `error_key` taxonomy and possible promotion to envelope root |
+| ISS-074 | [ISS-074_20260423_comprehensive_item_system.md](ISS-074_20260423_comprehensive_item_system.md) | High | Resolved | Comprehensive Item System - Shop, Inventory, Equipment & Battle Integration |
 | ISS-079 | [ISS-079_20260424_cell_access_y_major_standard.md](ISS-079_20260424_cell_access_y_major_standard.md) | Medium | Open | Standardize cell access on Y-major layout via a shared helper |
 | ISS-046 | [ISS-046_20260416_turner_dead_entity_next_turn.md](ISS-046_20260416_turner_dead_entity_next_turn.md) | High | Open | Turner hands next turn to recently killed entity, permanently hanging the battle |
 | ISS-047 | [ISS-047_20260417_go_test_flakiness_synchronization_races.md](ISS-047_20260417_go_test_flakiness_synchronization_races.md) | High | Resolved | Intermittent race conditions in Ruler tests |

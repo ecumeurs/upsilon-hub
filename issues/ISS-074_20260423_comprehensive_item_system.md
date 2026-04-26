@@ -4,7 +4,7 @@
 **Ref:** `ISS-074`
 **Date:** 2026-04-23
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `battleui`, `upsilonapi`, `upsilonbattle`
 **Affects:** Database schema, shop UI, credit spending, battle engine, character progression
 

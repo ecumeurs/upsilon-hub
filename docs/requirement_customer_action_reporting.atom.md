@@ -1,6 +1,6 @@
 ---
 id: requirement_customer_action_reporting
-status: DRAFT
+status: STABLE
 human_name: Action Reporting & Rich Visualization
 type: REQUIREMENT
 layer: BUSINESS

@@ -1,6 +1,6 @@
 ---
 id: rule_leaderboard_cycle
-status: DRAFT
+status: STABLE
 human_name: Leaderboard Reset Cycle
 type: RULE
 layer: ARCHITECTURE

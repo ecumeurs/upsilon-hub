@@ -1,6 +1,6 @@
 ---
 id: rule_leaderboard_score_calculation
-status: DRAFT
+status: STABLE
 human_name: Score Calculation Rule
 type: RULE
 layer: ARCHITECTURE
