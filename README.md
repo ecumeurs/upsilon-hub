@@ -174,6 +174,10 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Deterministic Daily Random Shop](issues/ISS-089_20260426_mechanic_random_shop_algorithm.md) | 2026-04-26 | Open | Medium | Implementation of a daily rotating shop system that provides a deterministic ... |
+| [Credit Economy E2E Test Payload Misinterpretation](issues/ISS-088_20260426_credit_economy_payload_mismatch.md) | 2026-04-26 | Open | Medium | The `e2e_credit_economy.js` test fails because it misinterprets the response ... |
+| [Grid Generator Tuning - Large and Flat Maps](issues/ISS-087_20260426_grid_generator_tuning.md) | 2026-04-26 | Open | Medium | Since the integration of the `gridgenerator`, battle maps have been observed ... |
+| [Skill and Item Registries with Admin CRUD](issues/ISS-086_20260426_skill_item_registry_admin.md) | 2026-04-26 | Open | High | Transition from a fixed, hardcoded list of items and skills to a dynamic, dat... |
 | [Extract Properties and Skill Weight to Shared Library](issues/ISS-085_20260425_extract_properties_shared_library.md) | 2026-04-25 | Open | Medium | Extract the core property system and skill weight mathematical framework from... |
 | [Refactor BattleArena into components and restore visual effects](issues/ISS-084_20260425_component_split_effects_plan.md) | 2026-04-25 | Open | Medium | Refactor the arena UI by splitting `ThreeGrid.vue` into dedicated components ... |
 | [Automate API Help Endpoints using Postman and Validation Tools](issues/ISS-083_20260425_automate_api_help_endpoints.md) | 2026-04-25 | Open | Medium | The current API help endpoints in the Laravel `battleui` component rely on a ... |
@@ -183,7 +187,6 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 | [Standardize cell access on Y-major layout](issues/ISS-079_20260424_cell_access_y_major_standard.md) | 2026-04-24 | Open | Medium | The tactical grid is currently serialized width-major (`cells[x][y]`) by the ... |
 | [Shielding Credit Attribution System](issues/ISS-078_20260423_shielding_credit_attribution.md) | 2026-04-23 | Open | Medium | Design and implement a robust system for attributing credits earned through d... |
 | [Skill Inspection Command](issues/ISS-077_20260423_skill_inspection.md) | 2026-04-23 | Open | Medium | Implement skill inspection functionality allowing players to view detailed sk... |
-| [Comprehensive Item System - Shop, Inventory, Equipment & Battle Integration](issues/ISS-074_20260423_comprehensive_item_system.md) | 2026-04-23 | Open | High | Implement end-to-end item system for V2: fixed shop catalog, normalized playe... |
 | [Roguelike Skill System - Inventory, Slots & Equipment](issues/ISS-073_20260423_roguelike_skill_system.md) | 2026-04-23 | Open | High | Implement comprehensive roguelike-style skill system with character skill inv... |
 | [Player Choosing Facing Direction on Pass](issues/ISS-072_20260423_pass_choose_facing.md) | 2026-04-23 | Open | Medium | When a player chooses to "Pass" their turn, they must be given the option to ... |
 | [Backstabbing Mechanics & Armor Penetration](issues/ISS-070_20260422_backstabbing_mechanics.md) | 2026-04-22 | Open | Medium | Implement backstabbing combat mechanic with 150% damage multiplier and 50% ar... |

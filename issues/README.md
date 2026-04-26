@@ -4,6 +4,12 @@
 
 | Ref | File | Severity | Status | Summary |
 |---|---|---|---|---|
+| ISS-089 | [ISS-089_20260426_mechanic_random_shop_algorithm.md](ISS-089_20260426_mechanic_random_shop_algorithm.md) | Medium | Open | Deterministic Daily Random Shop |
+| ISS-088 | [ISS-088_20260426_credit_economy_payload_mismatch.md](ISS-088_20260426_credit_economy_payload_mismatch.md) | Medium | Open | Credit Economy E2E Test Payload Misinterpretation |
+| ISS-087 | [ISS-087_20260426_grid_generator_tuning.md](ISS-087_20260426_grid_generator_tuning.md) | Medium | Open | Grid Generator Tuning (Size and Density) |
+| ISS-086 | [ISS-086_20260426_skill_item_registry_admin.md](ISS-086_20260426_skill_item_registry_admin.md) | High | Open | Skill and Item Registries with Admin CRUD |
+| ISS-085 | [ISS-085_20260425_extract_properties_shared_library.md](ISS-085_20260425_extract_properties_shared_library.md) | Medium | Open | Extract Properties and Skill Weight to Shared Library |
+| ISS-084 | [ISS-084_20260425_component_split_effects_plan.md](ISS-084_20260425_component_split_effects_plan.md) | Medium | Open | Refactor BattleArena into components and restore visual effects |
 | ISS-083 | [ISS-083_20260425_automate_api_help_endpoints.md](ISS-083_20260425_automate_api_help_endpoints.md) | Medium | Open | Automate API help endpoints using Postman and validation tools |
 | ISS-082 | [ISS-082_20260425_frontend_playwright_test_seams.md](ISS-082_20260425_frontend_playwright_test_seams.md) | Medium | Open | Front-end Playwright suite + component-isolation visual regression |
 | ISS-081 | [ISS-081_20260425_cross_stack_error_handling.md](ISS-081_20260425_cross_stack_error_handling.md) | Medium | Open | Cross-stack `error_key` harmonization (auth, matchmaking, validation) |

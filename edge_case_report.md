@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| **Date** | 2026-04-24 18:20 UTC |
-| **Commit** | `5607cdd` |
+| **Date** | 2026-04-26 19:07 UTC |
+| **Commit** | `ad898ec` |
 | **Branch** | `main` |
 
 ## Edge Case Test Results
@@ -15,8 +15,8 @@
 | **EC-01** | Movement on Obstacle Tiles | ✅ PASS | `[[mech_move_validation_move_validation_obstacle_collision]]` |
 | **EC-02** | Movement on Entity Collision | ❌ FAIL | `[[mech_move_validation_move_validation_entity_collision]]` |
 | **EC-03** | Movement Already Attacked | ❌ FAIL | `[[mech_move_validation_move_validation_already_moved]]` |
-| **EC-04** | Movement Path Too Long | ❌ FAIL | `[[mech_move_validation_move_validation_path_length_credits]]` |
-| **EC-05** | Movement Path Not Adjacent | ❌ FAIL | `[[mech_move_validation_move_validation_path_adjacency]]` |
+| **EC-04** | Movement Path Too Long | ✅ PASS | `[[mech_move_validation_move_validation_path_length_credits]]` |
+| **EC-05** | Movement Path Not Adjacent | ✅ PASS | `[[mech_move_validation_move_validation_path_adjacency]]` |
 | **EC-06** | Movement Out of Turn | ✅ PASS | `[[mech_move_validation_move_validation_turn_mismatch]]` |
 | **EC-07** | Movement Wrong Controller | ❌ FAIL | `[[mech_move_validation_move_validation_controller_mismatch]]` |
 | **EC-08** | Movement Grid Boundaries | ✅ PASS | `[[mech_skill_validation_grid_boundaries_verification]]` |
@@ -34,9 +34,8 @@
 | **EC-12** | Attack Friendly Fire | ❌ FAIL | `[[rule_friendly_fire]]` |
 | **EC-13** | Attack Target Not in Range | ✅ PASS | `[[mech_skill_validation_range_limit_verification]]` |
 | **EC-14** | Attack Target Out of Grid | ✅ PASS | `[[mech_skill_validation_grid_boundaries_verification]]` |
-| **EC-15** | Attack Invalid Cell Type | ✅ PASS | `[[mech_combat_attack_computation]]` |
 | **EC-16** | Attack No Entity | ✅ PASS | `[[mech_combat_attack_computation]]` |
-| **EC-17** | Attack Already Acted | ❌ FAIL | `[[mech_skill_validation_action_state_verification]]` |
+| **EC-17** | Attack Already Acted | ✅ PASS | `[[mech_skill_validation_action_state_verification]]` |
 | **EC-18** | Attack Skill Cooldown | ✅ PASS | `[[mech_skill_validation_economic_cost_verification_cooldown_check]]` |
 | **EC-19** | Attack Targeting Rules | ❌ FAIL | `[[mech_skill_validation_entity_targeting_rules_verification]]` |
 
@@ -55,7 +54,7 @@
 
 ### Phase 4: Match Resolution
 
-| **EC-35** | Forfeit Out of Turn | ❌ FAIL | `[[rule_forfeit_battle]]` |
+| **EC-35** | Forfeit Out of Turn | ✅ PASS | `[[rule_forfeit_battle]]` |
 | **EC-36** | Action After Match End | ❌ FAIL | `[[uc_match_resolution]]` |
 
 ### Phase 5: API & Communication

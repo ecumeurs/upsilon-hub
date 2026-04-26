@@ -11,6 +11,7 @@ parents: []
 dependents:
   - [[rule_leaderboard_cycle]]
   - [[rule_leaderboard_score_calculation]]
+  - [[us_leaderboard_view_auth_leaderboard]]
   - [[us_leaderboard_view_sort_leaderboard]]
 ---
 # Leaderboard View Story

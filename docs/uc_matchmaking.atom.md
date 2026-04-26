@@ -10,8 +10,10 @@ tags: []
 parents:
   - [[battleui:req_player_experience]]
 dependents:
+  - [[api_matchmaking]]
   - [[rule_matchmaking_single_queue]]
   - [[usecase_api_flow_matchmaking]]
+  - [[upsilonapi:api_matchmaking]]
 ---
 # Matchmaking & Queue Use Case
 
