@@ -9,8 +9,6 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[spec_match_format_mode_rule]]
-  - [[spec_match_format_team_composition_rule]]
   - [[spec_match_format_win_condition_rule]]
 ---
 # Match Format Specification

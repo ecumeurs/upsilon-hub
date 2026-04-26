@@ -31,10 +31,10 @@
   - Policy: `CharacterPolicy::{equip, unequip}` abilities added.
   - All routes wired in `routes/api.php` under the `auth:sanctum` group; verified via `php artisan route:list`.
   - `communication.md` §2.5 (Shop/Inventory/Equipment) added; subsequent sections renumbered to 2.6–2.9.
-
-**Not yet started:**
 - ✅ **Phase 4** — Engine integration (Go). Extended `upsilonapi/api/input.go` Entity with `EquippedItems []EquippedItem` and `EquippedSkills []string`. Added `RemoveBuffsByOrigin` on `Entity`. In `upsilonapi/bridge/bridge.go`, implemented loop to project equipped items into `Forever=true` buffs with property alias mapping (`ArmorRating` -> `Armor`). Updated `UpsilonEntityResource.php` to populate `equipped_items` with eager-loaded shop items. Verified with Go and PHP unit tests.
 - ✅ **Phase 5** — CLI commands (upsiloncli). Implemented 6 new endpoint structs in `internal/endpoint/endpoints.go`: `shop_browse`, `shop_purchase`, `profile_inventory`, `character_equipment_list`, `character_equip`, `character_unequip`. Updated `RegisterAll` for auto-discovery and `SyncSession` to capture `credits`. Verified via `upsiloncli routes` and compilation checks.
+
+**Not yet started:**
 - ⏳ Phase 6 — Frontend dashboard rebuild. Strict componentisation per the plan; theme compliance per `req_ui_look_and_feel` + `ui_theme`.
 - ⏳ Phase 7 — Frontend shop UI.
 - ⏳ Phase 8 — Frontend inventory & equip UI.
