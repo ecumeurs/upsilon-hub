@@ -1,7 +1,7 @@
 # Preparation Plan — ISS-074: Comprehensive Item System
 
 **Date:** 2026-04-26
-**Status:** In progress (Phases 0-4 done, next: Phase 5)
+**Status:** In progress (Phases 0-5 done, next: Phase 6)
 **Parent issue:** `ISS-074_20260423_comprehensive_item_system.md`
 **Related:** ISS-067 (credits), ISS-068 (equipment), ISS-071 (V2 stats), ISS-073 (skills, follow-up), ISS-075/076 (consolidated)
 
@@ -34,7 +34,7 @@
 
 **Not yet started:**
 - ✅ **Phase 4** — Engine integration (Go). Extended `upsilonapi/api/input.go` Entity with `EquippedItems []EquippedItem` and `EquippedSkills []string`. Added `RemoveBuffsByOrigin` on `Entity`. In `upsilonapi/bridge/bridge.go`, implemented loop to project equipped items into `Forever=true` buffs with property alias mapping (`ArmorRating` -> `Armor`). Updated `UpsilonEntityResource.php` to populate `equipped_items` with eager-loaded shop items. Verified with Go and PHP unit tests.
-- ⏳ Phase 5 — CLI commands (upsiloncli). Six new endpoint structs.
+- ✅ **Phase 5** — CLI commands (upsiloncli). Implemented 6 new endpoint structs in `internal/endpoint/endpoints.go`: `shop_browse`, `shop_purchase`, `profile_inventory`, `character_equipment_list`, `character_equip`, `character_unequip`. Updated `RegisterAll` for auto-discovery and `SyncSession` to capture `credits`. Verified via `upsiloncli routes` and compilation checks.
 - ⏳ Phase 6 — Frontend dashboard rebuild. Strict componentisation per the plan; theme compliance per `req_ui_look_and_feel` + `ui_theme`.
 - ⏳ Phase 7 — Frontend shop UI.
 - ⏳ Phase 8 — Frontend inventory & equip UI.
