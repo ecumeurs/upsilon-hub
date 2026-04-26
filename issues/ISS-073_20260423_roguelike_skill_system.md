@@ -16,6 +16,34 @@ Implement comprehensive roguelike-style skill system with character skill invent
 
 ---
 
+## Wiring instructions (post-ISS-074, 2026-04-26)
+
+ISS-074 (item system) shipped the structural groundwork for skills inside the same engine bootstrap path. **All scaffolding is in place — this issue is now data-side only**. To complete:
+
+1. **Schema:** Create the `character_skills` join table (`character_id` FK, `skill_id` FK, `equipped_at`, `acquired_at`). Decide whether equip is a flag on this join, or a separate `equipped_skills` mirror table — the engine doesn't care, it just receives the equipped subset.
+
+2. **Laravel resource:** In `app/Http/Resources/API/Upsilon/UpsilonEntityResource.php`, populate the `equipped_skills` array (currently emitted as `[]`) with the equipped skill UUIDs from `character_skills WHERE equipped=true`.
+
+3. **Go bridge:** In `upsilonapi/bridge/bridge.go`, the entity-bootstrap loop already reads `entity.EquippedSkills []string` from the request payload (added by ISS-074, currently always empty). Add the resolution step:
+   ```go
+   for _, skillID := range entity.EquippedSkills {
+       skill := skillregistry.Lookup(uuid.MustParse(skillID))  // or your registry of choice
+       e.RegisterSkill(skill)
+   }
+   ```
+   `RegisterSkill` already exists on `Entity` (see `entity.go`).
+
+4. **Drop the placeholder comment:** Once ISS-073 lands, delete the `// reserved for ISS-073` comment in `upsilonapi/api/input.go` next to the `EquippedSkills` field.
+
+5. **Item-carried skills (already wired):** Items with an `Effect` property (a skill ID) already register their skill at equip time via `[[upsilonbattle:mec_item_buff_application]]`. ISS-073 doesn't need to handle weapon-as-skill — it's already done.
+
+**Key references from ISS-074:**
+- Reserved field: `upsilonapi/api/input.go` — `Entity.EquippedSkills []string`
+- Insertion point: `upsilonapi/bridge/bridge.go` (the entity-bootstrap loop, just after the item-buff loop)
+- Atom relationships: `[[upsilonbattle:mec_item_buff_application]]`, `[[upsilonbattle:entity_character_skill_inventory]]`, `[[upsilonbattle:mech_skill_equipment_system]]`
+
+---
+
 ## Technical Description
 
 ### Background

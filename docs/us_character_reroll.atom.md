@@ -13,7 +13,6 @@ dependents:
   - [[us_character_reroll_create_character]]
   - [[us_character_reroll_reroll_button_action]]
   - [[us_character_reroll_reroll_counter]]
-  - [[upsilonapi:api_profile_character]]
 ---
 # Character Reroll Story
 

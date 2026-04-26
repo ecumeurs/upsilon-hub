@@ -98,6 +98,12 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 | `POST` | `/broadcasting/auth` | WebSocket Channel Authorization | [[api_websocket]] |
 | `POST` | `/api/webhook/upsilon` | Ingest Engine State Update (Internal) | [[api_go_webhook_callback]] |
 | `GET` | `/leaderboard` | Global Rankings (Mode-based) | [[api_leaderboard]] |
+| `GET` | `/shop/items` | Browse V2.0 Shop Catalog | [[upsilonapi:api_shop_browse]] |
+| `POST` | `/shop/purchase` | Purchase Item (debit credits, add to inventory) | [[upsilonapi:api_shop_purchase]] |
+| `GET` | `/profile/inventory` | List Owned Items + Equip Status | [[upsilonapi:api_inventory_list]] |
+| `GET` | `/profile/character/{id}/equipment` | Get Character 3-Slot Equipment | [[upsilonapi:api_equipment_management]] |
+| `POST` | `/profile/character/{id}/equip` | Equip Item (slot inferred) | [[upsilonapi:api_equipment_management]] |
+| `DELETE` | `/profile/character/{id}/unequip/{slot}` | Unequip Slot (armor / utility / weapon) | [[upsilonapi:api_equipment_management]] |
 
 
 
@@ -287,7 +293,45 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 - **Constraint:** Can only be called during a turn owned by the authenticated player (Enforced by Engine).
 - **Output:** Standard Success Envelope.
 
-### 2.5 Social & Competitive
+### 2.5 Shop, Inventory & Equipment (ISS-074)
+
+#### `GET /shop/items`
+- **Specification:** [[upsilonapi:api_shop_browse]]
+- **Intent:** List the V2.0 catalog of purchasable items.
+- **Output:** `Array<ShopItemResource>` — `{ id, name, type, slot, properties, cost, available }`.
+
+#### `POST /shop/purchase`
+- **Specification:** [[upsilonapi:api_shop_purchase]]
+- **Intent:** Atomic credit-debit + inventory upsert + audit log.
+- **Input:**
+  - `shop_item_id`: `string (UUID)` [Mandatory]
+  - `quantity`: `int` (Optional, default 1, max 99)
+- **Output:** `{ credits: <new_balance>, inventory_item: InventoryItemResource }`
+- **Failure modes:** 422 with `meta.reason ∈ {insufficient_credits, quantity_cap, item_unavailable}`; 404 unknown item.
+
+#### `GET /profile/inventory`
+- **Specification:** [[upsilonapi:api_inventory_list]]
+- **Intent:** List authenticated user's owned items, annotated with current equip binding.
+- **Output:** `Array<InventoryItemResource>` — each row includes `equipped_on: { character_id, character_name, slot } | null`.
+
+#### `GET /profile/character/{id}/equipment`
+- **Specification:** [[upsilonapi:api_equipment_management]]
+- **Intent:** Get the 3-slot equipment configuration for a character.
+- **Output:** `CharacterEquipmentResource` — `{ character_id, armor, utility, weapon }`. Each slot is either `null` or a populated `InventoryItemResource`.
+
+#### `POST /profile/character/{id}/equip`
+- **Specification:** [[upsilonapi:api_equipment_management]]
+- **Intent:** Equip an inventory item; slot inferred from item type.
+- **Input:** `{ item_id: <player_inventory_uuid> }`
+- **Behavior:** Cross-character mutual exclusivity is enforced atomically: equipping an item already bound to another character of the same user clears that prior binding in the same DB transaction.
+- **Output:** Updated `CharacterEquipmentResource`.
+
+#### `DELETE /profile/character/{id}/unequip/{slot}`
+- **Specification:** [[upsilonapi:api_equipment_management]]
+- **Intent:** Clear a single equipment slot. `slot ∈ {armor, utility, weapon}`.
+- **Output:** Updated `CharacterEquipmentResource`. Returns 404 if the slot was already empty.
+
+### 2.6 Social & Competitive
 
 #### `GET /leaderboard`
 - **Specification:** [[api_leaderboard]]
@@ -303,7 +347,7 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
   - `self`: `RankingResource|null` (Current user's ranking context).
   - `meta`: `PaginationMeta`
 
-### 2.6 Administrative Management
+### 2.7 Administrative Management
 
 #### `GET /admin/dashboard`
 - **Specification:** [[ui_admin_dashboard]]
@@ -369,7 +413,7 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
   - Standard Success Envelope
 
 
-### 2.7 WebSocket Protocol
+### 2.8 WebSocket Protocol
 
 The Upsilon Battle ecosystem uses **Laravel Reverb** (Pusher-compatible) for real-time updates.
 
@@ -396,7 +440,7 @@ The Upsilon Battle ecosystem uses **Laravel Reverb** (Pusher-compatible) for rea
 - `board.updated`: Position change, stat change, or successful tactical action (Move, Attack, Pass).
 - `game.ended`: Win condition met or match terminated.
 
-### 2.8 Advanced Identity Management
+### 2.9 Advanced Identity Management
 
 #### `GET /profile/export`
 - **Specification:** [[api_profile_export]]

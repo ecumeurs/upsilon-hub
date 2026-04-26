@@ -9,11 +9,9 @@ priority: 5
 tags: []
 parents: []
 dependents:
-  - [[battleui:ui_waiting_room]]
   - [[req_matchmaking_matchmaking_queue]]
   - [[req_matchmaking_pve_pvp_transition]]
   - [[req_matchmaking_transition_rules]]
-  - [[upsilonbattle:mech_matchmaking]]
 ---
 # Matchmaking Flow Requirement
 

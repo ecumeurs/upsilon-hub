@@ -10,7 +10,6 @@ tags: []
 parents:
   - [[battleui:req_player_experience]]
 dependents:
-  - [[battleui:ui_registration]]
   - [[us_new_player_onboard]]
 ---
 # Player Registration Use Case

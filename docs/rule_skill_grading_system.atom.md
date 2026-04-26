@@ -8,8 +8,7 @@ version: 2.0
 priority: 5
 tags: [skills, grading, progression]
 parents: []
-dependents:
-  - [[upsilonapi:api_skill_grading_computation]]
+dependents: []
 ---
 
 # New Atom
