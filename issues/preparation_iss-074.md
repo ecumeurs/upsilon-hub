@@ -1,7 +1,7 @@
 # Preparation Plan — ISS-074: Comprehensive Item System
 
 **Date:** 2026-04-26
-**Status:** In progress (Phases 0-3 done, paused at start of Phase 4)
+**Status:** In progress (Phases 0-4 done, next: Phase 5)
 **Parent issue:** `ISS-074_20260423_comprehensive_item_system.md`
 **Related:** ISS-067 (credits), ISS-068 (equipment), ISS-071 (V2 stats), ISS-073 (skills, follow-up), ISS-075/076 (consolidated)
 
@@ -33,7 +33,7 @@
   - `communication.md` §2.5 (Shop/Inventory/Equipment) added; subsequent sections renumbered to 2.6–2.9.
 
 **Not yet started:**
-- ⏳ Phase 4 — Engine integration (Go). Extend `upsilonapi/api/input.go` Entity with `EquippedItems []EquippedItem` and `EquippedSkills []string` (reserved for ISS-073). Add `RemoveBuffsByOrigin` on `Entity`. In `upsilonapi/bridge/bridge.go` (around lines 130-131, just before `AddEntity`), loop equipped items → build `Forever=true` `TemporaryProperties` via `def.ItemProperty()` factory → `RegisterBuff`. If item carries an `Effect` property (skill ID), resolve via skill registry and `RegisterSkill`. **Also** update `UpsilonEntityResource.php:18-39` to populate `equipped_items` (eager-load `Character::equipment.{armor,utility,weapon}Item.shopItem`) and emit `equipped_skills: []`.
+- ✅ **Phase 4** — Engine integration (Go). Extended `upsilonapi/api/input.go` Entity with `EquippedItems []EquippedItem` and `EquippedSkills []string`. Added `RemoveBuffsByOrigin` on `Entity`. In `upsilonapi/bridge/bridge.go`, implemented loop to project equipped items into `Forever=true` buffs with property alias mapping (`ArmorRating` -> `Armor`). Updated `UpsilonEntityResource.php` to populate `equipped_items` with eager-loaded shop items. Verified with Go and PHP unit tests.
 - ⏳ Phase 5 — CLI commands (upsiloncli). Six new endpoint structs.
 - ⏳ Phase 6 — Frontend dashboard rebuild. Strict componentisation per the plan; theme compliance per `req_ui_look_and_feel` + `ui_theme`.
 - ⏳ Phase 7 — Frontend shop UI.
