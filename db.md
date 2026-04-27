@@ -1,6 +1,6 @@
 # TRPG Database Schema
 
-*Last Updated: 2026-04-26 — ISS-074 item system + V2 stat extensions*
+*Last Updated: 2026-04-27 — ISS-073/086 skill system + D11 exotic item skill binding*
 
 This document outlines the relational boundaries required in the PostgreSQL implementation to support the TRPG Specifications. 
 
@@ -94,14 +94,15 @@ Active queue entries for users seeking matches.
 **Indexes**: `user_id`
 
 ### 6. `shop_items`
-V2.0 fixed catalog of purchasable items. Three rows seeded with deterministic UUIDs. See [[upsilonbattle:entity_shop_item]].
+Admin-managed item catalog. Three rows seeded with deterministic UUIDs; further rows added via admin CRUD (ISS-086). See [[entity_shop_item]].
 * `id` (UUID, Primary Key)
 * `name` (Varchar 100)
 * `type` (Varchar 32) - *Legacy category: armor / weapon / movement / utility*
 * `slot` (Varchar 16) - *CHECK: armor | utility | weapon*
 * `properties` (JSON) - *Engine `ItemProperties` map (e.g. `{"ArmorRating":5}`)*
-* `cost` (Int) - *Credit cost per unit; V2.0 fixed prices per [[upsilonbattle:rule_item_pricing_simple]]*
+* `cost` (Int) - *Credit cost per unit; V2.0 fixed prices per [[rule_item_pricing_simple]]*
 * `available` (Bool, Default true)
+* `skill_template_id` (UUID, Nullable, FK -> `skill_templates.id`, SET NULL) - *D11: exotic items only; NULL for vanilla weapons/armor*
 * `version` (Varchar 10, Default '2.0')
 * `created_at` / `updated_at` (Timestamps)
 
@@ -140,6 +141,39 @@ Audit trail for inventory changes. See [[upsilonbattle:mec_credit_spending_shop]
 **Constraints (service-layer)**:
 - Slot of bound inventory row must match the column (armor/utility/weapon) — enforced in `EquipmentService`.
 - A given `player_inventory` row may be referenced by at most ONE slot across ALL of the user's characters at any time (cross-character mutual exclusivity, atomic).
+
+---
+
+### 10. `skill_templates`
+Admin-managed skill design library. Each row is a canonical skill definition that players can roll from or that exotic items can reference. See [[entity_skill_template]], [[rule_admin_content_authority]].
+* `id` (UUID, Primary Key)
+* `name` (Varchar 100)
+* `behavior` (Varchar 16) - *CHECK: Direct | Reaction | Passive | Counter | Trap*
+* `targeting` (JSON) - *Engine property map for targeting rules*
+* `costs` (JSON) - *Engine property map for resource costs*
+* `effect` (JSON) - *Engine effect bundle (damage / heal / status)*
+* `grade` (Varchar 8) - *CHECK: I | II | III | IV | V*
+* `weight_positive` (Int, Default 0) - *Positive Skill Weight used for grading and credit cost*
+* `weight_negative` (Int, Default 0) - *Negative Skill Weight (penalties)*
+* `available` (Bool, Default true) - *Soft-disable without deleting*
+* `version` (Varchar 10, Default '2.0')
+* `created_at` / `updated_at` (Timestamps)
+
+### 11. `character_skills`
+Per-character skill inventory with snapshot model (ISS-073). See [[entity_character_skill_inventory]], [[rule_character_skill_slots]].
+* `id` (UUID, Primary Key)
+* `character_id` (UUID, FK -> `characters.id`, CASCADE)
+* `skill_template_id` (UUID, Nullable, FK -> `skill_templates.id`, SET NULL) - *Informational: tracks origin template; never re-read at battle time*
+* `source` (Varchar 16) - *CHECK: roll | template | shop | grant | item — V2.0 wires 'roll' only*
+* `instance_data` (JSON) - *Full skill snapshot at acquisition time; stable regardless of template edits*
+* `equipped` (Bool, Default false)
+* `acquired_at` (Timestamp, Default now())
+* `equipped_at` (Timestamp, Nullable)
+* `created_at` / `updated_at` (Timestamps)
+
+**Indexes**: `(character_id, equipped)` — fast lookup of a character's equipped skills at battle-init.
+**Constraints (service-layer)**: count of `equipped=true` rows per character must not exceed `min(5, 1 + floor(player.total_wins / 10))` — enforced atomically in `SkillService`.
+**Note**: `source='item'` is reserved but never INSERTed in V2.0. Item-derived skills are virtualized at battle-init time by `UpsilonEntityResource` scanning equipped items with a non-NULL `shop_items.skill_template_id`.
 
 ---
 
