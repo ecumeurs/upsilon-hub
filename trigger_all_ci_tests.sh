@@ -34,7 +34,7 @@ echo "=================================================="
 # 0. Purge stale data and reset admin password
 echo "Purging stale match data and resetting admin password..."
 "$CLI" --local --quiet upsiloncli/tests/scenarios/util_purge_all.js > /dev/null 2>&1 || true
-php battleui/artisan tinker --execute="\$u = \App\Models\User::where('account_name', 'admin')->first(); if (\$u) { \$u->password_hash = \Illuminate\Support\Facades\Hash::make('AdminPassword123!'); \$u->save(); }" > /dev/null 2>&1 || true
+php battleui/artisan tinker --execute="\App\Models\User::updateOrCreate(['account_name' => 'admin'], ['email' => 'admin@admin.com', 'password_hash' => \Illuminate\Support\Facades\Hash::make('AdminPassword123!'), 'role' => 'Admin', 'full_address' => 'SYS_ADMIN_CI', 'birth_date' => '1970-01-01']);" > /dev/null 2>&1 || true
 
 FAILED_TESTS=""
 PASSED_COUNT=0

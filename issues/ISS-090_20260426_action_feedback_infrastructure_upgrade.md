@@ -4,7 +4,7 @@
 **Ref:** `ISS-090`
 **Date:** 2026-04-26
 **Severity:** High
-**Status:** Open
+**Status:** Partially resolved (2026-04-27) — Version stamping on all notifications done; UI tactical feedback and synchronous result payload remain
 **Component:** `upsilonapi`, `upsilonbattle`, `battleui`, `upsiloncli`
 **Affects:** Communication Layer, E2E Tests, UI Tactical Feedback
 
