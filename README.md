@@ -174,6 +174,7 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Action Feedback Infrastructure Upgrade (Multi-Target & Synchronous Results)](issues/ISS-090_20260426_action_feedback_infrastructure_upgrade.md) | 2026-04-26 | Open | High | The current action feedback system (ActionFeedback DTO) is single-target orie... |
 | [Deterministic Daily Random Shop](issues/ISS-089_20260426_mechanic_random_shop_algorithm.md) | 2026-04-26 | Open | Medium | Implementation of a daily rotating shop system that provides a deterministic ... |
 | [Credit Economy E2E Test Payload Misinterpretation](issues/ISS-088_20260426_credit_economy_payload_mismatch.md) | 2026-04-26 | Open | Medium | The `e2e_credit_economy.js` test fails because it misinterprets the response ... |
 | [Grid Generator Tuning - Large and Flat Maps](issues/ISS-087_20260426_grid_generator_tuning.md) | 2026-04-26 | Open | Medium | Since the integration of the `gridgenerator`, battle maps have been observed ... |
