@@ -542,8 +542,15 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 #### ActionFeedback
 - **`type`**: `string` ("move", "attack", "skill", "pass")
 - **`actor_id`**: `string (UUID)`
+- **`target_id`**: `string (UUID)` (Legacy/Primary target)
+- **`path`**: `Array<Position>` (For 'move')
+- **`results`**: `Array<ActionResult>` (See below)
+- **`credits`**: `Array<CreditAward>` (Optional)
+
+#### ActionResult
 - **`target_id`**: `string (UUID)`
-- **`damage`**: `int`
+- **`damage`**: `int` (Optional)
+- **`heal`**: `int` (Optional)
 - **`prev_hp`**: `int`
 - **`new_hp`**: `int`
 - **`credits`**: `Array<CreditAward>` (Optional)

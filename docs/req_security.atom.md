@@ -9,14 +9,11 @@ priority: 5
 tags: [auth, sanctum]
 parents: []
 dependents:
-  - [[rule_admin_access_restriction]]
-  - [[rule_gdpr_compliance]]
-  - [[rule_password_policy]]
   - [[req_security_authorization]]
+  - [[req_security_public_access]]
+  - [[req_security_token_exchange]]
   - [[req_security_token_ttl]]
-  - [[upsilonapi:rule_admin_access_restriction]]
-  - [[upsilonapi:rule_gdpr_compliance]]
-  - [[upsilonapi:rule_password_policy]]
+  - [[uc_auth_logout]]
 ---
 # Sanctum Token Security Requirement
 

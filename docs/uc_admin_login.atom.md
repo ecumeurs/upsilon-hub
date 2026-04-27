@@ -11,9 +11,7 @@ parents:
   - [[req_admin_experience]]
   - [[upsilonapi:infra_seed_admin]]
   - [[upsilonapi:rule_admin_access_restriction]]
-dependents:
-  - [[battleui:ui_admin_dashboard]]
-  - [[ui_admin_dashboard]]
+dependents: []
 ---
 
 # Admin Login Use Case

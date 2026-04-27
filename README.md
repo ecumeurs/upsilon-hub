@@ -174,6 +174,7 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Action Feedback Infrastructure Verification Plan](issues/ISS-092_20260427_action_feedback_verification_plan.md) | 2026-04-27 | Open | High | The Action Feedback system has been refactored (ISS-090) to support multi-tar... |
 | [Flaky TestBattleFullRoundtrip Grid Adjacency](issues/ISS-091_20260427_flaky_battle_roundtrip_grid_adjacency.md) | 2026-04-27 | Open | Medium | `TestBattleFullRoundtrip` occasionally fails with the error "Entity is not ad... |
 | [Action Feedback Infrastructure Upgrade (Multi-Target & Synchronous Results)](issues/ISS-090_20260426_action_feedback_infrastructure_upgrade.md) | 2026-04-26 | Open | High | The current action feedback system (ActionFeedback DTO) is single-target orie... |
 | [Deterministic Daily Random Shop](issues/ISS-089_20260426_mechanic_random_shop_algorithm.md) | 2026-04-26 | Open | Medium | Implementation of a daily rotating shop system that provides a deterministic ... |
