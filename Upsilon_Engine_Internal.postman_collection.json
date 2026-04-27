@@ -119,6 +119,31 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Arena Existence Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{engineUrl}}/arena/:id/exists",
+					"host": [
+						"{{engineUrl}}"
+					],
+					"path": [
+						"arena",
+						":id",
+						"exists"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "arena-uuid-here"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [

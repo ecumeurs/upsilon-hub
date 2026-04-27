@@ -504,6 +504,11 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 - **Intent:** Allow a player to concede the match without an entity context.
 - **Input:** `ArenaForfeitRequest` (JSON)
 
+#### `GET /arena/{id}/exists`
+- **Specification:** [[api_arena_existence_check]]
+- **Intent:** Verify if an arena instance exists in engine memory.
+- **Output:** `ArenaExistsResponse` (JSON)
+
 ### 3.2 Asynchronous Webhook (Callback)
 **Destination:** `POST /api/webhook/upsilon` (on Laravel Gateway) — Must be reachable internally from the Go Engine.
 
@@ -708,5 +713,6 @@ Payload for the asynchronous engine callback.
 | `POST /api/webhook/upsilon` | [[api_go_webhook_callback]] | [[uc_combat_turn]] / [[uc_match_resolution]] | Internal Callback |
 | `GET /api/profile/export` | [[api_profile_export]] | Data Portability | GDPR |
 | `POST /auth/logout` | [[api_auth_logout]] | [[uc_auth_logout]] | Security |
+| `GET /v1/arena/{id}/exists` | [[api_arena_existence_check]] | State Synchronization | Internal API |
 | `Universal Envelope` | [[api_standard_envelope]] | All Interactions | Traceability |
 | `GET /leaderboard` | [[api_leaderboard]] | Rankings | Social |

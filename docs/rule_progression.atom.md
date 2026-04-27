@@ -14,6 +14,7 @@ dependents:
   - [[battleui:ui_character_full_stat_panel]]
   - [[rule_stat_taxonomy]]
   - [[uc_progression_stat_allocation]]
+  - [[ui_character_full_stat_panel]]
 ---
 # Character Progression Rule
 
