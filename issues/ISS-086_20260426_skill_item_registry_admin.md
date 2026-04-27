@@ -4,7 +4,7 @@
 **Ref:** `ISS-086`
 **Date:** 2026-04-26
 **Severity:** High
-**Status:** Open
+**Status:** Resolved (2026-04-27)
 **Component:** `battleui`, `upsilonapi`
 **Affects:** Admin dashboard, item creation, skill management, shop catalog
 

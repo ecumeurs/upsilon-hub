@@ -1,7 +1,7 @@
 # Preparation Plan — ISS-073 + ISS-086 + ISS-085 (Roguelike Skills, Registry/Admin, Property Extraction)
 
 **Date:** 2026-04-26
-**Status:** Ready for execution (overnight, unattended)
+**Status:** Executed and Resolved (2026-04-27) — Phases 1-13 complete; Phase 8+9 frontend deferred to follow-up
 **Parent issues:**
 - `ISS-085_20260425_extract_properties_shared_library.md`
 - `ISS-086_20260426_skill_item_registry_admin.md`

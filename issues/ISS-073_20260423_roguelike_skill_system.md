@@ -4,7 +4,7 @@
 **Ref:** `ISS-073`
 **Date:** 2026-04-23
 **Severity:** High
-**Status:** Open
+**Status:** Resolved (2026-04-27)
 **Component:** `battleui`, `upsilonapi`, `upsilonbattle`
 **Affects:** `battleui/app/Models/Character.php`, character progression, battle engine integration
 

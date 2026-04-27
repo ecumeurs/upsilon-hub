@@ -4,7 +4,7 @@
 **Ref:** `ISS-085`
 **Date:** 2026-04-25
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved (2026-04-27)
 **Component:** `upsilonbattle/battlearena/property`
 **Affects:** `upsilonapi`, `upsilonbattle`, `upsiloncli`, `skillgenerator`
 
