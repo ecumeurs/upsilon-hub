@@ -183,7 +183,7 @@ The user wants to ship three issues in one overnight run because they form a sin
 - `upsiloncli/tests/scenarios/e2e_*.js` and `edge_*.js` — listed in Phase 11/12.
 
 ### Cross-cutting docs
-- `communication.md` — new section §2.10 (Skills) and §2.11 (Admin Content). New endpoints documented with request/response examples.
+- `communication.md` — new section §2.10 (Skills) and §2.11 (Admin Content). New endpoints documented with request/response examples. *(Not yet written — pending alongside Phase 8+9 frontend.)*
 - `db.md` — append `skill_templates`, `character_skills` ER + table specs.
 - `CI.md` — bump test counts.
 
@@ -327,13 +327,13 @@ Substeps:
 - **Verify:** `cd upsilonapi && go test ./bridge/...` green; manual: start arena via Laravel with a character that has 1 equipped skill + 1 throwable item, observe both skills registered in engine logs.
 
 ### Phase 7 — CLI commands (~1h)
-- New endpoint structs in `upsiloncli/internal/endpoint/endpoints.go`:
+- New endpoint structs in `upsiloncli/internal/endpoint/skill.go`:
   - `SkillTemplateList` (GET /v1/skills/templates)
   - `SkillTemplateGet` (GET /v1/skills/templates/{id})
   - `CharacterSkillList` (GET /v1/profile/character/{id}/skills)
   - `SkillEquip` (POST .../skills/{skillId}/equip)
   - `SkillUnequip` (DELETE .../skills/{skillId}/unequip)
-  - `SkillRoll` (POST .../skill-roll)
+  - `SkillRoll` (POST .../skills/roll)
 - Register in `RegisterAll`. No JS-bridge changes.
 - **Verify:** `upsiloncli routes` lists the new commands; REPL: login → `skill_roll` → `character_skill_list` → `skill_equip` → confirm equipped count incremented.
 
@@ -354,6 +354,7 @@ New components (single responsibility):
 - **Verify:** browser smoke test: roll a skill → appears in inventory → equip → SkillSlotPill shows the skill name → battle init delivers it to engine.
 
 ### Phase 9 — Admin frontend: skill template + shop item managers (~3h)
+**Backend done (2026-04-27): `AdminSkillTemplateController`, `AdminShopItemController`, form requests, routes. Frontend not yet built.**
 - `Pages/Admin/SkillTemplates.vue` — list (paginated table), "Create new" button, edit modal.
 - `Pages/Admin/ShopItems.vue` — list, "Create new", edit modal (also handles toggling `available`).
 - `Components/Admin/SkillTemplateForm.vue`:
@@ -444,7 +445,7 @@ Add (try/catch-for-expected-failure pattern):
 ## 6. Adjacent findings & follow-ups
 
 - **`EffectProperty` does NOT carry skill UUIDs.** The ISS-074 prep doc and ISS-073 wiring instructions both incorrectly imply weapon-as-skill is wired. Fix the misleading sentence in ISS-073 (Phase 0). With D11 in place, **exotic weapons can now grant a skill as a content concern** (admin attaches a `skill_template_id` to the shop_item). The original "weapon-as-skill" V2.1 framing is partially dissolved: vanilla weapons stay on the existing stat-property path (no skill needed — engine's `Attack()` reads `WeaponBaseDamage` directly), exotic weapons (grenade launcher etc.) layer a skill on top via D11. Throwables and traps use the same D11 path.
-- **`skillgenerator` not extracted in ISS-085.** Documented as D10. New follow-up `ISS-090` planned to extract `Skill` struct and `skillgenerator` to `upsilon-mechanics` once the engine no longer needs the struct directly (or once we accept the upsilon-mechanics dependency on a thin skill-types subpackage).
+- **`skillgenerator` not extracted in ISS-085.** Documented as D10. ISS-090 covered the `upsilonbattle` → `upsilontypes` migration and is now resolved. Extracting `Skill` struct + `skillgenerator` to `upsilon-mechanics` remains a future concern with no open issue tracking it yet.
 - ~~**Per-player vs per-character `wins` source for skill_slots accessor.**~~ → **Resolved 2026-04-26: per-player (`users.total_wins`).** No `characters.wins` column needed.
 - **Random shop (ISS-089).** Not in scope. The chosen registry shape (D3) supports it directly: `shop_items WHERE available=true` is the sample pool; deterministic seed (user UUID + creation date + current date) drives selection. ISS-089 can ship without schema changes.
 - **Reforging.** Out of scope per user. `character_skills.instance_data` is JSON-snapshot specifically to make reforging straightforward later (mutate the snapshot in place).
