@@ -31,10 +31,10 @@ echo "=================================================="
 echo "      UPSILON LOCAL TEST TRIGGER (E2E + EDGE)"
 echo "=================================================="
 
-# 0. Purge stale data and reset admin password
-echo "Purging stale match data and resetting admin password..."
-"$CLI" --local --quiet upsiloncli/tests/scenarios/util_purge_all.js > /dev/null 2>&1 || true
-php battleui/artisan tinker --execute="\App\Models\User::updateOrCreate(['account_name' => 'admin'], ['email' => 'admin@admin.com', 'password_hash' => \Illuminate\Support\Facades\Hash::make('AdminPassword123!'), 'role' => 'Admin', 'full_address' => 'SYS_ADMIN_CI', 'birth_date' => '1970-01-01']);" > /dev/null 2>&1 || true
+# 0. Purge stale data and seed database
+echo "Resetting and seeding database..."
+./seed_ci.sh
+
 
 FAILED_TESTS=""
 PASSED_COUNT=0
@@ -45,14 +45,10 @@ run_test() {
     local name=$(basename "$script" .js)
     local log_file="$LOG_DIR/${name}.log"
     
-    # Determine agent count (following CI logic)
+    # Determine agent count from filename suffix _with_N (default: 1)
     local agents=1
-    if [[ "$name" == *"pvp"* ]] || [[ "$name" == *"coordination"* ]] || [[ "$name" == *"combat"* ]] || [[ "$name" == *"resolution_standard"* ]] || [[ "$name" == *"progression_constraints"* ]] || [[ "$name" == *"progression_post_win"* ]] || [[ "$name" == *"out_of_turn"* ]] || [[ "$name" == *"credit_economy"* ]]; then
-        agents=2
-    fi
-    
-    if [[ "$name" == *"2v2"* ]] || [[ "$name" == *"targeting_rules"* ]] || [[ "$name" == *"friendly_fire"* ]]; then
-        agents=4
+    if [[ "$name" =~ _with_([0-9]+)$ ]]; then
+        agents="${BASH_REMATCH[1]}"
     fi
 
     echo -n "Running $name (Agents: $agents)... "

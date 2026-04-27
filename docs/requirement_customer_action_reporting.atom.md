@@ -9,7 +9,8 @@ priority: 3
 tags: [ui, protocol, customization, requirement]
 parents:
   - [[battleui:req_player_experience]]
-dependents: []
+dependents:
+  - [[battleui:ui_tactical_action_report]]
 ---
 
 # New Atom

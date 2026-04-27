@@ -14,6 +14,7 @@ dependents:
   - [[rule_turn_clock]]
   - [[us_take_combat_turn]]
   - [[usecase_api_flow_game_turn]]
+  - [[upsilonbattle:mechanic_mech_battle_startup_handshake]]
 ---
 # Combat Turn Use Case
 

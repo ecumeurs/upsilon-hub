@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| **Date** | 2026-04-27 13:11 UTC |
-| **Commit** | `e435806` |
+| **Date** | 2026-04-27 18:52 UTC |
+| **Commit** | `c419dc7` |
 | **Branch** | `main` |
 
 ## Edge Case Test Results
@@ -12,7 +12,7 @@
 |---|---|---|---|
 ### Phase 1: Movement & Authentication
 
-| **EC-01** | Movement on Obstacle Tiles | ✅ PASS | `[[mech_move_validation_move_validation_obstacle_collision]]` |
+| **EC-01** | Movement on Obstacle Tiles | ❌ FAIL | `[[mech_move_validation_move_validation_obstacle_collision]]` |
 | **EC-02** | Movement on Entity Collision | ❌ FAIL | `[[mech_move_validation_move_validation_entity_collision]]` |
 | **EC-03** | Movement Already Attacked | ❌ FAIL | `[[mech_move_validation_move_validation_already_moved]]` |
 | **EC-04** | Movement Path Too Long | ✅ PASS | `[[mech_move_validation_move_validation_path_length_credits]]` |
@@ -54,7 +54,7 @@
 
 ### Phase 4: Match Resolution
 
-| **EC-35** | Forfeit Out of Turn | ✅ PASS | `[[rule_forfeit_battle]]` |
+| **EC-35** | Forfeit Out of Turn | ❌ FAIL | `[[rule_forfeit_battle]]` |
 | **EC-36** | Action After Match End | ❌ FAIL | `[[uc_match_resolution]]` |
 
 ### Phase 5: API & Communication
