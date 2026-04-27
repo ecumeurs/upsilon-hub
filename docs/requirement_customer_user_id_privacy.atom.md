@@ -7,7 +7,9 @@ priority: 3
 tags: security,privacy,auth
 version: 1.2
 parents: []
-dependents: []
+dependents:
+  - [[upsilonapi:arch_api_id_masking_gateway]]
+  - [[upsilonbattle:entity_player]]
 human_name: Internal Identity & Ownership Privacy
 ---
 

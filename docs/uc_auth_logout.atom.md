@@ -10,7 +10,8 @@ tags: [auth, logout, session]
 parents:
   - [[req_security]]
   - [[us_auth_logout]]
-dependents: []
+dependents:
+  - [[upsilonapi:api_auth_logout]]
 ---
 
 # User Logout Use Case

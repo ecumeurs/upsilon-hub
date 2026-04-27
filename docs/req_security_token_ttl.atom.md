@@ -11,6 +11,8 @@ parents:
   - [[req_security]]
 dependents:
   - [[requirement_req_ui_session_timeout]]
+  - [[upsilonbattle:mech_sanctum_token_renewal]]
+  - [[upsilonbattle:mechanic_mech_frontend_auth_bridge]]
 ---
 # Token TTL Requirement
 

@@ -11,6 +11,7 @@ parents:
   - [[battleui:req_player_experience]]
 dependents:
   - [[rule_matchmaking_single_queue]]
+  - [[upsilonapi:api_matchmaking]]
   - [[usecase_api_flow_matchmaking]]
 ---
 # Matchmaking & Queue Use Case
