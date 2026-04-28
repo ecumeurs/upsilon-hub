@@ -1,0 +1,201 @@
+              "entity_id": null,
+              "obstacle": false,
+              "height": 0
+            },
+            {
+              "entity_id": null,
+              "obstacle": false,
+              "height": 1
+            },
+            {
+              "entity_id": null,
+              "obstacle": false,
+              "height": 1
+            },
+            {
+              "entity_id": "1a286aa3-60ab-4273-abab-167ecd9baebb",
+              "obstacle": false,
+              "height": 1
+            },
+            {
+              "entity_id": null,
+              "obstacle": false,
+              "height": 1
+            }
+          ]
+        ]
+      },
+      "turn": [
+        {
+          "delay": 63,
+          "entity_id": "019dd0aa-7fe9-70e7-be50-ce849a6366c7",
+          "is_self": true,
+          "team": 1
+        },
+        {
+          "delay": 85,
+          "entity_id": "a0a86d51-030e-4050-bb75-42e8ae3b15ad",
+          "is_self": false,
+          "team": 0
+        },
+        {
+          "delay": 87,
+          "entity_id": "1a286aa3-60ab-4273-abab-167ecd9baebb",
+          "is_self": false,
+          "team": 0
+        },
+        {
+          "delay": 94,
+          "entity_id": "019dd0aa-7fe5-701a-9125-17c6a6e02eee",
+          "is_self": true,
+          "team": 1
+        },
+        {
+          "delay": 123,
+          "entity_id": "fb45ca77-4a6c-4c7b-aedf-8cfd25bfd1a7",
+          "is_self": false,
+          "team": 0
+        }
+      ],
+      "current_entity_id": "019dd0aa-7fe7-7160-9ad5-03e2453f7609",
+      "timeout": "2026-04-27T20:39:48.957918752Z",
+      "start_time": "2026-04-27T20:39:18.957918622Z",
+      "winner_team_id": null,
+      "action": {
+        "type": "pass",
+        "actor_id": "fb45ca77-4a6c-4c7b-aedf-8cfd25bfd1a7"
+      },
+      "version": 12884901888,
+      "current_player_is_self": true,
+      "game_finished": false
+    },
+    "meta": {}
+  }[0m
+[{2026-04-27T20:39:19.051Z}] [Bot-01] [33m[1m[SYSTEM][0m Tactical feed updated.
+
+[{2026-04-27T20:39:19.051Z}] [Bot-01] [36m[1mTACTICAL FEED — MATCH DATA[0m
+[{2026-04-27T20:39:19.051Z}] [Bot-01] [2m────────────────────────────────────────[0m
+  [35m[1m[FEEDBACK][0m Unit [31m[1mZ[0m passed their turn
+  [2m────────────────────────────────────────[0m
+     0 1 2 3 4 5 6
+ 0 │[31m[1mX[0m [2m.[0m [2m:[0m [2m.[0m [2m:[0m [31m[1mZ[0m [2m:[0m │
+ 1 │[2m:[0m [2m:[0m [2m:[0m [32m[1mC[0m [2m#[0m [2m.[0m [2m:[0m │
+ 2 │[2m:[0m [2m:[0m [2m:[0m [32m[1m[42mB[0m [2m:[0m [2m:[0m [2m.[0m │
+ 3 │[2m:[0m [2m#[0m [2m.[0m [2m:[0m [2m.[0m [2m:[0m [2m:[0m │
+ 4 │[2m:[0m [2m:[0m [2m:[0m [2m:[0m [2m.[0m [2m:[0m [2m:[0m │
+ 5 │[2m:[0m [2m.[0m [2m#[0m [2m:[0m [2m:[0m [2m:[0m [31m[1mY[0m │
+ 6 │[2m:[0m [2m:[0m [2m:[0m [2m:[0m [32m[1mA[0m [2m:[0m [2m:[0m │
+
+  [1mID  UNIT NAME       OWNER        HP/MAX     MVT     DELAY [0m
+  [2m──────────────────────────────────────────────────────────────────────[0m
+  [32m[1mA[0m Ranger          bot_exotic_56881 30/30      3/3     94   
+[36m> [0m[32m[1mB[0m Saboteur        bot_exotic_56881 30/30      3/3     0    
+  [32m[1mC[0m Artificer       bot_exotic_56881 30/30      3/3     63   
+  [31m[1mX[0m Null_Code_Alpha Rust_Code_Alpha 5/5        2/2     85   
+  [31m[1mY[0m NeonGlitch_X    Rust_Code_Alpha 4/4        1/1     87   
+  [31m[1mZ[0m Scrap-797       Rust_Code_Alpha 3/3        2/2     123  
+
+
+  [2mSuggested next steps:[0m [32mredraw[0m
+[{2026-04-27T20:39:19.052Z}] [Bot-01] Initiative shift:  -> 019dd0aa-7fe7-7160-9ad5-03e2453f7609. Clearing turn memory.
+[{2026-04-27T20:39:19.052Z}] [Bot-01] --- My Turn! Acting with Saboteur (bot_exotic_56881, team 1) (v12884901888) ---
+[{2026-04-27T20:39:19.052Z}] [Bot-01] [Unit: Saboteur | HP: 30/30]
+[{2026-04-27T20:39:19.052Z}] [Bot-01] JS Exception: TypeError: Cannot read property 'find' of undefined or null
+	at executeTacticalLogic (<eval>:113:35(88))
+	at <eval>:89:25(310)
+
+[{2026-04-27T20:39:19.052Z}] [Bot-01] Script execution finished.
+[{2026-04-27T20:39:19.052Z}] [Bot-01] Running Automated Teardown...
+
+[{2026-04-27T20:39:19.052Z}] [Bot-01] [36m[1m[CURL][0m [2mcurl -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Authorization: Bearer 83|VXlVXH7U8lUiUt7ETRlP08x1egCpDvXXtnpbzi320b541201' -d '{"request_id":"019dd0aa-f90c-7422-8170-85b4cbadc03f","message":"CLI Request: DELETE /api/v1/matchmaking/leave","success":true,"data":{},"meta":{}}' 'http://127.0.0.1:8000/api/v1/matchmaking/leave'[0m
+[{2026-04-27T20:39:19.088Z}] [Bot-01] [32m[1m[REPLY 200][0m 
+  [2m{
+    "request_id": "019dd0aa-f90c-7422-8170-85b4cbadc03f",
+    "message": "Success",
+    "success": true,
+    "data": null,
+    "meta": {}
+  }[0m
+[{2026-04-27T20:39:19.088Z}] [Bot-01] Forfeiting match 019dd0aa-81f7-70bb-b95b-66392d6392df
+
+[{2026-04-27T20:39:19.088Z}] [Bot-01] [36m[1m[CURL][0m [2mcurl -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Authorization: Bearer 83|VXlVXH7U8lUiUt7ETRlP08x1egCpDvXXtnpbzi320b541201' -d '{"request_id":"019dd0aa-f930-76b2-a0c4-6706a75fe366","message":"CLI Request: POST /api/v1/game/019dd0aa-81f7-70bb-b95b-66392d6392df/forfeit","success":true,"data":{},"meta":{}}' 'http://127.0.0.1:8000/api/v1/game/019dd0aa-81f7-70bb-b95b-66392d6392df/forfeit'[0m
+[{2026-04-27T20:39:19.124Z}] [Bot-01] [32m[1m[REPLY 200][0m 
+  [2m{
+    "request_id": "019dd0aa-f930-76b2-a0c4-6706a75fe366",
+    "message": "Forfeit accepted",
+    "success": true,
+    "data": [],
+    "meta": {}
+  }[0m
+[{2026-04-27T20:39:19.124Z}] [Bot-01] Deleting temporary account: bot_exotic_56881
+
+[{2026-04-27T20:39:19.124Z}] [Bot-01] [36m[1m[CURL][0m [2mcurl -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Authorization: Bearer 83|VXlVXH7U8lUiUt7ETRlP08x1egCpDvXXtnpbzi320b541201' -d '{"request_id":"019dd0aa-f954-7912-8391-127a62a02e99","message":"CLI Request: DELETE /api/v1/auth/delete","success":true,"data":{},"meta":{}}' 'http://127.0.0.1:8000/api/v1/auth/delete'[0m
+
+[{2026-04-27T20:39:19.173Z}] [Bot-01] [35m[1m[WS][0m game.ended event received.
+  [2m{
+    "request_id": "019dd0aa-f984-7376-aa53-8bbae7c07d01",
+    "message": "Board Updated",
+    "success": true,
+    "data": {
+      "match_id": "019dd0aa-81f7-70bb-b95b-66392d6392df",
+      "players": [
+        {
+          "nickname": "bot_exotic_56881",
+          "entities": [
+            {
+              "id": "019dd0aa-7fe5-701a-9125-17c6a6e02eee",
+              "team": 1,
+              "name": "Ranger",
+              "hp": 0,
+              "max_hp": 30,
+              "attack": 10,
+              "defense": 5,
+              "move": 3,
+              "max_move": 3,
+              "position": {
+                "x": 4,
+                "y": 6
+              },
+              "equipped_items": null,
+              "buffs": [
+                {
+                  "origin_id": "019dd0aa-8135-72f1-ac74-76091e28da72",
+                  "forever": true,
+                  "properties": []
+                },
+                {
+                  "origin_id": "019dd0aa-8108-70df-bf87-5329cf283b7c",
+                  "forever": true,
+                  "properties": {
+                    "WeaponBaseDamage": {
+                      "value": 5
+                    }
+                  }
+                }
+              ],
+              "equipped_skills": [
+                {
+                  "skill_id": "019dd0aa-7841-704c-b587-6bcde3276ce0",
+                  "name": "Fireball",
+                  "behavior": "Direct",
+                  "targeting": [],
+                  "costs": [],
+                  "effect": []
+                }
+              ],
+              "is_self": true,
+              "dead": true
+            },
+            {
+              "id": "019dd0aa-7fe7-7160-9ad5-03e2453f7609",
+              "team": 1,
+              "name": "Saboteur",
+              "hp": 0,
+              "max_hp": 30,
+              "attack": 10,
+              "defense": 5,
+              "move": 3,
+              "max_move": 3,
+              "position": {
+                "x": 3,
+                "y": 2
