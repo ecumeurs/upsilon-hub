@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "$(dirname "$0")/.."
 # seed_ci.sh - Reset and seed the database for CI/E2E testing
 
 set -e

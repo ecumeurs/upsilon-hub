@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+cd "$(dirname "$0")/.."
 # Clear ghost matches from the database
 
 echo "Clearing matches..."

@@ -97,6 +97,10 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 | `DELETE` | `/admin/history/purge` | Clean up match history older than 90 days | [[uc_admin_history_management]] |
 | `POST` | `/broadcasting/auth` | WebSocket Channel Authorization | [[api_websocket]] |
 | `POST` | `/api/webhook/upsilon` | Ingest Engine State Update (Internal) | [[api_go_webhook_callback]] |
+| `GET` | `/admin/shop-items` | List All Shop Items (Admin) | [[api_shop_item_admin_crud]] |
+| `POST` | `/admin/shop-items` | Create New Shop Item (Admin) | [[api_shop_item_admin_crud]] |
+| `GET` | `/admin/skill-templates` | List All Skill Templates (Admin) | [[api_skill_template_admin_crud]] |
+| `POST` | `/admin/skill-templates` | Create New Skill Template (Admin) | [[api_skill_template_admin_crud]] |
 | `GET` | `/leaderboard` | Global Rankings (Mode-based) | [[api_leaderboard]] |
 | `GET` | `/shop/items` | Browse V2.0 Shop Catalog | [[upsilonapi:api_shop_browse]] |
 | `POST` | `/shop/purchase` | Purchase Item (debit credits, add to inventory) | [[upsilonapi:api_shop_purchase]] |
@@ -412,6 +416,43 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
   - `purged_count`: `int`
   - Standard Success Envelope
 
+### 2.10 Admin Catalog Management (ISS-086)
+
+#### `GET /admin/shop-items`
+- **Specification:** [[api_shop_item_admin_crud]]
+- **Intent:** List all items, including those marked as unavailable.
+- **Output:** `Array<ShopItemResource>`
+
+#### `POST /admin/shop-items`
+- **Specification:** [[api_shop_item_admin_crud]]
+- **Intent:** Create a new shop item (including D11 exotic items).
+- **Input:** 
+  - `name`: `string`
+  - `slot`: `armor|utility|weapon`
+  - `cost`: `int`
+  - `properties`: `object` (JSON map of engine properties)
+  - `skill_template_id`: `string (UUID)` (Optional)
+- **Output:** `ShopItemResource`
+
+#### `GET /admin/skill-templates`
+- **Specification:** [[api_skill_template_admin_crud]]
+- **Intent:** List all skill templates in the registry.
+- **Output:** `Array<SkillTemplateResource>`
+
+#### `POST /admin/skill-templates`
+- **Specification:** [[api_skill_template_admin_crud]]
+- **Intent:** Create a new skill template for item/entity binding.
+- **Input:**
+  - `name`: `string`
+  - `behavior`: `Direct|Reaction|Passive|Counter|Trap`
+  - `grade`: `I|II|III|IV|V`
+  - `weight_positive`: `int`
+  - `weight_negative`: `int`
+  - `targeting`: `object` (Structured JSON map)
+  - `costs`: `object` (Structured JSON map)
+  - `effect`: `object` (Structured JSON map)
+- **Output:** `SkillTemplateResource`
+
 
 ### 2.8 WebSocket Protocol
 
@@ -541,6 +582,23 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 - **`type`**: `string` [MANDATORY] ("move", "attack", "skill", "pass")
 - **`skill_id`**: `string (UUID)` [MANDATORY for 'skill']
 - **`target_coords`**: `Array<Position>` [MANDATORY for 'move', 'attack', and 'skill']
+
+#### AdminShopItemRequest
+- **`name`**: `string`
+- **`slot`**: `string` ("armor", "utility", "weapon")
+- **`cost`**: `int`
+- **`properties`**: `object` (Structured JSON Map: `{"WeaponBaseDamage": 10}`)
+- **`skill_template_id`**: `string (UUID)` (Optional)
+
+#### AdminSkillTemplateRequest
+- **`name`**: `string`
+- **`behavior`**: `string` ("Direct", "Reaction", "Passive", "Counter", "Trap")
+- **`grade`**: `string` ("I", "II", "III", "IV", "V")
+- **`weight_positive`**: `int`
+- **`weight_negative`**: `int`
+- **`targeting`**: `object` (Structured JSON Map)
+- **`costs`**: `object` (Structured JSON Map)
+- **`effect`**: `object` (Structured JSON Map)
 
 #### ArenaForfeitRequest
 - **`player_id`**: `string (UUID)` [MANDATORY]

@@ -44,7 +44,9 @@ The UpsilonBattle ecosystem is built as a modular multi-repo system. Each core c
 5. **Shared Assets & Utilities**:
    - `upsilonmapdata`: Geometric board data and obstacle definitions.
    - `upsilonmapmaker`: Procedural generation tools for game boards.
-   - `upsilonserializer` & `upsilontools`: Shared logic for binary/JSON serialization and common TRPG utilities.
+   - `upsilonserializer`: Shared logic for binary/JSON serialization across the stack.
+   - `upsilontools`: Common TRPG utilities and helper functions.
+   - `upsilontypes`: Shared type definitions and domain models used across all modules.
 
 ## Setup
 
@@ -76,13 +78,20 @@ The project provides a pre-configured development environment via **[.devcontain
   - `5173`: Vue Frontend (HMR)
 
 #### Service Management
-All services are standardized on the `main` branch. The project includes a suite of root-level scripts for service management:
+The project includes a suite of scripts in the `scripts/` directory for local service management and testing:
 
-- **[start_services.sh](start_services.sh)**: Launches the Laravel API, Reverb Server, Vue Frontend, and Upsilon Engine in the background. 
-- **[stop_services.sh](stop_services.sh)**: Gracefully stops all tracked services.
-- **[watch_services.go](watch_services.go)**: Real-time TUI dashboard for monitoring CPU/Mem and error logs.
-- **[check_services.sh](check_services.sh)**: Lightweight status utility for quick health checks.
-- **[trigger_all_tests.sh](trigger_all_tests.sh)**: Executes the full local test suite (E2E + Edge Cases) against the running local stack using the `--local` flag.
+- **[scripts/start_services.sh](scripts/start_services.sh)**: Launches the full Upsilon stack (Laravel API, Reverb Server, Vue Frontend, and Upsilon Engine) in the background. It automatically verifies that all ports are listening before exiting.
+- **[scripts/stop_services.sh](scripts/stop_services.sh)**: Gracefully stops all tracked services and ensures ports are freed.
+- **[scripts/check_services.sh](scripts/check_services.sh)**: Lightweight status utility for quick health checks of the local stack.
+- **[scripts/watch_services.go](scripts/watch_services.go)**: Real-time TUI dashboard for monitoring CPU/Mem usage and recent errors across all services. Run with `go run scripts/watch_services.go`.
+- **[scripts/trigger_all_ci_tests.sh](scripts/trigger_all_ci_tests.sh)**: Executes the full local test suite (E2E + Edge Cases) against the running local stack.
+
+#### Development Utilities
+- **[scripts/build_services.sh](scripts/build_services.sh)**: Rebuilds core service binaries (API and Engine).
+- **[scripts/clear_matches.sh](scripts/clear_matches.sh)**: Authoritatively clears active match records from the database and engine cache.
+- **[scripts/seed_ci.sh](scripts/seed_ci.sh)**: Resets and seeds the database with standard CI testing data.
+- **[scripts/zombie_killer.sh](scripts/zombie_killer.sh)**: Forcefully kills any orphaned Upsilon processes (CLI bots, detached engines).
+- **[scripts/stress_test.py](scripts/stress_test.py)**: High-concurrency performance orchestration script for load testing.
 
 ## Continuous Integration & Quality control
 

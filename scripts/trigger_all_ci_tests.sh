@@ -1,16 +1,17 @@
 #!/bin/bash
+cd "$(dirname "$0")/.."
 # trigger_all_tests.sh - Run all E2E and Edge Case tests locally
 
 set -e
 
 # 1. Pre-flight Check
-if [ ! -f "./check_services.sh" ]; then
-    echo "ERROR: check_services.sh not found."
+if [ ! -f "./scripts/check_services.sh" ]; then
+    echo "ERROR: scripts/check_services.sh not found."
     exit 1
 fi
 
 echo "Checking local services..."
-if ! ./check_services.sh; then
+if ! ./scripts/check_services.sh; then
     echo "ERROR: Some services are down. Please start the stack before running tests."
     exit 1
 fi
@@ -33,7 +34,7 @@ echo "=================================================="
 
 # 0. Purge stale data and seed database
 echo "Resetting and seeding database..."
-./seed_ci.sh
+./scripts/seed_ci.sh
 
 
 FAILED_TESTS=""

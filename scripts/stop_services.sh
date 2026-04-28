@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "$(dirname "$0")/.."
 
 # Configuration
 PID_FILE=".services.pids"

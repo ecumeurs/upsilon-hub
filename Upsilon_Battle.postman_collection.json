@@ -969,6 +969,131 @@
 			]
 		},
 		{
+			"name": "07. Admin CRUD",
+			"item": [
+				{
+					"name": "Shop Items",
+					"item": [
+						{
+							"name": "List Items",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/admin/shop-items",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"admin",
+										"shop-items"
+									]
+								}
+							}
+						},
+						{
+							"name": "Create Item",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Steel Sword\",\n    \"slot\": \"weapon\",\n    \"cost\": 500,\n    \"properties\": {\n        \"WeaponBaseDamage\": 15,\n        \"WeaponRange\": 1\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/admin/shop-items",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"admin",
+										"shop-items"
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Skill Templates",
+					"item": [
+						{
+							"name": "List Templates",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/admin/skill-templates",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"admin",
+										"skill-templates"
+									]
+								}
+							}
+						},
+						{
+							"name": "Create Template",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Fireball\",\n    \"behavior\": \"Direct\",\n    \"grade\": \"I\",\n    \"weight_positive\": 5,\n    \"weight_negative\": 0,\n    \"targeting\": {\n        \"Type\": \"Single\",\n        \"Range\": 3\n    },\n    \"costs\": {\n        \"MP\": 3\n    },\n    \"effect\": {\n        \"Type\": \"Damage\",\n        \"Value\": 10\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/admin/skill-templates",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"admin",
+										"skill-templates"
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "08. Meta / Discovery",
 			"item": [
 				{

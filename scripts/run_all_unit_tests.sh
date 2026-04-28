@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "$(dirname "$0")/.."
 
 # run_all_unit_tests.sh - Comprehensive Unit Test Runner for UpsilonBattle
 

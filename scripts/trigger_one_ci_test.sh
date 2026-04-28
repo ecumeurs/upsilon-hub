@@ -1,17 +1,18 @@
 #!/bin/bash
+cd "$(dirname "$0")/.."
 # trigger_one_test.sh - Run a single E2E or Edge Case test locally
 # Usage: ./trigger_one_test.sh <script_name_or_path>
 
 set -e
 
 # 1. Pre-flight Check
-if [ ! -f "./check_services.sh" ]; then
-    echo "ERROR: check_services.sh not found."
+if [ ! -f "./scripts/check_services.sh" ]; then
+    echo "ERROR: scripts/check_services.sh not found."
     exit 1
 fi
 
 echo "Checking local services..."
-if ! ./check_services.sh; then
+if ! ./scripts/check_services.sh; then
     echo "ERROR: Some services are down. Please start the stack before running tests."
     exit 1
 fi
@@ -47,13 +48,12 @@ LOG_DIR="upsiloncli/tests/logs"
 LOG_FILE="$LOG_DIR/${NAME}.log"
 mkdir -p "$LOG_DIR"
 
-# 4. Determine agent count (following CI logic)
+# 4. Determine agent count from _with_N filename suffix (canonical convention).
 AGENTS=1
-if [[ "$NAME" == *"pvp"* ]] || [[ "$NAME" == *"coordination"* ]] || [[ "$NAME" == *"combat"* ]] || [[ "$NAME" == *"friendly_fire"* ]] || [[ "$NAME" == *"resolution_standard"* ]] || [[ "$NAME" == *"progression_constraints"* ]] || [[ "$NAME" == *"credit_economy"* ]] || [[ "$NAME" == *"inventory_equip"* ]]; then
-    AGENTS=2
-fi
-if [[ "$NAME" == *"2v2"* ]]; then
+if [[ "$NAME" == *"_with_4"* ]] || [[ "$NAME" == *"2v2"* ]]; then
     AGENTS=4
+elif [[ "$NAME" == *"_with_2"* ]]; then
+    AGENTS=2
 fi
 
 echo "=================================================="

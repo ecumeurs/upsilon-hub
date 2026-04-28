@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "$(dirname "$0")/.."
 # zombie_killer.sh - Forcefully clean up hanging Upsilon processes
 echo "Scanning for zombie/hanging processes..."
 TARGETS=("upsiloncli" "upsilonapi" "upsilonbattle")

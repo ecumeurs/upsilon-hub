@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "$(dirname "$0")/.."
 
 # Configuration
 LOG_DIR="logs"
@@ -13,7 +14,7 @@ echo "Starting Upsilon Stack (Authoritative Mode)"
 echo "---------------------------------------"
 
 # 1. Authoritative Cleanup
-./stop_services.sh
+./scripts/stop_services.sh
 
 # Clear existing PIDs file
 > "$PID_FILE"
@@ -77,6 +78,6 @@ start_service "Upsilon Engine" "upsilonapi" "./bin/upsilonapi" "engine.log" 8081
 echo "---------------------------------------"
 echo "All services are running and verified."
 echo "Logs: $LOG_DIR/"
-echo "Stop: ./stop_services.sh"
+echo "Stop: ./scripts/stop_services.sh"
 echo "---------------------------------------"
 
