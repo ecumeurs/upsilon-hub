@@ -52,7 +52,7 @@ ENV LC_ALL fr_FR.UTF-8
 USER ${USERNAME}
 WORKDIR /workspace
 
-ENV PATH="/home/vscode/.local/bin:${PATH}"
+ENV PATH="/home/vscode/.local/bin:${PATH}:/workspace/scripts:/workspace/bin"
 
 EXPOSE 8000
 EXPOSE 8080
