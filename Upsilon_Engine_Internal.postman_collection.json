@@ -59,7 +59,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Postman Arena Action\",\n    \"success\": true,\n    \"data\": {\n        \"player_id\": \"player-uuid-here\",\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"move\",\n        \"target_coords\": [{ \"x\": 0, \"y\": 0 }]\n    },\n    \"meta\": {}\n}",
+					"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Postman Arena Action\",\n    \"success\": true,\n    \"data\": {\n        \"player_id\": \"player-uuid-here\",\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"skill\",\n        \"skill_id\": \"skill-uuid-here\",\n        \"target_coords\": [{ \"x\": 0, \"y\": 0 }]\n    },\n    \"meta\": {}\n}",
 					"options": {
 						"raw": {
 							"language": "json"

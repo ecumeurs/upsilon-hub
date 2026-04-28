@@ -281,7 +281,7 @@ To ensure consistency and optimize performance during high-frequency combat, Ups
 - **Input:**
   - `id`: `string (UUID)` (URL Parameter - Match ID)
   - `payload`: `ArenaActionRequest` (Note: `player_id` is automatically injected and validated by Laravel)
-- **Logic:** Validates that the authenticated user owns the targeted `entity_id` before proxying the request to Upsilon `/internal/arena/:id/action` via [[api_go_battle_action]].
+- **Logic:** Validates that the authenticated user owns the targeted `entity_id` before proxying the request to Upsilon `/internal/arena/:id/action` via [[api_go_battle_action]]. Includes `skill_id` for 'skill' actions.
 - **Output:** `ArenaActionResponse` (See [[#4.1-arenaactionrequest]])
 
 #### `POST /game/{id}/forfeit`
@@ -538,8 +538,9 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 #### ArenaActionRequest
 - **`player_id`**: `string (UUID)` [MANDATORY] (Injected by Gateway for external calls)
 - **`entity_id`**: `string (UUID)` [MANDATORY]
-- **`type`**: `string` [MANDATORY] ("move", "attack", "pass")
-- **`target_coords`**: `Array<Position>` [MANDATORY for 'move' and 'attack']
+- **`type`**: `string` [MANDATORY] ("move", "attack", "skill", "pass")
+- **`skill_id`**: `string (UUID)` [MANDATORY for 'skill']
+- **`target_coords`**: `Array<Position>` [MANDATORY for 'move', 'attack', and 'skill']
 
 #### ArenaForfeitRequest
 - **`player_id`**: `string (UUID)` [MANDATORY]

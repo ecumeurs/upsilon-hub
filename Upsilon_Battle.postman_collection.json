@@ -632,7 +632,7 @@
 					"response": []
 				},
 				{
-					"name": "Perform Action",
+					"name": "Perform Action (Move)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -655,7 +655,58 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"request_id\": \"UUID_V7_PLACEHOLDER\",\n    \"message\": \"Perform Tactical Action\",\n    \"success\": true,\n    \"data\": {\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"move\",\n        \"target_coords\": [{ \"x\": 5, \"y\": 3 }]\n    },\n    \"meta\": {}\n}",
+							"raw": "{\n    \"request_id\": \"UUID_V7_PLACEHOLDER\",\n    \"message\": \"Perform Move Action\",\n    \"success\": true,\n    \"data\": {\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"move\",\n        \"target_coords\": [{ \"x\": 5, \"y\": 3 }]\n    },\n    \"meta\": {}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/game/:id/action",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"game",
+								":id",
+								"action"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "match-uuid-here"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Perform Skill",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.body.raw = pm.request.body.raw.replace('UUID_V7_PLACEHOLDER', pm.variables.replace('{{$guid}}'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"request_id\": \"UUID_V7_PLACEHOLDER\",\n    \"message\": \"Perform Skill Action\",\n    \"success\": true,\n    \"data\": {\n        \"entity_id\": \"entity-uuid-here\",\n        \"type\": \"skill\",\n        \"skill_id\": \"skill-uuid-here\",\n        \"target_coords\": [{ \"x\": 5, \"y\": 3 }]\n    },\n    \"meta\": {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
