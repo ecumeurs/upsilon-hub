@@ -41,11 +41,60 @@ FAILED_TESTS=""
 PASSED_COUNT=0
 FAILED_COUNT=0
 
+# Extract a one-line failure reason per bot log for the given scenario.
+# Strategy:
+#   - first JS Exception / Assertion Failed line is the primary reason
+#   - if that reason is opaque ("[object Object]"), surface the most recent
+#     CALL_ERROR before it (typically the 4xx/5xx that the JS code didn't unwrap)
+#   - if no JS Exception at all, fall back to the last CALL_ERROR / REPLY 4xx/5xx
+#   - strip ANSI color codes and the "[{ts}] [Bot-NN] " prefix
+print_failure_reasons() {
+    local name=$1
+    local found=0
+    for bot_log in "$LOG_DIR/${name}"_Bot-*.log; do
+        [ -f "$bot_log" ] || continue
+        local bot
+        bot=$(basename "$bot_log" .log | sed -E "s/^${name}_//")
+        local strip_re=$'s/\x1b\\[[0-9;]*m//g; s/^\\[\\{[^}]*\\}\\] \\[Bot-[0-9]+\\] //'
+        local jsx_line jsx_no jsx_text
+        jsx_line=$(grep -nm1 -E 'JS Exception:|Assertion Failed' "$bot_log" || true)
+        if [ -n "$jsx_line" ]; then
+            jsx_no=${jsx_line%%:*}
+            jsx_text=$(printf '%s\n' "${jsx_line#*:}" | sed -E "$strip_re")
+            if printf '%s' "$jsx_text" | grep -q '\[object Object\]'; then
+                local upstream
+                upstream=$(head -n "$jsx_no" "$bot_log" \
+                    | grep -E 'CALL_ERROR|REPLY [45][0-9][0-9]' \
+                    | tail -1 | sed -E "$strip_re")
+                if [ -n "$upstream" ]; then
+                    echo "    [$bot] $jsx_text  (upstream: $upstream)"
+                else
+                    echo "    [$bot] $jsx_text"
+                fi
+            else
+                echo "    [$bot] $jsx_text"
+            fi
+            found=1
+            continue
+        fi
+        local fallback
+        fallback=$(grep -E 'CALL_ERROR|REPLY [45][0-9][0-9]' "$bot_log" \
+            | tail -1 | sed -E "$strip_re")
+        if [ -n "$fallback" ]; then
+            echo "    [$bot] $fallback"
+            found=1
+        fi
+    done
+    if [ $found -eq 0 ]; then
+        echo "    (no JS exception or 4xx/5xx in bot logs — check $LOG_DIR/${name}*.log)"
+    fi
+}
+
 run_test() {
     local script=$1
     local name=$(basename "$script" .js)
     local log_file="$LOG_DIR/${name}.log"
-    
+
     # Determine agent count from filename suffix _with_N (default: 1)
     local agents=1
     if [[ "$name" =~ _with_([0-9]+)$ ]]; then
@@ -70,6 +119,7 @@ run_test() {
         echo "[SCENARIO_RESULT: FAILED]" >> "$log_file"
         FAILED_COUNT=$((FAILED_COUNT + 1))
         FAILED_TESTS="$FAILED_TESTS $name"
+        print_failure_reasons "$name"
         # Don't exit on failure, continue to other tests
     fi
 }

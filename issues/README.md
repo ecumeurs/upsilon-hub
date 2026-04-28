@@ -4,7 +4,7 @@
 
 | Ref | File | Severity | Status | Summary |
 |---|---|---|---|---|
-| ISS-091 | [ISS-091_20260427_flaky_battle_roundtrip_grid_adjacency.md](ISS-091_20260427_flaky_battle_roundtrip_grid_adjacency.md) | Medium | Open | Flaky TestBattleFullRoundtrip Grid Adjacency |
+| ISS-091 | [ISS-091_20260428_engine_movement_obstacle_validation_bypass.md](ISS-091_20260428_engine_movement_obstacle_validation_bypass.md) | High | Open | Engine movement validation bypass on non-ground cells |
 | ISS-090 | [ISS-090_20260426_action_feedback_infrastructure_upgrade.md](ISS-090_20260426_action_feedback_infrastructure_upgrade.md) | High | Open | Action Feedback Infrastructure Upgrade (Multi-Target & Synchronous Results) |
 | ISS-089 | [ISS-089_20260426_mechanic_random_shop_algorithm.md](ISS-089_20260426_mechanic_random_shop_algorithm.md) | Medium | Open | Deterministic Daily Random Shop |
 | ISS-088 | [ISS-088_20260426_credit_economy_payload_mismatch.md](ISS-088_20260426_credit_economy_payload_mismatch.md) | Medium | Open | Credit Economy E2E Test Payload Misinterpretation |

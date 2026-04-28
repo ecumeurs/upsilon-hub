@@ -67,6 +67,49 @@ for i in $(seq 1 "$AGENTS"); do
     PATHS="$PATHS $SCRIPT"
 done
 
+# Print a one-line failure reason per bot log for this scenario.
+# See trigger_all_ci_tests.sh for the extraction strategy.
+print_failure_reasons() {
+    local found=0
+    for bot_log in "$LOG_DIR/${NAME}"_Bot-*.log; do
+        [ -f "$bot_log" ] || continue
+        local bot
+        bot=$(basename "$bot_log" .log | sed -E "s/^${NAME}_//")
+        local strip_re=$'s/\x1b\\[[0-9;]*m//g; s/^\\[\\{[^}]*\\}\\] \\[Bot-[0-9]+\\] //'
+        local jsx_line jsx_no jsx_text
+        jsx_line=$(grep -nm1 -E 'JS Exception:|Assertion Failed' "$bot_log" || true)
+        if [ -n "$jsx_line" ]; then
+            jsx_no=${jsx_line%%:*}
+            jsx_text=$(printf '%s\n' "${jsx_line#*:}" | sed -E "$strip_re")
+            if printf '%s' "$jsx_text" | grep -q '\[object Object\]'; then
+                local upstream
+                upstream=$(head -n "$jsx_no" "$bot_log" \
+                    | grep -E 'CALL_ERROR|REPLY [45][0-9][0-9]' \
+                    | tail -1 | sed -E "$strip_re")
+                if [ -n "$upstream" ]; then
+                    echo "  [$bot] $jsx_text  (upstream: $upstream)"
+                else
+                    echo "  [$bot] $jsx_text"
+                fi
+            else
+                echo "  [$bot] $jsx_text"
+            fi
+            found=1
+            continue
+        fi
+        local fallback
+        fallback=$(grep -E 'CALL_ERROR|REPLY [45][0-9][0-9]' "$bot_log" \
+            | tail -1 | sed -E "$strip_re")
+        if [ -n "$fallback" ]; then
+            echo "  [$bot] $fallback"
+            found=1
+        fi
+    done
+    if [ $found -eq 0 ]; then
+        echo "  (no JS exception or 4xx/5xx found in bot logs)"
+    fi
+}
+
 # Run the farm with --local flag
 # No timeout here to allow debugging, but follow same structure as CI
 if "$CLI" --local --farm -L "$LOG_DIR" $PATHS ; then
@@ -76,6 +119,8 @@ if "$CLI" --local --farm -L "$LOG_DIR" $PATHS ; then
 else
     echo -e "\033[31m[FAILED]\033[0m"
     echo "[SCENARIO_RESULT: FAILED]" >> "$LOG_FILE"
-    echo "Check logs at: $LOG_FILE"
+    echo "Failure reasons:"
+    print_failure_reasons
+    echo "Check logs at: $LOG_FILE (and ${LOG_DIR}/${NAME}_Bot-*.log)"
     exit 1
 fi
