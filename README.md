@@ -183,6 +183,7 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [API Bridge Skill Property Sync Failure](issues/ISS-092_20260428_api_skill_property_sync_failure.md) | 2026-04-28 | Open | High | The API bridge (`upsilonapi`) and the Go engine (`battlearena`) are currently... |
 | [Engine movement validation bypass on non-ground cells](issues/ISS-091_20260428_engine_movement_obstacle_validation_bypass.md) | 2026-04-28 | Open | High | The engine's movement rule fails to reject paths that end on non-walkable cel... |
 | [Action Endpoint Segregation](issues/ISS-090_20260427_action_endpoint_segregation.md) | 2026-04-27 | Open | Medium | Currently, all tactical actions (move, attack, skill, pass) are funneled thro... |
 | [Deterministic Daily Random Shop](issues/ISS-089_20260426_mechanic_random_shop_algorithm.md) | 2026-04-26 | Open | Medium | Implementation of a daily rotating shop system that provides a deterministic ... |
