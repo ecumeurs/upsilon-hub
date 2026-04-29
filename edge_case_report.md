@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| **Date** | 2026-04-28 13:15 UTC |
-| **Commit** | `d9ad283` |
+| **Date** | 2026-04-28 19:37 UTC |
+| **Commit** | `ea18feb` |
 | **Branch** | `main` |
 
 ## Edge Case Test Results
@@ -12,16 +12,16 @@
 |---|---|---|---|
 ### Phase 1: Movement & Authentication
 
-| **EC-01** | Movement on Obstacle Tiles | ❌ FAIL | `[[mech_move_validation_move_validation_obstacle_collision]]` |
-| **EC-02** | Movement on Entity Collision | ❌ FAIL | `[[mech_move_validation_move_validation_entity_collision]]` |
-| **EC-03** | Movement Already Attacked | ❌ FAIL | `[[mech_move_validation_move_validation_already_moved]]` |
+| **EC-01** | Movement on Obstacle Tiles | ✅ PASS | `[[mech_move_validation_move_validation_obstacle_collision]]` |
+| **EC-02** | Movement on Entity Collision | ✅ PASS | `[[mech_move_validation_move_validation_entity_collision]]` |
+| **EC-03** | Movement Already Attacked | ✅ PASS | `[[mech_move_validation_move_validation_already_moved]]` |
 | **EC-04** | Movement Path Too Long | ✅ PASS | `[[mech_move_validation_move_validation_path_length_credits]]` |
 | **EC-05** | Movement Path Not Adjacent | ✅ PASS | `[[mech_move_validation_move_validation_path_adjacency]]` |
 | **EC-06** | Movement Out of Turn | ✅ PASS | `[[mech_move_validation_move_validation_turn_mismatch]]` |
 | **EC-07** | Movement Wrong Controller | ❌ FAIL | `[[mech_move_validation_move_validation_controller_mismatch]]` |
 | **EC-08** | Movement Grid Boundaries | ✅ PASS | `[[mech_skill_validation_grid_boundaries_verification]]` |
 | **EC-09** | Movement Jump Limitations | ✅ PASS | `[[mech_move_validation_move_validation_jump_limitations]]` |
-| **EC-20** | Password Policy Full Coverage | ❌ FAIL | `[[rule_password_policy]]` |
+| **EC-20** | Password Policy Full Coverage | ✅ PASS | `[[rule_password_policy]]` |
 | **EC-21** | Invalid Credentials | ✅ PASS | `[[api_auth_login]]` |
 | **EC-22** | Session Timeout / Expired Token | ✅ PASS | `[[requirement_req_ui_session_timeout]]` |
 | **EC-23** | Missing Token | ✅ PASS | `[[req_security_authorization]]` |
