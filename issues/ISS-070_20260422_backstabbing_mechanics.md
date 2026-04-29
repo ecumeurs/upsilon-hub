@@ -4,7 +4,7 @@
 **Ref:** `ISS-070`
 **Date:** 2026-04-22
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonbattle/battlearena/ruler/rules`
 **Affects**: `upsilonbattle/battlearena/entity`, `battleui`
 

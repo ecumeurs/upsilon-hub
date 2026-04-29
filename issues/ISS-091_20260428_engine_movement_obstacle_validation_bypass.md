@@ -4,7 +4,7 @@
 **Ref:** `ISS-091`
 **Date:** 2026-04-28
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonbattle/battlearena/ruler/rules/move.go`
 **Affects:** All tactical movement actions in the engine.
 

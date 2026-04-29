@@ -4,7 +4,7 @@
 **Ref:** `ISS-088`
 **Date:** 2026-04-26
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsiloncli/tests/scenarios`
 **Affects:** `e2e_credit_economy.js`
 

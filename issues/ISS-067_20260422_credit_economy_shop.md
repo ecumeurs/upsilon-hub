@@ -4,7 +4,7 @@
 **Ref:** `ISS-067`
 **Date:** 2026-04-22
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonapi/api`, `battleui`
 **Affects:** `upsilonbattle/battlearena`, database schema
 

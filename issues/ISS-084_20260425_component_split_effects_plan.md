@@ -4,7 +4,7 @@
 **Ref:** `ISS-084`
 **Date:** 2026-04-25
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `battleui/resources/js/Pages/BattleArena.vue`
 **Affects:** `battleui/resources/js/Components/Arena/*`
 

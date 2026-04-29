@@ -183,26 +183,18 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [API Bridge Skill Property Sync Failure](issues/ISS-092_20260428_api_skill_property_sync_failure.md) | 2026-04-28 | Open | High | The API bridge (`upsilonapi`) and the Go engine (`battlearena`) are currently... |
-| [Engine movement validation bypass on non-ground cells](issues/ISS-091_20260428_engine_movement_obstacle_validation_bypass.md) | 2026-04-28 | Open | High | The engine's movement rule fails to reject paths that end on non-walkable cel... |
 | [Action Endpoint Segregation](issues/ISS-090_20260427_action_endpoint_segregation.md) | 2026-04-27 | Open | Medium | Currently, all tactical actions (move, attack, skill, pass) are funneled thro... |
 | [Deterministic Daily Random Shop](issues/ISS-089_20260426_mechanic_random_shop_algorithm.md) | 2026-04-26 | Open | Medium | Implementation of a daily rotating shop system that provides a deterministic ... |
-| [Credit Economy E2E Test Payload Misinterpretation](issues/ISS-088_20260426_credit_economy_payload_mismatch.md) | 2026-04-26 | Open | Medium | The `e2e_credit_economy.js` test fails because it misinterprets the response ... |
 | [Grid Generator Tuning - Large and Flat Maps](issues/ISS-087_20260426_grid_generator_tuning.md) | 2026-04-26 | Open | Medium | Since the integration of the `gridgenerator`, battle maps have been observed ... |
-| [Refactor BattleArena into components and restore visual effects](issues/ISS-084_20260425_component_split_effects_plan.md) | 2026-04-25 | Open | Medium | Refactor the arena UI by splitting `ThreeGrid.vue` into dedicated components ... |
 | [Automate API Help Endpoints using Postman and Validation Tools](issues/ISS-083_20260425_automate_api_help_endpoints.md) | 2026-04-25 | Open | Medium | The current API help endpoints in the Laravel `battleui` component rely on a ... |
-| [Front-end Playwright suite + component-isolation visual regression](issues/ISS-082_20260425_frontend_playwright_test_seams.md) | 2026-04-25 | Open | Medium | The `battleui` front-end was rewritten around `@tresjs/core` (Vue + three.js ... |
 | [Cross-stack error handling harmonization](issues/ISS-081_20260425_cross_stack_error_handling.md) | 2026-04-25 | Open | Medium | `error_key` is currently propagated only on the engine action paths (`POST /g... |
 | [ATD for `error_key` taxonomy and possible envelope promotion](issues/ISS-080_20260425_error_key_atd_and_envelope.md) | 2026-04-25 | Open | Medium | `error_key` is now plumbed end-to-end (engine ruler → upsilonapi handler → La... |
 | [Standardize cell access on Y-major layout](issues/ISS-079_20260424_cell_access_y_major_standard.md) | 2026-04-24 | Open | Medium | The tactical grid is currently serialized width-major (`cells[x][y]`) by the ... |
 | [Shielding Credit Attribution System](issues/ISS-078_20260423_shielding_credit_attribution.md) | 2026-04-23 | Open | Medium | Design and implement a robust system for attributing credits earned through d... |
 | [Skill Inspection Command](issues/ISS-077_20260423_skill_inspection.md) | 2026-04-23 | Open | Medium | Implement skill inspection functionality allowing players to view detailed sk... |
 | [Player Choosing Facing Direction on Pass](issues/ISS-072_20260423_pass_choose_facing.md) | 2026-04-23 | Open | Medium | When a player chooses to "Pass" their turn, they must be given the option to ... |
-| [Backstabbing Mechanics & Armor Penetration](issues/ISS-070_20260422_backstabbing_mechanics.md) | 2026-04-22 | Open | Medium | Implement backstabbing combat mechanic with 150% damage multiplier and 50% ar... |
 | [AI Archetype Enhancement & Progression](issues/ISS-069_20260422_ai_archetype_enhancement.md) | 2026-04-22 | Open | Medium | Enhance AI system with four distinct archetypes (Fighter, Ranger, Support, Sn... |
-| [Credit Economy & Shop System](issues/ISS-067_20260422_credit_economy_shop.md) | 2026-04-22 | Open | High | Implement comprehensive credit economy with multiple earning mechanisms (dama... |
 | [Actor Message Type Validation](issues/ISS-055_20260420_actor_message_validation.md) | 2026-04-20 | Open | Low | The `Actor` implementation should validate if the target message is of the co... |
-| [Game Resurrection from Board State](issues/ISS-054_20260420_game_resurrection_board_state.md) | 2026-04-20 | Open | Medium | The frontend needs a mechanism to attempt "game resurrection" from a persiste... |
 | [Modernize Actor Library with Go Generics (Templates)](issues/ISS-049_20260418_actor_generics_modernization.md) | 2026-04-18 | Open | Low (Architectural Improvement) | The current Actor implementation was designed before Go 1.18 (Generics). It r... |
 | [Request Traceability Non-Compliance and Gaps](issues/ISS-042_20260415_request_traceability_gaps.md) | 2026-04-15 | Open | Medium | This issue documents the systematic non-compliance with `rule_tracing_logging... |
 | [Upgradable Pawn Appearance & Model System](issues/ISS-040_20260415_pawn_appearance_system.md) | 2026-04-15 | Open | Medium | Implement an upgradable "Pawn Appearance System" that allows players to custo... |

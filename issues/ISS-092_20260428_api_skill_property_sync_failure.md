@@ -4,7 +4,7 @@
 **Ref:** `ISS-092`
 **Date:** 2026-04-28
 **Severity:** High
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonapi/bridge`, `upsilontypes/property/def`
 **Affects:** Admin skill creation, skill-item application, engine-side targeting validation.
 

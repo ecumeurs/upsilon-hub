@@ -4,7 +4,7 @@
 **Ref:** `ISS-054`
 **Date:** 2026-04-20
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonapi/bridge`
 **Affects:** `battleui`, `upsilonapi`
 
