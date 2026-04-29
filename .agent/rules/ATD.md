@@ -49,21 +49,15 @@ Use this table to determine the correct `type`, `layer`, and expected granularit
 
 | Type | Family | Typical Layer | Bloat Factor | Granularity |
 |---|---|---|---|---|
-| `MODULE` | Architectural | ARCHITECTURE | 0.3 | Broad — acts as a parent grouping |
-| `SERVICE` | Architectural | ARCH / IMPL | 0.8 | Single responsibility |
+| `REQUIREMENT` | Requirements | BUSINESS | 0.3 | High-level external contract |
+| `RULE` | Logic | BUSINESS / ARCH | 0.8 | Single business constraint |
+| `USER_STORY` | Requirements | BUSINESS | 0.1 | User-facing workflow |
+| `API` | Interface | ARCHITECTURE | 0.1 | One contract, include payloads |
+| `UI` | Interface | ARCHITECTURE | 0.8 | One screen or flow |
 | `ENTITY` | Architectural | ARCHITECTURE | 0.8 | Single data model |
-| `RULE` | Logic | CUSTOMER / ARCH | 0.8 | One rule per atom. Strict. |
-| `MECHANIC` | Logic | IMPLEMENTATION | 0.8 | One algorithm per atom |
-| `DOMAIN` | Logic | CUSTOMER | 0.8 | Narrative-driven context |
-| `API` | Interface | ARCH / IMPL | 0.1 | One contract, include payloads |
-| `UI` | Interface | CUSTOMER / ARCH | 0.8 | One screen or flow |
-| `DATA` | Operations | IMPLEMENTATION | 0.8 | Per config domain |
-| `USAGE` | Operations | CUSTOMER | 0.1 | Per tutorial/workflow |
-| `BUILD` | Operations | IMPLEMENTATION | 0.8 | Per pipeline stage |
-| `REQUIREMENT` | Requirements | CUSTOMER | 0.3 | Less granular than RULE |
-| `SPECIFICATION` | Requirements | CUSTOMER / ARCH | 0.3 | Can reference multiple atoms |
-| `USECASE` | Requirements | CUSTOMER | 0.1 | Multi-step workflow. Relaxed. |
-| `USER_STORY` | Requirements | CUSTOMER | 0.1 | Agile story. Relaxed. |
+| `MECHANIC` | Logic | IMPLEMENTATION | 0.8 | One algorithm or validation |
+| `MODULE` | Architectural | ARCHITECTURE | 0.3 | Broad grouping / Service |
+| `DOMAIN` | Logic | BUSINESS | 0.8 | Narrative-driven context |
 
 > **Rule:** Before creating an atom, check the bloat factor for its type. High factor (≥0.7) = laser-focused on ONE rule. Low factor (≤0.3) = broader scope is acceptable.
 
@@ -82,7 +76,7 @@ When asked to build a feature, fix a bug, or update code, you must follow this l
 * **Plan:** Use `atd_query` or `atd_search` to find existing relevant atoms. Create new `DRAFT` atoms using `atd_update` to capture new requirements before writing code.
 * **Specify:** Ensure every new atom links upward using the `parents` field in the frontmatter. Run `atd_weave` to establish the downward dependency graph (`dependents`).
 * **Implement:** Write the code. You must annotate the source code with `@spec-link [[atom_id]]` to map it to the implementation. Annotate tests with `@test-link [[atom_id]]`.
-* **Verify:** Run atd_trace to get a structured Health Snapshot JSON for the specific atom. Ensure the atom's implementation and test coverage metrics meet the required standards. Always ensure that a new atom has a link toward the upper layers ( Customer <- Architecture <- Implementation). If none are present that fits the need, adresse the issue to the user. 
+* **Verify:** Run atd_trace to get a structured Health Snapshot JSON for the specific atom. Ensure the atom's implementation and test coverage metrics meet the required standards. Always ensure that a new atom has a link toward the upper layers ( Business <- Architecture <- Implementation). If none are present that fits the need, adresse the issue to the user. 
 * **Evolve:** Before modifying any `STABLE` atom, you must run `atd_crawl` to assess the blast radius and impact on the rest of the system.
 
 ### 6. Surgical Traceability (Tag Placement)
@@ -92,13 +86,13 @@ When asked to build a feature, fix a bug, or update code, you must follow this l
 * **Discovery:** If you are unsure where to place tags in undocumented code, use `atd_discover` to get placement recommendations.
 
 ### 7. Respect the Documentation Hierarchy
-* **CUSTOMER Layer (`REQUIREMENT`, `USECASE`, etc.):** Treat these as low-volatility. Do not alter `STABLE` customer atoms without explicit human permission. **Requirement:** When requesting this permission from the user, you must proactively run `atd_crawl` and present the impact analysis/blast radius to them.
-* **ARCHITECTURE Layer (`MODULE`, `API`, etc.):** Treat these as moderate-volatility. Always run an impact analysis (`atd_crawl`) before changing.
-* **IMPLEMENTATION Layer (`MECHANIC`, `BUILD`, etc.):** Treat these as high-volatility. Update these freely as you refactor or write new code.
+* **BUSINESS Layer (`REQUIREMENT`, `USER_STORY`, `RULE`, etc.):** Treat these as low-volatility. Do not alter `STABLE` business atoms without explicit human permission. **Requirement:** When requesting this permission from the user, you must proactively run `atd_crawl` and present the impact analysis/blast radius to them.
+* **ARCHITECTURE Layer (`MODULE`, `API`, `UI`, `ENTITY`):** Treat these as moderate-volatility. Always run an impact analysis (`atd_crawl`) before changing.
+* **IMPLEMENTATION Layer (`MECHANIC`, etc.):** Treat these as high-volatility. Update these freely as you refactor or write new code.
 
 ### 8. Pragmatic Traceability & Health (The Trace Rule)
 When using `atd_trace`, treat the resulting health metrics as a guide rather than a strict blocker. Apply the following logic:
 
-**Top-Down Design is Expected:** It is perfectly acceptable for CUSTOMER and ARCHITECTURE layer atoms to have a 0% implementation_rate or test_coverage_rate. Missing code/tests at this stage simply mean the feature is "on the to-do list." Do not stubbornly attempt to generate tests or code unless the user explicitly asks you to build the implementation.
+**Top-Down Design is Expected:** It is perfectly acceptable for BUSINESS and ARCHITECTURE layer atoms to have a 0% implementation_rate or test_coverage_rate. Missing code/tests at this stage simply mean the feature is "on the to-do list." Do not stubbornly attempt to generate tests or code unless the user explicitly asks you to build the implementation.
 
 **Implementations Require Roots:** The only strict warning you must act upon is missing ancestry. If you are creating or modifying an IMPLEMENTATION atom and atd_trace reports has_customer_origin: false, you must stop and ask the user for clarification. Code should not exist without a reason. Let the user define the missing upstream requirement before you proceed.
