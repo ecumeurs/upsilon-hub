@@ -39,6 +39,8 @@ services:
       - REVERB_PORT=8080
     env_file:
       - .env
+    ports:
+      - "8000:80"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost/up" ]
       interval: 5s
@@ -59,6 +61,8 @@ services:
       - REVERB_HOST=0.0.0.0
     env_file:
       - .env
+    ports:
+      - "8080:8080"
     healthcheck:
       test: [ "CMD", "curl", "http://localhost:8080" ]
       interval: 5s
