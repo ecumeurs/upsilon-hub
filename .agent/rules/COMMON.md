@@ -2,10 +2,20 @@
 trigger: always_on
 ---
 
-Never forget [[api_standard_envelope]] ATD; Altering communication layer must trigger a warning for the user to approve.
+# Upsilon Hub: Operational Standards & Guards
 
-Defaulting hides critical errors. Use them with caution. Crashing early is best (we are not in production mode)
+These rules are non-negotiable for all implementation work in Upsilon Hub.
 
-Testing is meant to test production code: adding custom code to handle test should be made with great care and wisdom.
+## 1. Communication Layer Protocol
+- **API Envelope**: Never modify the communication layer without ensuring compliance with `[[api_standard_envelope]]`.
+- **Warning**: Altering serialization or the bridge API contract must trigger an explicit warning for the user to approve.
 
-Don't use the script trigger_all_ci_tests.sh use trigger_one_ci_test.sh instead. The former is way too slow for pratical purpose and isn't easily stoppable, it erase too much informations. Note that run_all_unit_tests.sh exists as well and is quick enough to be abused. 
+## 2. Error Handling Philosophy
+- **Crash Early**: Defaulting hides critical errors. Avoid silent failures or catch-all default values in the core logic.
+- **Fail Fast**: We are in development mode; clear panics or rejections are better than undefined behavior.
+
+## 3. Testing Tool Usage
+- **Selective Testing**: Do **NOT** use `trigger_all_ci_tests.sh`. It is too slow and destructive to the current session.
+- **Precision Testing**: Always use `scripts/trigger_one_ci_test.sh` for targeted scenario validation.
+- **Unit Tests**: `run_all_unit_tests.sh` is lightweight and should be run frequently during refactoring.
+- **Isolation**: Testing is meant to test production code. Avoid adding "test-only" logic to production files unless absolutely necessary for observability.
