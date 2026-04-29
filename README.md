@@ -183,6 +183,7 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
+| [Administrative Account Self-Destruction Risk](issues/ISS-093_20260429_admin_account_self_destruction_risk.md) | 2026-04-29 | Open | Critical | The administrative API allows users with admin privileges to target any accou... |
 | [Action Endpoint Segregation](issues/ISS-090_20260427_action_endpoint_segregation.md) | 2026-04-27 | Open | Medium | Currently, all tactical actions (move, attack, skill, pass) are funneled thro... |
 | [Deterministic Daily Random Shop](issues/ISS-089_20260426_mechanic_random_shop_algorithm.md) | 2026-04-26 | Open | Medium | Implementation of a daily rotating shop system that provides a deterministic ... |
 | [Grid Generator Tuning - Large and Flat Maps](issues/ISS-087_20260426_grid_generator_tuning.md) | 2026-04-26 | Open | Medium | Since the integration of the `gridgenerator`, battle maps have been observed ... |

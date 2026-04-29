@@ -4,6 +4,7 @@
 
 | Ref | File | Severity | Status | Summary |
 |---|---|---|---|---|
+| ISS-093 | [ISS-093_20260429_admin_account_self_destruction_risk.md](ISS-093_20260429_admin_account_self_destruction_risk.md) | Critical | Open | Administrative Account Self-Destruction Risk |
 | ISS-091 | [ISS-091_20260428_engine_movement_obstacle_validation_bypass.md](ISS-091_20260428_engine_movement_obstacle_validation_bypass.md) | High | Open | Engine movement validation bypass on non-ground cells |
 | ISS-090 | [ISS-090_20260426_action_feedback_infrastructure_upgrade.md](ISS-090_20260426_action_feedback_infrastructure_upgrade.md) | High | Open | Action Feedback Infrastructure Upgrade (Multi-Target & Synchronous Results) |
 | ISS-089 | [ISS-089_20260426_mechanic_random_shop_algorithm.md](ISS-089_20260426_mechanic_random_shop_algorithm.md) | Medium | Open | Deterministic Daily Random Shop |
