@@ -3,6 +3,10 @@
   "workspace_root": ".",
   "projects": [
     {
+      "name": "shared",
+      "path": "."
+    },
+    {
       "name": "upsilonapi",
       "path": "upsilonapi"
     },
@@ -17,6 +21,26 @@
     {
       "name": "upsiloncli",
       "path": "upsiloncli"
+    },
+    {
+      "name": "upsilontypes",
+      "path": "upsilontypes"
+    },
+    {
+      "name": "upsilonmapdata",
+      "path": "upsilonmapdata"
+    },
+    {
+      "name": "upsilonmapmaker",
+      "path": "upsilonmapmaker"
+    },
+    {
+      "name": "upsilonserializer",
+      "path": "upsilonserializer"
+    },
+    {
+      "name": "upsilontools",
+      "path": "upsilontools"
     }
   ]
 }
