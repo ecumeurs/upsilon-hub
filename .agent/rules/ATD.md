@@ -70,7 +70,7 @@ Use this table to determine the correct `type`, `layer`, and expected granularit
 * **Never rewrite an entire `.atom.md` file.** Always use the `atd_update` tool to surgically modify specific frontmatter fields or H2 sections.
 * **Prioritize deterministic tools:** Use `atd_query`, `atd_trace`, `atd_crawl`, `atd_weave`, and `atd_update` for fast, token-free structural operations.
 * **Delegate LLM tasks:** When semantic analysis, complex extraction, or auditing is required, do not do the analysis yourself. Instead, use the MCP's LLM-backed tools to offload the work to ATD's configured models and save your own context window:
-  - `atd_discover` — three modes: find matching atoms for undocumented code (default), confirm a specific match (`atom` param), or propose a new atom skeleton (`new: true`)
+  - `atd_map` — three modes: find matching atoms for undocumented code (default), confirm a specific match (`atom` param), or propose a new atom skeleton (`new: true`)
   - `atd_recon` — shorthand confirm mode: validate whether a candidate file implements a specific atom
   - `atd_verify` — unified coverage report: impl links (`@spec-link`) and test links (`@test-link`) in one pass; add `semantic: true` for LLM compliance check per link
   - `atd_search`, `atd_audit`, `atd_dissect` — semantic search, atom quality audit (bloat + collision), document decomposition
@@ -87,7 +87,7 @@ When asked to build a feature, fix a bug, or update code, you must follow this l
 * **No Global Headers:** Do not place `@spec-link` tags at the top of a source file unless the atom literally represents the entire architectural pattern of that file.
 * **Target Logic Boundaries:** Place `@spec-link` tags directly above the specific class definition, function, decorator, or logical block that implements the atom.
 * **Test Logic Boundaries:** Place `@test-link` tags directly above the specific function, decorator, or logical block that test the atom.
-* **Discovery:** If you are unsure where to place tags in undocumented code, use `atd_discover` to get placement recommendations. If you already have a specific atom in mind, use `atd_recon` (or `atd_discover` with `atom` param) to confirm the match before tagging. If no matching atom exists yet, use `atd_discover` with `new: true` to get a proposed atom skeleton.
+* **Discovery:** If you are unsure where to place tags in undocumented code, use `atd_map` to get placement recommendations. If you already have a specific atom in mind, use `atd_recon` (or `atd_map` with `atom` param) to confirm the match before tagging. If no matching atom exists yet, use `atd_map` with `new: true` to get a proposed atom skeleton.
 
 ### 7. Respect the Documentation Hierarchy
 * **BUSINESS Layer (`REQUIREMENT`, `USER_STORY`, `RULE`, etc.):** Treat these as low-volatility. Do not alter `STABLE` business atoms without explicit human permission. **Requirement:** When requesting this permission from the user, you must proactively run `atd_crawl` and present the impact analysis/blast radius to them.
@@ -160,20 +160,29 @@ atd_weave()                          # rebuild dependency graph
 
 # Traceability
 atd_verify()                         # impl + test link coverage report
-atd_verify(semantic=true)            # + LLM compliance check per link
+atd_verify(semantic=true)            # + LLM compliance check per link (uses tokens)
 atd_trace(atom="your_atom_id")       # full health snapshot
 
 # Impact analysis
 atd_crawl()                          # blast radius before modifying STABLE atoms
 atd_lint()                           # broken links, circular deps
 
+# Environment / diagnostics
+atd_env()                            # check provider connectivity and model availability
+
 # Workspace
 atd_workspace_list()                 # list projects
 atd_workspace_use(project="name")    # activate a project
+atd_workspace_stats()                # aggregate health across all projects
 
-# Discovery & mapping
-atd_discover(file="src/foo.go")                  # find candidate atoms for undocumented code
-atd_discover(file="src/foo.go", atom="rule_foo") # confirm a specific match
-atd_discover(file="src/foo.go", new=true)        # propose a new atom skeleton
+# Discovery & mapping (CLI: atd map)
+atd_map(file="src/foo.go")                  # find candidate atoms for undocumented code
+atd_map(file="src/foo.go", atom="rule_foo") # confirm a specific match
+atd_map(file="src/foo.go", new=true)        # propose a new atom skeleton
 atd_recon(file="src/foo.go", atom="rule_foo")    # shorthand confirm
+
+# Heat maps
+atd_heatmap(atom="rule_foo")         # coupling/code/instability metrics for one atom
+atd_heatmap_code(file="src/foo.go") # spec-link density for one source file
+atd_heatmap_project(layer="all")    # project-wide hotspot ranking
 ```
