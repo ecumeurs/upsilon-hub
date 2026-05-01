@@ -1,0 +1,41 @@
+#!/bin/bash
+# ATD Structural Integrity Check
+# Zero-latency, LLM-free structural bouncer.
+# Ensures every ARCHITECTURE or IMPLEMENTATION atom staged for commit
+# declares at least one parent, preventing orphaned lower-layer atoms.
+#
+# Install: cp scripts/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+STAGED_ATOMS=$(git diff --cached --name-only --diff-filter=ACM | grep '\.atom\.md$')
+
+if [ -z "$STAGED_ATOMS" ]; then
+  exit 0
+fi
+
+FAIL=0
+
+echo "🔍 Running ATD Structural Integrity Check..."
+
+for file in $STAGED_ATOMS; do
+  LAYER=$(grep -E "^layer:" "$file" | awk '{print $2}' | tr -d '\r')
+  PARENTS_COUNT=$(awk '/^parents:/ {flag=1; next} /^[^ -]/ {flag=0} flag && /-[[:space:]]+\[\[.*\]\]/ {print}' "$file" | wc -l)
+
+  if [[ "$LAYER" == "IMPLEMENTATION" || "$LAYER" == "ARCHITECTURE" ]]; then
+    if [ "$PARENTS_COUNT" -eq 0 ]; then
+      echo "❌ ERROR: Orphaned Atom Detected -> $file"
+      echo "   Reason: This is an $LAYER atom but has no parents defined."
+      echo "   Fix 1 : Add a parent business/design requirement -> parents: [[req_your_parent]]"
+      echo "   Fix 2 : Use the escape hatch -> parents: [[req_tech_debt_backlog]]"
+      echo ""
+      FAIL=1
+    fi
+  fi
+done
+
+if [ "$FAIL" -eq 1 ]; then
+  echo "🛑 ATD Check Failed. Commit aborted. Please fix the above atoms."
+  exit 1
+fi
+
+echo "✅ ATD Check Passed."
+exit 0
