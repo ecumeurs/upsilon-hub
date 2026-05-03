@@ -40,6 +40,7 @@ echo "Resetting and seeding database..."
 FAILED_TESTS=""
 PASSED_COUNT=0
 FAILED_COUNT=0
+TOTAL_START_TIME=$SECONDS
 
 # Extract a one-line failure reason per bot log for the given scenario.
 # Strategy:
@@ -110,13 +111,22 @@ run_test() {
     done
 
     # Run the farm with --local flag
+    local start_time=$SECONDS
     if timeout 180 "$CLI" --local --farm -L "$LOG_DIR" $paths > /dev/null 2>&1; then
-        echo -e "\033[32m[PASSED]\033[0m"
+        local duration=$((SECONDS - start_time))
+        if [ $duration -gt 10 ]; then
+            echo -e "\033[32m[PASSED]\033[0m in ${duration}s \033[33m(WARNING: Slow test > 10s)\033[0m"
+        else
+            echo -e "\033[32m[PASSED]\033[0m in ${duration}s"
+        fi
         echo "[SCENARIO_RESULT: PASSED]" >> "$log_file"
+        echo "[SCENARIO_DURATION: ${duration}s]" >> "$log_file"
         PASSED_COUNT=$((PASSED_COUNT + 1))
     else
-        echo -e "\033[31m[FAILED]\033[0m"
+        local duration=$((SECONDS - start_time))
+        echo -e "\033[31m[FAILED]\033[0m in ${duration}s"
         echo "[SCENARIO_RESULT: FAILED]" >> "$log_file"
+        echo "[SCENARIO_DURATION: ${duration}s]" >> "$log_file"
         FAILED_COUNT=$((FAILED_COUNT + 1))
         FAILED_TESTS="$FAILED_TESTS $name"
         print_failure_reasons "$name"
@@ -144,6 +154,7 @@ echo "=================================================="
 echo "Local Suite Results:"
 echo "  Passed: $PASSED_COUNT"
 echo "  Failed: $FAILED_COUNT"
+echo "  Total Duration: $((SECONDS - TOTAL_START_TIME))s"
 echo "=================================================="
 
 # 6. Report Generation

@@ -112,13 +112,22 @@ print_failure_reasons() {
 
 # Run the farm with --local flag
 # No timeout here to allow debugging, but follow same structure as CI
+START_TIME=$SECONDS
 if "$CLI" --local --farm -L "$LOG_DIR" $PATHS ; then
-    echo -e "\033[32m[PASSED]\033[0m"
+    DURATION=$((SECONDS - START_TIME))
+    if [ $DURATION -gt 10 ]; then
+        echo -e "\033[32m[PASSED]\033[0m in ${DURATION}s \033[33m(WARNING: Slow test > 10s)\033[0m"
+    else
+        echo -e "\033[32m[PASSED]\033[0m in ${DURATION}s"
+    fi
     echo "[SCENARIO_RESULT: PASSED]" >> "$LOG_FILE"
+    echo "[SCENARIO_DURATION: ${DURATION}s]" >> "$LOG_FILE"
     exit 0
 else
-    echo -e "\033[31m[FAILED]\033[0m"
+    DURATION=$((SECONDS - START_TIME))
+    echo -e "\033[31m[FAILED]\033[0m in ${DURATION}s"
     echo "[SCENARIO_RESULT: FAILED]" >> "$LOG_FILE"
+    echo "[SCENARIO_DURATION: ${DURATION}s]" >> "$LOG_FILE"
     echo "Failure reasons:"
     print_failure_reasons
     echo "Check logs at: $LOG_FILE (and ${LOG_DIR}/${NAME}_Bot-*.log)"
