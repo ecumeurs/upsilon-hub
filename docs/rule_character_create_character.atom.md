@@ -8,7 +8,7 @@ status: STABLE
 priority: 5
 tags: [character, creation]
 parents:
-  - [[upsilonbattle:entity_character]]
+  - [[upsilontypes:entity_character]]
 dependents: []
 ---
 # Character creation base allocation

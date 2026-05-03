@@ -8,8 +8,8 @@ status: STABLE
 priority: 5
 tags: [progression, character]
 parents:
+  - [[upsilontypes:entity_character]]
   - [[requirement_customer_player_profile]]
-  - [[upsilonbattle:entity_character]]
 dependents:
   - [[battleui:ui_character_full_stat_panel]]
   - [[rule_stat_taxonomy]]
