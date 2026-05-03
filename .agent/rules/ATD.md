@@ -49,9 +49,11 @@ Use this table to determine the correct `type`, `layer`, and expected granularit
 
 | Type | Family | Typical Layer | Bloat Factor | Granularity |
 |---|---|---|---|---|
+| `CONTRACT` | Governance | BUSINESS | 0.1 | **Unique**; project-wide mandatory rules |
+| `VISION` | Governance | BUSINESS | 0.1 | **Unique**; project-wide scope/philosophy |
 | `REQUIREMENT` | Requirements | BUSINESS | 0.3 | High-level external contract |
 | `RULE` | Logic | BUSINESS / ARCH | 0.8 | Single business constraint |
-| `USER_STORY` | Requirements | BUSINESS | 0.1 | User-facing workflow |
+| `USER_STORY` | Requirements | BUSINESS | 0.1 | User-facing workflow (synonym: `USECASE`, `WORKFLOW`) |
 | `API` | Interface | ARCHITECTURE | 0.1 | One contract, include payloads |
 | `UI` | Interface | ARCHITECTURE | 0.8 | One screen or flow |
 | `ENTITY` | Architectural | ARCHITECTURE | 0.8 | Single data model |
@@ -74,12 +76,13 @@ Use this table to determine the correct `type`, `layer`, and expected granularit
   - `atd_recon` — shorthand confirm mode: validate whether a candidate file implements a specific atom
   - `atd_verify` — unified coverage report: impl links (`@spec-link`) and test links (`@test-link`) in one pass; add `semantic: true` for LLM compliance check per link
   - `atd_search`, `atd_audit`, `atd_dissect` — semantic search, atom quality audit (bloat + collision), document decomposition
+  - `atd_trace(summary=true)` — **MANDATORY** for getting narrative vertical context before code changes
 
 ### 5. The Day-to-Day Workflow
 When asked to build a feature, fix a bug, or update code, you must follow this lifecycle loop:
 * **Plan:** Use `atd_query` or `atd_search` to find existing relevant atoms. Create new `DRAFT` atoms using `atd_update` to capture new requirements before writing code.
 * **Specify:** Ensure every new atom links upward using the `parents` field in the frontmatter. Run `atd_weave` to establish the downward dependency graph (`dependents`).
-* **Implement:** Write the code. You must annotate the source code with `@spec-link [[atom_id]]` to map it to the implementation. Annotate tests with `@test-link [[atom_id]]`.
+* **Implement:** Before writing any code, you MUST run `atd_trace(atom=..., summary=true)` to get a narrative assessment of the atom's context and impact. Then write the code. You must annotate the source code with `@spec-link [[atom_id]]` to map it to the implementation. Annotate tests with `@test-link [[atom_id]]`.
 * **Verify:** Run `atd_verify` to get a unified coverage report (impl links + test links) for the atoms touched by your changes. Then run `atd_trace` for the full health snapshot of each atom. Ensure implementation and test coverage metrics meet the required standards. Always ensure that a new atom has a link toward the upper layers (Business ← Architecture ← Implementation). If none are present that fits the need, raise the issue to the user. 
 * **Evolve:** Before modifying any `STABLE` atom, you must run `atd_crawl` to assess the blast radius and impact on the rest of the system.
 
@@ -90,7 +93,7 @@ When asked to build a feature, fix a bug, or update code, you must follow this l
 * **Discovery:** If you are unsure where to place tags in undocumented code, use `atd_map` to get placement recommendations. If you already have a specific atom in mind, use `atd_recon` (or `atd_map` with `atom` param) to confirm the match before tagging. If no matching atom exists yet, use `atd_map` with `new: true` to get a proposed atom skeleton.
 
 ### 7. Respect the Documentation Hierarchy
-* **BUSINESS Layer (`REQUIREMENT`, `USER_STORY`, `RULE`, etc.):** Treat these as low-volatility. Do not alter `STABLE` business atoms without explicit human permission. **Requirement:** When requesting this permission from the user, you must proactively run `atd_crawl` and present the impact analysis/blast radius to them.
+* **BUSINESS Layer (`CONTRACT`, `VISION`, `REQUIREMENT`, `USER_STORY`, `RULE`, etc.):** Treat these as low-volatility. Do not alter `STABLE` business atoms without explicit human permission. **Requirement:** When requesting this permission from the user, you must proactively run `atd_crawl` and present the impact analysis/blast radius to them.
 * **ARCHITECTURE Layer (`MODULE`, `API`, `UI`, `ENTITY`):** Treat these as moderate-volatility. Always run an impact analysis (`atd_crawl`) before changing.
 * **IMPLEMENTATION Layer (`MECHANIC`, etc.):** Treat these as high-volatility. Update these freely as you refactor or write new code.
 
@@ -138,7 +141,7 @@ parents:
 - Place `@spec-link` tags directly above the specific function or block that implements the atom.
 - Run `atd_weave` after creating new atoms to establish the downward dependency graph.
 - Update atom `status` progressively: `DRAFT` → `REVIEW` → `STABLE`.
-- When modifying a `STABLE` atom, always run `atd_crawl` first to assess blast radius.
+- When modifying a `STABLE` atom, always run `atd_crawl` first to assess blast radius (structural) and `atd_trace(summary=true)` for vertical context (semantic).
 
 **DON'T:**
 - Use file-level `@spec-link` tags unless the atom represents the entire file's architectural pattern.
@@ -162,6 +165,7 @@ atd_weave()                          # rebuild dependency graph
 atd_verify()                         # impl + test link coverage report
 atd_verify(semantic=true)            # + LLM compliance check per link (uses tokens)
 atd_trace(atom="your_atom_id")       # full health snapshot
+atd_trace(atom="your_atom_id", summary=true) # narrative contextual summary
 
 # Impact analysis
 atd_crawl()                          # blast radius before modifying STABLE atoms
@@ -186,3 +190,18 @@ atd_heatmap(atom="rule_foo")         # coupling/code/instability metrics for one
 atd_heatmap_code(file="src/foo.go") # spec-link density for one source file
 atd_heatmap_project(layer="all")    # project-wide hotspot ranking
 ```
+
+### 11. Agent Behavioral Rules (Intransigence Guidelines)
+
+To maintain graph integrity, you MUST follow these "hard behavioral triggers":
+
+#### 11.1 The "No Parent, No Code" Rule
+If the user asks to implement a feature or mechanic:
+1. **Search**: You MUST first execute `atd_search` to find relevant atoms.
+2. **Verify Ancestry**: Check if a parent `BUSINESS` or `ARCHITECTURE` atom exists for this feature.
+3. **STOP**: If no such parent exists, **STOP**. Do not write code. Do not write the `IMPLEMENTATION` atom.
+4. **Interview**: You must first propose the missing `BUSINESS`/`ARCHITECTURE` atoms to the user and ask for their approval to create them.
+
+#### 11.2 Governance Check
+Before adding or modifying any `BUSINESS` layer atom, you MUST read the project's `CONTRACT` and `VISION` atoms.
+- If the change violates the `CONTRACT` (removal of mandatory features) or `VISION` (scope creep), you must warn the user and require explicit confirmation.
