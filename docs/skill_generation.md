@@ -1,20 +1,3 @@
----
-id: req_skill_generation_overhaul
-human_name: Skill Generation — Design Spec
-type: REQUIREMENT
-layer: BUSINESS
-version: 1.0
-status: DRAFT
-priority: 5
-tags: [skills, generation, categories, icons, ui, progression]
-parents:
-  - [[req_tech_debt_backlog]]
-dependents:
-  - [[domain_skill_system]]
-  - [[mech_skill_selection_progression]]
-  - [[ui_action_panel]]
----
-
 # Skill Generation — Design Spec
 
 ## INTENT

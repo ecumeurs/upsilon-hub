@@ -17,3 +17,4 @@ ci_report.md
 ci_logs/
 go-test-results.json
 php-test-results.txt
+bin/
