@@ -15,4 +15,9 @@ php battleui/artisan db:seed --force
 echo "--- Creating CI Admin User ---"
 php battleui/artisan tinker --execute="\App\Models\User::updateOrCreate(['account_name' => 'admin'], ['email' => 'admin@admin.com', 'password_hash' => \Illuminate\Support\Facades\Hash::make('AdminPassword123!'), 'role' => 'Admin', 'full_address' => 'SYS_ADMIN_CI', 'birth_date' => '1970-01-01']);" > /dev/null 2>&1
 
+echo "--- Creating CI Test User ---"
+# Note: testuser is also seeded via TestAccountSeeder in DatabaseSeeder.php
+# We use tinker here to ensure it's created even if db:seed logic changes.
+php battleui/artisan tinker --execute="\App\Models\User::updateOrCreate(['account_name' => 'testuser'], ['email' => 'test@example.com', 'password_hash' => \Illuminate\Support\Facades\Hash::make('TestUserPassword123!'), 'role' => 'Player', 'full_address' => 'Test Street 1', 'birth_date' => '1990-01-01', 'credits' => 1000]);" > /dev/null 2>&1
+
 echo "--- Seeding Complete ---"
