@@ -8,7 +8,8 @@ priority: 5
 tags: [trpg, combat, game-definition]
 parents:
   - [[battleui:req_player_experience]]
-dependents: []
+dependents:
+  - [[req_skill_generation]]
 human_name: TRPG Game Definition
 ---
 

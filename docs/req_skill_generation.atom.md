@@ -10,11 +10,9 @@ tags: [skills, generation, tags, grades, names, icons]
 parents:
   - [[requirement_req_trpg_game_definition]]
 dependents:
-  - [[upsilonbattle:mech_skill_name_generation]]
-  - [[upsilonbattle:mech_skill_selection_progression]]
-  - [[battleui:ui_skill_icon]]
   - [[battleui:ui_action_panel]]
-  - [[shared:rule_skill_grading_system]]
+  - [[battleui:ui_skill_icon]]
+  - [[upsilontypes:module_skill_generator]]
 ---
 
 # Skill Generation System Requirement
@@ -35,11 +33,9 @@ Every procedurally generated skill must satisfy four constraints:
 
 ## TECHNICAL INTERFACE
 - **Code Tag:** `@spec-link [[req_skill_generation]]`
-- **Generator entry:** `upsilontypes/entity/skill/skillgenerator/skillgenerator.go` — `Generate(GenerateRequest)`
-- **API output:** `upsilonapi/api/output.go` — `SkillGenerateResponse.Tags []string`
-- **PHP bridge:** `battleui/app/Services/SkillGeneratorBridge.php` — `generate(?grade, ?allowed_tags)`
-- **Controller:** `battleui/app/Http/Controllers/API/CharacterSkillController.php` — `roll()`
+- **Related Issue:** `ISS-065_skill_generation_balance`
 - **Test:** `upsiloncli/tests/scenarios/e2e_skill_roll_naming.js`
+
 
 ## EXPECTATION
 - Every rolled skill has `instance_data.name` that does not equal a raw property key.

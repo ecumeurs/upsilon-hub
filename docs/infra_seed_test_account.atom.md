@@ -4,12 +4,12 @@ human_name: "Test Account Seeding Requirement"
 type: MODULE
 layer: ARCHITECTURE
 version: 1.0
-status: DRAFT
+status: STABLE
 priority: 3
 tags: [infra, seed, test]
 parents:
   - [[upsilonbattle:entity_player]]
-dependents:
+dependents: []
 ---
 
 # Test Account Seeding Requirement
