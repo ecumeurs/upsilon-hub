@@ -30,7 +30,7 @@ jobs:
         run: go work sync
 
       - name: Run Go Tests (Explicit Modules)
-        run: go test -count=1 -timeout 120s -json ./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilonserializer/... ./upsilontools/... > go-test-results.json 2>&1 || true
+        run: go test -count=1 -timeout 120s -json ./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilontools/... > go-test-results.json 2>&1 || true
 
 
       - name: Check for Failures

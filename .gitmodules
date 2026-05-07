@@ -10,9 +10,6 @@
 [submodule "upsilonmapmaker"]
 	path = upsilonmapmaker
 	url = ../upsilonmapmaker.git
-[submodule "upsilonserializer"]
-	path = upsilonserializer
-	url = ../upsilonserializer.git
 [submodule "upsilontools"]
 	path = upsilontools
 	url = ../upsilontools.git

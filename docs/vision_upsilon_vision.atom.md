@@ -11,7 +11,6 @@ dependents:
   - [[upsiloncli:vision_cli_vision]]
   - [[upsilonmapdata:vision_mapdata_vision]]
   - [[upsilonmapmaker:vision_mapmaker_vision]]
-  - [[upsilonserializer:vision_serializer_vision]]
   - [[upsilontools:vision_tools_vision]]
   - [[upsilontypes:vision_types_vision]]
 type: VISION

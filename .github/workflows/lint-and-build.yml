@@ -30,7 +30,7 @@ jobs:
         run: go work sync
 
       - name: Go Vet (Explicit Modules)
-        run: go vet ./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilonserializer/... ./upsilontools/...
+        run: go vet ./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilontools/...
 
       - name: Build Upsilon API
         run: go build -o /dev/null ./upsilonapi
