@@ -8,7 +8,7 @@ status: STABLE
 priority: 5
 tags: [testing, robustness, non-determinism]
 parents:
-  - [[upsilonapi:api_ruler_methods]]
+  - [[contract_upsilon_contract]]
 dependents: []
 ---
 

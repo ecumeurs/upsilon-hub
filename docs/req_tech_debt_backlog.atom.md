@@ -8,7 +8,8 @@ status: STABLE
 priority: 3
 tags: [tech-debt, escape-hatch, governance]
 parents: []
-dependents: []
+dependents:
+  - [[upsilontypes:entity_character]]
 ---
 # Technical Debt Backlog
 

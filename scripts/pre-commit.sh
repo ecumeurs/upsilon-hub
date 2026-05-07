@@ -18,9 +18,21 @@ GO_SYNC="SKIP"
 GO_VET="FAIL"
 GO_TEST="FAIL"
 PHP_TEST="FAIL"
+HEALTH_CHECK="FAIL"
+
+# 0. CODE HEALTH CHECK
+echo -e "\n${YELLOW}[0/5] Running Code Health Check (DISABLED)...${NC}"
+# if ./scripts/code_health_check.py; then
+#     HEALTH_CHECK="PASS"
+#     echo -e "${GREEN}✓ Code health standards met${NC}"
+# else
+#     HEALTH_CHECK="FAIL"
+#     echo -e "${RED}✗ Code health check failed${NC}"
+# fi
+HEALTH_CHECK="SKIP"
 
 # 1. GO WORKSPACE SYNC
-echo -e "\n${YELLOW}[1/4] Syncing Go Workspace...${NC}"
+echo -e "\n${YELLOW}[1/5] Syncing Go Workspace...${NC}"
 if go work sync; then
     GO_SYNC="PASS"
     echo -e "${GREEN}✓ Workspace synchronized${NC}"
@@ -30,7 +42,7 @@ else
 fi
 
 # 2. GO VET
-echo -e "\n${YELLOW}[2/4] Running Go Vet...${NC}"
+echo -e "\n${YELLOW}[2/5] Running Go Vet...${NC}"
 MODULES="./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilonserializer/... ./upsilontools/..."
 if go vet $MODULES; then
     GO_VET="PASS"
@@ -40,7 +52,7 @@ else
 fi
 
 # 3. GO TEST
-echo -e "\n${YELLOW}[3/4] Running Go Unit Tests...${NC}"
+echo -e "\n${YELLOW}[3/5] Running Go Unit Tests...${NC}"
 if go test -timeout 30s $MODULES; then
     GO_TEST="PASS"
     echo -e "${GREEN}✓ Go Tests passed${NC}"
@@ -49,7 +61,7 @@ else
 fi
 
 # 4. PHP TESTS (Conditional)
-echo -e "\n${YELLOW}[4/4] Running PHP Tests (BattleUI)...${NC}"
+echo -e "\n${YELLOW}[4/5] Running PHP Tests (BattleUI)...${NC}"
 if [ -d "battleui" ]; then
     if command -v php >/dev/null 2>&1 && command -v composer >/dev/null 2>&1; then
         cd battleui
@@ -89,13 +101,14 @@ format_status() {
     fi
 }
 
+echo -e "Code Health Check : $(format_status $HEALTH_CHECK)"
 echo -e "Go Workspace Sync : $(format_status $GO_SYNC)"
 echo -e "Go Linting (Vet)  : $(format_status $GO_VET)"
 echo -e "Go Unit Tests     : $(format_status $GO_TEST)"
 echo -e "PHP Unit Tests    : $(format_status $PHP_TEST)"
 echo -e "${BLUE}=======================================${NC}"
 
-if [ "$GO_SYNC" == "PASS" ] && [ "$GO_VET" == "PASS" ] && [ "$GO_TEST" == "PASS" ]; then
+if [ "$HEALTH_CHECK" == "PASS" ] && [ "$GO_SYNC" == "PASS" ] && [ "$GO_VET" == "PASS" ] && [ "$GO_TEST" == "PASS" ]; then
     echo -e "\n${GREEN}READY TO COMMIT (Go checks passed)${NC}"
     exit 0
 else

@@ -9,6 +9,8 @@ tags: [trpg, combat, game-definition]
 parents:
   - [[battleui:req_player_experience]]
 dependents:
+  - [[mech_move_validation_jump_limitations]]
+  - [[mechanic_mech_battle_engine_stress_testing]]
   - [[req_skill_generation]]
 human_name: TRPG Game Definition
 ---

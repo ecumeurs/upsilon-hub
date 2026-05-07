@@ -5,8 +5,10 @@ priority: 1
 human_name: Strict DTO Typing
 tags: [api, architecture, type-safety]
 version: 1.0
-parents: []
-dependents: []
+parents:
+  - [[contract_upsilon_contract]]
+dependents:
+  - [[mechanic_mec_skill_payload_resolution]]
 type: RULE
 layer: ARCHITECTURE
 ---

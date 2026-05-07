@@ -2,7 +2,8 @@
 id: temp
 status: DRAFT
 version: 1.2
-parents: []
+parents:
+  - [[shared:requirement_req_trpg_game_definition]]
 dependents: []
 ---
 

@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+"""
+Upsilon Battle Engine Stress Testing Tool.
+This script orchestrates multiple concurrent matches using bot scripts to stress
+the engine and monitor resource usage (CPU, Memory, FDs).
+
+@spec-link [[mechanic_mech_battle_engine_stress_testing]]
+@spec-link [[rule_code_health_monitoring]]
+"""
 import subprocess
 import time
 import os
@@ -28,7 +36,11 @@ MODES = {
 }
 
 class MatchManager:
+    """
+    Orchestrates match lifecycle, metric collection, and report generation.
+    """
     def __init__(self):
+        """Initializes logs directory and discovers running system services."""
         self.matches = [] # List of {process, mode, start_time, log_file}
         self.metrics = []
         self.service_pids = {} # {service_name: pid}
@@ -42,6 +54,10 @@ class MatchManager:
         self.discover_services()
 
     def discover_services(self):
+        """
+        Attempts to locate PIDs for Upsilon services (Engine, API, UI)
+        by checking the .services.pids file and scanning /proc.
+        """
         # 1. Try .services.pids
         pid_file = "/workspace/.services.pids"
         if os.path.exists(pid_file):
@@ -72,6 +88,7 @@ class MatchManager:
                     print(f"[{datetime.now().isoformat()}] Discovered {name} at PID {pid}")
 
     def is_pid_alive(self, pid):
+        """Checks if a given PID is currently active in the system."""
         try:
             os.kill(pid, 0)
             return True
@@ -79,6 +96,7 @@ class MatchManager:
             return False
 
     def find_pid_by_cmd(self, pattern):
+        """Scans /proc to find a process whose command line matches the pattern."""
         try:
             for pid in os.listdir('/proc'):
                 if pid.isdigit():
@@ -92,6 +110,9 @@ class MatchManager:
         return None
 
     def get_process_memory(self, pid):
+        """
+        Calculates RSS memory in MB for a specific PID by reading /proc/[pid]/statm.
+        """
         """Returns RSS memory in MB for a PID."""
         try:
             # /proc/[pid]/statm: size resident shared text lib data dirty
@@ -103,6 +124,9 @@ class MatchManager:
             return 0
 
     def start_match(self, mode):
+        """
+        Spawns a new upsiloncli process for a specific game mode and redirects output to logs.
+        """
         num_bots = MODES[mode]
         match_id = f"{mode}_{int(time.time() * 1000)}_{random.randint(100, 999)}"
         log_file = os.path.join(LOG_DIR, f"{match_id}.log")
@@ -123,6 +147,10 @@ class MatchManager:
         return {"process": proc, "mode": mode, "id": match_id, "start_time": time.time(), "log": log_file}
 
     def monitor_and_respawn(self):
+        """
+        Continuous loop that checks for terminated match processes and respawns
+        them to maintain the desired load until the test duration ends.
+        """
         while self.running and (time.time() - self.start_time < TEST_DURATION_SECS):
             # Check for finished matches
             still_running = []
@@ -136,6 +164,10 @@ class MatchManager:
             time.sleep(1)
 
     def collect_metrics(self):
+        """
+        Polls system-wide and service-specific metrics (CPU, Memory, FDs)
+        at regular intervals and stores them for reporting.
+        """
         while self.running and (time.time() - self.start_time < TEST_DURATION_SECS):
             now = datetime.now().isoformat()
             
@@ -219,6 +251,10 @@ class MatchManager:
             time.sleep(max(0, METRICS_INTERVAL - 1)) # Adjust for CPU sample sleep
 
     def run(self):
+        """
+        Primary execution loop: launches initial matches, starts monitoring threads,
+        and waits for the test duration to complete.
+        """
         print(f"[{datetime.now().isoformat()}] Starting stress test for {TEST_DURATION_SECS} seconds...")
         
         # Initial launch
@@ -246,6 +282,7 @@ class MatchManager:
         self.teardown()
 
     def teardown(self):
+        """Terminates all remaining match processes and triggers final report consolidation."""
         print(f"[{datetime.now().isoformat()}] Tearing down matches...")
         for m in self.matches:
             if m["process"].poll() is None:
@@ -255,6 +292,10 @@ class MatchManager:
         self.consolidate()
 
     def consolidate(self):
+        """
+        Aggregates logs from all matches, parses tactical events,
+        calculates memory trends, and writes JSON/Markdown reports.
+        """
         print(f"[{datetime.now().isoformat()}] Consolidating reports...")
         
         total_actions = 0

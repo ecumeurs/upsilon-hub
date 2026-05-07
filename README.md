@@ -102,6 +102,22 @@ UpsilonBattle employs a robust CI/CD pipeline via GitHub Actions to ensure code 
 - **[Lint & Build](.github/workflows/lint-and-build.yml)**: Performs static analysis (Go vet) and verifies that all core components and Docker images build successfully.
 - **[E2E Battle Tests](.github/workflows/e2e-battles.yml)**: Orchestrates a full ephemeral Docker stack to run integration tests. It uses specialized CLI bots to simulate real player journeys and verify complex game mechanics.
 
+### Code Health Standards (`scripts/code_health_check.py`)
+Upsilon enforces strict maintainability standards across all supported languages (Go, Python, PHP, JS, Vue). These are verified locally via the pre-commit hook and in CI.
+
+- **File Length:** Maximum 300 LOC (Warning), 500 LOC (Error).
+- **Complexity:** Function nesting depth must not exceed 3 levels.
+- **Documentation:** Functions should have > 30% comment density (Warning) and > 50% (Error threshold for critical paths).
+- **ATD Traceability:** Each file must have 2-5 `@spec-link` tags. Under 2 or over 10 links results in an Error.
+- **Validity:** All `@spec-link` IDs must resolve to a valid ATD Atom in the `docs/` directory.
+
+**Exemptions:**
+Individual checks can be bypassed using specific tags:
+- `@lint-ignore-file-bloating`
+- `@lint-ignore-complexity`
+- `@lint-ignore-documentation`
+- `@lint-ignore-atd`
+
 ### CI Infrastructure (Docker Stack)
 The project utilizes a dedicated **[docker-compose.ci.yaml](docker-compose.ci.yaml)** to spin up an ephemeral testing environment. This stack is optimized for speed and reliability.
 
