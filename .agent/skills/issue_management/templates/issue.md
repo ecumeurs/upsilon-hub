@@ -60,6 +60,12 @@ Point to specific files and line numbers where the risk is present or where the 
 
 ---
 
+## Extra Data
+
+Result of investigation, gathered prior or after issue generation.
+
+---
+
 ## References
 
 - Link to relevant source files (relative paths from workspace root)
