@@ -57,7 +57,10 @@ class HealthCheck:
             elif loc > LOC_WARN:
                 self.report(filepath, "WARN", f"File long: {loc} LOC (limit {LOC_WARN})")
 
-        atd_links = re.findall(r'@(?:spec|test)-link\s+\[\[([a-zA-Z0-9_-]+)\]\]', content)
+        is_test_file = any(t in filepath for t in ['_test.go', '.spec.', '.test.']) or '/tests/' in filepath.lower()
+        atd_links_matches = re.findall(r'@(spec|test)-link\s+\[\[([a-zA-Z0-9_:-]+)\]\]', content)
+        atd_links = [m[1] for m in atd_links_matches]
+        
         if not ignore_atd:
             atd_count = len(atd_links)
             if atd_count < ATD_MIN:
@@ -66,7 +69,19 @@ class HealthCheck:
                 self.report(filepath, "ERROR", f"Too many ATD links: {atd_count} (max {ATD_ERROR_MAX})")
             elif atd_count > ATD_WARN_MAX:
                 self.report(filepath, "WARN", f"Many ATD links: {atd_count} (limit {ATD_WARN_MAX})")
+            
+            # Enforce @test-link in test environment
+            if is_test_file:
+                spec_in_test = [m[1] for m in atd_links_matches if m[0] == 'spec']
+                if spec_in_test:
+                    self.report(filepath, "ERROR", f"Test file uses @spec-link instead of @test-link for: {spec_in_test}")
+
             for atd_id in atd_links:
+                # If it's a cross-project link (contains ':'), we only check the local part if it's the current project
+                # or we skip it if we don't have full workspace context.
+                # For simplicity in this script, we skip phantom check for cross-project links.
+                if ':' in atd_id:
+                    continue
                 if atd_id not in self.valid_atds:
                     self.report(filepath, "ERROR", f"Phantom ATD link: [[{atd_id}]] does not exist")
 
