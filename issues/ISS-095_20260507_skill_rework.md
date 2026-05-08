@@ -17,6 +17,9 @@ The current skill generation and execution framework suffers from several design
 2. **Incomplete Mechanics**: Status effects like Stun and Poison rely on separate Power and Chance properties, but producers often set only one, resulting in mechanically dead skills.
 3. **Ambiguous Defaults**: `Damage` defaulting to 100% makes non-damaging skills visually noisy in the engine, but changing it to 0 breaks existing balance bands.
 4. **Targeting Interpretation**: `Range: 0` is interpreted as "Self/Current Cell" but often appears unintentionally in DOT/Stun skills that should have a baseline range.
+5. **Lack of Testing**: The skill generation and execution framework suffers from lack of proper testing.
+6. **Reactive and Counter system**: This system is not implemented yet. Remove them from the generators we will implement them later along with movement skills.
+7. **LOS** There is no LOS check for projectiles, or it's not sufficiently defined (no ATD): Front end UI has its own definition that may not be valid. 
 
 ---
 
@@ -31,6 +34,7 @@ In `effectapplicator.ApplyDirectEffect`, status effects only trigger if `Power -
 The `skillgenerator.blueprint` explicitly initializes critical properties to 0 to avoid inheriting engine defaults.
 - **Problem**: When serialized by the API, these 0-values appear in the JSON payload, creating noise for the UI and complicating rehydration logic.
 - **Proposed Solution**: A `Prune()` layer in the generator should remove properties that match their engine defaults before finalization.
+- Ensure that rehydration works with the pruned skills.
 
 ### 3. Damage Default & Balancing
 - **Status Quo**: `Damage` defaults to 100.
@@ -57,8 +61,15 @@ The `skillgenerator.blueprint` explicitly initializes critical properties to 0 t
 - Update `producer_stun` and `producer_dot` to ensure functional pairing (Power + Chance).
 
 **Medium term:**
-- Implement the "Reaction and Counter" triggering logic (originally identified in this issue).
 - Re-balance the Skill Weight bands to support a 0-default for Damage and other primary levers.
+- Proper testing for each skill attribute and effects. 
+- Proper testing for buff/debuff effects
+- Proper testing for trap (cell based effects)
+- Proper testing for delayed effects (with channeling) 
+- Proper testing for ongoing cell effects (poison zone that last 3 turns). 
+- Proper testing for Passive skills (self buff in a way).
+- Batterie of LOS tests.
+
 
 **Long term:**
 - Unified `Condition` system for skill activation and effect application.
