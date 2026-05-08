@@ -9,6 +9,8 @@ priority: 3
 tags: [tech-debt, escape-hatch, governance]
 parents: []
 dependents:
+  - [[mechanic_mech_ai_termination]]
+  - [[mechanic_mech_arena_lifecycle]]
   - [[upsilontypes:entity_character]]
 ---
 # Technical Debt Backlog
