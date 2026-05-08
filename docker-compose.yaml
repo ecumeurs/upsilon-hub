@@ -24,6 +24,8 @@ services:
     dns:
       - 8.8.8.8
       - 1.1.1.1
+    networks:
+      - ollama_network
 
   db:
     image: postgres:18
@@ -38,3 +40,8 @@ services:
 
 volumes:
   laravel_db_data:
+
+networks:
+  ollama_network:
+    # Use 'external: true' if you created the network manually via the CLI first
+    external: true
