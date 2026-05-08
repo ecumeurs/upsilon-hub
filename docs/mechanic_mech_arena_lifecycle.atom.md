@@ -9,7 +9,7 @@ layer: IMPLEMENTATION
 priority: 2
 version: 1.0
 parents:
-  - [[upsilonapi:req_tech_debt_backlog]]
+  - [[shared:req_tech_debt_backlog]]
 ---
 
 # New Atom

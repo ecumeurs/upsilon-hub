@@ -17,7 +17,6 @@ dependents:
   - [[upsilonbattle:contract_battle_contract]]
   - [[upsiloncli:contract_cli_contract]]
   - [[upsilonmapdata:contract_mapdata_contract]]
-  - [[upsilonmapmaker:contract_mapmaker_contract]]
   - [[upsilontools:contract_tools_contract]]
   - [[upsilontypes:contract_types_contract]]
 ---

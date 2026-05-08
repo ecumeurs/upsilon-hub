@@ -3,7 +3,7 @@ id: mechanic_mech_ai_termination
 status: DRAFT
 version: 1.0
 parents:
-  - [[upsilonapi:req_tech_debt_backlog]]
+  - [[shared:req_tech_debt_backlog]]
 dependents: []
 layer: IMPLEMENTATION
 priority: 2

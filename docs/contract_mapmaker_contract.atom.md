@@ -3,7 +3,8 @@ id: contract_mapmaker_contract
 status: STABLE
 type: CONTRACT
 priority: 1
-dependents: []
+dependents:
+  - [[upsilonmapmaker:mechanic_mapmaker_seed_determinism]]
 human_name: "Map Maker Integration Contract"
 layer: N/A
 version: 1.0
