@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# @spec-link [[rule_code_health_monitoring]]
+# This script enforces the project's "Zero Error" code health standards, including
+# file length, function complexity, and intent-based documentation requirements.
+# Note: this is highly specific for our project: it will only work for the files
+# and frameworks we use (Go, PHP, JS, Vue, Python).
 import os
 import re
 import sys
@@ -11,8 +16,7 @@ IGNORE_DIRS = {'vendor', 'node_modules', '.git', 'dist', 'build'}
 LOC_WARN = 300
 LOC_ERROR = 500
 NESTING_MAX = 3
-COMMENT_WARN = 0.30
-COMMENT_ERROR = 0.50
+# Documentation policy: Preceding comments only, ATD tags excluded.
 ATD_MIN = 2
 ATD_WARN_MAX = 5
 ATD_ERROR_MAX = 10
@@ -89,11 +93,12 @@ class HealthCheck:
             self.check_functions(filepath, lines, ignore_complexity, ignore_docs)
 
     def check_functions(self, filepath, lines, ignore_complexity, ignore_docs):
-        func_start_re = re.compile(r'^\s*(?:func|def|function)\s+([a-zA-Z0-9_]+)|^\s*([a-zA-Z0-9_]+)\s*[:=]\s*(?:\(.*\)|[a-zA-Z0-9_]+)?\s*=>')
+        func_start_re = re.compile(r'^\s*(?:func|def|function)\s+(?:\([^*)]*(?:\*?[a-zA-Z0-9_]+)?\)\s+)?([a-zA-Z0-9_]+)|^\s*([a-zA-Z0-9_]+)\s*[:=]\s*(?:\(.*\)|[a-zA-Z0-9_]+)?\s*=>')
         is_python = filepath.endswith('.py')
         
         current_func = None
-        func_lines = []
+        func_preceding = []
+        func_body = []
         depth = 0
         max_depth = 0
         preceding_comments = []
@@ -103,12 +108,12 @@ class HealthCheck:
 
             if not clean_line:
                 if current_func:
-                    func_lines.append(line)
+                    func_body.append(line)
                 continue
 
             if clean_line.startswith('//') or clean_line.startswith('#') or clean_line.startswith('/*') or clean_line.startswith('*'):
                 if current_func:
-                    func_lines.append(line)
+                    func_body.append(line)
                 else:
                     preceding_comments.append(line)
                 continue
@@ -116,9 +121,10 @@ class HealthCheck:
             match = func_start_re.search(line)
             if match:
                 if current_func:
-                    self.analyze_func(filepath, current_func, func_lines, max_depth, ignore_complexity, ignore_docs)
+                    self.analyze_func(filepath, current_func, func_preceding, func_body, max_depth, ignore_complexity, ignore_docs)
                 current_func = match.group(1) or match.group(2)
-                func_lines = preceding_comments + [line]
+                func_preceding = preceding_comments
+                func_body = [line]
                 preceding_comments = []
                 if is_python:
                     depth = 1
@@ -129,16 +135,14 @@ class HealthCheck:
                 continue
 
             if current_func:
-                func_lines.append(line)
+                func_body.append(line)
                 if is_python:
-                    # Python nesting is based on indentation, but here we use a simple heuristic
                     if clean_line.endswith(':'):
                         depth += 1
                 else:
                     depth += clean_line.count('{')
                     depth -= clean_line.count('}')
                 
-                # Complexity tracking (still using keywords for all languages as a proxy for logic depth)
                 nest_keywords = ['if ', 'if(', 'for ', 'for(', 'while ', 'while(', 'switch ', 'switch(', 'case ', 'select ', 'catch ', 'try ']
                 current_line_nesting = 0
                 for kw in nest_keywords:
@@ -149,38 +153,50 @@ class HealthCheck:
                 if depth + current_line_nesting > max_depth:
                     max_depth = depth + current_line_nesting
                 
-                # End of function
                 if not is_python and depth <= 0:
-                    self.analyze_func(filepath, current_func, func_lines, max_depth, ignore_complexity, ignore_docs)
+                    self.analyze_func(filepath, current_func, func_preceding, func_body, max_depth, ignore_complexity, ignore_docs)
                     current_func = None
-                    func_lines = []
-                elif is_python and (clean_line.startswith('def ') or clean_line.startswith('class ')):
-                    # This shouldn't happen because of the match block above, but as a fallback
-                    pass
+                    func_body = []
+                    func_preceding = []
             else:
                 preceding_comments = []
 
         if current_func:
-            self.analyze_func(filepath, current_func, func_lines, max_depth, ignore_complexity, ignore_docs)
+            self.analyze_func(filepath, current_func, func_preceding, func_body, max_depth, ignore_complexity, ignore_docs)
 
-    def analyze_func(self, filepath, name, lines, max_depth, ignore_complexity, ignore_docs):
+    def analyze_func(self, filepath, name, preceding, body, max_depth, ignore_complexity, ignore_docs):
         if not ignore_complexity:
             if max_depth > NESTING_MAX + 1:
                 self.report(filepath, "ERROR", f"Function '{name}' too complex: nesting {max_depth-1} (limit {NESTING_MAX})")
 
         if not ignore_docs:
-            total_lines = len(lines)
-            if total_lines > 0:
-                comment_lines = 0
-                for l in lines:
-                    l_strip = l.strip()
-                    if l_strip.startswith('//') or l_strip.startswith('#') or l_strip.startswith('/*') or l_strip.startswith('*') or l_strip.startswith('"""'):
-                        comment_lines += 1
-                ratio = comment_lines / total_lines
-                if ratio < COMMENT_WARN:
-                    self.report(filepath, "ERROR", f"Function '{name}' documentation critical: {ratio:.1%} (limit {COMMENT_WARN:.0%})")
-                elif ratio < COMMENT_ERROR:
-                    self.report(filepath, "WARN", f"Function '{name}' documentation low: {ratio:.1%} (limit {COMMENT_ERROR:.0%})")
+            # Filter out ATD tags from preceding comments
+            real_comments = []
+            for l in preceding:
+                l_strip = l.strip()
+                if (l_strip.startswith('//') or l_strip.startswith('#') or l_strip.startswith('/*') or l_strip.startswith('*')) and \
+                   not re.search(r'@(spec|test)-link', l_strip):
+                    # Remove comment markers to check if there is actual text
+                    clean_comment = re.sub(r'^(\/\/|#|\/\*|\*|\s)+', '', l_strip).strip()
+                    if clean_comment:
+                        real_comments.append(clean_comment)
+            
+            # Determine if exposed
+            is_exposed = False
+            if filepath.endswith('.go'):
+                is_exposed = name[0].isupper()
+            else:
+                # Basic check for non-private or explicit keywords
+                signature = body[0] if body else ""
+                if 'public' in signature or 'export' in signature or not name.startswith('_'):
+                    is_exposed = True
+
+            if not real_comments:
+                level = "ERROR" if is_exposed else "WARN"
+                msg = f"Function '{name}' missing preceding documentation."
+                if is_exposed:
+                    msg += " Public/Exposed functions require clear documentation of intent, inputs, and outputs."
+                self.report(filepath, level, msg)
 
     def report(self, filepath, level, message):
         if level == "ERROR":
@@ -209,6 +225,8 @@ if __name__ == "__main__":
     print(f"Health Check Summary:")
     print(f"Errors: {check.errors}")
     print(f"Warnings: {check.warnings}")
+    print("="*40)
+    print("Doc Policy: Preceding comments required. ATD tags excluded. Body docs discouraged.")
     print("="*40)
     if check.errors > 0:
         sys.exit(1)

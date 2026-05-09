@@ -61,9 +61,9 @@ Every implementation MUST have a parent.
 3.  Create/Link the Business atom once the user provides the context.
 
 ## Prohibited Practices
-*   **Global Headers:** Never put `@spec-link` at the top of a file. It must be "surgical" (above the logic).
-*   **Defaulting:** Do not use `@lint-ignore` tags unless the user explicitly approves it for a specific, justified reason.
-*   **Shallow Docs:** Do not add "The function X does Y" comments. Add "Intent: X is required to ensure Y constraint is met" style comments.
+*   **Intent Documentation:** Every function must have at least one descriptive comment immediately preceding its definition. For public/exposed functions, this is an **ERROR** if missing; for private functions, it is a **WARN**.
+*   **Shallow/Body Docs:** Avoid "The function X does Y" style comments. Add "Intent: X is required to ensure Y constraint is met" style comments. Documentation should reside **above** the function signature. Documentation inside the function body is discouraged unless resolving exceptionally complex logic or border cases.
+*   **ATD Tags vs. Docs:** While `@spec-link` and `@test-link` are mandatory for traceability, they do **not** count as descriptive documentation. A function with only ATD tags will be flagged as missing intent documentation.
 
 ## Phase 4: Final Verification
 1.  **Lint Check:** Run `python3 scripts/code_health_check.py <target_path>` to confirm 0 errors.
