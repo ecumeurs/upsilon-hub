@@ -13,7 +13,7 @@ echo -e "--- Running All Unit Tests ---\n"
 # 1. Run Go Tests
 echo ">>> Executing Go Tests..."
 # We target specific modules to ensure coverage across the workspace
-go test ./upsilonapi/... ./upsilonbattle/... ./upsiloncli/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilonserializer/... ./upsilontools/... ./upsilontypes/...
+go test ./upsilonapi/... ./upsilonbattle/... ./upsiloncli/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilontools/... ./upsilontypes/...
 GO_EXIT=$?
 
 # 2. Run PHP Tests

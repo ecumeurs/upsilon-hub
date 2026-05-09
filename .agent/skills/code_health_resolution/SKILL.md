@@ -70,6 +70,9 @@ Every implementation MUST have a parent.
 2.  **Structural Check:** Run `atd_weave()` followed by `atd_check(semantic=true)`.
 3.  **Regression Check:** Run `scripts/run_all_unit_tests.sh` again.
     *   **CRITICAL:** Ensure the health resolution (comments, refactors) did not break existing functionality.
+4.  **Build Check**: Run `scripts/build_services.sh` to ensure the code compiles successfully.
+5.  **Start Services**: Run `scripts/start_services.sh` to ensure the services start successfully. Run seeding using `scripts/seed_ci.sh`
+6.  **Integration Check**: Run `scripts/trigger_quick_ci_tests.sh` to ensure the services integrate successfully.
 
 ## Atom Location Policy
 When creating new atoms during resolution:
