@@ -200,6 +200,7 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
 | [Recursive Mutex Lock Deadlock in CLI Listener](issues/Ref_20260505_cli_listener_recursive_lock_deadlock.md) | 2026-05-05 | Open | Critical | The `notifyWaiters` function in `listener.go` contains a double-lock on `l.wa... |
+| [Trap Trigger Type Enforcement](issues/ISS-096_20260510_trap_trigger_enforcement.md) | 2026-05-10 | Open | Medium | Traps (positional effects) currently fail silently if they are missing a `Tri... |
 | [Skill Rework & Generation Standardization](issues/ISS-095_20260507_skill_rework.md) | 2026-05-07 | Open | Medium | The current skill generation and execution framework suffers from several des... |
 | [Administrative Account Self-Destruction Risk](issues/ISS-093_20260429_admin_account_self_destruction_risk.md) | 2026-04-29 | Open | Critical | The administrative API allows users with admin privileges to target any accou... |
 | [Action Endpoint Segregation](issues/ISS-090_20260427_action_endpoint_segregation.md) | 2026-04-27 | Open | Medium | Currently, all tactical actions (move, attack, skill, pass) are funneled thro... |
