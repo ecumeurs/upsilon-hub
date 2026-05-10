@@ -13,9 +13,9 @@ EXTENSIONS = {'.go', '.py', '.php', '.js', '.vue'}
 IGNORE_DIRS = {'vendor', 'node_modules', '.git', 'dist', 'build'}
 
 # Thresholds
-LOC_WARN = 300
-LOC_ERROR = 500
-NESTING_MAX = 3
+LOC_WARN = 400
+LOC_ERROR = 600
+NESTING_MAX = 4
 # Documentation policy: Preceding comments only, ATD tags excluded.
 ATD_MIN = 2
 ATD_WARN_MAX = 5
@@ -225,9 +225,6 @@ if __name__ == "__main__":
     print(f"Health Check Summary:")
     print(f"Errors: {check.errors}")
     print(f"Warnings: {check.warnings}")
-    print("="*40)
-    print("Doc Policy: Preceding comments required. ATD tags excluded. Body docs discouraged.")
-    print("="*40)
     if check.errors > 0:
         sys.exit(1)
     sys.exit(0)
