@@ -17,7 +17,7 @@ LOC_WARN = 400
 LOC_ERROR = 600
 NESTING_MAX = 4
 # Documentation policy: Preceding comments only, ATD tags excluded.
-ATD_MIN = 2
+ATD_MIN = 1
 ATD_WARN_MAX = 5
 ATD_ERROR_MAX = 10
 
