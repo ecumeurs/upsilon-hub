@@ -19,3 +19,9 @@ These rules are non-negotiable for all implementation work in Upsilon Hub.
 - **Precision Testing**: Always use `scripts/trigger_one_ci_test.sh` for targeted scenario validation.
 - **Unit Tests**: `run_all_unit_tests.sh` is lightweight and should be run frequently during refactoring.
 - **Isolation**: Testing is meant to test production code. Avoid adding "test-only" logic to production files unless absolutely necessary for observability.
+
+## 4. Artifact Management
+- **Binary Output**: All compiled binaries must be placed in the `bin/` directory of their respective service.
+- **Gitignore Enforcement**: The `bin/` folder is strictly ignored in `.gitignore`. Never commit compiled binaries to the repository.
+- **Build Convention**: Build commands should explicitly specify the output path: `go build -o bin/service-name ./cmd/service-name`.
+- **Documentation**: Include build instructions in each service's `README.md` with the explicit binary output path.
