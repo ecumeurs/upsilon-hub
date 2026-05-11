@@ -171,12 +171,12 @@ jobs:
   # STAGE 3: Integration & E2E Tests (depend on unit tests)
   # These run in parallel after unit tests pass
   # ============================================================================
-  e2e-battles:
-    name: End-to-End Battle Suite
+  integration-tests:
+    name: Integration & E2E Tests
     needs: unit-test-summary
     if: always()
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 60
 
     steps:
       - name: Checkout Code with Submodules
@@ -184,192 +184,61 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Prepare Environment Variables
+      - name: Prepare Environment
         run: |
           cp .env.ci .env
           mkdir -p upsiloncli/tests/logs
+          sed -i 's/REVERB_HOST=127.0.0.1/REVERB_HOST=localhost/' .env
 
-      - name: Boot Upsilon Services
-        run: docker compose -f docker-compose.ci.yaml up -d --wait --wait-timeout 300
-
-      - name: Show Service Status
-        if: always()
-        run: docker compose -f docker-compose.ci.yaml ps
-
-      - name: "E2E: Run Centralized Customer Scenarios"
-        run: |
-          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh ./tests/run_all_scenarios.sh
-
-      - name: Generate CI Report
-        if: always()
-        run: |
-          ./tests/ci_report.sh > ci_report.md 2>&1 || true
-          cat ci_report.md >> $GITHUB_STEP_SUMMARY
-
-      - name: Collect Docker Logs
-        if: failure()
-        run: |
-          mkdir -p ci_logs
-          docker compose -f docker-compose.ci.yaml logs app > ci_logs/laravel.log 2>&1
-          docker compose -f docker-compose.ci.yaml logs ws > ci_logs/reverb.log 2>&1
-          docker compose -f docker-compose.ci.yaml logs engine > ci_logs/engine.log 2>&1
-          docker compose -f docker-compose.ci.yaml logs db > ci_logs/db.log 2>&1
-          docker compose -f docker-compose.ci.yaml logs tester > ci_logs/tester.log 2>&1
-
-      - name: Upload CI Report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: ci-report
-          path: ci_report.md
-          retention-days: 3
-
-      - name: Upload Battle Logs on Failure
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: ci-logs
-          path: |
-            ci_logs/
-            upsiloncli/tests/logs/
-          retention-days: 3
-
-      - name: Teardown Docker Stack
-        if: always()
-        run: docker compose -f docker-compose.ci.yaml down -v
-
-  edge-cases:
-    name: Edge Case Test Suite
-    needs: unit-test-summary
-    if: always()
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Checkout Code with Submodules
-        uses: actions/checkout@v6
-        with:
-          submodules: recursive
-
-      - name: Prepare Environment Variables
-        run: |
-          cp .env.ci .env
-          mkdir -p upsiloncli/tests/logs
-
-      - name: Boot Upsilon Services
-        run: docker compose -f docker-compose.ci.yaml up -d --wait --wait-timeout 300
-
-      - name: Show Service Status
-        if: always()
-        run: docker compose -f docker-compose.ci.yaml ps
-
-      - name: Run Edge Case Suite
-        run: |
-          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh ./tests/run_all_edge_cases.sh
-
-      - name: Generate Edge Case Report
-        if: always()
-        run: |
-          if ls upsiloncli/tests/logs/edge_*.log >/dev/null 2>&1; then
-            ./tests/edge_case_report.sh > edge_case_report.md 2>&1 || true
-            cat edge_case_report.md >> $GITHUB_STEP_SUMMARY
-          else
-            echo "No edge case test logs found - tests may have failed early"
-            echo "Check Docker logs for test execution errors"
-          fi
-
-      - name: Collect Docker Logs
-        if: failure()
-        run: |
-          mkdir -p ci_logs
-          docker compose -f docker-compose.ci.yaml logs app > ci_logs/laravel.log 2>&1
-          docker compose -f docker-compose.ci.yaml logs ws > ci_logs/reverb.log 2>&1
-          docker compose -f docker-compose.ci.yaml logs engine > ci_logs/engine.log 2>&1
-          docker compose -f docker-compose.ci.yaml logs db > ci_logs/db.log 2>&1
-          docker compose -f docker-compose.ci.yaml logs tester > ci_logs/tester.log 2>&1
-
-      - name: Upload Edge Case Report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: edge-case-report
-          path: edge_case_report.md
-          retention-days: 3
-
-      - name: Upload Edge Case Logs on Failure
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: edge-case-logs
-          path: |
-            ci_logs/
-            upsiloncli/tests/logs/
-          retention-days: 3
-
-      - name: Teardown Docker Stack
-        if: always()
-        run: docker compose -f docker-compose.ci.yaml down -v
-
-  playwright-e2e:
-    name: Playwright E2E Suite
-    needs: unit-test-summary
-    if: always()
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Checkout Code with Submodules
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Setup Node.js
+      - name: Setup Node.js (for Playwright)
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
           cache-dependency-path: battleui/package-lock.json
 
-      - name: Install Dependencies
+      - name: Install Playwright Dependencies
         run: |
           cd battleui
           npm install
           npx playwright install --with-deps chromium
 
-      - name: Prepare Environment
-        run: |
-          cp .env.ci .env
-          sed -i 's/REVERB_HOST=127.0.0.1/REVERB_HOST=localhost/' .env
-
-      - name: Boot Docker Stack
+      - name: Boot Upsilon Services (Built Once)
         run: docker compose -f docker-compose.ci.yaml up -d --wait --wait-timeout 300
 
       - name: Show Service Status
-        if: always()
         run: docker compose -f docker-compose.ci.yaml ps
 
-      - name: Run Playwright Tests
+      - name: "E2E: Run Centralized Customer Scenarios"
+        run: |
+          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh ./tests/run_all_scenarios.sh
+
+      - name: "E2E: Run Edge Case Suite"
+        run: |
+          docker compose -f docker-compose.ci.yaml exec -T tester /bin/sh ./tests/run_all_edge_cases.sh
+
+      - name: "E2E: Run Playwright Tests"
         run: |
           cd battleui
           PLAYWRIGHT_SKIP_SERVER=1 npx playwright test
 
-      - name: Generate Visual Audit Report
+      - name: Generate Combined Reports
         if: always()
         run: |
+          ./tests/ci_report.sh > ci_report.md 2>&1 || true
+          cat ci_report.md >> $GITHUB_STEP_SUMMARY
+          
+          if ls upsiloncli/tests/logs/edge_*.log >/dev/null 2>&1; then
+            ./tests/edge_case_report.sh > edge_case_report.md 2>&1 || true
+            cat edge_case_report.md >> $GITHUB_STEP_SUMMARY
+          fi
+
           echo "### Playwright Test Results" >> $GITHUB_STEP_SUMMARY
           if [ -d "battleui/playwright-report" ]; then
             echo "✅ HTML Report generated." >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ No HTML Report found." >> $GITHUB_STEP_SUMMARY
           fi
-
-      - name: Upload Playwright Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: battleui/playwright-report/
-          retention-days: 3
 
       - name: Collect Docker Logs on Failure
         if: failure()
@@ -379,15 +248,19 @@ jobs:
           docker compose -f docker-compose.ci.yaml logs ws > ci_logs/reverb.log 2>&1
           docker compose -f docker-compose.ci.yaml logs engine > ci_logs/engine.log 2>&1
           docker compose -f docker-compose.ci.yaml logs db > ci_logs/db.log 2>&1
+          docker compose -f docker-compose.ci.yaml logs tester > ci_logs/tester.log 2>&1
 
-      - name: Upload Debug Artifacts on Failure
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - name: Upload Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
-          name: debug-logs
+          name: integration-test-results
           path: |
+            ci_report.md
+            edge_case_report.md
+            battleui/playwright-report/
             ci_logs/
-            battleui/tests/playwright/.output/
+            upsiloncli/tests/logs/
           retention-days: 3
 
       - name: Teardown Docker Stack

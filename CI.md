@@ -4,14 +4,13 @@ This document outlines the automated verification strategy for Upsilon Battle, e
 
 ## Architecture
 
-The CI pipeline is split into four GitHub Actions workflows with increasing scope:
+The CI pipeline is consolidated into a single workflow file (`.github/workflows/ci.yml`) with three primary stages to optimize resource usage and Docker build times:
 
-| Workflow | Trigger | Purpose |
+| Stage | Trigger | Purpose |
 |---|---|---|
-| **Lint & Build** | Push + PR | Go syntax checks, compilation |
-| **Unit Tests** | Push + PR | Go + PHP isolated tests |
-| **E2E Battles** | Push + PR | Full stack integration & Customer Scenarios |
-| **Edge Case Tests** | Push + PR | API boundary validation & error handling |
+| **Build & Lint** | Push + PR | Go/PHP syntax checks, Dockerfile validation, compilation |
+| **Unit Tests** | Push + PR | Isolated Go and PHP unit tests (SQLite In-Memory) |
+| **Integration & E2E** | Push + PR | Full stack integration, Edge cases, and Playwright UI tests |
 
 ### Infrastructure
 
@@ -161,9 +160,9 @@ The following scenarios map directly to the **Conformity Matrix** and validate s
 
 ---
 
-## E2E Testing Strategy (`e2e-battles.yml`)
+## Integration & E2E Testing Strategy
 
-Instead of individual workflow steps, all end-to-end verifications are centralized in the `upsiloncli/tests/scenarios/` directory.
+All end-to-end verifications are centralized and executed within a single ephemeral Docker stack to ensure consistency and minimize redundant build steps.
 
 ### 1. Centralized Runner (`run_all_scenarios.sh`)
 The runner automatically discovers all `e2e_*.js` scripts. It handles:

@@ -43,7 +43,7 @@ fi
 
 # 2. GO VET
 echo -e "\n${YELLOW}[2/5] Running Go Vet...${NC}"
-MODULES="./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilonserializer/... ./upsilontools/..."
+MODULES="./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilontools/..."
 if go vet $MODULES; then
     GO_VET="PASS"
     echo -e "${GREEN}✓ Go Vet passed${NC}"

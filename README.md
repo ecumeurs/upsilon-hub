@@ -44,7 +44,6 @@ The UpsilonBattle ecosystem is built as a modular multi-repo system. Each core c
 5. **Shared Assets & Utilities**:
    - `upsilonmapdata`: Geometric board data and obstacle definitions.
    - `upsilonmapmaker`: Procedural generation tools for game boards.
-   - `upsilonserializer`: Shared logic for binary/JSON serialization across the stack.
    - `upsilontools`: Common TRPG utilities and helper functions.
    - `upsilontypes`: Shared type definitions and domain models used across all modules.
 
