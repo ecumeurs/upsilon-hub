@@ -41,6 +41,10 @@
     {
       "name": "upsilontools",
       "path": "upsilontools"
+    },
+    {
+      "name": "upsilonaws",
+      "path": "upsilonaws"
     }
   ]
 }

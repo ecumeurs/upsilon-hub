@@ -22,3 +22,6 @@
 [submodule "upsilontypes"]
 	path = upsilontypes
 	url = git@github.com:ecumeurs/upsilontypes.git
+[submodule "upsilonaws"]
+	path = upsilonaws
+	url = git@github.com:ecumeurs/upsilonaws.git

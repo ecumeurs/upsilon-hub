@@ -47,6 +47,12 @@ The UpsilonBattle ecosystem is built as a modular multi-repo system. Each core c
    - `upsilontools`: Common TRPG utilities and helper functions.
    - `upsilontypes`: Shared type definitions and domain models used across all modules.
 
+6. **AWS Infrastructure (`upsilonaws`)**:
+   - Bash-based provisioning scripts for deploying the full stack to AWS (eu-west-3).
+   - Manages: VPC, EC2 (t3.medium), RDS PostgreSQL 15, Route 53 DNS, nginx + Let's Encrypt SSL.
+   - Public endpoint: [upsilon-hub.com](https://upsilon-hub.com) — run `setup.sh` to provision, `teardown.sh` to wipe everything.
+   - Designed for pay-per-session use (~$0.075/hour, $0.50/month for Route 53 zone).
+
 ## Setup
 
 The Upsilon project is a complex ecosystem. For a detailed guide on how to prepare your environment, install dependencies, and configure the system, please refer to the **[Setup Documentation](Setup.md)**.
