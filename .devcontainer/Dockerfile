@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     libpq-dev \
     jq \
+    dnsutils \
     postgresql-client \
     locales \ 
     libicu-dev \
