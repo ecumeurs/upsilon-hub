@@ -10,7 +10,7 @@ Contains the "Who's Who" of the project, including the service architecture (Lar
 **CORE WORKFLOW.**
 Defines the Atomic Traceable Documentation (ATD) lifecycle. Follow this for all feature development and bug fixes:
 - **Atom Blueprint**: Strict structure for `.atom.md` files.
-- **9 Consolidated Types**: From REQUIREMENT to MECHANIC.
+- **11 Types**: From CONTRACT/VISION to REQUIREMENT to MECHANIC.
 - **Lifecycle Phases**: Discovery → Specification → Implementation → Verification.
 
 ## 3. Operational Guards & Standards ([COMMON.md](.agent/rules/COMMON.md))

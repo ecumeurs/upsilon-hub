@@ -48,6 +48,10 @@ class HealthCheck:
         with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
             lines = f.readlines()
         content = "".join(lines)
+        if '@lint-ignore-all' in content:
+            print(f"Skipping {filepath} (@lint-ignore-all found)")
+            return
+
         ignore_bloating = '@lint-ignore-file-bloating' in content
         ignore_complexity = '@lint-ignore-complexity' in content
         ignore_docs = '@lint-ignore-documentation' in content
@@ -130,6 +134,10 @@ class HealthCheck:
                     depth = 1
                 else:
                     depth = line.count('{') - line.count('}')
+                    if '{' in line and depth <= 0:
+                        self.analyze_func(filepath, current_func, func_preceding, func_body, 1, ignore_complexity, ignore_docs)
+                        current_func = None
+                        continue
                     if depth < 1: depth = 1 
                 max_depth = depth
                 continue
