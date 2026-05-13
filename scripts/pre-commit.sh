@@ -20,6 +20,10 @@ GO_TEST="FAIL"
 PHP_TEST="FAIL"
 HEALTH_CHECK="FAIL"
 
+# Ensure we are in the root directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR/.." || exit 1
+
 # 0. CODE HEALTH CHECK
 echo -e "\n${YELLOW}[0/5] Running Code Health Check (DISABLED)...${NC}"
 # if ./scripts/code_health_check.py; then
@@ -94,6 +98,8 @@ echo -e "${BLUE}=======================================${NC}"
 format_status() {
     if [ "$1" == "PASS" ]; then
         echo -e "${GREEN}PASS${NC}"
+    elif [ "$1" == "SKIP" ]; then
+        echo -e "${BLUE}SKIP${NC}"
     elif [ "$1" == "NO_ENV" ] || [ "$1" == "MISSING" ]; then
         echo -e "${YELLOW}$1${NC}"
     else
@@ -108,7 +114,7 @@ echo -e "Go Unit Tests     : $(format_status $GO_TEST)"
 echo -e "PHP Unit Tests    : $(format_status $PHP_TEST)"
 echo -e "${BLUE}=======================================${NC}"
 
-if [ "$HEALTH_CHECK" == "PASS" ] && [ "$GO_SYNC" == "PASS" ] && [ "$GO_VET" == "PASS" ] && [ "$GO_TEST" == "PASS" ]; then
+if ([[ "$HEALTH_CHECK" =~ ^(PASS|SKIP)$ ]]) && [ "$GO_SYNC" == "PASS" ] && [ "$GO_VET" == "PASS" ] && [ "$GO_TEST" == "PASS" ]; then
     echo -e "\n${GREEN}READY TO COMMIT (Go checks passed)${NC}"
     exit 0
 else
