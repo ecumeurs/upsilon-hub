@@ -11,6 +11,7 @@ parents: []
 dependents:
   - [[mechanic_mech_ai_termination]]
   - [[mechanic_mech_arena_lifecycle]]
+  - [[upsilonbattle:mech_behavior_system]]
   - [[upsilontypes:entity_character]]
 ---
 # Technical Debt Backlog
