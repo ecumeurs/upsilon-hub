@@ -32,8 +32,8 @@ All code must adhere to the "Zero Error" health standard enforced by `scripts/co
 NOTE: the script isn't intelligent enough to differentiate our code from third party framework (like laravel). In which case: add a @lint-ignore-all
 
 ### 5.1 File Bloating
-- **Warning**: Files exceeding **400 LOC**.
-- **Error**: Files exceeding **600 LOC**.
+- **Warning**: Files exceeding **400 effective LOC** (excluding imports and blank lines).
+- **Error**: Files exceeding **600 effective LOC** (excluding imports and blank lines).
 - **Bypass**: Use `@lint-ignore-file-bloating` only for exceptional cases.
 
 ### 5.2 Logic Complexity

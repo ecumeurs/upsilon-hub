@@ -59,11 +59,42 @@ class HealthCheck:
 
         print(f"Checking {filepath}...")
         if not ignore_bloating:
-            loc = len(lines)
+            effective_loc = 0
+            in_import_block = False
+            for line in lines:
+                clean = line.strip()
+                if not clean:
+                    continue
+                
+                is_import = False
+                if filepath.endswith('.go'):
+                    if clean.startswith('import ('):
+                        in_import_block = True
+                        is_import = True
+                    elif in_import_block:
+                        is_import = True
+                        if clean.startswith(')'):
+                            in_import_block = False
+                    elif clean.startswith('import '):
+                        is_import = True
+                elif filepath.endswith('.php'):
+                    if clean.startswith('use ') or clean.startswith('require') or clean.startswith('include'):
+                        is_import = True
+                elif filepath.endswith(('.js', '.vue')):
+                    if clean.startswith('import ') or (clean.startswith('export ') and 'from' in clean) or 'require(' in clean:
+                        is_import = True
+                elif filepath.endswith('.py'):
+                    if clean.startswith('import ') or clean.startswith('from '):
+                        is_import = True
+                
+                if not is_import:
+                    effective_loc += 1
+            
+            loc = effective_loc
             if loc > LOC_ERROR:
-                self.report(filepath, "ERROR", f"File too long: {loc} LOC (limit {LOC_ERROR})")
+                self.report(filepath, "ERROR", f"File too long: {loc} effective LOC (limit {LOC_ERROR})")
             elif loc > LOC_WARN:
-                self.report(filepath, "WARN", f"File long: {loc} LOC (limit {LOC_WARN})")
+                self.report(filepath, "WARN", f"File long: {loc} effective LOC (limit {LOC_WARN})")
 
         is_test_file = any(t in filepath for t in ['_test.go', '.spec.', '.test.']) or '/tests/' in filepath.lower()
         atd_links_matches = re.findall(r'@(spec|test)-link\s+\[\[([a-zA-Z0-9_:-]+)\]\]', content)
