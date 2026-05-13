@@ -4,7 +4,7 @@
 **Ref:** `ISS-069`
 **Date:** 2026-04-22
 **Severity:** Medium
-**Status:** Open
+**Status:** Resolved
 **Component:** `upsilonbattle/battlearena/controller/controllers`
 **Affects**: `upsilonbattle/battlearena/ruler`, matchmaking system
 
@@ -111,3 +111,15 @@ func (team *Team) ValidateComposition() bool {
 - `V2_ARCHITECTURAL_DECISIONS.md` - AI progression decisions
 - `upsilonbattle/battlearena/controller/controllers/aggressive.go` - Current AI implementation
 - `docs/rule_progression.atom.md` - Shared progression rules
+
+## Resolution (2026-05-13)
+
+Implemented in full across the v2_milestone "Archetype AI" work:
+
+- **Behavior pipeline:** `upsilonbattle/battlearena/controller/behavior/` — `LayeredBehavior`, `DecisionDraft`, `DecisionMemory`, `GameContext`, `AggressiveBehavior` baseline. Atoms: `[[mechanic_mech_behavior_layered]]`, `[[mechanic_mech_decision_memory]]`.
+- **12 micro-behaviors:** `controller/behavior/micro/` — BattleFocus, ChargeIn, KiteAway, MaintainRange, FocusBackline, FocusWeakest, HealAlly, ShieldAlly, StayBehindFront, BackstabSeeker, Flank, CounterCharge, LoneWolf, PreserveResource, Ambush, StayWithPack.
+- **4 archetypes + registry:** `controller/archetype/` — Fighter, Ranger, Support, Sneak. Each declares behavior stack, stat weights, and skill bundle. Atom: `[[mec_ai_archetype_system]]`.
+- **Grade table + CP formula:** `upsilontypes/entity/grade/` — GradeFromWins (I→V, hard cap at 40 wins), CPForGrade (100–500). Atom: `[[mechanic_ai_progression_matching]]`.
+- **Bridge auto-gen:** `upsilonapi/bridge/` — `generateEntityFromArchetype()`, `validateTeamComposition()`. Atom: `[[rule_team_composition]]`.
+- **Laravel PVE wiring:** `MatchMakingController::assignAIArchetypes()` enforces ≤1 support/sneak; AI entities carry `auto_gen=true`+`archetype`; player payload carries `total_wins`.
+- **Tests:** Go unit tests for behavior, memory, pipeline, micro, archetype, grade, bridge. E2E: 5 PVE scenarios in `upsiloncli/tests/scenarios/`.
