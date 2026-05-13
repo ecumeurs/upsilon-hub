@@ -523,7 +523,7 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 
 ### 3.1 Upsilon API (Go Combat Engine)
 **Source Module:** [[api_go_battle_engine]]  
-**Base URL:** `http://localhost:8081/internal` (Internal Only)
+**Base URL:** `http://localhost:8081/v1` (Internal Only)
 
 #### `GET /health`
 - **Specification:** [[api_go_health_check]]
@@ -532,7 +532,7 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 
 #### `POST /arena/start`
 - **Specification:** [[api_go_battle_start]]
-- **Intent:** Initialize a tactical arena instance.
+- **Intent:** Initialize a tactical arena instance. Supports AI archetypes via `auto_gen` and `archetype` fields.
 - **Input:** `ArenaStartRequest` (JSON)
 
 #### `POST /arena/{id}/action`
@@ -549,6 +549,12 @@ This section documents internal-facing interfaces that are **NOT** reachable fro
 - **Specification:** [[api_arena_existence_check]]
 - **Intent:** Verify if an arena instance exists in engine memory.
 - **Output:** `ArenaExistsResponse` (JSON)
+
+#### `POST /skills/generate`
+- **Specification:** [[api_skill_generation]]
+- **Intent:** Generate a random balanced skill based on optional constraints.
+- **Input:** `SkillGenerateRequest` (JSON)
+- **Output:** `SkillGenerateResponse` (JSON)
 
 ### 3.2 Asynchronous Webhook (Callback)
 **Destination:** `POST /api/webhook/upsilon` (on Laravel Gateway) — Must be reachable internally from the Go Engine.
@@ -686,6 +692,8 @@ Detailed state of a single actor.
 | `name` | `string` | Display name. |
 | `hp` | `int` | Current Hit Points. Dead units are marked with `hp: 0`. |
 | `max_hp` | `int` | Maximum Hit Points. |
+| `archetype` | `string` | Optional: "fighter"\|"ranger"\|"support"\|"sneak". |
+| `auto_gen` | `boolean` | True → Go generates stats and skills from archetype+grade. |
 | `dead` | `boolean` | True if the character has been eliminated in this session. |
 | `attack` | `int` | Base offensive power. |
 | `defense` | `int` | Base defensive mitigation. |
@@ -698,6 +706,8 @@ Detailed state of a single actor.
 - **`nickname`**: `string`
 - **`team`**: `int`
 - **`ia`**: `boolean` (True if controlled by engine)
+- **`archetype`**: `string` (Optional: default archetype for entities)
+- **`total_wins`**: `int` (Used to derive grade if `ia` is true)
 - **`entities`**: `Array<Entity>`
 
 ### 4.4 UserResource
@@ -773,5 +783,6 @@ Payload for the asynchronous engine callback.
 | `GET /api/profile/export` | [[api_profile_export]] | Data Portability | GDPR |
 | `POST /auth/logout` | [[api_auth_logout]] | [[uc_auth_logout]] | Security |
 | `GET /v1/arena/{id}/exists` | [[api_arena_existence_check]] | State Synchronization | Internal API |
+| `POST /v1/skills/generate` | [[api_skill_generation]] | Procedural Content | Internal API |
 | `Universal Envelope` | [[api_standard_envelope]] | All Interactions | Traceability |
 | `GET /leaderboard` | [[api_leaderboard]] | Rankings | Social |

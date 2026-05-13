@@ -12,9 +12,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{engineUrl}}/health",
+					"raw": "{{baseUrl}}/health",
 					"host": [
-						"{{engineUrl}}"
+						"{{baseUrl}}"
 					],
 					"path": [
 						"health"
@@ -30,12 +30,10 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Postman Arena Start\",\n    \"success\": true,\n    \"data\": {\n        \"match_id\": \"match-uuid-here\",\n        \"callback_url\": \"{{webhookUrl}}\",\n        \"players\": []\n    },\n    \"meta\": {}\n}",
+					"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Postman Arena Start\",\n    \"success\": true,\n    \"data\": {\n        \"match_id\": \"match-uuid-here\",\n        \"callback_url\": \"{{webhookUrl}}\",\n        \"players\": [\n            {\n                \"id\": \"player-uuid-here\",\n                \"nickname\": \"Test Player\",\n                \"team\": 1,\n                \"ia\": true,\n                \"archetype\": \"fighter\",\n                \"entities\": [\n                    {\n                        \"id\": \"entity-uuid-here\",\n                        \"name\": \"Knight\",\n                        \"auto_gen\": true\n                    }\n                ]\n            }\n        ]\n    },\n    \"meta\": {}\n}",
 					"options": {
 						"raw": {
-							"raw": {
-								"language": "json"
-							}
+							"language": "json"
 						}
 					}
 				},
@@ -144,12 +142,44 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Skill Generate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"request_id\": \"{{$guid}}\",\n    \"message\": \"Postman Skill Generate\",\n    \"success\": true,\n    \"data\": {\n        \"grade\": \"II\",\n        \"include_tags\": [\"fire\"]\n    },\n    \"meta\": {}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{engineUrl}}/skills/generate",
+					"host": [
+						"{{engineUrl}}"
+					],
+					"path": [
+						"skills",
+						"generate"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [
 		{
+			"key": "baseUrl",
+			"value": "http://localhost:8081",
+			"type": "string"
+		},
+		{
 			"key": "engineUrl",
-			"value": "http://localhost:8081/internal",
+			"value": "http://localhost:8081/v1",
 			"type": "string"
 		},
 		{

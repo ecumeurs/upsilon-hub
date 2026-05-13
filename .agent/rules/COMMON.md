@@ -8,6 +8,7 @@ These rules are non-negotiable for all implementation work in Upsilon Hub.
 
 ## 1. Communication Layer Protocol
 - **API Envelope**: Never modify the communication layer without ensuring compliance with `[[api_standard_envelope]]`.
+- **Documentation Sync**: Any alteration to the communication API (path, payload, behavior) MANDATORILY requires a corresponding update to `communication.md`, Postman collections, and relevant ATD atoms.
 - **Warning**: Altering serialization or the bridge API contract must trigger an explicit warning for the user to approve.
 
 ## 2. Error Handling Philosophy
