@@ -20,6 +20,7 @@
 | ISS-089 | [ISS-089_20260426_mechanic_random_shop_algorithm.md](ISS-089_20260426_mechanic_random_shop_algorithm.md) | Medium | Open | Deterministic daily rotating shop algorithm |
 | ISS-087 | [ISS-087_20260426_grid_generator_tuning.md](ISS-087_20260426_grid_generator_tuning.md) | Medium | Open | Generated battle maps consistently mis-sized / mis-densified |
 | ISS-083 | [ISS-083_20260425_automate_api_help_endpoints.md](ISS-083_20260425_automate_api_help_endpoints.md) | Medium | Open | API help endpoints rely on fragile reflection + atom parsing |
+| ISS-082 | [ISS-082_20260425_frontend_playwright_test_seams.md](ISS-082_20260425_frontend_playwright_test_seams.md) | Medium | Open | Playwright HTML report now captured in CI; 2 specs fail + 2 hang (frontend, see ISS-084) |
 | ISS-081 | [ISS-081_20260425_cross_stack_error_handling.md](ISS-081_20260425_cross_stack_error_handling.md) | Medium | Open | `error_key` only propagated on engine action paths; harmonize cross-stack |
 | ISS-080 | [ISS-080_20260425_error_key_atd_and_envelope.md](ISS-080_20260425_error_key_atd_and_envelope.md) | Medium | Open | ATD for `error_key` taxonomy; possible promotion to envelope root |
 | ISS-079 | [ISS-079_20260424_cell_access_y_major_standard.md](ISS-079_20260424_cell_access_y_major_standard.md) | Medium | Open | Standardize cell access on Y-major layout via shared helper |
@@ -45,7 +46,6 @@
 | ISS-086 | [ISS-086_20260426_skill_item_registry_admin.md](ISS-086_20260426_skill_item_registry_admin.md) | High | Resolved | DB-backed skill/item registries with admin CRUD |
 | ISS-085 | [ISS-085_20260425_extract_properties_shared_library.md](ISS-085_20260425_extract_properties_shared_library.md) | Medium | Resolved | Extract property system + skill weight to shared library |
 | ISS-084 | [ISS-084_20260425_component_split_effects_plan.md](ISS-084_20260425_component_split_effects_plan.md) | Medium | Resolved | Split arena UI components + restore visual effects |
-| ISS-082 | [ISS-082_20260425_frontend_playwright_test_seams.md](ISS-082_20260425_frontend_playwright_test_seams.md) | Medium | Resolved | Front-end Playwright suite + component-isolation seams |
 | ISS-074 | [ISS-074_20260423_comprehensive_item_system.md](ISS-074_20260423_comprehensive_item_system.md) | High | Resolved | End-to-end item system: shop, inventory, equipment, battle |
 | ISS-073 | [ISS-073_20260423_roguelike_skill_system.md](ISS-073_20260423_roguelike_skill_system.md) | High | Resolved | Roguelike skill inventory + slot progression |
 | ISS-071 | [ISS-071_20260422_starting_stats_progression.md](ISS-071_20260422_starting_stats_progression.md) | High | Resolved | V2 starting stats + 100 CP point-buy progression |

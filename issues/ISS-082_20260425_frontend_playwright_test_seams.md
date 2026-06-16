@@ -4,7 +4,7 @@
 **Ref:** `ISS-082`
 **Date:** 2026-04-25
 **Severity:** Medium
-**Status:** Resolved
+**Status:** Open (reopened 2026-06-16 — report capture fixed; specs red, see Update)
 **Component:** `battleui/`, `docker-compose.yaml`, `CI.md`
 **Affects:** Anyone wanting to verify a `BattleArena.vue` / `Components/Arena/Three*.vue` change without manual click-through.
 
@@ -180,3 +180,38 @@ If the test-component matrix grows past ~30 entries and hand-maintained `__test/
 - `docker-compose.yaml` — `app` service to extend with the Playwright install step.
 - `CLAUDE.md` — the "use the feature in a browser before reporting done" rule this issue exists to honour.
 - Prior session plan file: `/home/vscode/.claude/plans/so-browserless-chrome-or-playwright-cozy-valley.md` (verbatim source for this issue).
+
+---
+
+## Update (2026-06-16 — WP-B4, Wave-1 remediation)
+
+Reopened. The audit found this was marked Resolved while CI reported "❌ No HTML
+Report found" and the suite was effectively under-exercised.
+
+**Root cause of the report gap (fixed):** `battleui/playwright.config.ts` had **no
+`reporter` configured** (defaulted to `list`), so the `battleui/playwright-report/`
+directory that `.github/workflows/ci.yml` checks for (line 236) and uploads as an
+artifact was never created. Fixed by adding the `html` reporter (default output
+folder `playwright-report/`), plus `timeout: 60s` and CI `retries: 1` /
+`forbidOnly` to bound runaway specs. CI already runs the **full** suite
+(`ci.yml:213`, `continue-on-error`); artifacts now capture. Added `.gitignore`
+entries for `playwright-report/`, `tests/playwright/.output/`, `battle_screenshot.png`.
+
+**Live suite status (2026-06-16, all 6 specs, against the running stack):**
+
+| Spec | Result |
+|---|---|
+| `battle_debug` | ✅ pass |
+| `user_flows` | ✅ 9 passed / 1 skipped |
+| `battle_arena` | ❌ fail — "render the arena correctly" |
+| `visual_smoke_test` | ❌ fail — gather logs and DOM |
+| `battle_arena_sandbox` | ⏱ hang/timeout |
+| `components` | ⏱ hang/timeout |
+
+**Remaining work (NOT done — real frontend regressions, not test scaffolding):**
+the 2 failing + 2 hanging specs are genuine `BattleArena.vue` / arena-rendering
+regressions, closely tied to the 846-LOC god-component flagged in
+[ISS-084](ISS-084_20260425_component_split_effects_plan.md) and the audit
+frontend report. They were deliberately NOT papered over (no assertions weakened).
+Track the spec fixes under the BattleArena decomposition (ISS-084) / a dedicated
+frontend-stabilization pass; this issue stays Open until the suite is green.
