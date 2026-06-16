@@ -27,7 +27,7 @@ This issue tracks both decisions.
 
 - The standard envelope is `{ request_id, message, success, data, meta }` — see `[[api_standard_envelope]]`.
 - `meta` is documented as "Side information for debugging or testing (optional)" and is the slot we currently use to carry `error_key`.
-- The engine emits keys like `entity.path.obstacle`, `entity.turn.missmatch`, `entity.controller.missmatch`, `rule.friendly_fire`, `entity.movement.already`, `entity.path.too.long`, `entity.path.notvalid`, `entity.path.notadjacent`, `entity.path.occupied`, `entity.movement.nocredits`, `entity.movement.credits`. The shape is loosely "domain.subdomain.kind" with three components, but the rule is unwritten.
+- The engine emits keys like `entity.path.obstacle`, `entity.turn.mismatch`, `entity.controller.mismatch`, `rule.friendly_fire`, `entity.movement.already`, `entity.path.too.long`, `entity.path.notvalid`, `entity.path.notadjacent`, `entity.path.occupied`, `entity.movement.nocredits`, `entity.movement.credits`. The shape is loosely "domain.subdomain.kind" with three components, but the rule is unwritten.
 - New keys introduced 2026-04-24 by the bridge layer (request validation, arena lookup): `request.target_coords.missing`, `request.player_id.invalid`, `request.entity_id.invalid`, `arena.notfound`. These are mine; they have no atom backing.
 
 ### The Problem Scenario

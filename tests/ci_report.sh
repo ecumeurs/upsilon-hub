@@ -47,14 +47,29 @@ echo ""
 echo "| ID | Requirement | ATD Atom | Status |"
 echo "|---|---|---|---|"
 
-# Helper function to check and report BRD compliance
+# Helper function to check and report BRD compliance.
+# Resolves the best available aggregate log for a token:
+#   1. e2e_<token>.log        (exact match — scenario was not renamed)
+#   2. e2e_<token>_with_2.log (scenario was renamed with the _with_2 suffix)
+# The PASSED check is performed on whichever file is found first.
+# Per-bot _Bot-N files are never consulted.
 check_brd() {
     local cr_id=$1
     local name=$2
     local atom=$3
-    local log="e2e_${4}.log"
-    
-    if [ -f "$BATTLE_LOG_DIR/$log" ] && grep -q "\[SCENARIO_RESULT: PASSED\]" "$BATTLE_LOG_DIR/$log"; then
+    local token=$4
+
+    local exact_log="$BATTLE_LOG_DIR/e2e_${token}.log"
+    local with2_log="$BATTLE_LOG_DIR/e2e_${token}_with_2.log"
+
+    local resolved_log=""
+    if [ -f "$exact_log" ]; then
+        resolved_log="$exact_log"
+    elif [ -f "$with2_log" ]; then
+        resolved_log="$with2_log"
+    fi
+
+    if [ -n "$resolved_log" ] && grep -q "\[SCENARIO_RESULT: PASSED\]" "$resolved_log"; then
         echo "| **$cr_id** | $name | \`$atom\` | ✅ |"
     else
         echo "| **$cr_id** | $name | \`$atom\` | ❌ |"

@@ -22,6 +22,11 @@ pending commits) and reasoned against the current working tree.
 | Frontend (battleui Vue) | [frontend_summary.md](frontend_summary.md) | [frontend_detailed.md](frontend_detailed.md) |
 | Database (migrations/schema) | [database_summary.md](database_summary.md) | [database_detailed.md](database_detailed.md) |
 
+**Supplementary:** [atd_workspace_link_resolution_bug.md](atd_workspace_link_resolution_bug.md)
+— standalone bug report (for the ATD tooling team) on the resolver's failure to
+follow `[[project:atom]]` workspace links; root cause of 159 false "unresolved
+link" lint errors and the escape-hatch parent debt.
+
 ## 2. The three cross-system themes
 
 The individual systems are, on their own, mostly well-built. The rot is in the
