@@ -8,13 +8,10 @@ parents: []
 human_name: Upsilon Hub Contract
 type: CONTRACT
 layer: BUSINESS
-dependents:
-  - [[rule_code_health_monitoring]]
-  - [[rule_dto_strict_typing]]
-  - [[rule_ruler_test_robustness]]
+dependents: []
 ---
 
-# New Atom
+# Upsilon Hub Contract
 
 ## INTENT
 Establish the governance and quality standards for all sub-projects within the Upsilon Hub ecosystem.

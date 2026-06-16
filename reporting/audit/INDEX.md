@@ -98,7 +98,8 @@ new issues):
   --update-readme` (now 22 active, 0 dead links).
 - **ATD structural lint fixes:** promoted the stray `[temp]` / "New Atom" stub to
   a valid `mech_move_validation_jump_limitations` atom; fixed two `N/A` layer
-  enums (mapmaker vision→BUSINESS, contract→ARCHITECTURE); repaired 9 broken
+  enums to BUSINESS (CONTRACT/VISION are BUSINESS-layer roots with no
+  dependents); repaired 9 broken
   intra-doc alias links (`[[upsilon_vision]]`→`[[vision_upsilon_vision]]`,
   `[[upsilon_contract]]`→`[[contract_upsilon_contract]]`).
 

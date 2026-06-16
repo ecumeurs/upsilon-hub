@@ -22,7 +22,8 @@ upsilontypes 20, battleui 47.
 | Fix | Files | Result |
 |---|---|---|
 | Promote stray `[temp]` stub | `docs/mech_move_validation_jump_limitations.atom.md` (was `id: temp`, `# New Atom`, empty sections, but real rule content) → valid atom with proper frontmatter + sections derived from its own body | `[temp]` error class eliminated |
-| Fix `N/A` layer enums | `docs/vision_mapmaker_vision.atom.md` → `BUSINESS`; `docs/contract_mapmaker_contract.atom.md` → `ARCHITECTURE` | `Invalid layer enum` cleared on both |
+| Fix `N/A` layer enums | `docs/vision_mapmaker_vision.atom.md` → `BUSINESS`; `docs/contract_mapmaker_contract.atom.md` → `BUSINESS` | `Invalid layer enum` cleared on both |
+| Normalize CONTRACT/VISION invariant | `docs/contract_mapmaker_contract`, `docs/contract_upsilon_contract` | CONTRACT and VISION atoms are BUSINESS-layer roots with **no dependents** (and no parents) — stripped dependents and the (incorrectly added) parent; fixed stray `# New Atom` headings. Submodule-level contracts (`contract_api/tools/mapdata/mapmaker`) carry the same violation and are flagged for a follow-up pass. |
 | Repair broken alias links | 9 edits across `contract_upsilon_contract`, `vision_upsilon_vision`, `mechanic_{math_core_utils,randomization_helpers,message_queue,message_queue_management,spatial_distance_calculations}` | `[[upsilon_vision]]`→`[[vision_upsilon_vision]]`, `[[upsilon_contract]]`→`[[contract_upsilon_contract]]`; "Unresolved parent link: [[upsilon_vision]]" eliminated |
 
 Shared lint after fixes: **83** (the residual are content/cross-project defects

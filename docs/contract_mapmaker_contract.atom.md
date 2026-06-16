@@ -3,16 +3,14 @@ id: contract_mapmaker_contract
 status: STABLE
 type: CONTRACT
 priority: 1
-dependents:
-  - [[upsilonmapmaker:mechanic_mapmaker_seed_determinism]]
+dependents: []
 human_name: "Map Maker Integration Contract"
-layer: ARCHITECTURE
+layer: BUSINESS
 version: 1.0
-parents:
-  - [[vision_mapmaker_vision]]
+parents: []
 ---
 
-# New Atom
+# Map Maker Integration Contract
 
 ## INTENT
 Define the external agreement for Map Maker integration within the Upsilon Hub ecosystem.
