@@ -37,6 +37,8 @@ services:
       - "5433:5432"
     volumes:
       - laravel_db_data:/var/lib/postgresql
+    networks:
+      - ollama_network
 
 volumes:
   laravel_db_data:
