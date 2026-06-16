@@ -6,6 +6,7 @@ use (
 	./upsiloncli
 	./upsilonmapdata
 	./upsilonmapmaker
+	./upsilonserializer
 	./upsilontools
 	./upsilontypes
 )
