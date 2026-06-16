@@ -10,6 +10,7 @@
 
 | Ref | File | Severity | Status | Summary |
 |---|---|---|---|---|
+| ISS-100 | [ISS-100_20260616_devcontainer_webgl_playwright_visual.md](ISS-100_20260616_devcontainer_webgl_playwright_visual.md) | Medium | Open | Devcontainer lost WebGL/SwiftShader; Playwright 3D visual specs can't render (env regression) |
 | ISS-099 | [ISS-099_20260513_skill_template_zone_support_gap.md](ISS-099_20260513_skill_template_zone_support_gap.md) | Medium | Open | Go engine `ZoneProperty` only supports Single/Neighbours; silently drops Circle/Square AoE |
 | ISS-098 | [ISS-098_20260513_battle_engine_internal_user_id_leak.md](ISS-098_20260513_battle_engine_internal_user_id_leak.md) | Low | Open-Low | `player_id` UUID on internal upsilonapi hop only; battleui masks before any external surface. Remaining risk: remove host-port binding `8081:8081` from docker-compose.prod.yaml. |
 | ISS-096 | [ISS-096_20260510_trap_trigger_enforcement.md](ISS-096_20260510_trap_trigger_enforcement.md) | Medium | Open | Traps without a `TriggerType` fail silently (no log/error) |
