@@ -18,7 +18,7 @@ services:
       retries: 15
       start_period: 30s
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql
 
   db-init:
     build:
