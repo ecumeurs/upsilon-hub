@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| **Date** | 2026-05-11 13:06 UTC |
-| **Commit** | `fa2ecf8` |
+| **Date** | 2026-05-14 08:28 UTC |
+| **Commit** | `f3d4646` |
 | **Branch** | `main` |
 
 ## Edge Case Test Results
@@ -41,7 +41,7 @@
 
 ### Phase 3: Character & Matchmaking
 
-| **EC-25** | Character Reroll Limit | ❌ FAIL | `[[mech_character_reroll_limit]]` |
+| **EC-25** | Character Reroll Limit | ✅ PASS | `[[mech_character_reroll_limit]]` |
 | **EC-26** | Reroll After Match | ✅ PASS | `[[mech_character_reroll_limit]]` |
 | **EC-27** | Progression Without Wins | ❌ FAIL | `[[rule_progression]]` |
 | **EC-28** | Progression Attribute Cap | ✅ PASS | `[[rule_progression]]` |

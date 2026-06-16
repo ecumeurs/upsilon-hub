@@ -5,7 +5,7 @@ type: VISION
 priority: 1
 parents: []
 human_name: "Map Maker Strategic Vision"
-layer: N/A
+layer: BUSINESS
 version: 1.0
 dependents: []
 ---

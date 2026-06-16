@@ -9,8 +9,7 @@ priority: 3
 tags: [matchmaking, rule]
 parents:
   - [[uc_matchmaking]]
-dependents:
-  - [[battleui:ui_dashboard_matchmaking]]
+dependents: []
 ---
 
 # Single Queue Restriction

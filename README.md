@@ -204,7 +204,8 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [Recursive Mutex Lock Deadlock in CLI Listener](issues/Ref_20260505_cli_listener_recursive_lock_deadlock.md) | 2026-05-05 | Open | Critical | The `notifyWaiters` function in `listener.go` contains a double-lock on `l.wa... |
+| [Limited Zone Targeting Support in Go Engine](issues/ISS-099_20260513_skill_template_zone_support_gap.md) | 2026-05-13 | Open | Medium | The current engine infrastructure lacks support for defining dynamic Area of ... |
+| [Internal User ID Exposure in Battle State DTOs](issues/ISS-098_20260513_battle_engine_internal_user_id_leak.md) | 2026-05-13 | Open | High | The Go battle engine's API bridge currently leaks internal User UUIDs via the... |
 | [Trap Trigger Type Enforcement](issues/ISS-096_20260510_trap_trigger_enforcement.md) | 2026-05-10 | Open | Medium | Traps (positional effects) currently fail silently if they are missing a `Tri... |
 | [Skill Rework & Generation Standardization](issues/ISS-095_20260507_skill_rework.md) | 2026-05-07 | Open | Medium | The current skill generation and execution framework suffers from several des... |
 | [Administrative Account Self-Destruction Risk](issues/ISS-093_20260429_admin_account_self_destruction_risk.md) | 2026-04-29 | Open | Critical | The administrative API allows users with admin privileges to target any accou... |
@@ -218,7 +219,6 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 | [Shielding Credit Attribution System](issues/ISS-078_20260423_shielding_credit_attribution.md) | 2026-04-23 | Open | Medium | Design and implement a robust system for attributing credits earned through d... |
 | [Skill Inspection Command](issues/ISS-077_20260423_skill_inspection.md) | 2026-04-23 | Open | Medium | Implement skill inspection functionality allowing players to view detailed sk... |
 | [Player Choosing Facing Direction on Pass](issues/ISS-072_20260423_pass_choose_facing.md) | 2026-04-23 | Open | Medium | When a player chooses to "Pass" their turn, they must be given the option to ... |
-| [AI Archetype Enhancement & Progression](issues/ISS-069_20260422_ai_archetype_enhancement.md) | 2026-04-22 | Open | Medium | Enhance AI system with four distinct archetypes (Fighter, Ranger, Support, Sn... |
 | [Actor Message Type Validation](issues/ISS-055_20260420_actor_message_validation.md) | 2026-04-20 | Open | Low | The `Actor` implementation should validate if the target message is of the co... |
 | [Modernize Actor Library with Go Generics (Templates)](issues/ISS-049_20260418_actor_generics_modernization.md) | 2026-04-18 | Open | Low (Architectural Improvement) | The current Actor implementation was designed before Go 1.18 (Generics). It r... |
 | [Request Traceability Non-Compliance and Gaps](issues/ISS-042_20260415_request_traceability_gaps.md) | 2026-04-15 | Open | Medium | This issue documents the systematic non-compliance with `rule_tracing_logging... |

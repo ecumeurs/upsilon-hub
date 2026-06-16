@@ -9,7 +9,7 @@ version: 1.0
 priority: 3
 tags: concurrency,message_queue
 parents:
-  - [[upsilon_vision]]
+  - [[vision_upsilon_vision]]
 ---
 
 # New Atom

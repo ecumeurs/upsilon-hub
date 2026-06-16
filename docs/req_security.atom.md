@@ -7,16 +7,14 @@ version: 1.1
 status: STABLE
 priority: 5
 tags: [auth, sanctum]
-parents: []
+parents:
+  - [[req_tech_debt_backlog]]
 dependents:
   - [[req_security_authorization]]
   - [[req_security_public_access]]
   - [[req_security_token_exchange]]
   - [[req_security_token_ttl]]
   - [[uc_auth_logout]]
-  - [[upsilonapi:rule_admin_access_restriction]]
-  - [[upsilonapi:rule_gdpr_compliance]]
-  - [[upsilonapi:rule_password_policy]]
 ---
 # Sanctum Token Security Requirement
 

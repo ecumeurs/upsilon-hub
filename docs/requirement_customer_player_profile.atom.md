@@ -10,7 +10,6 @@ parents: []
 version: 1.0
 dependents:
   - [[rule_progression]]
-  - [[upsilontypes:entity_character]]
 ---
 
 # New Atom

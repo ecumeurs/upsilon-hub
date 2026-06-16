@@ -3,7 +3,7 @@ id: mechanic_message_queue
 status: DRAFT
 priority: 3
 parents:
-  - [[upsilon_vision]]
+  - [[vision_upsilon_vision]]
 dependents: []
 type: MECHANIC
 tags: concurrency,message_queue

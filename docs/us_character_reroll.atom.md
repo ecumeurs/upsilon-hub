@@ -7,13 +7,13 @@ version: 1.0
 status: STABLE
 priority: 5
 tags: []
-parents: []
+parents:
+  - [[req_tech_debt_backlog]]
 dependents:
   - [[us_character_reroll_button_lockdown]]
   - [[us_character_reroll_create_character]]
   - [[us_character_reroll_reroll_button_action]]
   - [[us_character_reroll_reroll_counter]]
-  - [[upsilonapi:api_profile_character]]
 ---
 # Character Reroll Story
 

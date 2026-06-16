@@ -6,9 +6,10 @@ priority: 1
 dependents:
   - [[upsilonmapmaker:mechanic_mapmaker_seed_determinism]]
 human_name: "Map Maker Integration Contract"
-layer: N/A
+layer: ARCHITECTURE
 version: 1.0
-parents: []
+parents:
+  - [[vision_mapmaker_vision]]
 ---
 
 # New Atom

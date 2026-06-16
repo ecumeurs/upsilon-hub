@@ -4,14 +4,7 @@ status: STABLE
 human_name: Upsilon Hub Vision
 priority: 1
 tags: [governance, vision, root]
-dependents:
-  - [[battleui:vision_ui_vision]]
-  - [[upsilonapi:vision_api_vision]]
-  - [[upsilonbattle:vision_battle_vision]]
-  - [[upsiloncli:vision_cli_vision]]
-  - [[upsilonmapdata:vision_mapdata_vision]]
-  - [[upsilontools:vision_tools_vision]]
-  - [[upsilontypes:vision_types_vision]]
+dependents: []
 type: VISION
 layer: BUSINESS
 version: 1.0
@@ -32,7 +25,7 @@ Define the overarching vision for the Upsilon Hub ecosystem as a high-performanc
   - **Evolvability:** V2 roadmap focuses on skill systems, time-based mechanics, and advanced AI.
 
 ## TECHNICAL INTERFACE
-- **Code Tag:** `@spec-link [[upsilon_vision]]`
-- **Related Atoms:** `[[requirement_req_trpg_game_definition]]`, `[[upsilon_contract]]`
+- **Code Tag:** `@spec-link [[vision_upsilon_vision]]`
+- **Related Atoms:** `[[requirement_req_trpg_game_definition]]`, `[[contract_upsilon_contract]]`
 
 ## EXPECTATION

@@ -11,10 +11,7 @@ parents:
   - [[battleui:req_player_experience]]
   - [[battleui:ui_dashboard]]
   - [[upsilonapi:api_auth_login]]
-dependents:
-  - [[battleui:ui_dashboard]]
-  - [[battleui:ui_login]]
-  - [[upsilonapi:api_auth_login]]
+dependents: []
 ---
 
 # Player Login Use Case

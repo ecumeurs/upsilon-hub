@@ -9,10 +9,7 @@ priority: 4
 tags: [skills, generation, tags, grades, names, icons]
 parents:
   - [[requirement_req_trpg_game_definition]]
-dependents:
-  - [[battleui:ui_action_panel]]
-  - [[battleui:ui_skill_icon]]
-  - [[upsilontypes:module_skill_generator]]
+dependents: []
 ---
 
 # Skill Generation System Requirement

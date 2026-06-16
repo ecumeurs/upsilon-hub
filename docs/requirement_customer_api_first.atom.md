@@ -12,7 +12,6 @@ priority: 3
 dependents:
   - [[usecase_api_flow_game_turn]]
   - [[usecase_api_flow_matchmaking]]
-  - [[upsilonapi:api_help_endpoint]]
 ---
 
 # New Atom

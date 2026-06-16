@@ -8,7 +8,7 @@ type: MECHANIC
 version: 1.0
 tags: random,utility
 parents:
-  - [[upsilon_vision]]
+  - [[vision_upsilon_vision]]
 layer: IMPLEMENTATION
 ---
 
