@@ -3,10 +3,10 @@
 **ID:** `Ref_20260513_battle_engine_internal_user_id_leak`
 **Ref:** `ISS-098`
 **Date:** 2026-05-13
-**Severity:** High
-**Status:** Open
+**Severity:** Low
+**Status:** Open-Low (hardening backlog)
 **Component:** `upsilonapi/api`
-**Affects:** `battleui` frontend, E2E tests, and any public API consumer observing the board state.
+**Affects:** `upsilonapi` internal bridge only; web path is masked at battleui.
 
 ---
 
@@ -70,3 +70,29 @@ res := &Entity{
 - [requirement_customer_user_id_privacy.atom.md](file:///workspace/docs/requirement_customer_user_id_privacy.atom.md)
 - [upsilonapi/api/output.go](file:///workspace/upsilonapi/api/output.go)
 - [e2e_battle_starts_privacy_check.js](file:///workspace/upsiloncli/tests/scenarios/e2e_battle_starts_privacy_check.js)
+
+---
+
+## Resolution / Re-scoping (2026-06-16)
+
+**Decision:** downgrade to **Low / hardening backlog**. The issue is not closed because the `docker-compose.prod.yaml` host-port binding remains; it is reclassified because the actual public-facing risk is eliminated by the masking gateway already in place.
+
+### Why the web path is already safe
+
+The `player_id` UUID is present on the internal `upsilonapi → battleui` hop (HTTP, inside the compose network) but is **stripped before it reaches any external client**:
+
+- `battleui/app/Http/Resources/BoardStateResource.php` calls `unset($array['player_id'])` and `unset($array['current_player_id'])` during serialisation.
+- `battleui/app/Events/BoardUpdated.php` broadcasts per-recipient board state via that Resource; the raw UUID never appears on any WebSocket channel.
+- `battleui/app/Http/Controllers/GameController.php` returns HTTP polling responses through the same Resource.
+
+`upsilonapi` is therefore a **trusted internal bridge**, not a public API. Raw IDs on the internal hop are accepted by design (documented in `[[arch_api_id_masking_gateway]]`).
+
+### Why 8081 is not publicly reachable (in production)
+
+- The AWS EC2 security group (`upsilonaws/scripts/setup/01_networking.sh`) authorises **only ports 22, 80, 443** from `0.0.0.0/0`. Port 8081 has no SG ingress rule.
+- The nginx reverse proxy routes only `APP_PORT` (8000) and `WS_PORT` (8080); 8081 is not proxied.
+- `docker-compose.ci.yaml` has **no `ports:` mapping** for the `engine` service — 8081 is compose-internal in CI.
+
+### Remaining latent risk (Low)
+
+`docker-compose.prod.yaml` line 101 maps `"8081:8081"` to the EC2 host. While the current SG blocks public access, this binding means that any future accidental SG rule addition would immediately expose the raw-UUID API. Recommended hardening: **remove the host-port binding** from `docker-compose.prod.yaml` and rely solely on Docker's internal network (`engine` service reachable as `http://engine:8081` from `app`). No code change required on the Go side.

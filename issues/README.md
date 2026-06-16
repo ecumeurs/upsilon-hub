@@ -11,7 +11,7 @@
 | Ref | File | Severity | Status | Summary |
 |---|---|---|---|---|
 | ISS-099 | [ISS-099_20260513_skill_template_zone_support_gap.md](ISS-099_20260513_skill_template_zone_support_gap.md) | Medium | Open | Go engine `ZoneProperty` only supports Single/Neighbours; silently drops Circle/Square AoE |
-| ISS-098 | [ISS-098_20260513_battle_engine_internal_user_id_leak.md](ISS-098_20260513_battle_engine_internal_user_id_leak.md) | High | Open | Raw internal User UUID leaked as `player_id` in battle-state DTOs |
+| ISS-098 | [ISS-098_20260513_battle_engine_internal_user_id_leak.md](ISS-098_20260513_battle_engine_internal_user_id_leak.md) | Low | Open-Low | `player_id` UUID on internal upsilonapi hop only; battleui masks before any external surface. Remaining risk: remove host-port binding `8081:8081` from docker-compose.prod.yaml. |
 | ISS-096 | [ISS-096_20260510_trap_trigger_enforcement.md](ISS-096_20260510_trap_trigger_enforcement.md) | Medium | Open | Traps without a `TriggerType` fail silently (no log/error) |
 | ISS-095 | [ISS-095_20260507_skill_rework.md](ISS-095_20260507_skill_rework.md) | Medium | Open | Skill generation/execution framework design inconsistencies |
 | ISS-094 | [ISS-094_20260501_atd_layer_testing_protocol.md](ISS-094_20260501_atd_layer_testing_protocol.md) | Low | Open — Planned Feature | ATD Layer Testing Protocol ("The Naive LLM") |
