@@ -17,10 +17,8 @@ services:
       timeout: 5s
       retries: 15
       start_period: 30s
-    ports:
-      - "5434:5432" # Changed to 5434 to avoid conflict with host postgres
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql
 
   db-init:
     build:
@@ -97,8 +95,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - "8081:8081"
     env_file:
       - .env
     healthcheck:
