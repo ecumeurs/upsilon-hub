@@ -19,6 +19,11 @@ services:
   db-init:
     build:
       context: ./battleui
+      args:
+        - VITE_REVERB_APP_KEY=${REVERB_APP_KEY}
+        - VITE_REVERB_HOST=${REVERB_HOST}
+        - VITE_REVERB_PORT=${REVERB_PORT}
+        - VITE_REVERB_SCHEME=${REVERB_SCHEME}
     command: php artisan migrate:fresh --seed --force
     depends_on:
       db:
@@ -29,6 +34,11 @@ services:
   app:
     build:
       context: ./battleui
+      args:
+        - VITE_REVERB_APP_KEY=${REVERB_APP_KEY}
+        - VITE_REVERB_HOST=${REVERB_HOST}
+        - VITE_REVERB_PORT=${REVERB_PORT}
+        - VITE_REVERB_SCHEME=${REVERB_SCHEME}
     depends_on:
       db:
         condition: service_healthy
@@ -51,6 +61,11 @@ services:
   ws:
     build:
       context: ./battleui
+      args:
+        - VITE_REVERB_APP_KEY=${REVERB_APP_KEY}
+        - VITE_REVERB_HOST=${REVERB_HOST}
+        - VITE_REVERB_PORT=${REVERB_PORT}
+        - VITE_REVERB_SCHEME=${REVERB_SCHEME}
     command: php artisan reverb:start --host=0.0.0.0 --port=8080
     depends_on:
       db:

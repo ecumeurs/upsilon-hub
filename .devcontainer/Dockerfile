@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y \
     golang-go \
     procps \
     iproute2 \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get install -y nodejs \
     && docker-php-ext-install gd pdo pdo_pgsql zip bcmath intl pcntl \
     && rm -rf /var/lib/apt/lists/*
