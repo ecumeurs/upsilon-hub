@@ -1,0 +1,363 @@
+#!/usr/bin/env bash
+# run_ci_local.sh — Reproduce the full GitHub Actions "CI Pipeline" locally.
+#
+# Clones upsilon-hub (with submodules) into a clean sibling directory
+# (default ../upsilon-hub-ci), prepares the deterministic CI environment, and
+# runs the same three stages defined in .github/workflows/ci.yml:
+#
+#   1. Build & Lint        — go work sync, go vet, go build, Dockerfile checks
+#   2. Unit Tests          — Go tests + PHP/PHPUnit (SQLite in-memory, dockerized)
+#   3. Integration & E2E   — docker-compose.ci stack + Playwright + scenarios + edge cases
+#
+# Usage:
+#   ./scripts/run_ci_local.sh [options]
+#
+# Options:
+#   --ref <git-ref>     Branch / tag / SHA to check out (default: current branch).
+#   --dir <path>        Target clone directory (default: ../upsilon-hub-ci).
+#   --repo <url>        Repo to clone (default: this repo's origin remote).
+#   --fresh             Remove the target dir and re-clone from scratch.
+#   --stages <list>     Comma-separated subset of: build,unit,integration
+#                       (default: build,unit,integration).
+#   --skip-playwright   Skip the (heavy) Playwright browser install + UI tests.
+#   --keep-stack        Do not tear down the docker compose stack at the end.
+#   -h, --help          Show this help and exit.
+#
+# Exit code is non-zero if any selected stage fails.
+
+set -Eeuo pipefail
+
+# ----------------------------------------------------------------------------
+# Locate the source repo (the checkout this script lives in)
+# ----------------------------------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SOURCE_REPO="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# ----------------------------------------------------------------------------
+# Defaults (overridable via flags)
+# ----------------------------------------------------------------------------
+REF="$(git -C "$SOURCE_REPO" rev-parse --abbrev-ref HEAD 2>/dev/null || echo main)"
+TARGET_DIR="$(cd "$SOURCE_REPO/.." && pwd)/upsilon-hub-ci"
+REPO_URL="$(git -C "$SOURCE_REPO" config --get remote.origin.url || true)"
+FRESH=0
+STAGES="build,unit,integration"
+SKIP_PLAYWRIGHT=0
+KEEP_STACK=0
+
+COMPOSE="docker compose -f docker-compose.ci.yaml"
+
+# ----------------------------------------------------------------------------
+# Pretty logging
+# ----------------------------------------------------------------------------
+if [ -t 1 ]; then
+    C_BOLD=$'\e[1m'; C_GREEN=$'\e[32m'; C_RED=$'\e[31m'; C_YELLOW=$'\e[33m'; C_BLUE=$'\e[34m'; C_OFF=$'\e[0m'
+else
+    C_BOLD=""; C_GREEN=""; C_RED=""; C_YELLOW=""; C_BLUE=""; C_OFF=""
+fi
+log()   { printf '%s\n' "${C_BLUE}==>${C_OFF} ${C_BOLD}$*${C_OFF}"; }
+info()  { printf '    %s\n' "$*"; }
+ok()    { printf '%s\n' "${C_GREEN}  ✔ $*${C_OFF}"; }
+warn()  { printf '%s\n' "${C_YELLOW}  ! $*${C_OFF}"; }
+err()   { printf '%s\n' "${C_RED}  ✗ $*${C_OFF}" >&2; }
+die()   { err "$*"; exit 1; }
+
+usage() { awk 'NR>1 && /^#/ {sub(/^# ?/,""); print; next} NR>1 {exit}' "${BASH_SOURCE[0]}"; exit "${1:-0}"; }
+
+# ----------------------------------------------------------------------------
+# Parse arguments
+# ----------------------------------------------------------------------------
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --ref)             REF="${2:?--ref needs a value}"; shift 2 ;;
+        --dir)             TARGET_DIR="${2:?--dir needs a value}"; shift 2 ;;
+        --repo)            REPO_URL="${2:?--repo needs a value}"; shift 2 ;;
+        --fresh)           FRESH=1; shift ;;
+        --stages)          STAGES="${2:?--stages needs a value}"; shift 2 ;;
+        --skip-playwright) SKIP_PLAYWRIGHT=1; shift ;;
+        --keep-stack)      KEEP_STACK=1; shift ;;
+        -h|--help)         usage 0 ;;
+        *)                 die "Unknown option: $1 (try --help)" ;;
+    esac
+done
+
+want_stage() { [[ ",$STAGES," == *",$1,"* ]]; }
+
+# ----------------------------------------------------------------------------
+# Prerequisite checks
+# ----------------------------------------------------------------------------
+check_prereqs() {
+    log "Checking prerequisites"
+    command -v git    >/dev/null 2>&1 || die "git not found"
+    command -v docker >/dev/null 2>&1 || die "docker not found"
+    docker compose version >/dev/null 2>&1 || die "'docker compose' plugin not available"
+    if want_stage build || want_stage unit; then
+        command -v go >/dev/null 2>&1 || die "go not found (needed for build/unit stages)"
+    fi
+    if want_stage integration && [ "$SKIP_PLAYWRIGHT" -eq 0 ]; then
+        command -v node >/dev/null 2>&1 || warn "node not found — Playwright tests will be skipped"
+    fi
+    [ -n "$REPO_URL" ] || die "Could not determine repo URL; pass --repo <url>"
+    ok "Prerequisites satisfied"
+}
+
+# ----------------------------------------------------------------------------
+# Clone (or refresh) the isolated CI checkout
+# ----------------------------------------------------------------------------
+prepare_clone() {
+    log "Preparing CI checkout at: $TARGET_DIR"
+    info "repo: $REPO_URL"
+    info "ref:  $REF"
+
+    if [ "$FRESH" -eq 1 ] && [ -d "$TARGET_DIR" ]; then
+        warn "Removing existing directory (--fresh)"
+        rm -rf "$TARGET_DIR"
+    fi
+
+    if [ -d "$TARGET_DIR/.git" ]; then
+        info "Existing clone found — fetching and resetting to $REF"
+        git -C "$TARGET_DIR" fetch --all --prune --tags
+        git -C "$TARGET_DIR" checkout -f "$REF"
+        # Pull latest if it's a branch (ignore failure for detached tags/SHAs)
+        git -C "$TARGET_DIR" pull --ff-only 2>/dev/null || true
+        git -C "$TARGET_DIR" submodule sync --recursive
+        git -C "$TARGET_DIR" submodule update --init --recursive --force
+    else
+        git clone --recurse-submodules --branch "$REF" "$REPO_URL" "$TARGET_DIR" 2>/dev/null \
+            || git clone --recurse-submodules "$REPO_URL" "$TARGET_DIR"
+        git -C "$TARGET_DIR" checkout -f "$REF"
+        git -C "$TARGET_DIR" submodule update --init --recursive --force
+    fi
+
+    local sha
+    sha="$(git -C "$TARGET_DIR" rev-parse --short HEAD)"
+    ok "Checked out $REF @ $sha"
+}
+
+# ----------------------------------------------------------------------------
+# Prepare the deterministic CI environment (mirrors ci.yml "Prepare Environment")
+# ----------------------------------------------------------------------------
+prepare_env() {
+    log "Preparing CI environment"
+    cd "$TARGET_DIR"
+    cp .env.ci .env
+    mkdir -p upsiloncli/tests/logs
+    # ci.yml rewrites REVERB_HOST so the host-side CLI can reach the ws container
+    sed -i 's/REVERB_HOST=127.0.0.1/REVERB_HOST=localhost/' .env
+    ok ".env prepared from .env.ci"
+}
+
+# ----------------------------------------------------------------------------
+# STAGE 1 — Build & Lint
+# ----------------------------------------------------------------------------
+stage_build() {
+    log "STAGE 1: Build & Lint"
+    cd "$TARGET_DIR"
+
+    info "go work sync"
+    go work sync
+
+    info "go vet (explicit modules)"
+    go vet ./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... \
+           ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilontools/...
+
+    info "go build upsilonapi"
+    go build -o /dev/null ./upsilonapi
+    info "go build upsiloncli"
+    go build -o /dev/null ./upsiloncli/cmd/upsiloncli
+
+    info "Dockerfile syntax checks"
+    docker build --check -f battleui/Dockerfile battleui/ 2>/dev/null || warn "battleui Dockerfile --check skipped"
+    docker build --check -f upsilonapi/Dockerfile . 2>/dev/null     || warn "upsilonapi Dockerfile --check skipped"
+
+    if [ -f tests/lint_report.sh ]; then
+        chmod +x tests/lint_report.sh
+        ./tests/lint_report.sh > build_report.md 2>&1 || true
+        info "Build report written to build_report.md"
+    fi
+    ok "Build & Lint passed"
+}
+
+# ----------------------------------------------------------------------------
+# STAGE 2 — Unit Tests (Go + PHP)
+# ----------------------------------------------------------------------------
+stage_unit() {
+    log "STAGE 2: Unit Tests"
+    cd "$TARGET_DIR"
+
+    info "Go unit tests"
+    go work sync
+    go test -count=1 -timeout 120s -json \
+        ./upsilonapi/... ./upsiloncli/... ./upsilonbattle/... \
+        ./upsilonmapdata/... ./upsilonmapmaker/... ./upsilontools/... \
+        > go-test-results.json 2>&1 || true
+    if grep -q '"Action":"fail"' go-test-results.json; then
+        err "Go tests FAILED"
+        grep '"Action":"fail"' go-test-results.json | head -20
+        return 1
+    fi
+    ok "Go unit tests passed"
+
+    info "Building battleui-ci image for PHP tests"
+    docker build -t battleui-ci ./battleui
+
+    info "Building test image with dev dependencies"
+    # The production image is built --no-dev, so phpunit / `artisan test` are
+    # absent. We install dev deps now (at build time, on the default network where
+    # the internet works) into a derived image, so the test run itself needs no
+    # internet — it only talks to the ephemeral Postgres on an isolated network.
+    docker build -t battleui-citest - <<'DOCKERFILE'
+FROM battleui-ci
+RUN composer install --no-interaction --quiet
+DOCKERFILE
+
+    info "Running PHPUnit (PostgreSQL)"
+    # The migrations use Postgres-only DDL (ALTER TABLE ... ADD CONSTRAINT ... CHECK)
+    # so the tests must run on Postgres, not SQLite. We spin up an ephemeral
+    # postgres:18 on a dedicated network and point PHPUnit at it (DB_HOST override),
+    # so this does NOT depend on the dev-compose `db` host being present.
+    # We also inject APP_KEY (.env is excluded by .dockerignore) and bind-mount
+    # phpunit.xml (also .dockerignore'd). Detection asserts on the docker exit code
+    # AND a real PHPUnit summary so the step can never silently false-pass.
+    local app_key php_net="upsilon-phpunit-net" php_db="upsilon-phpunit-db" php_rc=0
+    app_key="$(grep -E '^APP_KEY=' .env.ci | head -1 | cut -d= -f2-)"
+
+    docker rm -f "$php_db" >/dev/null 2>&1 || true
+    docker network rm "$php_net" >/dev/null 2>&1 || true
+    docker network create "$php_net" >/dev/null
+    docker run -d --name "$php_db" --network "$php_net" \
+        -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=testing \
+        postgres:18-alpine >/dev/null
+
+    info "Waiting for ephemeral postgres to be ready"
+    local tries=0
+    until docker exec "$php_db" pg_isready -U postgres >/dev/null 2>&1; do
+        tries=$((tries + 1))
+        if [ "$tries" -gt 30 ]; then
+            err "ephemeral postgres did not become ready"
+            docker rm -f "$php_db" >/dev/null 2>&1 || true
+            docker network rm "$php_net" >/dev/null 2>&1 || true
+            return 1
+        fi
+        sleep 1
+    done
+
+    docker run --rm --network "$php_net" \
+        -e APP_ENV=testing \
+        -e APP_KEY="$app_key" \
+        -e DB_CONNECTION=pgsql \
+        -e DB_HOST="$php_db" \
+        -e DB_PORT=5432 \
+        -e DB_DATABASE=testing \
+        -e DB_USERNAME=postgres \
+        -e DB_PASSWORD=postgres \
+        -v "$(pwd)/battleui/phpunit.xml:/var/www/html/phpunit.xml:ro" \
+        battleui-citest \
+        sh -c "php artisan test --exclude-group=engine-required 2>&1" \
+        | tee php-test-results.txt || php_rc=1
+
+    docker rm -f "$php_db" >/dev/null 2>&1 || true
+    docker network rm "$php_net" >/dev/null 2>&1 || true
+
+    if [ "$php_rc" -ne 0 ] \
+        || grep -qE "FAILED|Failed to open stream" php-test-results.txt \
+        || ! grep -qE "Tests:.*(passed|OK)|OK \(" php-test-results.txt; then
+        err "PHP tests FAILED"
+        return 1
+    fi
+    ok "PHP unit tests passed"
+
+    if [ -f tests/unit_report.sh ]; then
+        chmod +x tests/unit_report.sh
+        ./tests/unit_report.sh > summary.md 2>&1 || true
+        info "Unit report written to summary.md"
+    fi
+}
+
+# ----------------------------------------------------------------------------
+# STAGE 3 — Integration & E2E
+# ----------------------------------------------------------------------------
+stage_integration() {
+    log "STAGE 3: Integration & E2E"
+    cd "$TARGET_DIR"
+    local rc=0
+
+    # Playwright (host side) — optional/heavy
+    if [ "$SKIP_PLAYWRIGHT" -eq 0 ] && command -v node >/dev/null 2>&1; then
+        info "Installing Playwright dependencies (battleui)"
+        ( cd battleui && npm install && npx playwright install --with-deps chromium ) \
+            || warn "Playwright install failed — UI tests will be skipped"
+    else
+        warn "Skipping Playwright install (--skip-playwright or node missing)"
+    fi
+
+    info "Booting Upsilon CI stack (docker compose --wait)"
+    $COMPOSE up -d --wait --wait-timeout 300
+    $COMPOSE ps
+
+    if [ "$SKIP_PLAYWRIGHT" -eq 0 ] && command -v node >/dev/null 2>&1 && [ -d battleui/node_modules ]; then
+        log "E2E: Playwright tests"
+        ( cd battleui && PLAYWRIGHT_SKIP_SERVER=1 npx playwright test ) || { warn "Playwright tests reported failures"; rc=1; }
+    fi
+
+    log "E2E: Centralized customer scenarios"
+    $COMPOSE exec -T tester /bin/sh ./tests/run_all_scenarios.sh || { warn "Customer scenarios reported failures"; rc=1; }
+
+    log "E2E: Edge case suite"
+    $COMPOSE exec -T tester /bin/sh ./tests/run_all_edge_cases.sh || { warn "Edge case suite reported failures"; rc=1; }
+
+    log "Generating combined reports"
+    ./tests/ci_report.sh > ci_report.md 2>&1 || true
+    if ls upsiloncli/tests/logs/edge_*.log >/dev/null 2>&1; then
+        ./tests/edge_case_report.sh > edge_case_report.md 2>&1 || true
+    fi
+    info "Reports: $TARGET_DIR/ci_report.md  $TARGET_DIR/edge_case_report.md"
+
+    if [ "$rc" -ne 0 ]; then
+        warn "Collecting docker logs (failures detected)"
+        mkdir -p ci_logs
+        for svc in app ws engine db tester; do
+            $COMPOSE logs "$svc" > "ci_logs/$svc.log" 2>&1 || true
+        done
+        info "Service logs saved under $TARGET_DIR/ci_logs/"
+    fi
+
+    if [ "$KEEP_STACK" -eq 0 ]; then
+        log "Tearing down docker stack"
+        $COMPOSE down -v || true
+    else
+        warn "Leaving stack running (--keep-stack); tear down with: cd $TARGET_DIR && $COMPOSE down -v"
+    fi
+
+    return "$rc"
+}
+
+# ----------------------------------------------------------------------------
+# Main
+# ----------------------------------------------------------------------------
+FAILED_STAGES=()
+
+main() {
+    log "Upsilon Hub — Local CI Runner"
+    info "source repo:  $SOURCE_REPO"
+    info "stages:       $STAGES"
+
+    check_prereqs
+    prepare_clone
+    prepare_env
+
+    if want_stage build;       then stage_build       || FAILED_STAGES+=("build"); fi
+    if want_stage unit;        then stage_unit        || FAILED_STAGES+=("unit"); fi
+    if want_stage integration; then stage_integration || FAILED_STAGES+=("integration"); fi
+
+    echo
+    log "CI Summary"
+    if [ "${#FAILED_STAGES[@]}" -eq 0 ]; then
+        ok "All selected stages passed ✅"
+        exit 0
+    else
+        err "Failed stages: ${FAILED_STAGES[*]} ❌"
+        exit 1
+    fi
+}
+
+main "$@"

@@ -108,26 +108,50 @@ jobs:
       - name: Build Battleui Docker Image
         run: docker build -t battleui-ci ./battleui
 
-      - name: Run PHPUnit (SQLite In-Memory)
+      - name: Build Test Image (dev dependencies)
+        # The production image is built --no-dev, so phpunit / `artisan test` are
+        # absent. Install dev deps now (build time) so the test run needs no
+        # internet — it only talks to the ephemeral Postgres on an isolated net.
         run: |
-          docker run --rm \
-            -e APP_ENV=testing \
-            -e DB_CONNECTION=sqlite \
-            -e DB_DATABASE=:memory: \
-            -e BCRYPT_ROUNDS=4 \
-            -e CACHE_STORE=array \
-            -e SESSION_DRIVER=array \
-            -e QUEUE_CONNECTION=sync \
-            -e BROADCAST_CONNECTION=null \
-            battleui-ci \
-            sh -c "php artisan key:generate --force && php artisan test --env=testing --exclude-group=engine-required 2>&1" | tee php-test-results.txt
+          printf 'FROM battleui-ci\nRUN composer install --no-interaction --quiet\n' \
+            | docker build -t battleui-citest -
 
-      - name: Check PHP Test Results
+      - name: Run PHPUnit (PostgreSQL)
+        # The migrations use Postgres-only DDL (ALTER TABLE ... ADD CONSTRAINT
+        # ... CHECK) that SQLite cannot build, so tests must run on Postgres.
+        # We provision an ephemeral postgres:18 on a dedicated network and point
+        # PHPUnit at it. APP_KEY is injected (.env is .dockerignore'd so
+        # key:generate fails) and phpunit.xml is bind-mounted (also .dockerignore'd).
+        # `set -o pipefail` makes the step fail on the real test exit code.
         run: |
-          if grep -q "FAILED" php-test-results.txt; then
-            echo "::error::PHP tests failed"
-            exit 1
-          fi
+          set -eo pipefail
+          APP_KEY=$(grep -E '^APP_KEY=' .env.ci | head -1 | cut -d= -f2-)
+          docker network create phpunit-net
+          docker run -d --name phpunit-db --network phpunit-net \
+            -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=testing \
+            postgres:18-alpine
+          for i in $(seq 1 30); do
+            docker exec phpunit-db pg_isready -U postgres && break
+            sleep 1
+          done
+          docker run --rm --network phpunit-net \
+            -e APP_ENV=testing \
+            -e APP_KEY="$APP_KEY" \
+            -e DB_CONNECTION=pgsql \
+            -e DB_HOST=phpunit-db \
+            -e DB_PORT=5432 \
+            -e DB_DATABASE=testing \
+            -e DB_USERNAME=postgres \
+            -e DB_PASSWORD=postgres \
+            -v "$PWD/battleui/phpunit.xml:/var/www/html/phpunit.xml:ro" \
+            battleui-citest \
+            sh -c "php artisan test --exclude-group=engine-required 2>&1" | tee php-test-results.txt
+
+      - name: Teardown PHPUnit Postgres
+        if: always()
+        run: |
+          docker rm -f phpunit-db || true
+          docker network rm phpunit-net || true
 
       - name: Upload PHP Test Results
         if: always()
