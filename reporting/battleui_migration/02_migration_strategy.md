@@ -1,0 +1,178 @@
+# 02 — Migration Strategy: Go / Gin
+
+## 1. Target architecture
+
+A **single Go binary** (proposed module `upsilonhub` or `battlehub`, registered in `go.work`)
+that hosts, in one process:
+
+```
+                     ┌─────────────────────────────────────────────┐
+   Vue SPA  ──HTTP──▶│  Gin router  /api/v1/*   (REST handlers)     │
+            ──WS────▶│  WS hub      /ws         (realtime fan-out)  │──┐
+                     │  /webhook/upsilon        (engine callback)   │  │ in-process
+                     │  background workers (matchmaker tick, etc.)  │◀─┘ channels
+                     └───────────────┬─────────────────────────────┘
+                                     │ pgx                  │ typed HTTP client
+                                     ▼                      ▼
+                              PostgreSQL              upsilonapi (Go engine)
+```
+
+The webhook handler writes state + pushes to the in-process WS hub directly — **no broker,
+no second container, no Pusher**. This is the structural win.
+
+### Recommended libraries (no hard requirement from user; these are conventional, well-supported choices)
+
+| Concern | Choice | Rationale |
+|---|---|---|
+| HTTP router | **Gin** | Per user. Mature, fast, huge middleware ecosystem. |
+| DB access | **pgx/v5** + **sqlc** (or GORM) | `sqlc` gives type-safe queries from SQL, matching the "strict typing" ethos; GORM if you prefer ActiveRecord familiarity. pgx is the Postgres driver either way. |
+| Migrations | **golang-migrate** or **goose** | Port the 28 Laravel migrations to plain SQL up/down. |
+| WebSocket | **nhooyr/coder websocket** (`github.com/coder/websocket`) or **gorilla/websocket** | Native sockets; build a small hub. See doc 03. |
+| Auth tokens | **lestrrat-go/jwx** (JWT) *or* opaque tokens in DB | Replaces Sanctum; see §4. |
+| Validation | **go-playground/validator** | Struct-tag validation ≈ FormRequests. |
+| Config | **viper** or stdlib + `envconfig` | Read existing `.env` keys. |
+| Observability | **OpenTelemetry Go SDK** (`otelgin`, `otelpgx`, `otelhttp`) | Doc 04. |
+| Tests | stdlib `testing` + **testify** + **testcontainers-go** | Postgres-backed feature tests mirroring the 74 PHP tests. |
+
+> Recommendation: **pgx + sqlc + golang-migrate**. It keeps SQL explicit (good for the
+> JSONB-heavy `game_state_cache`) and avoids ORM surprises around the optimistic-version logic.
+
+## 2. Layer-by-layer mapping
+
+| Laravel concept | Go/Gin equivalent | Notes |
+|---|---|---|
+| Route file + middleware groups | Gin `RouterGroup` + middleware chain | `/api/v1` group, `auth` + `admin` middleware |
+| `StandardEnvelope` middleware | Gin middleware: unwrap req body, wrap response writer | Preserve exact `{request_id,message,success,data,meta}` shape |
+| `ApiResponder` trait | `respond.Success(c, data, msg)` / `respond.Error(...)` helpers | |
+| FormRequest (`*Request.php`) | request struct + `validator` tags + bind helper | 23 request classes → 23 DTOs |
+| API Resource (`*Resource.php`) | response DTO + mapper func | 17 resources; **fog-of-war masking** in `BoardStateResource` is the tricky one — port carefully |
+| Eloquent Model | sqlc row structs + repository funcs | UUIDs, JSONB casts, soft-delete `WHERE deleted_at IS NULL` |
+| Policy (`*Policy.php`) | authz funcs called in handlers | `view`/`action`/`forfeit` checks |
+| Service (`ShopService`, etc.) | domain package funcs | Mostly straight ports of arithmetic + DB tx |
+| Broadcast Event | hub message + serializer | `BoardUpdated`/`MatchFound` → hub publish |
+| Sanctum | JWT or opaque-token middleware | §4 |
+| Exception handler | Gin recovery + error-to-envelope middleware | Map error types → status codes |
+| Artisan migrate / seed | golang-migrate + a seed command | Port `DatabaseSeeder` family |
+| Queue (`jobs` table) | goroutines / ticker | Matchmaking can move from request-time to a background tick if desired |
+
+## 3. The frontend question (decisive for effort)
+
+Three viable stances, in increasing ambition:
+
+1. **Keep Vue SPA + Inertia shell, Go serves it.** Use a Go Inertia adapter
+   (`romsar/gonertia`) for the ~6 bare shells and 3 admin prop-passing pages, serve the Vite
+   build as static assets, and keep the SPA's axios `/api/v1` calls unchanged. **Lowest
+   frontend churn.** Most of the SPA never knew it was Laravel.
+2. **Keep Vue SPA, drop Inertia.** Serve `index.html` + assets statically, convert the 3 admin
+   pages to fetch their data from a new `/api/v1/admin/*` endpoint (they already have API twins).
+   Removes the Inertia dependency entirely. **Recommended** — Inertia buys little here since the
+   app is already token-API-driven.
+3. **Rewrite frontend.** Out of scope and unjustified — the Vue/Three.js arena is the most
+   valuable, least-broken asset.
+
+**The WebSocket transport is the real frontend coupling, not Inertia** — see doc 03. Decide
+that first; the Inertia choice is minor by comparison.
+
+## 4. Auth migration (Sanctum → Go)
+
+Sanctum today = opaque DB tokens, 15-min expiry, sliding renewal, `ws_channel_key` rotated per
+login. Two paths:
+
+- **Opaque tokens in Postgres (closest behaviour):** keep `personal_access_tokens`, hash+lookup
+  on each request, replicate the 10–15 min renewal injecting `meta.token`. Zero client change.
+- **JWT (stateless):** simpler horizontally but loses server-side revocation and complicates the
+  exact sliding-renewal semantics the tests assert.
+
+**Recommendation:** opaque tokens — it preserves `SanctumTokenRenewalTest` behaviour and the
+per-login channel-key rotation that gates WS auth, with no frontend change.
+
+## 5. Phasing (incremental, each phase shippable & testable)
+
+> Principle: the Go service can run **side-by-side** with Laravel behind the same DB. Cut over
+> endpoint groups behind a reverse proxy; the frontend never sees a big-bang switch.
+
+- **Phase 0 — Skeleton & contracts.** New Go module in `go.work`; Gin up; envelope middleware;
+  health `/up`; OTel bootstrapped (doc 04); golang-migrate importing the existing schema;
+  testcontainers harness. Port `ApiResponderTest`/`ErrorHandlingTest` first — they pin the
+  conventions everything else depends on.
+- **Phase 1 — Auth + identity.** `auth/*`, profile, characters, Sanctum-equivalent tokens.
+  Gate behind proxy for these routes. Green `AuthTest`/`GdprTest`/`SanctumTokenRenewalTest`.
+  **Build all auth/account access behind an `IdentityService` interface** (no direct `users`-table
+  reads from other packages) so Phase 7 is an implementation swap, not a refactor.
+- **Phase 2 — Engine bridge + game proxy.** Typed `upsilonapi` client (sharing `upsilontypes`),
+  `game/*`, webhook ingestion, `BoardStateResource` masking. Green `BattleProxyTest`.
+- **Phase 3 — WebSocket hub.** Replace Reverb (doc 03). This is where the container count drops.
+  Validate with Playwright E2E against the live arena.
+- **Phase 4 — Matchmaking.** The thorniest logic (modes, AI gen, resurrection/ISS-054). Green the
+  full matchmaking suite. Resurrection touches the engine + JSONB cache — test hard.
+- **Phase 5 — Economy/loadout + admin.** Shop, inventory, equipment, skills, leaderboard, admin CRUD.
+  **Route every credit/wallet/market operation through an `EconomyService` interface** (the credit
+  ledger is never mutated by ad-hoc `increment` calls scattered across handlers) so Phase 8 is a
+  clean cut. Note the existing coupling: `GameController` awards credits and equipment references
+  inventory items — these become the first cross-service calls.
+- **Phase 6 — Cutover & decommission.** Flip the proxy fully; delete `app`/`ws`/`db-init`
+  containers; replace with one `hub` container (the modular monolith). Archive Laravel.
+
+### Extraction phases (turn the seams into services)
+
+> Driven by **clean ownership and independent deploy/scale**, not load — Identity and Economy are
+> both *low-load* (co-location is fine), but they are cross-cutting substrates that several future
+> services will depend on, so they get their own DB ownership and service boundary now while the
+> code is fresh. Extract along the interfaces built in Phases 1 and 5 — this is implementation
+> swap (in-process call → network call), not a rewrite. Sequence them after the gateway is proven;
+> do **not** big-bang them up front.
+
+- **Phase 7 — Extract Identity service.** Promote `IdentityService` to a standalone Go service
+  owning its own schema: `users` (account_name, email, password_hash, address/birth_date, role,
+  `ws_channel_key`, soft-deletes) + `personal_access_tokens`. Exposes: token issue/validate
+  (the auth seam every other service trusts), account CRUD, GDPR export/anonymise, admin user
+  management. The hub becomes a *consumer* — token validation and `ws_channel_key` lookups (which
+  gate WS auth, doc 03 §4) go through it. **Re-run the auth/GDPR/renewal suite against the service
+  boundary**, not just in-process.
+- **Phase 8 — Extract Economy service.** Promote `EconomyService` to a standalone Go service owning
+  the wallet + market: `credit_transactions`, `inventory_transactions`, `shop_items`,
+  `player_inventories`, and the **`credits` balance moved off the `users` row into a wallet** owned
+  here. Exposes: balance read, transactional award/spend (atomic ledger), market browse/purchase,
+  inventory list. Consumers: `GameController` credit awards, shop purchase, equipment ownership
+  checks. **Play stats stay gateway-side** — `total_wins`/`losses`/`ratio` and the leaderboard are
+  battle concerns, not economy; only money/items move.
+
+### Data-ownership boundary (post-extraction)
+
+| Owner | Tables | Notes |
+|---|---|---|
+| **Identity svc** | `users` (account/auth cols), `personal_access_tokens` | System of record for *who*; issues/validates tokens |
+| **Economy svc** | `credit_transactions`, `inventory_transactions`, `shop_items`, `player_inventories`, wallet balance | System of record for *money & items* |
+| **Hub (gateway)** | `characters`, `game_matches`, `match_participants`, `matchmaking_queues`, `character_equipments`, `skill_templates`, `character_skills`, play-stats columns | Gameplay truth; references Identity (player) + Economy (items) by id across the seam |
+
+> The one cross-cutting wrinkle: `character_equipments` (gameplay, hub) references inventory items
+> (economy). Equip/unequip becomes a hub→economy ownership check rather than a SQL join — design
+> that call explicitly in Phase 5's `EconomyService` interface so Phase 8 doesn't surprise you.
+
+## 6. Effort & risk
+
+| Phase | Relative effort | Primary risk |
+|---|---|---|
+| 0 Skeleton | S | Envelope/round-trip parity subtleties |
+| 1 Auth | M | Sliding-renewal exactness; GDPR anonymise semantics |
+| 2 Game proxy | M | **Fog-of-war masking** fidelity; envelope passthrough of engine errors |
+| 3 WebSocket | **L** | Pusher-protocol vs. native transport decision (frontend impact) |
+| 4 Matchmaking | **L** | AI generation parity; **arena resurrection (ISS-054)** correctness |
+| 5 Economy/admin | M | Breadth (many endpoints), credit-ledger tx integrity |
+| 6 Cutover | S | Ops/runbook, data continuity (same DB → low) |
+| 7 Extract Identity | M | Token-validation seam latency; the WS auth path now depends on a remote call — cache/validate carefully |
+| 8 Extract Economy | M | Moving `credits` off `users` (data migration); award/spend must stay atomic across the service boundary (idempotency on credit events) |
+
+**Lowest risk:** DB schema (port verbatim), engine bridge (gets *better* with shared types).
+**Highest risk:** WebSocket transport choice and matchmaking/resurrection logic.
+
+**De-risking levers:** (a) shared DB side-by-side running; (b) the 74 PHP tests as the
+acceptance oracle — port them *first* per phase; (c) Playwright E2E as the cross-stack gate;
+(d) the Postman collections (`Upsilon_Battle.postman_collection.json`) as additional contract checks.
+
+## 7. What gets *deleted* by this migration
+
+- Laravel Reverb + `pusher-js` server dependency, and the `ws` + `db-init` containers.
+- The PHP-FPM/queue split; `jobs`/`cache` tables (if Go uses native concurrency).
+- The runtime envelope middleware gymnastics (becomes idiomatic Go middleware).
+- PHP itself from the deploy surface — the user's stated motivation.

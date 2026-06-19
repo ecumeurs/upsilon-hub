@@ -14,18 +14,27 @@ parents: []
 # New Atom
 
 ## INTENT
-Define the overarching vision for the Upsilon Hub ecosystem as a high-performance, modular Tactical RPG platform.
+Define Upsilon as a modular multiplayer platform that grows from a tactical battle arena into a persistent living world hosting multiple interconnected game experiences.
 
 ## THE RULE / LOGIC
-- **Goal:** Create a modular, concurrent multiplayer TRPG with a state-of-the-art battle engine and robust management UI.
-- **Core Principles:**
-  - **Atomic Traceability:** Every line of code must be traceable to a specification.
-  - **Modularity:** System components are isolated sub-projects with clear boundaries.
-  - **High Performance:** Go-based engine for millisecond-latency tactical calculations.
-  - **Evolvability:** V2 roadmap focuses on skill systems, time-based mechanics, and advanced AI.
+- **North Star:** Upsilon evolves from a battle-only arena into a persistent "living world" (adventuring / defend-the-base) that hosts several interconnected game *sides* sharing one identity, one economy, and one world.
+- **Game Sides (current + planned):**
+  - **Battle** — tactical RPG arena (the existing product; the reference sub-engine).
+  - **Commerce** — a tycoon / economic simulation.
+  - **Intrigue** — a spy / asymmetric-information game.
+- **World Engine (authoritative truth):** A central, persistent service that owns world-scale state — geography, player position, world resources, and large-scale events. It *configures* sub-engines from world state and *ingests* their outcomes.
+- **Sub-Engines (configured simulations):** Each side runs as a simulation configured from the world and reporting results back. Their runtime shapes differ deliberately:
+  - Battle = ephemeral, instanced, real-time; scales by sharding matches.
+  - Commerce / Intrigue = persistent, tick/timer-driven; closer in shape to the World Engine itself.
+- **Integration Contract:** Configuration flows *down* (command/RPC), outcomes flow *up* (events). The existing battle `startArena ↓ / webhook ↑` exchange is the prototype for this world↔engine protocol.
+- **Shared Kernels:** Two cross-cutting substrates sit beneath every side — **Identity** (accounts, credentials, sessions) and **Economy** (the wallet/credit ledger shared by battle rewards, the market, and commerce). A new side plugs into these rather than reimplementing them.
+- **Enduring Principles:** Atomic traceability; modularity split by *responsibility and load profile* (high-load battle + gateway scale out; low-load market / skill-generation stay flat); Go performance for millisecond tactical latency; observability-first (OpenTelemetry) as the connective tissue of a multi-engine mesh.
 
 ## TECHNICAL INTERFACE
-- **Code Tag:** `@spec-link [[vision_upsilon_vision]]`
-- **Related Atoms:** `[[requirement_req_trpg_game_definition]]`, `[[contract_upsilon_contract]]`
+- **Integration Pattern:** World↔Engine — config down (command/RPC), outcomes up (events); Identity and Economy as shared kernels.
 
 ## EXPECTATION
+- A new game side (e.g. Commerce, Intrigue) can be introduced by implementing the world↔engine contract, without modifying Identity or Economy.
+- Identity and Economy are consumed by every side as services — no side owns its own private copy of accounts or the credit ledger.
+- Each engine scales independently along its own load profile (battle by match-sharding; world by region-sharding) without forcing the others to scale.
+- The platform remains fully traceable: every shipped capability links back through atoms to this vision.
