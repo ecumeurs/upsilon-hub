@@ -150,81 +150,19 @@ The project utilizes a dedicated **[docker-compose.ci.yaml](docker-compose.ci.ya
   docker compose -f docker-compose.ci.yaml up -d --wait
   ```
 
-### Compliance & Reporting
-- **BRD Compliance**: Automated scripts (located in `upsiloncli/samples/`) verify critical Business Requirements such as **Password Policy** (`[[rule_password_policy]]`) and **Character Progression** (`[[rule_progression]]`).
 - **CI Reports**: Each run generates a summary report ([ci_report.sh](tests/ci_report.sh)) that is attached to the job summary, providing immediate visibility into test outcomes and compliance status.
 
 ## Specification (ATD) Maps
 All fundamental mechanics, structural constraints, entities, and network rules that form the game are housed individually within the project-specific `docs/` folders (e.g., `upsilonapi/docs/`, `upsilonbattle/docs/`) governed by the ATD Workspace. These Atoms serve as the uncompromising basis for evaluating developer implementation logic.
 
-## V2 Development: Tactical RPG Evolution
-
-**Status:** In Development - Target Q3 2026
-
-UpsilonBattle V2 represents a comprehensive evolution transforming the tactical RPG foundation with skill systems, time-based mechanics, credit economy, equipment progression, and enhanced AI.
-
-### 🎯 Major V2 Features
-
-**Skill System Overhaul:** Mathematical Skill Weight (SW) system with I-V grading, skill selection at creation and every 10 levels, and skill reforging mechanics.
-
-**Time-Based Mechanics:** Channeling (pre-execution delay), temporary entities for traps/area effects, and multi-entity cell support enabling complex temporal strategies.
-
-**Credit Economy:** 1 HP = 1 credit earning system with support credits for damage mitigation and status effects, plus shop system for skills and equipment.
-
-**Equipment System:** 3-slot inventory (armor, utility, weapon) with weapon-as-skills transforming basic attacks into property-rich combat actions.
-
-**AI Enhancement:** Four archetypes (Fighter, Ranger, Support, Sneak) following player progression with team composition constraints.
-
-**Backstabbing:** 150% damage multiplier with 50% armor penetration for attacks from behind, rewarding positional tactics.
-
-**Stat System Redesign:** x10 baseline stats (HP 30-50, Attack 10, Defense 5, Movement 3) with 100 CP point-buy system enabling meaningful percentage modifiers.
-
-### 📋 Implementation Roadmap
-
-- **Phase 1 (Weeks 1-4):** Foundation Systems - Skill Weight, Time-Based Mechanics, Grid Updates, Database/API
-- **Phase 2 (Weeks 5-8):** Core Gameplay - Skill Selection, Channeling, Backstabbing, Credit Earning
-- **Phase 3 (Weeks 9-12):** Equipment & Economy - Equipment System, Shop System, Extended Character Sheet
-- **Phase 4 (Weeks 13-16):** AI Enhancement - Archetype Implementation, Progression Integration, Balancing
-- **Phase 5 (Weeks 17-20):** Polish & Testing - UI Integration, Visual Feedback, Comprehensive Testing, Documentation
-
-### 🏗️ Architectural Breakthroughs
-
-**Unified Temporary Entity System:** All time-based mechanics (channeling, traps, area effects) represented as temporary entities with controllers.
-
-**Skill Weight Mathematical Framework:** Net SW = 0 balance principle with precise benefit/cost calculations enabling automatic grading and pricing.
-
-**x10 Stat Scaling:** Critical fix making percentage modifiers meaningful and character progression strategically diverse.
-
-### 📊 Current Status
-
-**Active Development Issues:**
-- [ISS-065](issues/ISS-065_20260422_skill_weight_grading_system.md) - Skill Weight & Grading System
-- [ISS-066](issues/ISS-066_20260422_time_based_mechanics.md) - Time-Based Mechanics & Temporary Entity System
-- [ISS-067](issues/ISS-067_20260422_credit_economy_shop.md) - Credit Economy & Shop System
-- [ISS-068](issues/ISS-068_20260422_equipment_system.md) - Equipment System & Weapon-as-Skill
-- [ISS-069](issues/ISS-069_20260422_ai_archetype_enhancement.md) - AI Archetype Enhancement
-- [ISS-070](issues/ISS-070_20260422_backstabbing_mechanics.md) - Backstabbing Mechanics
-- [ISS-071](issues/ISS-071_20260422_starting_stats_progression.md) - Starting Stats & Character Progression Redesign
-- [ISS-073](issues/ISS-073_20260423_roguelike_skill_system.md) - Roguelike Skill System: Inventory, Slots & Equipment
-- [ISS-074](issues/ISS-074_20260423_simple_shop_inventory.md) - Simple Shop Inventory
-- [ISS-075](issues/ISS-075_20260423_player_inventory.md) - Player Inventory System
-- [ISS-076](issues/ISS-076_20260423_character_data_transfer.md) - Character Data Transfer for Battle Engine
-
-**Comprehensive V2 Documentation:** See [v2_milestone.md](v2_milestone.md) for complete feature specifications, implementation details, and technical architecture.
-
 ## Open Issues
 
 | Name | Date | Status | Severity | Oneliner |
 |---|---|---|---|---|
-| [Limited Zone Targeting Support in Go Engine](issues/ISS-099_20260513_skill_template_zone_support_gap.md) | 2026-05-13 | Open | Medium | The current engine infrastructure lacks support for defining dynamic Area of ... |
-| [Internal User ID Exposure in Battle State DTOs](issues/ISS-098_20260513_battle_engine_internal_user_id_leak.md) | 2026-05-13 | Open | High | The Go battle engine's API bridge currently leaks internal User UUIDs via the... |
-| [Trap Trigger Type Enforcement](issues/ISS-096_20260510_trap_trigger_enforcement.md) | 2026-05-10 | Open | Medium | Traps (positional effects) currently fail silently if they are missing a `Tri... |
-| [Skill Rework & Generation Standardization](issues/ISS-095_20260507_skill_rework.md) | 2026-05-07 | Open | Medium | The current skill generation and execution framework suffers from several des... |
-| [Administrative Account Self-Destruction Risk](issues/ISS-093_20260429_admin_account_self_destruction_risk.md) | 2026-04-29 | Open | Critical | The administrative API allows users with admin privileges to target any accou... |
+| [Devcontainer lost WebGL — Playwright 3D visual specs cannot render](issues/ISS-100_20260616_devcontainer_webgl_playwright_visual.md) | 2026-06-16 | Open | Medium | Headless Chromium in the current devcontainer **cannot create a WebGL context... |
 | [Action Endpoint Segregation](issues/ISS-090_20260427_action_endpoint_segregation.md) | 2026-04-27 | Open | Medium | Currently, all tactical actions (move, attack, skill, pass) are funneled thro... |
 | [Deterministic Daily Random Shop](issues/ISS-089_20260426_mechanic_random_shop_algorithm.md) | 2026-04-26 | Open | Medium | Implementation of a daily rotating shop system that provides a deterministic ... |
 | [Grid Generator Tuning - Large and Flat Maps](issues/ISS-087_20260426_grid_generator_tuning.md) | 2026-04-26 | Open | Medium | Since the integration of the `gridgenerator`, battle maps have been observed ... |
-| [Automate API Help Endpoints using Postman and Validation Tools](issues/ISS-083_20260425_automate_api_help_endpoints.md) | 2026-04-25 | Open | Medium | The current API help endpoints in the Laravel `battleui` component rely on a ... |
 | [Cross-stack error handling harmonization](issues/ISS-081_20260425_cross_stack_error_handling.md) | 2026-04-25 | Open | Medium | `error_key` is currently propagated only on the engine action paths (`POST /g... |
 | [ATD for `error_key` taxonomy and possible envelope promotion](issues/ISS-080_20260425_error_key_atd_and_envelope.md) | 2026-04-25 | Open | Medium | `error_key` is now plumbed end-to-end (engine ruler → upsilonapi handler → La... |
 | [Standardize cell access on Y-major layout](issues/ISS-079_20260424_cell_access_y_major_standard.md) | 2026-04-24 | Open | Medium | The tactical grid is currently serialized width-major (`cells[x][y]`) by the ... |
@@ -233,9 +171,4 @@ UpsilonBattle V2 represents a comprehensive evolution transforming the tactical 
 | [Player Choosing Facing Direction on Pass](issues/ISS-072_20260423_pass_choose_facing.md) | 2026-04-23 | Open | Medium | When a player chooses to "Pass" their turn, they must be given the option to ... |
 | [Actor Message Type Validation](issues/ISS-055_20260420_actor_message_validation.md) | 2026-04-20 | Open | Low | The `Actor` implementation should validate if the target message is of the co... |
 | [Modernize Actor Library with Go Generics (Templates)](issues/ISS-049_20260418_actor_generics_modernization.md) | 2026-04-18 | Open | Low (Architectural Improvement) | The current Actor implementation was designed before Go 1.18 (Generics). It r... |
-| [Request Traceability Non-Compliance and Gaps](issues/ISS-042_20260415_request_traceability_gaps.md) | 2026-04-15 | Open | Medium | This issue documents the systematic non-compliance with `rule_tracing_logging... |
-| [Upgradable Pawn Appearance & Model System](issues/ISS-040_20260415_pawn_appearance_system.md) | 2026-04-15 | Open | Medium | Implement an upgradable "Pawn Appearance System" that allows players to custo... |
-| [Holo-Emote Procedural Reaction System](issues/ISS-039_20260415_holo_emote_system.md) | 2026-04-15 | Open | Medium | Implement a "Holo-Emote System" that triggers procedural reactions (emojis/te... |
-| [Standardize Board State Naming: entities -> characters](issues/ISS-036_20260414_front_board_state_entity_naming.md) | 2026-04-14 | Open | Medium | The board state structure currently uses the term "entities" for game units. ... |
-| [Ensure all logs are tagged with Request ID](issues/ISS-023_20260316_logging_tag_traceability.md) | 2026-03-16 | Open | High | The system currently lacks a strictly enforced requirement to tag every log e... |
 

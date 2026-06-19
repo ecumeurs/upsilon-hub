@@ -210,8 +210,9 @@ entries for `playwright-report/`, `tests/playwright/.output/`, `battle_screensho
 
 **Remaining work (NOT done — real frontend regressions, not test scaffolding):**
 the 2 failing + 2 hanging specs are genuine `BattleArena.vue` / arena-rendering
-regressions, closely tied to the 846-LOC god-component flagged in
-[ISS-084](ISS-084_20260425_component_split_effects_plan.md) and the audit
-frontend report. They were deliberately NOT papered over (no assertions weakened).
-Track the spec fixes under the BattleArena decomposition (ISS-084) / a dedicated
-frontend-stabilization pass; this issue stays Open until the suite is green.
+regressions, originally tied to the 846-LOC god-component flagged in ISS-084
+("Refactor BattleArena into components and restore visual effects" — now
+Resolved/deleted) and the audit frontend report. They were deliberately NOT
+papered over (no assertions weakened). Re-verify against the now-decomposed
+`BattleArena.vue` as a dedicated frontend-stabilization pass; this issue stays
+Open until the suite is green.
