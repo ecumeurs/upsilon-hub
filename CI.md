@@ -9,7 +9,7 @@ The CI pipeline is consolidated into a single workflow file (`.github/workflows/
 | Stage | Trigger | Purpose |
 |---|---|---|
 | **Build & Lint** | Push + PR | Go/PHP syntax checks, Dockerfile validation, compilation |
-| **Unit Tests** | Push + PR | Isolated Go and PHP unit tests (SQLite In-Memory) |
+| **Unit Tests** | Push + PR | Isolated Go and PHP unit tests (PHP on ephemeral PostgreSQL) |
 | **Integration & E2E** | Push + PR | Full stack integration, Edge cases, and Playwright UI tests |
 
 ### Infrastructure
@@ -213,6 +213,25 @@ Adding a new verification scenario is a **zero-touch process** (no GitHub Action
 ---
 
 ## Running Locally
+
+### PHP Unit Tests (PostgreSQL)
+PHP unit tests run against PostgreSQL, not SQLite — several migrations use
+Postgres-only DDL (`ALTER TABLE ... ADD CONSTRAINT ... CHECK`) that SQLite
+cannot build. The connection defaults (host `db`, database `testing`, user/pass
+`postgres`) are set in `battleui/phpunit.xml`.
+
+```bash
+# Inside the dev container: create the dedicated test database once, then run.
+psql -h db -U postgres -c 'CREATE DATABASE testing;'   # password: postgres
+cd battleui && php artisan test
+```
+
+Tests tagged `#[Group('engine-required')]` (e.g. `UpsilonApiRoundtripTest`) make
+real calls to the Go engine and are excluded from the unit run via
+`--exclude-group=engine-required`.
+
+To reproduce the CI job exactly (ephemeral postgres + production-style image),
+use `scripts/run_ci_local.sh --stages unit`.
 
 ### Full E2E Stack
 ```bash

@@ -82,6 +82,18 @@ The project provides a pre-configured development environment via **[.devcontain
   - `8081`: Upsilon Engine (Go API)
   - `5173`: Vue Frontend (HMR)
 
+> **Running PHP unit tests:** the suite runs against **PostgreSQL** (the
+> migrations use Postgres-only DDL that SQLite cannot build), so a dedicated
+> `testing` database must exist on the `db` service. Create it once, then run
+> the tests from `battleui/`:
+> ```bash
+> # inside the dev container
+> psql -h db -U postgres -c 'CREATE DATABASE testing;'   # password: postgres (one-time)
+> cd battleui && php artisan test
+> ```
+> Connection defaults (host `db`, database `testing`, user/pass `postgres`) live
+> in `battleui/phpunit.xml`.
+
 #### Service Management
 The project includes a suite of scripts in the `scripts/` directory for local service management and testing:
 
