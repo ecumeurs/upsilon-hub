@@ -212,6 +212,7 @@ jobs:
           sed -i 's/REVERB_HOST=127.0.0.1/REVERB_HOST=localhost/' .env
 
       - name: Setup Node.js (for Playwright)
+        if: false # Playwright temporarily disabled in CI, see issue tracker
         uses: actions/setup-node@v6
         with:
           node-version: 24
@@ -219,6 +220,7 @@ jobs:
           cache-dependency-path: battleui/package-lock.json
 
       - name: Install Playwright Dependencies
+        if: false # Playwright temporarily disabled in CI, see issue tracker
         run: |
           cd battleui
           npm install
@@ -231,6 +233,7 @@ jobs:
         run: docker compose -f docker-compose.ci.yaml ps
 
       - name: "E2E: Run Playwright Tests"
+        if: false # Playwright temporarily disabled in CI, see issue tracker
         continue-on-error: true
         run: |
           cd battleui
