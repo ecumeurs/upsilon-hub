@@ -1,18 +1,18 @@
 ---
-id: mechanic_mech_battle_engine_stress_testing
+id: mechanic_battle_engine_stress_testing
 status: DRAFT
 tags: ["testing","performance","stress-test"]
 dependents: []
 human_name: "Battle Engine Stress Testing Infrastructure"
 parents:
-  - [[shared:requirement_req_trpg_game_definition]]
+  - [[req_trpg_game_definition]]
 version: 1.0
 type: MECHANIC
 layer: IMPLEMENTATION
 priority: 3
 ---
 
-# New Atom
+# Battle Engine Stress Testing Infrastructure
 
 ## INTENT
 To provide a robust infrastructure for long-running, multi-match stress tests of the battle engine to identify memory leaks, race conditions, and performance regressions.
@@ -28,7 +28,7 @@ To provide a robust infrastructure for long-running, multi-match stress tests of
 ## TECHNICAL INTERFACE
 - **Script:** `scripts/stress_test.py`
 - **Output:** `/workspace/stress_test_report.json`, `/workspace/stress_test_report.md`
-- **Code Tag:** `@spec-link [[mech_battle_engine_stress_testing]]`
+- **Code Tag:** `@spec-link [[mechanic_battle_engine_stress_testing]]`
 
 ## EXPECTATION
 - The stress test can run for 10 minutes with 10+ concurrent matches without memory leaks in the Go engine.

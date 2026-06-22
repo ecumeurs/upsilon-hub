@@ -10,11 +10,12 @@ parents:
   - [[battleui:req_player_experience]]
 priority: 3
 dependents:
-  - [[usecase_api_flow_game_turn]]
-  - [[usecase_api_flow_matchmaking]]
+  - [[us_api_flow_game_turn]]
+  - [[us_api_flow_matchmaking]]
+  - [[upsilonapi:api_help_endpoint]]
 ---
 
-# New Atom
+# API-First Experience & Documentation
 
 ## INTENT
 To ensure the entire game is accessible, discoverable, and fully playable via a standalone, self-documenting API.

@@ -8,11 +8,12 @@ parents:
   - [[rule_progression]]
 type: RULE
 tags: [stats, progression, items, iss-074]
-dependents: []
+dependents:
+  - [[battleui:ui_character_full_stat_panel]]
 layer: BUSINESS
 ---
 
-# New Atom
+# Character Stat Taxonomy (Class A vs Class B)
 
 ## INTENT
 To divide character properties into two classes based on whether players can level them up via Character Points: Class A (CP-upgradable, persisted) vs Class B (item / buff only, never CP-upgradable). This rule is the single source of truth for "can the upgrade UI show this stat?" and "should the dashboard show a CP cost next to this stat?".
@@ -45,7 +46,7 @@ Class B stats:
 
 **Companion atoms:**
 - `[[rule_progression]]` defines CP costs for Class A.
-- `[[mec_item_buff_application]]` is how Class B stats are projected onto entities.
+- `[[upsilonbattle:mechanic_item_buff_application]]` is how Class B stats are projected onto entities.
 
 ## TECHNICAL INTERFACE
 - **Code Tag:** `@spec-link [[rule_stat_taxonomy]]`

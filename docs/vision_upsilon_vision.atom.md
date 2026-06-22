@@ -4,14 +4,25 @@ status: STABLE
 human_name: Upsilon Hub Vision
 priority: 1
 tags: [governance, vision, root]
-dependents: []
+dependents:
+  - [[battleui:vision_ui_vision]]
+  - [[upsilonapi:vision_api_vision]]
+  - [[upsilonbattle:vision_battle_vision]]
+  - [[upsiloncli:vision_cli_vision]]
+  - [[upsilonmapdata:vision_mapdata_vision]]
+  - [[upsilonmapmaker:vision_mapmaker_vision]]
+  - [[upsilontools:mechanic_math_core_utils]]
+  - [[upsilontools:mechanic_randomization_helpers]]
+  - [[upsilontools:mechanic_spatial_distance_calculations]]
+  - [[upsilontools:vision_tools_vision]]
+  - [[upsilontypes:vision_types_vision]]
 type: VISION
 layer: BUSINESS
 version: 1.0
 parents: []
 ---
 
-# New Atom
+# Upsilon Hub Vision
 
 ## INTENT
 Define Upsilon as a modular multiplayer platform that grows from a tactical battle arena into a persistent living world hosting multiple interconnected game experiences.

@@ -28,7 +28,7 @@ As a user (Player or Administrator), I want to securely log out of the system so
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[us_auth_logout]]`
 - **UI Component:** `Header.vue` or `AppMenu.vue`
-- **Dependencies:** [[api_auth_logout]]
+- **Dependencies:** [[upsilonapi:api_auth_logout]]
 
 ## EXPECTATION (For Testing)
 1. User session state is cleared from the logic layer (Vuex/Pinia).

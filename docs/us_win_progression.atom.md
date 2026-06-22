@@ -1,26 +1,25 @@
 ---
 id: us_win_progression
 human_name: Post-Win Progression Story
-type: MODULE
-layer: ARCHITECTURE
+type: USER_STORY
+layer: BUSINESS
 version: 1.0
 status: STABLE
 priority: 5
 tags: []
 parents: []
-dependents:
-  - [[us_win_progression_movement_locked]]
-  - [[us_win_progression_progression_screen]]
-  - [[us_win_progression_stat_reflection]]
-  - [[us_win_progression_win_alloc_point]]
+dependents: []
 ---
 # Post-Win Progression Story
 
 ## INTENT
-To aggregate the constituent rules of Post-Win Progression Story.
+As a player, after winning a match I am shown a progression screen where I allocate Character Points, with results reflected immediately on my Dashboard.
 
 ## THE RULE / LOGIC
-Post-Win Progression Story: Allocate a stat point for roster progression and play style.
+After a match victory the player allocates progression to their roster. Acceptance criteria:
+- A progression screen appears only after a match victory.
+- The player allocates earned Character Points (CP) to upgradable stats via the CP point-buy system defined in [[rule_progression]] (per-attribute CP costs and the global spend cap; no fixed "1 point per win" allocation, and no movement-every-5-wins gate).
+- Applying an upgrade immediately reflects on the player's Dashboard character stats.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[us_win_progression]]`

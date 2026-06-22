@@ -1,5 +1,5 @@
 ---
-id: usecase_api_flow_game_turn
+id: us_api_flow_game_turn
 status: STABLE
 layer: BUSINESS
 priority: 3
@@ -13,7 +13,7 @@ parents:
   - [[uc_combat_turn]]
 ---
 
-# New Atom
+# Tactical Game Turn API Flow
 
 ## INTENT
 To detail the exact API interaction sequence required for a complete tactical turn in a match.
@@ -66,8 +66,8 @@ To detail the exact API interaction sequence required for a complete tactical tu
 - **Intent**: Verify match state has been updated and observe the result of the actions.
 
 ## TECHNICAL INTERFACE
-- **Related Specs:** `[[api_battle_proxy]]`, `[[api_laravel_gateway]]`
-- **Code Tag:** `@spec-link [[usecase_api_flow_game_turn]]`
+- **Related Specs:** `[[upsilonapi:api_battle_proxy]]`, `[[upsilonapi:api_laravel_gateway]]`
+- **Code Tag:** `@spec-link [[us_api_flow_game_turn]]`
 
 ## EXPECTATION
 - Action sequence results in correct state transition in the engine.

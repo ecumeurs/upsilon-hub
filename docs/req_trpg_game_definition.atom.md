@@ -1,5 +1,5 @@
 ---
-id: requirement_req_trpg_game_definition
+id: req_trpg_game_definition
 status: STABLE
 layer: BUSINESS
 version: 1.0
@@ -9,11 +9,13 @@ tags: [trpg, combat, game-definition]
 parents:
   - [[battleui:req_player_experience]]
 dependents:
-  - [[req_skill_generation]]
+  - [[battleui:ui_battle_arena]]
+  - [[mechanic_battle_engine_stress_testing]]
+  - [[upsilonbattle:req_skill_generation]]
 human_name: TRPG Game Definition
 ---
 
-# New Atom
+# TRPG Game Definition
 
 ## INTENT
 Define Upsilon Battle as a turn-based Tactical RPG where players deploy character rosters onto a procedurally generated grid and compete via initiative-driven combat.
@@ -29,7 +31,7 @@ Define Upsilon Battle as a turn-based Tactical RPG where players deploy characte
 
 ## TECHNICAL INTERFACE
 - **Code Tag:** `@spec-link [[req_trpg_game_definition]]`
-- **Related Atoms:** `[[module_game]]`, `[[uc_combat_turn]]`, `[[mech_action_economy]]`
+- **Related Atoms:** `[[upsilonbattle:module_game]]`, `[[uc_combat_turn]]`, `[[upsilonbattle:mech_action_economy]]`
 
 ## EXPECTATION
 - A player understands the game is a turn-based tactical RPG with initiative-driven combat on a grid.

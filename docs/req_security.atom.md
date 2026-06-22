@@ -1,32 +1,33 @@
 ---
 id: req_security
 human_name: Sanctum Token Security Requirement
-type: MODULE
-layer: ARCHITECTURE
+type: REQUIREMENT
+layer: BUSINESS
 version: 1.1
 status: STABLE
 priority: 5
 tags: [auth, sanctum]
 parents:
-  - [[req_tech_debt_backlog]]
+  - [[shared:req_tech_debt_backlog]]
 dependents:
-  - [[req_security_authorization]]
-  - [[req_security_public_access]]
-  - [[req_security_token_exchange]]
   - [[req_security_token_ttl]]
   - [[uc_auth_logout]]
+  - [[upsilonapi:rule_admin_access_restriction]]
+  - [[upsilonapi:rule_gdpr_compliance]]
+  - [[upsilonapi:rule_password_policy]]
 ---
 # Sanctum Token Security Requirement
 
 ## INTENT
-To aggregate the constituent rules of Sanctum Token Security.
+All non-public requests must carry a valid Sanctum bearer token over HTTPS, with login and registration the only token-issuing public entry points.
 
 ## THE RULE / LOGIC
-Ensures that all non-public requests to the application are authenticated and secure.
-- **Encryption:** All traffic MUST use HTTPS (support for self-signed certificates for development/light environments).
-- **Authentication:** Laravel Sanctum Personal Access Tokens sent in the `Authorization` header as a Bearer token.
-- **Password Policy:** Enforces complexity as defined in [[rule_password_policy]].
-- **Privacy Core:** Enforces GDPR compliance as defined in [[rule_gdpr_compliance]].
+Ensures all non-public requests to the application are authenticated and secure. Acceptance criteria:
+- **Encryption:** All traffic MUST use HTTPS (self-signed certificates allowed for development/light environments).
+- **Authentication:** Every UI page (dashboard, waiting room, board) and all backend API calls require a valid Laravel Sanctum Personal Access Token sent as a Bearer token in the `Authorization` header.
+- **Public exemptions:** The Landing Page, User Registration (`POST /v1/auth/register`) and User Login (`POST /v1/auth/login`) are fully exempt from authorization.
+- **Token issuance:** A successful login or registration immediately issues a Sanctum token to the client.
+- Token lifetime and renewal are governed separately by [[req_security_token_ttl]].
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[req_security]]`

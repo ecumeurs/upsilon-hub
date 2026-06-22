@@ -1,7 +1,7 @@
 ---
 id: uc_player_registration
 human_name: Player Registration Use Case
-type: MODULE
+type: USER_STORY
 layer: ARCHITECTURE
 version: 1.0
 status: STABLE
@@ -10,6 +10,7 @@ tags: []
 parents:
   - [[battleui:req_player_experience]]
 dependents:
+  - [[battleui:ui_registration]]
   - [[us_new_player_onboard]]
 ---
 # Player Registration Use Case
@@ -28,7 +29,6 @@ To allow a new user to enter the ecosystem by creating a persistent account and 
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[uc_player_registration]]`
-- **Internal Specs:** `[[uc_player_registration_create_account]]`, `[[uc_player_registration_generate_characters]]`, `[[uc_player_registration_persist_account]]`
 
 ## EXPECTATION (For Testing)
 - Submission of valid form -> Characters generated -> Success leads to Dashboard redirection with valid JWT.

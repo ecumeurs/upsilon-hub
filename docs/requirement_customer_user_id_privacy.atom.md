@@ -7,11 +7,13 @@ priority: 3
 tags: security,privacy,auth
 version: 1.2
 parents: []
-dependents: []
+dependents:
+  - [[upsilonapi:arch_api_id_masking_gateway]]
+  - [[upsilonbattle:entity_player]]
 human_name: Internal Identity & Ownership Privacy
 ---
 
-# New Atom
+# Internal Identity & Ownership Privacy
 
 ## INTENT
 To ensure that internal database identifiers (User) are never exposed to the frontend, protecting the system from primary key enumeration and ensuring that all actions are validated against explicit ownership.

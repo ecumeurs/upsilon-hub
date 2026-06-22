@@ -8,7 +8,18 @@ parents: []
 human_name: Upsilon Hub Contract
 type: CONTRACT
 layer: BUSINESS
-dependents: []
+dependents:
+  - [[battleui:contract_ui_contract]]
+  - [[rule_code_health_monitoring]]
+  - [[rule_dto_strict_typing]]
+  - [[upsilonapi:contract_api_contract]]
+  - [[upsilonbattle:contract_battle_contract]]
+  - [[upsilonbattle:rule_ruler_test_robustness]]
+  - [[upsiloncli:contract_cli_contract]]
+  - [[upsilonmapdata:contract_mapdata_contract]]
+  - [[upsilonmapmaker:contract_mapmaker_contract]]
+  - [[upsilontools:contract_tools_contract]]
+  - [[upsilontypes:contract_types_contract]]
 ---
 
 # Upsilon Hub Contract

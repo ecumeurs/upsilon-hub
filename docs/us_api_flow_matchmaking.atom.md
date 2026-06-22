@@ -1,5 +1,5 @@
 ---
-id: usecase_api_flow_matchmaking
+id: us_api_flow_matchmaking
 status: STABLE
 human_name: Matchmaking API Flow Example
 type: USER_STORY
@@ -13,7 +13,7 @@ parents:
   - [[uc_matchmaking]]
 ---
 
-# New Atom
+# Matchmaking API Flow Example
 
 ## INTENT
 To provide a step-by-step logical example of how a client joins a match using only API interactions.
@@ -44,8 +44,8 @@ To provide a step-by-step logical example of how a client joins a match using on
 - **Observe**: Listen to Channel `private-arena.{match_id}` for board updates.
 
 ## TECHNICAL INTERFACE
-- **Related Specs:** `[[api_matchmaking]]`, `[[api_auth_login]]`
-- **Code Tag:** `@spec-link [[usecase_api_flow_matchmaking]]`
+- **Related Specs:** `[[upsilonapi:api_matchmaking]]`, `[[upsilonapi:api_auth_login]]`
+- **Code Tag:** `@spec-link [[us_api_flow_matchmaking]]`
 
 ## EXPECTATION
 - Sequence completes within timeout.

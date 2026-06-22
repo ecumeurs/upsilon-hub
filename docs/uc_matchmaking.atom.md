@@ -1,7 +1,7 @@
 ---
 id: uc_matchmaking
 human_name: Matchmaking & Queue Use Case
-type: MODULE
+type: USER_STORY
 layer: ARCHITECTURE
 version: 1.0
 status: STABLE
@@ -10,8 +10,9 @@ tags: []
 parents:
   - [[battleui:req_player_experience]]
 dependents:
-  - [[rule_matchmaking_single_queue]]
-  - [[usecase_api_flow_matchmaking]]
+  - [[us_api_flow_matchmaking]]
+  - [[upsilonapi:api_matchmaking]]
+  - [[upsilonapi:rule_matchmaking_single_queue]]
 ---
 # Matchmaking & Queue Use Case
 
@@ -27,7 +28,6 @@ Facilitates the transition from the **Character Review Dashboard** to an active 
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[uc_matchmaking]]`
-- **Internal Specs:** `[[uc_matchmaking_matchmaking]]`, `[[uc_matchmaking_redirect_to_board]]`
 
 ## EXPECTATION (For Testing)
 - User selects PvP -> Waiting room rendered -> Match found -> Board redirection.

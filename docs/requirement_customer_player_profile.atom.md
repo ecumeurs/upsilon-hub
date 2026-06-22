@@ -10,9 +10,11 @@ parents: []
 version: 1.0
 dependents:
   - [[rule_progression]]
+  - [[upsilonapi:rule_character_renaming]]
+  - [[upsilontypes:entity_character]]
 ---
 
-# New Atom
+# Player Meta-game Management
 
 ## INTENT
 To define the requirements for managing player-specific game metadata, such as character rosters and career progression.
@@ -24,7 +26,7 @@ To define the requirements for managing player-specific game metadata, such as c
 
 ## TECHNICAL INTERFACE
 - **Controller:** `ProfileController`
-- **Code Tag:** `@spec-link [[customer_player_profile]]`
+- **Code Tag:** `@spec-link [[requirement_customer_player_profile]]`
 - **Endpoints:** `GET /api/v1/profile/characters`, `GET /api/v1/profile`
 
 ## EXPECTATION

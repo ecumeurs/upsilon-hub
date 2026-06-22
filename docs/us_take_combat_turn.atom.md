@@ -10,9 +10,9 @@ tags: [combat, turn, board]
 parents:
   - [[uc_combat_turn]]
 dependents:
-  - [[rule_combat_range_validation]]
-  - [[rule_forfeit_battle]]
-  - [[rule_team_mechanics]]
+  - [[upsilonbattle:rule_combat_range_validation]]
+  - [[upsilonbattle:rule_forfeit_battle]]
+  - [[upsilonbattle:rule_team_mechanics]]
 ---
 # Taking a Combat Turn Story
 

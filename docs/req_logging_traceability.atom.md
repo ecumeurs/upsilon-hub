@@ -20,8 +20,8 @@ To guarantee that every log entry produced by the system can be definitively map
 ## THE RULE / LOGIC
 1.  **Mandatory Tagging:** Every log entry (stdout, file, or external sink) MUST contain a reference ID derived from the transaction's unique identifier.
 2.  **ID Sources:**
-    - **Header Source:** For HTTP interactions, use the value from the `X-Request-ID` header (see [[api_request_id]]).
-    - **Payload Source:** If the header is missing or unavailable (e.g., internal processing), use the `request_id` field from the [[api_standard_envelope]].
+    - **Header Source:** For HTTP interactions, use the value from the `X-Request-ID` header (see [[upsilonapi:api_request_id]]).
+    - **Payload Source:** If the header is missing or unavailable (e.g., internal processing), use the `request_id` field from the [[upsilonapi:api_standard_envelope]].
 3.  **Consistency:** The same ID must persist across the entire execution stack of a single flow, including cross-service calls (Laravel <-> Go).
 4.  **Fallback:** If no ID is provided, the logging middleware/layer MUST generate a temporary "orphan" ID to at least group local logs, while flagging the missing traceability as a warning.
 

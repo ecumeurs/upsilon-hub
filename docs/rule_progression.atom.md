@@ -11,8 +11,11 @@ parents:
   - [[requirement_customer_player_profile]]
   - [[upsilontypes:entity_character]]
 dependents:
+  - [[battleui:uc_progression_stat_allocation]]
+  - [[battleui:ui_character_full_stat_panel]]
   - [[rule_stat_taxonomy]]
-  - [[uc_progression_stat_allocation]]
+  - [[upsilonbattle:mechanic_character_point_buy_system]]
+  - [[upsilonbattle:mechanic_exotic_attribute_progression]]
 ---
 # Character Progression Rule
 
@@ -26,7 +29,7 @@ Governs how character attributes improve after participating in a successful gam
   - **Non-Negativity:** No attribute is allowed to have a negative value.
 - **Stat Taxonomy (CP-upgradable vs item-only):**
   - **Class A — Character-leveled (CP-upgradable, persisted on `characters`):** HP, MP, SP, Attack, Defense, Movement, JumpHeight, CritChance, CritDamage.
-  - **Class B — Effective-only (granted by items / buffs only, NEVER CP-upgradable):** AttackRange, Shield. These properties exist on the engine entity but are not selectable from the upgrade UI; they appear on the dashboard only as item / buff contributions.
+  - **Class B — Effective-only (granted by items / buffs / skills only, NEVER CP-upgradable):** AttackRange, Shield, Accuracy, Dodge (Evasion). These properties exist on the engine entity but are not selectable from the upgrade UI; they appear on the dashboard only as item / buff / skill contributions.
 - **Attribute Costs (Class A — Standard):**
   - HP (+1): Costs 1 CP
   - **MP (+1): Costs 1 CP** *(resource counter, parity with HP)*
@@ -49,5 +52,5 @@ Governs how character attributes improve after participating in a successful gam
 - Player assigns 1 Attack to a character -> The upgrade costs 5 CP; operation is successful if `spent_cp + 5 <= 100 + (total_wins * 10)`.
 - Player assigns 1 MP to a character -> The upgrade costs 1 CP and increments both `mp` and `max_mp`.
 - Player assigns 1 SP to a character -> The upgrade costs 1 CP and increments both `sp` and `max_sp`.
-- Player attempts to upgrade AttackRange or Shield via the progression endpoint -> Operation rejected (Class B stats are item / buff only).
+- Player attempts to upgrade a Class B stat (AttackRange, Shield, Accuracy, or Dodge) via the progression endpoint -> Operation rejected (Class B stats are item / buff / skill only).
 - Player tries to upgrade attributes exceeding the allowed total CP cap -> Operation rejected.

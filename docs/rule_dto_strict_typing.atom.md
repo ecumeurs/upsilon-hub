@@ -8,12 +8,12 @@ version: 1.0
 parents:
   - [[contract_upsilon_contract]]
 dependents:
-  - [[mechanic_mec_skill_payload_resolution]]
+  - [[upsilonapi:mechanic_skill_payload_resolution]]
 type: RULE
 layer: ARCHITECTURE
 ---
 
-# New Atom
+# Strict DTO Typing
 
 ## INTENT
 To ensure API contracts are predictable and strongly typed by forbidding the use of 'any' or 'interface{}' in DTOs.

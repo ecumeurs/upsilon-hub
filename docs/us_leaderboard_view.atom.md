@@ -1,26 +1,27 @@
 ---
 id: us_leaderboard_view
 human_name: Leaderboard View Story
-type: MODULE
-layer: ARCHITECTURE
+type: USER_STORY
+layer: BUSINESS
 version: 1.0
 status: STABLE
 priority: 5
 tags: []
 parents: []
 dependents:
-  - [[rule_leaderboard_cycle]]
-  - [[rule_leaderboard_score_calculation]]
-  - [[us_leaderboard_view_auth_leaderboard]]
-  - [[us_leaderboard_view_sort_leaderboard]]
+  - [[upsilonapi:rule_leaderboard_cycle]]
+  - [[upsilonapi:rule_leaderboard_score_calculation]]
 ---
 # Leaderboard View Story
 
 ## INTENT
-To aggregate the constituent rules of Leaderboard View Story.
+As an authenticated player, I view a global leaderboard ranking all players by wins, with a link reachable from the Dashboard.
 
 ## THE RULE / LOGIC
-A logged-in player views a global leaderboard ranking all players by their wins and win/loss ratio.
+An authenticated player views a global leaderboard ranking all players. Acceptance criteria:
+- A leaderboard link is clearly present on the Dashboard.
+- The leaderboard is accessible only to authenticated users (valid bearer token required).
+- The leaderboard is sorted in descending order of total Wins, with ties broken by Win/Loss ratio.
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[us_leaderboard_view]]`

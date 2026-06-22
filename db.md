@@ -119,7 +119,7 @@ Per-user owned items. Ownership only — equip state lives in `character_equipme
 **Constraints**: UNIQUE(`player_id`, `shop_item_id`) — duplicate purchases increment quantity rather than insert.
 
 ### 8. `inventory_transactions`
-Audit trail for inventory changes. See [[upsilonbattle:mec_credit_spending_shop]].
+Audit trail for inventory changes. See [[upsilonapi:mechanic_shop_inventory_system]].
 * `id` (UUID, Primary Key)
 * `player_id` (UUID, FK -> `users.id`, CASCADE)
 * `shop_item_id` (UUID, FK -> `shop_items.id`)

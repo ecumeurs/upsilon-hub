@@ -1,7 +1,7 @@
 ---
 id: uc_combat_turn
 human_name: Combat Turn Use Case
-type: MODULE
+type: USER_STORY
 layer: ARCHITECTURE
 version: 1.0
 status: STABLE
@@ -10,10 +10,11 @@ tags: []
 parents:
   - [[battleui:req_player_experience]]
 dependents:
-  - [[rule_turn_atomic_selection]]
-  - [[rule_turn_clock]]
+  - [[us_api_flow_game_turn]]
   - [[us_take_combat_turn]]
-  - [[usecase_api_flow_game_turn]]
+  - [[upsilonbattle:mechanic_battle_startup_handshake]]
+  - [[upsilonbattle:rule_turn_atomic_selection]]
+  - [[upsilonbattle:rule_turn_clock]]
 ---
 # Combat Turn Use Case
 
@@ -28,7 +29,6 @@ Governs the tactical interaction within a match, ensuring fair play and adherenc
 
 ## TECHNICAL INTERFACE (The Bridge)
 - **Code Tag:** `@spec-link [[uc_combat_turn]]`
-- **Internal Specs:** `[[uc_combat_turn_initiative_evaluation]]`, `[[uc_combat_turn_shot_clock_management]]`, `[[uc_combat_turn_turn_ending]]`
 
 ## EXPECTATION (For Testing)
 - Active character highlighted -> Timer counts down -> Action triggers delay cost calculation.
